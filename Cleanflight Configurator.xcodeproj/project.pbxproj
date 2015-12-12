@@ -1,0 +1,756 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3707FF76AA548F860426D98C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36398CC8E2486DF5E7F3FAF /* Pods.framework */; };
+		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
+		AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */; };
+		AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */; };
+		AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */; };
+		AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */; };
+		AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */; };
+		AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */; };
+		AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB621C0F3D230020C4B0 /* Assets.xcassets */; };
+		AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */; };
+		AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */; };
+		AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */; };
+		AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB891C0F3DD50020C4B0 /* MSP.swift */; };
+		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
+		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
+		AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */; };
+		AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2401C10C852004232AA /* CommChannel.swift */; };
+		AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */; };
+		AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */; };
+		AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2601C122F43004232AA /* SensorPagesViewController.swift */; };
+		AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2621C12316C004232AA /* BaseSensorViewController.swift */; };
+		AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2641C12338F004232AA /* AccelerometerViewController.swift */; };
+		AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2661C124045004232AA /* GyroscopeViewController.swift */; };
+		AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2681C12DCE3004232AA /* XYZSensorViewController.swift */; };
+		AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */; };
+		AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */; };
+		AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */; };
+		AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2701C158648004232AA /* TelemetryViewController.swift */; };
+		AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2721C159B9A004232AA /* MotorsViewController.swift */; };
+		AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2741C15EBBF004232AA /* MultiTypes.swift */; };
+		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
+		AEDDD2791C1615C8004232AA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = AEDDD2781C1615C8004232AA /* Podfile */; };
+		AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */; };
+		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
+		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
+		AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2801C188701004232AA /* ConnectionViewController.swift */; };
+		AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */; };
+		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
+		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
+		AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE72AB551C0F3D230020C4B0;
+			remoteInfo = "Cleanflight Configurator";
+		};
+		AE72AB781C0F3D230020C4B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE72AB551C0F3D230020C4B0;
+			remoteInfo = "Cleanflight Configurator";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AEDDD25F1C120342004232AA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
+		AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator.swift; sourceTree = "<group>"; };
+		AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingIndicator.swift; sourceTree = "<group>"; };
+		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		AE72AB601C0F3D230020C4B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AE72AB621C0F3D230020C4B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE72AB651C0F3D230020C4B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AE72AB671C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cleanflight ConfiguratorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cleanflight_ConfiguratorTests.swift; sourceTree = "<group>"; };
+		AE72AB721C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cleanflight ConfiguratorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cleanflight_ConfiguratorUITests.swift; sourceTree = "<group>"; };
+		AE72AB7D1C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE72AB891C0F3DD50020C4B0 /* MSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSP.swift; sourceTree = "<group>"; };
+		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
+		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
+		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
+		AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSViewController.swift; sourceTree = "<group>"; };
+		AEDDD2401C10C852004232AA /* CommChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommChannel.swift; sourceTree = "<group>"; };
+		AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverChannel.swift; sourceTree = "<group>"; };
+		AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverViewController.swift; sourceTree = "<group>"; };
+		AEDDD2601C122F43004232AA /* SensorPagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SensorPagesViewController.swift; sourceTree = "<group>"; };
+		AEDDD2621C12316C004232AA /* BaseSensorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSensorViewController.swift; sourceTree = "<group>"; };
+		AEDDD2641C12338F004232AA /* AccelerometerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccelerometerViewController.swift; sourceTree = "<group>"; };
+		AEDDD2661C124045004232AA /* GyroscopeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GyroscopeViewController.swift; sourceTree = "<group>"; };
+		AEDDD2681C12DCE3004232AA /* XYZSensorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYZSensorViewController.swift; sourceTree = "<group>"; };
+		AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MagnetometerViewController.swift; sourceTree = "<group>"; };
+		AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarometerViewController.swift; sourceTree = "<group>"; };
+		AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SonarViewController.swift; sourceTree = "<group>"; };
+		AEDDD2701C158648004232AA /* TelemetryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryViewController.swift; sourceTree = "<group>"; };
+		AEDDD2721C159B9A004232AA /* MotorsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorsViewController.swift; sourceTree = "<group>"; };
+		AEDDD2741C15EBBF004232AA /* MultiTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiTypes.swift; sourceTree = "<group>"; };
+		AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationViewController.swift; sourceTree = "<group>"; };
+		AEDDD2781C1615C8004232AA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorStopConfigViewController.swift; sourceTree = "<group>"; };
+		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
+		AEDDD2801C188701004232AA /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
+		AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearGauge.swift; sourceTree = "<group>"; };
+		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
+		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
+		AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCode.swift; sourceTree = "<group>"; };
+		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AE72AB531C0F3D230020C4B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3707FF76AA548F860426D98C /* Pods.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB691C0F3D230020C4B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB741C0F3D230020C4B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1423726195B99A7BD0668A20 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E36398CC8E2486DF5E7F3FAF /* Pods.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5044F1400993D624422523C3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */,
+				B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		AE1F73E31C18C5AB0029C330 /* Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				AEDDD2601C122F43004232AA /* SensorPagesViewController.swift */,
+				AEDDD2621C12316C004232AA /* BaseSensorViewController.swift */,
+				AEDDD2641C12338F004232AA /* AccelerometerViewController.swift */,
+				AEDDD2661C124045004232AA /* GyroscopeViewController.swift */,
+				AEDDD2681C12DCE3004232AA /* XYZSensorViewController.swift */,
+				AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */,
+				AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */,
+				AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */,
+			);
+			name = Sensors;
+			sourceTree = "<group>";
+		};
+		AE1F73E41C18C63F0029C330 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
+				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
+				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
+				AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */,
+				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
+		AE72AB4D1C0F3D230020C4B0 = {
+			isa = PBXGroup;
+			children = (
+				AEDDD2781C1615C8004232AA /* Podfile */,
+				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
+				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
+				AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
+				AE72AB571C0F3D230020C4B0 /* Products */,
+				5044F1400993D624422523C3 /* Pods */,
+				1423726195B99A7BD0668A20 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		AE72AB571C0F3D230020C4B0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */,
+				AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */,
+				AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */ = {
+			isa = PBXGroup;
+			children = (
+				AE1F73E41C18C63F0029C330 /* Configuration */,
+				AE1F73E31C18C5AB0029C330 /* Sensors */,
+				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
+				AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */,
+				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
+				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
+				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
+				AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */,
+				AE72AB671C0F3D230020C4B0 /* Info.plist */,
+				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
+				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
+				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
+				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
+				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
+				AEDDD2401C10C852004232AA /* CommChannel.swift */,
+				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
+				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
+				AEDDD2701C158648004232AA /* TelemetryViewController.swift */,
+				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
+				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
+				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
+				AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */,
+				AEDDD2801C188701004232AA /* ConnectionViewController.swift */,
+				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
+				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
+				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
+			);
+			path = "Cleanflight Configurator";
+			sourceTree = "<group>";
+		};
+		AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */ = {
+			isa = PBXGroup;
+			children = (
+				AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */,
+				AE72AB721C0F3D230020C4B0 /* Info.plist */,
+			);
+			path = "Cleanflight ConfiguratorTests";
+			sourceTree = "<group>";
+		};
+		AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */,
+				AE72AB7D1C0F3D230020C4B0 /* Info.plist */,
+			);
+			path = "Cleanflight ConfiguratorUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight Configurator" */;
+			buildPhases = (
+				EB004450ACA3AE5BC20A6F86 /* Check Pods Manifest.lock */,
+				AE72AB521C0F3D230020C4B0 /* Sources */,
+				AE72AB531C0F3D230020C4B0 /* Frameworks */,
+				AE72AB541C0F3D230020C4B0 /* Resources */,
+				AEDDD25F1C120342004232AA /* Embed Frameworks */,
+				25A8B7FA1D9E3CCB2C705456 /* Embed Pods Frameworks */,
+				07463D46ED160DB4757D7899 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Cleanflight Configurator";
+			productName = "Cleanflight Configurator";
+			productReference = AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorTests" */;
+			buildPhases = (
+				AE72AB681C0F3D230020C4B0 /* Sources */,
+				AE72AB691C0F3D230020C4B0 /* Frameworks */,
+				AE72AB6A1C0F3D230020C4B0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE72AB6E1C0F3D230020C4B0 /* PBXTargetDependency */,
+			);
+			name = "Cleanflight ConfiguratorTests";
+			productName = "Cleanflight ConfiguratorTests";
+			productReference = AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AE72AB761C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE72AB861C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorUITests" */;
+			buildPhases = (
+				AE72AB731C0F3D230020C4B0 /* Sources */,
+				AE72AB741C0F3D230020C4B0 /* Frameworks */,
+				AE72AB751C0F3D230020C4B0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE72AB791C0F3D230020C4B0 /* PBXTargetDependency */,
+			);
+			name = "Cleanflight ConfiguratorUITests";
+			productName = "Cleanflight ConfiguratorUITests";
+			productReference = AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AE72AB4E1C0F3D230020C4B0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = "Raphael Jean-Leconte";
+				TargetAttributes = {
+					AE72AB551C0F3D230020C4B0 = {
+						CreatedOnToolsVersion = 7.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+					AE72AB6B1C0F3D230020C4B0 = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = AE72AB551C0F3D230020C4B0;
+					};
+					AE72AB761C0F3D230020C4B0 = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = AE72AB551C0F3D230020C4B0;
+					};
+				};
+			};
+			buildConfigurationList = AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "Cleanflight Configurator" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AE72AB4D1C0F3D230020C4B0;
+			productRefGroup = AE72AB571C0F3D230020C4B0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */,
+				AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
+				AE72AB761C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE72AB541C0F3D230020C4B0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
+				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
+				AEDDD2791C1615C8004232AA /* Podfile in Resources */,
+				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB6A1C0F3D230020C4B0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB751C0F3D230020C4B0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07463D46ED160DB4757D7899 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		25A8B7FA1D9E3CCB2C705456 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB004450ACA3AE5BC20A6F86 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AE72AB521C0F3D230020C4B0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
+				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
+				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
+				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
+				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
+				AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */,
+				AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */,
+				AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */,
+				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
+				AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */,
+				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
+				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
+				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
+				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
+				AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */,
+				AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */,
+				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
+				AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */,
+				AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */,
+				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
+				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,
+				AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */,
+				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
+				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
+				AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */,
+				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
+				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
+				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
+				AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */,
+				AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */,
+				AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */,
+				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
+				AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */,
+				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB681C0F3D230020C4B0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE72AB731C0F3D230020C4B0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AE72AB6E1C0F3D230020C4B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
+			targetProxy = AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */;
+		};
+		AE72AB791C0F3D230020C4B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
+			targetProxy = AE72AB781C0F3D230020C4B0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE72AB601C0F3D230020C4B0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE72AB651C0F3D230020C4B0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AE72AB7E1C0F3D230020C4B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AE72AB7F1C0F3D230020C4B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AE72AB811C0F3D230020C4B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AE72AB821C0F3D230020C4B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		AE72AB841C0F3D230020C4B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+			};
+			name = Debug;
+		};
+		AE72AB851C0F3D230020C4B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+			};
+			name = Release;
+		};
+		AE72AB871C0F3D230020C4B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "Cleanflight Configurator";
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		AE72AB881C0F3D230020C4B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "Cleanflight Configurator";
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "Cleanflight Configurator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE72AB7E1C0F3D230020C4B0 /* Debug */,
+				AE72AB7F1C0F3D230020C4B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight Configurator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE72AB811C0F3D230020C4B0 /* Debug */,
+				AE72AB821C0F3D230020C4B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE72AB841C0F3D230020C4B0 /* Debug */,
+				AE72AB851C0F3D230020C4B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE72AB861C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE72AB871C0F3D230020C4B0 /* Debug */,
+				AE72AB881C0F3D230020C4B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AE72AB4E1C0F3D230020C4B0 /* Project object */;
+}

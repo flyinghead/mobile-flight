@@ -1,0 +1,150 @@
+//
+//  GPSViewController.swift
+//  Cleanflight Configurator
+//
+//  Created by Raphael Jean-Leconte on 03/12/15.
+//  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.
+//
+
+import UIKit
+
+class GPSViewController : UITableViewController, FlightDataListener {
+    
+    var fastTimer: NSTimer?
+    var slowTimer: NSTimer?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        msp.addDataListener(self)
+    }
+    
+    func receivedGpsData() {
+        tableView.reloadData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if slowTimer == nil {
+            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
+
+        }
+        if (fastTimer == nil) {
+            // Cleanflight/chrome uses 75ms interval
+            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        fastTimer?.invalidate()
+        fastTimer = nil
+        slowTimer?.invalidate()
+        slowTimer = nil
+    }
+    
+    func fastTimerDidFire(sender: AnyObject) {
+        if Configuration.theConfig.isGPSActive() {
+            msp.sendMessage(.MSP_RAW_GPS, data: nil)
+            msp.sendMessage(.MSP_COMP_GPS, data: nil)
+            msp.sendMessage(.MSP_GPSSVINFO, data: nil)
+        }
+    }
+    
+    func slowTimerDidFire(sender: AnyObject) {
+        msp.sendMessage(.MSP_STATUS, data: nil)
+    }
+    
+    // MARK: - Table View
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section == 0) {
+            return 7
+        } else {
+            return GPSData.theGPSData.satellites.count;
+        }
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if (section == 0) {
+            return "GPS"
+        } else {
+            return "Satellites"
+        }
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let gpsData = GPSData.theGPSData;
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCellWithIdentifier("GPSCell", forIndexPath: indexPath)
+            
+            cell.detailTextLabel!.textColor = UIColor.lightGrayColor()      // FIXME How to reset to default (ie as set in storyboard)
+            switch indexPath.row {
+            case 0:
+                cell.textLabel!.text = "3D Fix"
+                
+                if (gpsData.fix) {
+                    cell.detailTextLabel!.text = "Yes"
+                    cell.detailTextLabel!.textColor = UIColor.greenColor()
+                } else {
+                    cell.detailTextLabel!.text = "No"
+                    cell.detailTextLabel!.textColor = UIColor.redColor()
+                }
+            case 1:
+                cell.textLabel!.text = "Altitude"
+                cell.detailTextLabel!.text = String(format: "%d m", gpsData.altitude)
+            case 2:
+                cell.textLabel!.text = "Latitude"
+                cell.detailTextLabel!.text = String(format: "%.4lf °", gpsData.latitude)
+            case 3:
+                cell.textLabel!.text = "Longitude"
+                cell.detailTextLabel!.text = String(format: "%.4lf °", gpsData.longitude)
+            case 4:
+                cell.textLabel!.text = "Speed"
+                cell.detailTextLabel!.text = String(format: "%d cm/s", gpsData.speed)
+            case 5:
+                cell.textLabel!.text = "Satellites"
+                cell.detailTextLabel!.text = String(format: "%d", gpsData.numSat)
+            case 6:
+                cell.textLabel!.text = "Distance to Home"
+                cell.detailTextLabel!.text = String(format: "%d m", gpsData.distanceToHome)
+            default:
+                break
+            }
+            
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("GPSSatCell", forIndexPath: indexPath) as! GPSSatCell
+            
+            let sats = gpsData.satellites
+            if indexPath.row < sats.count {
+                cell.satIdLabel!.text = String(format: "%d", sats[indexPath.row].svid)
+                cell.gauge!.color = sats[indexPath.row].quality.contains(.svUsed) ? cell.green : cell.blue
+                cell.gauge!.value = Double(sats[indexPath.row].cno)
+            }
+            
+            return cell
+        }
+    }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return false
+    }
+
+}
+
+class GPSSatCell : UITableViewCell {
+    let green = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+    let blue = UIColor(red: 0, green: 0.25, blue: 0.5, alpha: 1)
+    
+    @IBOutlet weak var satIdLabel: UILabel!
+    @IBOutlet weak var gauge: LinearGauge!
+    
+}

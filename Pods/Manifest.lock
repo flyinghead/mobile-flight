@@ -1,0 +1,13 @@
+PODS:
+  - Charts (2.1.6)
+  - DownPicker (0.1.34)
+
+DEPENDENCIES:
+  - Charts
+  - DownPicker
+
+SPEC CHECKSUMS:
+  Charts: 5e1e5ac23898e5b09d226a2fc3e9d86bc281937e
+  DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
+
+COCOAPODS: 0.39.0
