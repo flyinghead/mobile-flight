@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import SVProgressHUD
 
-class ConnectionViewController: UITableViewController, UIAlertViewDelegate, BluetoothDelegate {
+class ConnectionViewController: UITableViewController, BluetoothDelegate {
     var btPeripherals = [BluetoothPeripheral]()
     let btManager = BluetoothManager()
     
     var selectedPeripheral: BluetoothPeripheral?
-    var waitIndicator: UIAlertView?
     
     var refreshBluetoothButton: UIButton?
 
@@ -66,10 +66,12 @@ class ConnectionViewController: UITableViewController, UIAlertViewDelegate, Blue
         selectedPeripheral = btPeripherals[indexPath.row]
         btManager.connect(selectedPeripheral!)
         let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
-        waitIndicator = UIAlertView(title: "Connecting", message: msg, delegate: self, cancelButtonTitle: "Cancel")
-        waitIndicator!.show()
+        SVProgressHUD.showWithStatus(msg, maskType: .Black)
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
-    
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 44.0
+    }
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let screenRect = UIScreen.mainScreen().applicationFrame;
         let view = UIView(frame: CGRect(x: 0, y: 0, width: screenRect.size.width, height: 44.0))
@@ -78,14 +80,13 @@ class ConnectionViewController: UITableViewController, UIAlertViewDelegate, Blue
         view.userInteractionEnabled = true
 
         view.contentMode = .ScaleToFill
-//        view.backgroundColor = UIColor.clearColor()
         
         if (refreshBluetoothButton == nil) {
             refreshBluetoothButton = UIButton(type: .System)
             refreshBluetoothButton!.addTarget(self, action: "refreshBluetooth", forControlEvents: .TouchDown)
             refreshBluetoothButton!.setTitle("Refresh", forState: .Normal)
             refreshBluetoothButton!.setTitle("Refreshing...", forState: .Disabled)
-            refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, 160.0, 44.0)
+            refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, screenRect.size.width, 44.0)
         }
         view.addSubview(refreshBluetoothButton!)
         
@@ -95,6 +96,7 @@ class ConnectionViewController: UITableViewController, UIAlertViewDelegate, Blue
     // MARK
     
     func refreshBluetooth() {
+        NSLog("Starting bluetooth scanning")
         btPeripherals.removeAll()
         tableView.reloadData()
         btManager.startScanning()
@@ -123,45 +125,60 @@ class ConnectionViewController: UITableViewController, UIAlertViewDelegate, Blue
         btManager.delegate = btComm
         
         dispatch_async(dispatch_get_main_queue(), {
-            self.waitIndicator?.message = String(format: "Fetching information...")
-            _ = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("waitForFetchComplete:"), userInfo: nil, repeats: true)
+            SVProgressHUD.setStatus("Fetching information...")
             
-            msp.sendMessage(.MSP_IDENT, data: nil, retry: true)
-            msp.sendMessage(.MSP_API_VERSION, data: nil, retry: true)
-//            msp.sendMessage(.MSP_FC_VARIANT, data: nil)
-//            msp.sendMessage(.MSP_FC_VERSION, data: nil)
-//            msp.sendMessage(.MSP_BUILD_INFO, data: nil)
-//            msp.sendMessage(.MSP_BOARD_INFO, data: nil)
-            msp.sendMessage(.MSP_UID, data: nil, retry: true)
-            // FIXME This one is often truncated when received, buffer overrun? (that was in telemetryViewController)
-            msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: true)
+            msp.sendMessage(.MSP_IDENT, data: nil, retry: 2, callback: { success in
+                if success {
+                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 2, callback: { success in
+                        if success {
+                            if !Configuration.theConfig.isApiVersionAtLeast("1.6") {
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    self.cancelConnection(btComm)
+                                    SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
+                                })
+                            } else {
+                                msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
+                                    if success {
+                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
+                                            if success {
+                                                dispatch_async(dispatch_get_main_queue(), {
+                                                    SVProgressHUD.dismiss()
+                                                    self.selectedPeripheral = nil
+                                                    self.performSegueWithIdentifier("next", sender: self)
+                                                })
+                                            } else {
+                                                self.cancelConnection(btComm)
+                                            }
+                                        })
+                                    } else {
+                                        self.cancelConnection(btComm)
+                                    }
+                                })
+                            }
+                        } else {
+                            self.cancelConnection(btComm)
+                        }
+                    })
+                } else {
+                    self.cancelConnection(btComm)
+                }
+            })
         })
-        
-
-    }
-    
-    func waitForFetchComplete(timer : NSTimer) {
-//        if Configuration.theConfig.uid != nil || waitIndicator == nil {
-        if Settings.theSettings.boxNames != nil || waitIndicator == nil {
-            timer.invalidate()
-            
-            if waitIndicator != nil {
-                waitIndicator?.dismissWithClickedButtonIndex(0, animated: true)
-                waitIndicator = nil
-                performSegueWithIdentifier("next", sender: self)
-            }
-        }
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
         dispatch_async(dispatch_get_main_queue(), {
-            self.waitIndicator?.message = String(format: "Connection to %@ failed: %@", peripheral.name, error!)
+            if error != nil {
+                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed: %@", peripheral.name, error!), maskType: .None)
+            } else {
+                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed", peripheral.name), maskType: .None)
+            }
         })
     }
     
     func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
         btManager.delegate = self
-        if waitIndicator != nil {
+        if selectedPeripheral != nil {
             // Retry
             btManager.connect(selectedPeripheral!)
         }
@@ -170,19 +187,16 @@ class ConnectionViewController: UITableViewController, UIAlertViewDelegate, Blue
     func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
     }
 
-    // MARK: UIAlertViewDelegate
-
-    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        if let selection = tableView.indexPathForSelectedRow {
-            tableView.deselectRowAtIndexPath(selection, animated: false)
-        }
-        waitIndicator = nil
+    // MARK:
+    
+    private func cancelConnection(btComm: BluetoothComm) {
+        let peripheral = selectedPeripheral!
+        selectedPeripheral = nil
         btManager.delegate = self
-        if selectedPeripheral != nil {
-            btManager.disconnect(selectedPeripheral!)
-            selectedPeripheral = nil
-        }
+        btComm.close()
+        failedToConnectToPeripheral(peripheral, error: nil)
     }
+    
     
     /*
     // Override to support conditional editing of the table view.

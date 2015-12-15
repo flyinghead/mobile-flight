@@ -16,10 +16,10 @@ class AboutViewController: UITableViewController, FlightDataListener {
         msp.addDataListener(self)
     }
     override func viewWillAppear(animated: Bool) {
-        msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: true)
-        msp.sendMessage(.MSP_FC_VERSION, data: nil, retry: true)
-        msp.sendMessage(.MSP_BUILD_INFO, data: nil, retry: true)
-        msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: true)
+        msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 2, callback: nil)
+        msp.sendMessage(.MSP_FC_VERSION, data: nil, retry: 2, callback: nil)
+        msp.sendMessage(.MSP_BUILD_INFO, data: nil, retry: 2, callback: nil)
+        msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: 2, callback: nil)
     }
     
     func receivedData() {

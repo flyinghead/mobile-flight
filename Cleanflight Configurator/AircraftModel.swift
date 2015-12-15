@@ -20,7 +20,7 @@ struct BaseFlightFeature : OptionSetType {
     static let ServoTilt  = BaseFlightFeature(rawValue: 1 << 5)
     static let SoftSerial  = BaseFlightFeature(rawValue: 1 << 6)
     static let GPS  = BaseFlightFeature(rawValue: 1 << 7)
-    static let FailSafe  = BaseFlightFeature(rawValue: 1 << 8)
+    static let Failsafe  = BaseFlightFeature(rawValue: 1 << 8)
     static let Sonar  = BaseFlightFeature(rawValue: 1 << 9)
     static let Telemetry  = BaseFlightFeature(rawValue: 1 << 10)
     static let CurrentMeter  = BaseFlightFeature(rawValue: 1 << 11)
@@ -32,6 +32,7 @@ struct BaseFlightFeature : OptionSetType {
     static let Display  = BaseFlightFeature(rawValue: 1 << 17)
     static let OneShot125  = BaseFlightFeature(rawValue: 1 << 18)
     static let Blackbox  = BaseFlightFeature(rawValue: 1 << 19)
+    static let ChannelForwarding  = BaseFlightFeature(rawValue: 1 << 20)
 }
 
 enum Mode : String {
@@ -63,6 +64,12 @@ enum Mode : String {
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
 }
+struct ModeRange {
+    var id = 0
+    var auxChannelId = 0
+    var start = 0
+    var end = 0
+}
 
 class Settings {
     static let theSettings = Settings()
@@ -86,6 +93,22 @@ class Settings {
     // MSP_BOXIDS
     var boxIds: [Int]?
     
+    // MSP_MODE_RANGES / MSP_SET_MODE_RANGES
+    var modeRanges: [ModeRange]?
+    var modeRangeSlots = 0
+    
+    // MSP_RC_TUNING / MSP_SET_RC_TUNING
+    var rcExpo = 0.0
+    var yawExpo = 0.0
+    var rcRate = 0.0
+    var rollRate = 0.0
+    var pitchRate = 0.0
+    var yawRate = 0.0
+    var dynamicThrottlePid = 0.0
+    var throttleMid = 0.0
+    var throttleExpo = 0.0
+    var dynamicThrottleBreakpoint = 0
+    
     private init() {
         
     }
@@ -101,6 +124,22 @@ class Settings {
         self.boardAlignYaw = copyOf.boardAlignYaw
         self.currentScale = copyOf.currentScale
         self.currentOffset = copyOf.currentOffset
+        
+        self.boxNames = copyOf.boxNames
+        self.boxIds = copyOf.boxIds
+        self.modeRanges = copyOf.modeRanges
+        self.modeRangeSlots = copyOf.modeRangeSlots
+        
+        self.rcExpo = copyOf.rcExpo
+        self.yawExpo = copyOf.yawExpo
+        self.rcRate = copyOf.rcRate
+        self.rollRate = copyOf.rollRate
+        self.pitchRate = copyOf.pitchRate
+        self.yawRate = copyOf.yawRate
+        self.dynamicThrottlePid = copyOf.dynamicThrottlePid
+        self.throttleMid = copyOf.throttleMid
+        self.throttleExpo = copyOf.throttleExpo
+        self.dynamicThrottleBreakpoint = copyOf.dynamicThrottleBreakpoint
     }
     
     func isModeOn(mode: Mode, forStatus status: UInt32) -> Bool {
@@ -114,6 +153,7 @@ class Settings {
         }
         return false
     }
+    
 }
 
 class Misc {
@@ -201,6 +241,11 @@ class Configuration {
     var rssi = 0
     var amperage = 0.0
     
+    // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
+    // FIXME Move this to Settings or elsewhere
+    var accelerometerTrimPitch = 0
+    var accelerometerTrimRoll = 0
+
     func isGyroAndAccActive() -> Bool {
         return activeSensors != nil && activeSensors! & 1 > 0;
     }
@@ -218,6 +263,31 @@ class Configuration {
     
     func isSonarActive() -> Bool {
         return activeSensors != nil && activeSensors! & 16 > 0;
+    }
+    
+    func isApiVersionAtLeast(version: String) -> Bool {
+        if apiVersion == nil {
+            return false
+        }
+        let currentVersion = apiVersion!.componentsSeparatedByString(".")
+        let refVersion = version.componentsSeparatedByString(".")
+        for var i = 0; ;i++ {
+            if i >= currentVersion.count {
+                return false
+            }
+            if i >= refVersion.count {
+                return true
+            }
+            let curVersionPart = Int(currentVersion[i])
+            let refVersionPart = Int(refVersion[i])
+            
+            if curVersionPart > refVersionPart {
+                return true
+            }
+            if curVersionPart < refVersionPart {
+                return false
+            }
+        }
     }
 }
 

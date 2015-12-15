@@ -9,7 +9,7 @@
 import UIKit
 import DownPicker
 
-class GPSConfigViewController: UITableViewController, ConfigChildViewController {
+class GPSConfigViewController: ConfigChildViewController {
     @IBOutlet weak var gpsSwitch: UISwitch!
     @IBOutlet weak var gpsProtocolField: UITextField!
     @IBOutlet weak var gpsRegionField: UITextField!
@@ -17,10 +17,6 @@ class GPSConfigViewController: UITableViewController, ConfigChildViewController 
 
     var gpsProtocolPicker: DownPicker?
     var gpsRegionPicker: DownPicker?
-    
-    var configViewController: ConfigurationViewController?
-    var settings: Settings?
-    var misc: Misc?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,39 +31,24 @@ class GPSConfigViewController: UITableViewController, ConfigChildViewController 
         gpsProtocolPicker?.showArrowImage(true)
         gpsRegionPicker = DownPicker(textField: gpsRegionField, withData: ["Auto-detect", "Europe", "North America", "Japan", "India"])
         gpsRegionPicker?.showArrowImage(true)
+        
+        magDeclinationField.delegate = self
     }
 
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 1 && !gpsSwitch.on {
-            return 0.0
-        }
-        return UITableViewAutomaticDimension
-    }
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 1 && !gpsSwitch.on {
-            return 0.0
-        }
-        return UITableViewAutomaticDimension
-    }
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 1 && !gpsSwitch.on {
-            return 0.0
-        }
-        return UITableViewAutomaticDimension
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return gpsSwitch.on ? super.numberOfSectionsInTableView(tableView) : 1
     }
 
-    func setReference(configViewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
-        self.configViewController = configViewController
-        self.settings = newSettings
-        self.misc = newMisc
-    }
     override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         misc?.gpsType = gpsProtocolPicker!.selectedIndex
         misc?.gpsUbxSbas = gpsProtocolPicker!.selectedIndex
         misc?.magDeclination = Double(magDeclinationField.text!) ?? 0.0
-        configViewController?.refreshData()
+        configViewController?.refreshUI()
     }
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         gpsSwitch.on = settings!.features?.contains(BaseFlightFeature.GPS) ?? false
         gpsProtocolPicker?.selectedIndex = misc!.gpsType
         gpsRegionPicker?.selectedIndex = misc!.gpsUbxSbas

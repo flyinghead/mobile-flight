@@ -10,6 +10,23 @@ import Foundation
 
 enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
 
+class MessageRetryHandler {
+    let code: MSP_code
+    let data: [UInt8]?
+    let callback: ((success: Bool) -> Void)?
+    let maxTries: Int
+    var timer: NSTimer?
+    
+    var tries = 0
+    
+    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: ((success: Bool) -> Void)?) {
+        self.code = code
+        self.data = data
+        self.maxTries = maxTries
+        self.callback = callback
+    }
+}
+
 class MSPParser {
     var state: ParserState = .Sync1
     var directionOut: Bool = false
@@ -24,7 +41,7 @@ class MSPParser {
     var dataListenersLock = NSObject()
     var commChannel: CommChannel?
     
-    var retriedMessages = Dictionary<MSP_code, NSTimer>()
+    var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
     func read(data: [UInt8]) {
@@ -178,7 +195,7 @@ class MSPParser {
             
         case .MSP_RC:
             var channelCount = message.count / 2
-            if (channelCount >= receiver.channels.count) {
+            if (channelCount > receiver.channels.count) {
                 NSLog("MSP_RC Received %d channels instead of %d max", channelCount, receiver.channels.count)
                 channelCount = receiver.channels.count
             }
@@ -242,6 +259,24 @@ class MSPParser {
             config.rssi = getUInt16(message, index: 3)                      // 0-1023
             config.amperage = Double(getInt16(message, index: 5)) / 100     // A
             pingDataListeners()
+            
+        case .MSP_RC_TUNING:
+            if message.count < 10 {
+                return false
+            }
+            settings.rcRate = Double(message[0]) / 100
+            settings.rcExpo = Double(message[1]) / 100
+            settings.rollRate = Double(message[2]) / 100
+            settings.pitchRate = Double(message[3]) / 100
+            settings.yawRate = Double(message[4]) / 100
+            settings.dynamicThrottlePid = Double(message[5]) / 100
+            settings.throttleMid = Double(message[6]) / 100
+            settings.throttleExpo = Double(message[7]) / 100
+            settings.dynamicThrottleBreakpoint = getUInt16(message, index: 8)
+            if message.count >= 11 {
+                settings.yawExpo = Double(message[10]) / 100
+            }
+            pingSettingsListeners()
             
         case .MSP_ARMING_CONFIG:
             if message.count < 2 {
@@ -380,12 +415,51 @@ class MSPParser {
             config.boardVersion = getUInt16(message, index: 4)
             pingDataListeners()
             
+        case .MSP_MODE_RANGES:
+            let nRanges = message.count / 4
+            var modeRanges = [ModeRange]()
+            for (var i = 0; i < nRanges; i++) {
+                let offset = i * 4
+                let start = 900 + Int(message[offset+2]) * 25
+                let end = 900 + Int(message[offset+3]) * 25
+                if start < end {
+                    modeRanges.append(ModeRange(
+                        id: Int(message[offset]),
+                        auxChannelId: Int(message[offset+1]),
+                        start: start,
+                        end: end))
+                }
+            }
+            settings.modeRanges = modeRanges
+            settings.modeRangeSlots = nRanges
+            pingSettingsListeners()
+            
         case .MSP_UID:
             if message.count < 12 {
                 return false
             }
             config.uid = String(format: "%04x%04x%04x", getUInt32(message, index: 0), getUInt32(message, index: 4), getUInt32(message, index: 8))
             pingDataListeners()
+            
+        case .MSP_ACC_TRIM:
+            if message.count < 4 {
+                return false
+            }
+            config.accelerometerTrimPitch = getInt16(message, index: 0)
+            config.accelerometerTrimRoll = getInt16(message, index: 2)
+            pingDataListeners()
+            
+        // ACKs for sent commands
+        case .MSP_SET_MISC,
+            .MSP_SET_BF_CONFIG,
+            .MSP_EEPROM_WRITE,
+            .MSP_SET_REBOOT,
+            .MSP_ACC_CALIBRATION,
+            .MSP_MAG_CALIBRATION,
+            .MSP_SET_ACC_TRIM,
+            .MSP_SET_MODE_RANGE,
+            .MSP_SET_ARMING_CONFIG:
+            break
             
         default:
             NSLog("Unhandled message %d", code.rawValue)
@@ -396,18 +470,29 @@ class MSPParser {
     }
     
     func removeSendMessageTimer(code: MSP_code) {
+        var callback: ((success: Bool) -> Void)?
         objc_sync_enter(retriedMessageLock)
-        if let timer = retriedMessages.removeValueForKey(code) {
-            timer.invalidate()
+        if let retriedMessage = retriedMessages.removeValueForKey(code) {
+            retriedMessage.timer!.invalidate()
+            callback = retriedMessage.callback
         }
         objc_sync_exit(retriedMessageLock)
+        if callback != nil {
+            callback!(success: true)
+        }
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?, retry: Bool) {
-        if retry {
-            let timer = NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "sendMessageTimedOut:", userInfo: code.rawValue, repeats: false)
+    func makeSendMessageTimer(handler: MessageRetryHandler) -> NSTimer {
+        return NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "sendMessageTimedOut:", userInfo: handler, repeats: false)
+    }
+    
+    func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, callback: ((success: Bool) -> Void)?) {
+        if retry > 0 || callback != nil {
+            let messageRetry = MessageRetryHandler(code: code, data: data, maxTries: retry, callback: callback)
+            messageRetry.timer = makeSendMessageTimer(messageRetry)
+            
             objc_sync_enter(retriedMessageLock)
-            retriedMessages[code] = timer
+            retriedMessages[code] = messageRetry
             objc_sync_exit(retriedMessageLock)
         }
         let dataSize = data != nil ? data!.count : 0
@@ -429,24 +514,33 @@ class MSPParser {
         commChannel?.flushOut()
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?) {  // Callback ?
-        sendMessage(code, data: data, retry: false)
+    func sendMessage(code: MSP_code, data: [UInt8]?) {
+        sendMessage(code, data: data, retry: 0, callback: nil)
     }
     
     @objc
     func sendMessageTimedOut(timer: NSTimer) {
-        let code = MSP_code(rawValue: timer.userInfo as! Int)
-        NSLog("Retrying sendMessage %d", code!.rawValue)
-        objc_sync_enter(retriedMessageLock)
-        removeSendMessageTimer(code!)
-        objc_sync_exit(retriedMessageLock)
-        sendMessage(code!, data: nil, retry: true)
+        let handler = timer.userInfo as! MessageRetryHandler
+        if ++handler.tries > handler.maxTries {
+            NSLog("sendMessage %d failed", handler.code.rawValue)
+            objc_sync_enter(retriedMessageLock)
+            retriedMessages.removeValueForKey(handler.code)
+            objc_sync_exit(retriedMessageLock)
+            if handler.callback != nil {
+                handler.callback!(success: false)
+            }
+            return
+        }
+        NSLog("Retrying sendMessage %d", handler.code.rawValue)
+        handler.timer = makeSendMessageTimer(handler)
+
+        sendMessage(handler.code, data: handler.data, retry: 0, callback: nil)
     }
     
     func cancelRetries() {
         objc_sync_enter(retriedMessageLock)
-        for timer in retriedMessages.values {
-            timer.invalidate()
+        for handler in retriedMessages.values {
+            handler.timer!.invalidate()
         }
         objc_sync_exit(retriedMessageLock)
     }
@@ -512,7 +606,7 @@ class MSPParser {
         }
     }
     
-    func sendSetMisc(misc: Misc) {
+    func sendSetMisc(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.appendContentsOf(writeInt16(misc.midRC))
         data.appendContentsOf(writeInt16(misc.minThrottle))
@@ -531,9 +625,10 @@ class MSPParser {
         data.append(UInt8(misc.vbatMaxCellVoltage * 10))
         data.append(UInt8(misc.vbatWarningCellVoltage * 10))
         
-        sendMessage(.MSP_SET_MISC, data: data, retry: true)
+        sendMessage(.MSP_SET_MISC, data: data, retry: 2, callback: callback)
     }
-    func sendSetBfConfig(settings: Settings) {
+    
+    func sendSetBfConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.mixerConfiguration!))
         data.appendContentsOf(writeUInt32(settings.features!.rawValue))
@@ -544,7 +639,56 @@ class MSPParser {
         data.appendContentsOf(writeInt16(settings.currentScale!))
         data.appendContentsOf(writeInt16(settings.currentOffset!))
         
-        sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: true)
+        sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSetAccTrim(config: Configuration, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeInt16(config.accelerometerTrimPitch))
+        data.appendContentsOf(writeInt16(config.accelerometerTrimRoll))
+        
+        sendMessage(.MSP_SET_ACC_TRIM, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSetModeRange(index: Int, range: ModeRange, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(index))
+        data.append(UInt8(range.id))
+        data.append(UInt8(range.auxChannelId))
+        data.append(UInt8((range.start - 900) / 25))
+        data.append(UInt8((range.end - 900) / 25))
+        
+        sendMessage(.MSP_SET_MODE_RANGE, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSetArmingConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.autoDisarmDelay!))
+        data.append(UInt8(settings.disarmKillSwitch ? 1 : 0))
+        
+        sendMessage(.MSP_SET_ARMING_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSetRcTuning(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.rcRate * 100))
+        data.append(UInt8(settings.rcExpo * 100))
+        data.append(UInt8(settings.rollRate * 100))
+        data.append(UInt8(settings.pitchRate * 100))
+        data.append(UInt8(settings.yawRate * 100))
+        data.append(UInt8(settings.dynamicThrottlePid * 100))
+        data.append(UInt8(settings.throttleMid * 100))
+        data.append(UInt8(settings.throttleExpo * 100))
+        data.appendContentsOf(writeInt16(settings.dynamicThrottleBreakpoint))
+        if Configuration.theConfig.isApiVersionAtLeast("1.10") {
+            data.append(UInt8(settings.yawExpo * 100))
+        }
+        
+        sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSetRxMap(map: [UInt8], callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SET_RX_MAP, data: map, retry: 2, callback: callback)
     }
     
     func writeUInt32(i: UInt32) -> [UInt8] {

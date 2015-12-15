@@ -167,9 +167,9 @@ class TelemetryViewController: UIViewController, FlightDataListener {
     }
     @IBAction func disconnectAction(sender: AnyObject) {
         if let btComm = msp.commChannel as? BluetoothComm {
+            btComm.close()
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
-            btComm.close()
         }
     }
 }

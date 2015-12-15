@@ -8,14 +8,11 @@
 
 import UIKit
 
-class MotorStopConfigViewController: UITableViewController, ConfigChildViewController {
+class MotorStopConfigViewController: ConfigChildViewController {
     @IBOutlet weak var stopMotorSwitch: UISwitch!
     @IBOutlet weak var disarmDelayLabel: UILabel!
     @IBOutlet weak var disarmDelayStepper: UIStepper!
 
-    var configViewController: ConfigurationViewController?
-    var settings: Settings?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -55,14 +52,12 @@ class MotorStopConfigViewController: UITableViewController, ConfigChildViewContr
         disarmDelayLabel.text = String(format: "Disarm motors after %d seconds", settings!.autoDisarmDelay ?? 5)
     }
     
-    func setReference(configViewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
-        self.configViewController = configViewController
-        self.settings = newSettings
-    }
     override func viewWillDisappear(animated: Bool) {
-        configViewController?.refreshData()
+        super.viewWillDisappear(animated)
+        configViewController?.refreshUI()
     }
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         stopMotorSwitch.on = settings!.features?.contains(BaseFlightFeature.MotorStop) ?? false
         disarmDelayStepper.value = Double(settings!.autoDisarmDelay ?? 5)
         disarmDelayStep(disarmDelayStepper)

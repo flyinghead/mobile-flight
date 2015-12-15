@@ -8,8 +8,9 @@
 
 import UIKit
 import DownPicker
+import SVProgressHUD
 
-protocol ConfigChildViewController {
+protocol ConfigChildViewControllerOld {
     func setReference(viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc)
 }
 
@@ -21,17 +22,30 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     @IBOutlet weak var motorStopField: UILabel!
     @IBOutlet weak var oneShotEscSwitch: UISwitch!
     @IBOutlet weak var disarmMotorsSwitch: UISwitch!
-    @IBOutlet weak var minimumCommandField: UITextField!
-    @IBOutlet weak var minimumThrottleField: UITextField!
-    @IBOutlet weak var midThrottleField: UITextField!
-    @IBOutlet weak var maximumThrottleFIeld: UITextField!
-    @IBOutlet weak var boardRollField: UITextField!
-    @IBOutlet weak var boardPitchField: UITextField!
-    @IBOutlet weak var boardYawField: UITextField!
+    @IBOutlet weak var minimumCommandField: ThrottleField!
+    @IBOutlet weak var minimumThrottleField: ThrottleField!
+    @IBOutlet weak var midThrottleField: ThrottleField!
+    @IBOutlet weak var maximumThrottleFIeld: ThrottleField!
+    @IBOutlet weak var boardRollField: NumberField!
+    @IBOutlet weak var boardPitchField: NumberField!
+    @IBOutlet weak var boardYawField: NumberField!
     @IBOutlet weak var gpsField: UILabel!
+    @IBOutlet weak var receiverTypeField: UILabel!
+    @IBOutlet weak var vbatField: UILabel!
+    @IBOutlet weak var failsafeField: UILabel!
+    @IBOutlet weak var rssiSwitch: UISwitch!
+    @IBOutlet weak var inFlightCalSwitch: UISwitch!
+    @IBOutlet weak var servoGimbalSwitch: UISwitch!
+    @IBOutlet weak var softSerialSwitch: UISwitch!
+    @IBOutlet weak var sonarSwitch: UISwitch!
+    @IBOutlet weak var telemetrySwitch: UISwitch!
+    @IBOutlet weak var threeDModeSwitch: UISwitch!
+    @IBOutlet weak var ledStripSwitch: UISwitch!
+    @IBOutlet weak var displaySwitch: UISwitch!
+    @IBOutlet weak var blackboxSwitch: UISwitch!
+    @IBOutlet weak var channelForwardingSwitch: UISwitch!
 
     var mixerTypePicker: DownPicker?
-    var waitIndicator: UIAlertView?
     
     var newSettings: Settings?
     var newMisc: Misc?
@@ -41,39 +55,59 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         mixerTypePicker = DownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
         
         msp.addDataListener(self)
-        
-        minimumCommandField.delegate = self
-        minimumThrottleField.delegate = self
-        midThrottleField.delegate = self
-        maximumThrottleFIeld.delegate = self
-        
-        boardRollField.delegate = self
-        boardPitchField.delegate = self
-        boardYawField.delegate = self
-        
+
         // FIXME When should we refresh?
-        waitIndicator = showWaitIndicator()
-        msp.sendMessage(.MSP_MISC, data: nil, retry: true)
-        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: true)
-        msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: true)
+        fetchInformation()
     }
     
-    func showWaitIndicator() -> UIAlertView {
-        let progressAlert = UIAlertView()
-        progressAlert.title = "Fetching Configuration"
-        progressAlert.message = "Please Wait...."
-//        progressAlert.addButtonWithTitle("Cancel")
-        progressAlert.show()
-        
-        let activityView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        activityView.center = CGPointMake(progressAlert.bounds.size.width / 2, progressAlert.bounds.size.height - 45)
-        progressAlert.addSubview(activityView)
-        activityView.hidesWhenStopped = true
-        activityView.startAnimating()
-        return progressAlert
+    func fetchInformation() {
+        tableView.userInteractionEnabled = false
+        if SVProgressHUD.isVisible() {
+            SVProgressHUD.setStatus("Fetching information")
+        }
+        msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: {success in
+            if success {
+                self.msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+                    if success {
+                        self.msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2, callback: { success in
+                            if success {
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    self.tableView.userInteractionEnabled = true
+                                    self.hideWaitIndicator()
+                                })
+                            } else {
+                                self.fetchInformationFailed()
+                            }
+                        })
+                    } else {
+                        self.fetchInformationFailed()
+                    }
+                })
+            } else {
+                self.fetchInformationFailed()
+            }
+        })
+    }
+    
+    func fetchInformationFailed() {
+        dispatch_async(dispatch_get_main_queue(), {
+            self.showError("Communication error")
+        })
+    }
+    
+    func showWaitIndicator(message: String) {
+        SVProgressHUD.showWithStatus(message)
+    }
+    
+    func hideWaitIndicator() {
+        SVProgressHUD.dismiss()
+    }
+    
+    func showError(message: String) {
+        SVProgressHUD.showErrorWithStatus(message)
     }
 
-    func refreshData() {
+    func refreshUI() {
         mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
         mixerTypeChanged(self)
         
@@ -81,42 +115,31 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         oneShotEscSwitch.on = newSettings!.features?.contains(BaseFlightFeature.OneShot125) ?? false
         disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
         
-        minimumCommandField.text = String(format: "%d", newMisc!.minCommand ?? 0)
-        minimumThrottleField.text = String(format: "%d", newMisc!.minThrottle ?? 0)
-        midThrottleField.text = String(format: "%d", newMisc!.midRC ?? 0)
-        maximumThrottleFIeld.text = String(format: "%d", newMisc!.maxThrottle ?? 0)
+        minimumCommandField.value = Double(newMisc!.minCommand ?? 0)
+        minimumThrottleField.value = Double(newMisc!.minThrottle ?? 0)
+        midThrottleField.value = Double(newMisc!.midRC ?? 0)
+        maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
         
-        boardPitchField.text = String(format: "%d", newSettings!.boardAlignPitch ?? 0)
-        boardRollField.text = String(format: "%d", newSettings!.boardAlignRoll ?? 0)
-        boardYawField.text = String(format: "%d", newSettings!.boardAlignYaw ?? 0)
+        boardPitchField.value = Double(newSettings!.boardAlignPitch ?? 0)
+        boardRollField.value = Double(newSettings!.boardAlignRoll ?? 0)
+        boardYawField.value = Double(newSettings!.boardAlignYaw ?? 0)
         
         gpsField.text = (newSettings!.features?.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
-    }
-    
-    func validateThrottleField(field: UITextField, label: String) -> Bool {
-        if (field.text == nil) {
-            UIAlertView(title: label, message: "Value missing", delegate: nil, cancelButtonTitle: "OK").show()
-            return false
-        }
-        let value = Int(field.text!)
-        if (value < 0 || value > 2500) {
-            UIAlertView(title: label, message: "Invalid value", delegate: nil, cancelButtonTitle: "OK").show()
-            return false
-        }
-        return true
-    }
-    
-    func validateAngleField(field: UITextField, label: String) -> Bool {
-        if (field.text == nil) {
-            UIAlertView(title: label, message: "Value missing", delegate: nil, cancelButtonTitle: "OK").show()
-            return false
-        }
-        let value = Int(field.text!)
-        if (value < -360 || value > 360) {
-            UIAlertView(title: label, message: "Invalid value", delegate: nil, cancelButtonTitle: "OK").show()
-            return false
-        }
-        return true
+        vbatField.text = (newSettings!.features?.contains(BaseFlightFeature.VBat) ?? false) ? "On" : "Off"
+        failsafeField.text = (newSettings!.features?.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
+        receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
+        
+        rssiSwitch.on = newSettings!.features!.contains(BaseFlightFeature.RssiAdc)
+        inFlightCalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.InflightCal)
+        servoGimbalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ServoTilt)
+        softSerialSwitch.on = newSettings!.features!.contains(BaseFlightFeature.SoftSerial)
+        sonarSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Sonar)
+        telemetrySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Telemetry)
+        threeDModeSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ThreeD)
+        ledStripSwitch.on = newSettings!.features!.contains(BaseFlightFeature.LedStrip)
+        displaySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Display)
+        blackboxSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Blackbox)
+        channelForwardingSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ChannelForwarding)
     }
     
     @IBAction func saveAction(sender: AnyObject) {
@@ -128,45 +151,92 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         }
         newSettings!.disarmKillSwitch = disarmMotorsSwitch.on
         
-        if !validateThrottleField(minimumCommandField, label: "Minimum Command") {
-            return
-        }
-        newMisc!.minCommand = Int(minimumCommandField.text!)!
-        if !validateThrottleField(minimumThrottleField, label: "Minimum Throttle") {
-            return
-        }
-        newMisc!.minThrottle = Int(minimumThrottleField.text!)!
-        if !validateThrottleField(midThrottleField, label: "Middle Throttle") {
-            return
-        }
-        newMisc!.midRC = Int(midThrottleField.text!)!
-        if !validateThrottleField(maximumThrottleFIeld, label: "Maximum Throttle") {
-            return
-        }
-        newMisc!.maxThrottle = Int(maximumThrottleFIeld.text!)!
+        newMisc!.minCommand = Int(minimumCommandField.value)
+        newMisc!.minThrottle = Int(minimumThrottleField.value)
+        newMisc!.midRC = Int(midThrottleField.value)
+        newMisc!.maxThrottle = Int(maximumThrottleFIeld.value)
 
-        if !validateAngleField(boardPitchField, label: "Board Pitch Alignment") {
-            return
-        }
-        newSettings!.boardAlignPitch = Int(boardPitchField.text!)!
-        if !validateAngleField(boardRollField, label: "Board Roll Alignment") {
-            return
-        }
-        newSettings!.boardAlignRoll = Int(boardRollField.text!)!
-        if !validateAngleField(boardYawField, label: "Board Yaw Alignment") {
-            return
-        }
-        newSettings!.boardAlignYaw = Int(boardYawField.text!)!
+        newSettings!.boardAlignPitch = Int(boardPitchField.value)
+        newSettings!.boardAlignRoll = Int(boardRollField.value)
+        newSettings!.boardAlignYaw = Int(boardYawField.value)
         
-        msp.sendSetMisc(newMisc!)
-        msp.sendSetBfConfig(newSettings!)
+        saveButton.enabled = false
+        saveButton.setTitle("Saving...", forState: .Disabled)
+        
+        saveFeatureSwitchValue(rssiSwitch, feature: .RssiAdc)
+        saveFeatureSwitchValue(inFlightCalSwitch, feature: .InflightCal)
+        saveFeatureSwitchValue(servoGimbalSwitch, feature: .ServoTilt)
+        saveFeatureSwitchValue(softSerialSwitch, feature: .SoftSerial)
+        saveFeatureSwitchValue(sonarSwitch, feature: .Sonar)
+        saveFeatureSwitchValue(telemetrySwitch, feature: .Telemetry)
+        saveFeatureSwitchValue(threeDModeSwitch, feature: .ThreeD)
+        saveFeatureSwitchValue(ledStripSwitch, feature: .LedStrip)
+        saveFeatureSwitchValue(displaySwitch, feature: .Display)
+        saveFeatureSwitchValue(blackboxSwitch, feature: .Blackbox)
+        saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
+        
+        showWaitIndicator("Saving settings")
+        msp.sendSetMisc(newMisc!, callback: { success in
+            if success {
+                self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
+                    if success {
+                        self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
+                            if success {
+                                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                    if success {
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            SVProgressHUD.setStatus("Rebooting")
+                                        })
+                                        self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
+                                            if success {
+                                                // Wait 1500 ms
+                                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1500 * Double(NSEC_PER_MSEC))), dispatch_get_main_queue(), {
+                                                    self.saveButton.enabled = true
+                                                    // Refetch information from FC
+                                                    self.fetchInformation()
+                                                })
+                                            } else {
+                                                self.saveConfigFailed()
+                                            }
+                                        })
+                                    } else {
+                                        self.saveConfigFailed()
+                                    }
+                                })
+                            } else {
+                                self.saveConfigFailed()
+                            }
+                        })
+                    } else {
+                        self.saveConfigFailed()
+                    }
+                })
+            } else {
+                self.saveConfigFailed()
+            }
+        })
+    }
+    
+    func saveConfigFailed() {
+        dispatch_async(dispatch_get_main_queue(), {
+            self.showError("Save failed")
+            self.saveButton.enabled = true
+        })
+    }
+    
+    func saveFeatureSwitchValue(uiSwitch: UISwitch, feature: BaseFlightFeature) {
+        if uiSwitch.on {
+            newSettings!.features!.insert(feature)
+        } else {
+            newSettings!.features!.remove(feature)
+        }
     }
     
     @IBAction func cancelAction(sender: AnyObject) {
         newSettings = Settings(copyOf: Settings.theSettings)
         newMisc = Misc(copyOf: Misc.theMisc)
         
-        refreshData()
+        fetchInformation()
     }
     
     @IBAction func mixerTypeChanged(sender: AnyObject) {
@@ -181,31 +251,10 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     func receivedSettingsData() {
         newSettings = Settings(copyOf: Settings.theSettings)
         newMisc = Misc(copyOf: Misc.theMisc)
-        refreshData()
-        if (waitIndicator != nil && newSettings!.features != nil && newSettings!.autoDisarmDelay != nil) {
-            waitIndicator!.dismissWithClickedButtonIndex(0, animated: true)
-            waitIndicator = nil;
-        }
+        refreshUI()
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         (segue.destinationViewController as! ConfigChildViewController).setReference(self, newSettings: newSettings!, newMisc: newMisc!)
-    }
-    
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool { // return NO to not change text
-        let number: [Character] = [ "0", "1", "2", "3" ,"4", "5", "6", "7", "8", "9" ]
-        let negativeNumber: [Character] = [ "0", "1", "2", "3" ,"4", "5", "6", "7", "8", "9", "-" ]
-        var allowed: [Character]?
-        if textField === boardRollField || textField === boardPitchField || textField == boardYawField {
-            allowed = negativeNumber
-        } else {
-            allowed = number
-        }
-        for c in string.characters {
-            if !allowed!.contains(c) {
-                return false
-            }
-        }
-        return true
     }
 }

@@ -7,14 +7,14 @@
 //
 
 import UIKit
+import SVProgressHUD
 
-class BluetoothComm : NSObject, CommChannel, BluetoothDelegate, UIAlertViewDelegate {
+class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     let btManager : BluetoothManager
     var peripheral: BluetoothPeripheral
     let msp: MSPParser
     let btQueue: dispatch_queue_t
     
-    var alert: UIAlertView?
     private var _closed = false
     
     init(withBluetoothManager btManager: BluetoothManager, andPeripheral peripheral: BluetoothPeripheral, andMSP msp: MSPParser) {
@@ -54,39 +54,37 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate, UIAlertViewDeleg
     func connectedPeripheral(peripheral: BluetoothPeripheral) {
         self.peripheral = peripheral
         dispatch_async(dispatch_get_main_queue(), {
-            self.alert?.dismissWithClickedButtonIndex(1, animated: true)
-            self.alert = nil
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+            SVProgressHUD.dismiss()
         })
     }
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
+        // Same process
+        disconnectedPeripheral(peripheral)
     }
     
     func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
         if !_closed {
             dispatch_async(dispatch_get_main_queue(), {
-                self.alert = UIAlertView(title: "Connection lost", message: "Attempting to reconnect...", delegate: self, cancelButtonTitle: "Cancel")
-                self.alert!.show()
+                if !SVProgressHUD.isVisible() {
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                    SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
+                }
             })
             btManager.connect(peripheral)
         }
+    }
+    
+    func userCancelledReconnection() {
+        close()
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+        SVProgressHUD.dismiss()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
         msp.read(data)
     }
     
-    // MARK: UIAlertViewDelegate
-    
-    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        alert = nil
-        if buttonIndex == 0 {
-            dispatch_async(btQueue, {
-                self.btManager.disconnect(self.peripheral)
-            })
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-
-
 }
