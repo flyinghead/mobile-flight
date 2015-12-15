@@ -16,22 +16,36 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
             updateFieldText()
         }
     }
-    @IBInspectable var value: Double = 0.0 {
-        didSet {
+    
+    var _value = 0.0
+    @IBInspectable var value: Double {
+        get {
+            return _value
+        }
+        set(value) {
             stepper.value = value
+            _value = stepper.value
             updateFieldText()
         }
     }
     @IBInspectable var minimumValue: Double = 0.0 {
         didSet {
             stepper.minimumValue = minimumValue
-            enforceMinMax()
+            let prevValue = _value
+            _value = stepper.value
+            if prevValue != _value {
+                updateFieldText()
+            }
         }
     }
     @IBInspectable var maximumValue: Double = 100.0 {
         didSet {
             stepper.maximumValue = maximumValue
-            enforceMinMax()
+            let prevValue = _value
+            _value = stepper.value
+            if prevValue != _value {
+                updateFieldText()
+            }
         }
     }
     @IBInspectable var increment: Double = 1.0 {
@@ -77,18 +91,7 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
         let stringFormat = String(format: "%%.%df", decimalDigits)
         self.text = String(format: stringFormat, locale: NSLocale.currentLocale(), value)
     }
-    
-    private func enforceMinMax() {
-        if minimumValue > maximumValue {
-            // Bad configuration, nothing to enforce
-            return
-        }
-        let newValue = min(maximumValue, max(minimumValue, stepper.value))
-        if newValue != stepper.value {
-            updateFieldText()
-        }
-    }
-    
+
     func doneWithNumberPad() {
         endEditing(true)
     }
@@ -97,21 +100,24 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
         // Stepper value has been updated by previous editing events. It's now time to 
         // display the current correct value in the text field.
         value = stepper.value
-        updateFieldText()
     }
     
     func fieldChanged() {
         if text != nil {
-            let value = Double(text!)
+            let nf = NSNumberFormatter()
+            nf.locale = NSLocale.currentLocale()
+            nf.maximumSignificantDigits = decimalDigits
+            nf.minimumSignificantDigits = 0
+            let value = nf.numberFromString(text!)
             if value != nil {
-                self.value = value!
-                stepper.value = value!
+                stepper.value = value!.doubleValue
+                self._value = stepper.value
             }
         }
     }
     
     func stepperChanged() {
-//        UIDevice.currentDevice().playInputClick()     // Doesn't work?
+        UIDevice.currentDevice().playInputClick()     // Doesn't work?
         value = stepper.value
         updateFieldText()
     }
