@@ -71,6 +71,19 @@ struct ModeRange {
     var end = 0
 }
 
+enum PIDName : String {
+    case Roll = "ROLL"
+    case Pitch = "PITCH"
+    case Yaw = "YAW"
+    case Alt = "ALT"
+    case Pos = "Pos"
+    case PosR = "PosR"
+    case NavR = "NavR"
+    case Level = "LEVEL"
+    case Mag = "MAG"
+    case Vel = "VEL"
+}
+
 class Settings {
     static let theSettings = Settings()
     
@@ -98,16 +111,25 @@ class Settings {
     var modeRangeSlots = 0
     
     // MSP_RC_TUNING / MSP_SET_RC_TUNING
-    var rcExpo = 0.0
-    var yawExpo = 0.0
-    var rcRate = 0.0
+    var rcExpo = 0.0        // pitch & roll expo curve
+    var yawExpo = 0.0       // yaw expo curve
+    var rcRate = 0.0        // pitch & roll expo curve
     var rollRate = 0.0
     var pitchRate = 0.0
     var yawRate = 0.0
-    var dynamicThrottlePid = 0.0
     var throttleMid = 0.0
     var throttleExpo = 0.0
-    var dynamicThrottleBreakpoint = 0
+    var tpaRate = 0.0
+    var tpaBreakpoint = 0
+    
+    // MSP_PIDNAMES
+    var pidNames: [String]?
+    
+    // MSP_PID
+    var pidValues: [[Double]]?
+    
+    // MSP_PID_CONTROLLER
+    var pidController = 0
     
     private init() {
         
@@ -136,10 +158,10 @@ class Settings {
         self.rollRate = copyOf.rollRate
         self.pitchRate = copyOf.pitchRate
         self.yawRate = copyOf.yawRate
-        self.dynamicThrottlePid = copyOf.dynamicThrottlePid
+        self.tpaRate = copyOf.tpaRate
         self.throttleMid = copyOf.throttleMid
         self.throttleExpo = copyOf.throttleExpo
-        self.dynamicThrottleBreakpoint = copyOf.dynamicThrottleBreakpoint
+        self.tpaBreakpoint = copyOf.tpaBreakpoint
     }
     
     func isModeOn(mode: Mode, forStatus status: UInt32) -> Bool {
@@ -154,16 +176,23 @@ class Settings {
         return false
     }
     
+    func getPID(name: PIDName) -> [Double]? {
+        if let index = pidNames?.indexOf(name.rawValue) {
+            return pidValues?[index]
+        } else {
+            return nil
+        }
+    }
 }
 
 class Misc {
     static let theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
-    var midRC = 1500
-    var minThrottle = 1100
-    var maxThrottle = 2000
-    var minCommand = 1000
+    var midRC = 1500            // rxConfig.midrc [1401 - 1599], also set by RX_CONFIG (but then no range is enforced...)
+    var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed is !MOTOR_STOP
+    var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
+    var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
     var failsafeThrottle = 0
     var gpsType = 0
     var gpsBaudRate = 0

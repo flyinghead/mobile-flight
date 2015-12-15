@@ -103,15 +103,15 @@ class MSPParser {
         }
     }
     
-    private func getUInt16(array: [UInt8], index: Int) -> Int {
+    private func readUInt16(array: [UInt8], index: Int) -> Int {
         return Int(array[index]) + Int(array[index+1]) * 256;
     }
     
-    private func getInt16(array: [UInt8], index: Int) -> Int {
+    private func readInt16(array: [UInt8], index: Int) -> Int {
         return Int(array[index]) + Int(Int8(bitPattern: array[index+1])) * 256;
     }
     
-    private func getUInt32(array: [UInt8], index: Int) -> UInt32 {
+    private func readUInt32(array: [UInt8], index: Int) -> UInt32 {
         var res = UInt32(array[index+3])
         res = res * 256 + UInt32(array[index+2])
         res = res * 256 + UInt32(array[index+1])
@@ -119,7 +119,7 @@ class MSPParser {
         return res
     }
     
-    private func getInt32(array: [UInt8], index: Int) -> Int {
+    private func readInt32(array: [UInt8], index: Int) -> Int {
         var res = Int(Int8(bitPattern: array[index+3]))
         res = res * 256 + Int(array[index+2])
         res = res * 256 + Int(array[index+1])
@@ -146,17 +146,17 @@ class MSPParser {
             config.version = String(format:"%d.%02d", message[0] / 100, message[0] % 100)
             config.multiType = Int(message[1])
             config.mspVersion = Int(message[2])
-            config.capability = getUInt32(message, index: 3)
+            config.capability = readUInt32(message, index: 3)
             pingDataListeners()
             
         case .MSP_STATUS:
             if message.count < 11 {
                 return false
             }
-            config.cycleTime = getUInt16(message, index: 0)
-            config.i2cError = getUInt16(message, index: 2)
-            config.activeSensors = getUInt16(message, index: 4)
-            config.mode = getUInt32(message, index: 6)
+            config.cycleTime = readUInt16(message, index: 0)
+            config.i2cError = readUInt16(message, index: 2)
+            config.activeSensors = readUInt16(message, index: 4)
+            config.mode = readUInt32(message, index: 6)
             config.profile = Int(message[10])
             pingDataListeners()
             
@@ -166,17 +166,17 @@ class MSPParser {
             }
             // 512 for mpu6050, 256 for mma
             // currently we are unable to differentiate between the sensor types, so we are going with 512
-            sensorData.accelerometerX = Double(getInt16(message, index: 0)) / 512.0
-            sensorData.accelerometerY = Double(getInt16(message, index: 2)) / 512.0
-            sensorData.accelerometerZ = Double(getInt16(message, index: 4)) / 512.0
+            sensorData.accelerometerX = Double(readInt16(message, index: 0)) / 512.0
+            sensorData.accelerometerY = Double(readInt16(message, index: 2)) / 512.0
+            sensorData.accelerometerZ = Double(readInt16(message, index: 4)) / 512.0
             // properly scaled
-            sensorData.gyroscopeX = Double(getInt16(message, index: 6)) * (4 / 16.4)
-            sensorData.gyroscopeY = Double(getInt16(message, index: 8)) * (4 / 16.4)
-            sensorData.gyroscopeZ = Double(getInt16(message, index: 10)) * (4 / 16.4)
+            sensorData.gyroscopeX = Double(readInt16(message, index: 6)) * (4 / 16.4)
+            sensorData.gyroscopeY = Double(readInt16(message, index: 8)) * (4 / 16.4)
+            sensorData.gyroscopeZ = Double(readInt16(message, index: 10)) * (4 / 16.4)
             // no clue about scaling factor
-            sensorData.magnetometerX = Double(getInt16(message, index: 12)) / 1090
-            sensorData.magnetometerY = Double(getInt16(message, index: 14)) / 1090
-            sensorData.magnetometerZ = Double(getInt16(message, index: 16)) / 1090
+            sensorData.magnetometerX = Double(readInt16(message, index: 12)) / 1090
+            sensorData.magnetometerY = Double(readInt16(message, index: 14)) / 1090
+            sensorData.magnetometerZ = Double(readInt16(message, index: 16)) / 1090
             
             pingSensorListeners()
             
@@ -186,13 +186,28 @@ class MSPParser {
             }
             var nMotors = 0
             for (var i = 0; i < 8; i++) {
-                motorData.throttle[i] = getUInt16(message, index: i*2)
+                motorData.throttle[i] = readUInt16(message, index: i*2)
                 if (motorData.throttle[i] > 0) {
                     nMotors++
                 }
             }
             motorData.nMotors = nMotors
             pingMotorListeners()
+        
+        case .MSP_UID:
+            if message.count < 12 {
+                return false
+            }
+            config.uid = String(format: "%04x%04x%04x", readUInt32(message, index: 0), readUInt32(message, index: 4), readUInt32(message, index: 8))
+            pingDataListeners()
+            
+        case .MSP_ACC_TRIM:
+            if message.count < 4 {
+                return false
+            }
+            config.accelerometerTrimPitch = readInt16(message, index: 0)
+            config.accelerometerTrimRoll = readInt16(message, index: 2)
+            pingDataListeners()
             
         case .MSP_RC:
             var channelCount = message.count / 2
@@ -202,7 +217,7 @@ class MSPParser {
             }
             receiver.activeChannels = channelCount
             for (var i = 0; i < channelCount; i++) {
-                receiver.channels[i] = Int(getUInt16(message, index: (i * 2)));
+                receiver.channels[i] = Int(readUInt16(message, index: (i * 2)));
             }
             pingReceiverListeners()
             
@@ -212,19 +227,19 @@ class MSPParser {
             }
             gpsData.fix = message[0] != 0
             gpsData.numSat = Int(message[1])
-            gpsData.latitude = Double(getInt32(message, index: 2)) / 10000000
-            gpsData.longitude = Double(getInt32(message, index: 6)) / 10000000
-            gpsData.altitude = getUInt16(message, index: 10)
-            gpsData.speed = getUInt16(message, index: 12)
-            gpsData.headingOverGround = getUInt16(message, index: 14)
+            gpsData.latitude = Double(readInt32(message, index: 2)) / 10000000
+            gpsData.longitude = Double(readInt32(message, index: 6)) / 10000000
+            gpsData.altitude = readUInt16(message, index: 10)
+            gpsData.speed = readUInt16(message, index: 12)
+            gpsData.headingOverGround = readUInt16(message, index: 14)
             pingGpsListeners()
             
         case .MSP_COMP_GPS:
             if message.count < 5 {
                 return false
             }
-            gpsData.distanceToHome = getUInt16(message, index: 0)
-            gpsData.directionToHome = getUInt16(message, index: 2)
+            gpsData.distanceToHome = readUInt16(message, index: 0)
+            gpsData.directionToHome = readUInt16(message, index: 2)
             gpsData.update = Int(message[4])
             pingGpsListeners()
             
@@ -232,23 +247,23 @@ class MSPParser {
             if message.count < 6 {
                 return false
             }
-            sensorData.kinematicsX = Double(getInt16(message, index: 0)) / 10.0   // x
-            sensorData.kinematicsY = Double(getInt16(message, index: 2)) / 10.0   // y
-            sensorData.kinematicsZ = Double(getInt16(message, index: 4))          // z
+            sensorData.kinematicsX = Double(readInt16(message, index: 0)) / 10.0   // x
+            sensorData.kinematicsY = Double(readInt16(message, index: 2)) / 10.0   // y
+            sensorData.kinematicsZ = Double(readInt16(message, index: 4))          // z
             pingSensorListeners()
             
         case .MSP_ALTITUDE:
             if message.count < 2 {
                 return false
             }
-            sensorData.altitude = Double(getInt32(message, index: 0)) / 100.0 // correct scale factor
+            sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0 // correct scale factor
             pingSensorListeners()
             
         case .MSP_SONAR:
             if message.count < 2 {
                 return false
             }
-            sensorData.sonar = getInt32(message,  index: 0);
+            sensorData.sonar = readInt32(message,  index: 0);
             pingSensorListeners()
 
         case .MSP_ANALOG:
@@ -256,9 +271,9 @@ class MSPParser {
                 return false
             }
             config.voltage = Double(message[0]) / 10
-            config.mAhDrawn = getUInt16(message, index: 1)
-            config.rssi = getUInt16(message, index: 3)                      // 0-1023
-            config.amperage = Double(getInt16(message, index: 5)) / 100     // A
+            config.mAhDrawn = readUInt16(message, index: 1)
+            config.rssi = readUInt16(message, index: 3)                      // 0-1023
+            config.amperage = Double(readInt16(message, index: 5)) / 100     // A
             pingDataListeners()
             
         case .MSP_RC_TUNING:
@@ -270,12 +285,33 @@ class MSPParser {
             settings.rollRate = Double(message[2]) / 100
             settings.pitchRate = Double(message[3]) / 100
             settings.yawRate = Double(message[4]) / 100
-            settings.dynamicThrottlePid = Double(message[5]) / 100
+            settings.tpaRate = Double(message[5]) / 100
             settings.throttleMid = Double(message[6]) / 100
             settings.throttleExpo = Double(message[7]) / 100
-            settings.dynamicThrottleBreakpoint = getUInt16(message, index: 8)
+            settings.tpaBreakpoint = readUInt16(message, index: 8)
             if message.count >= 11 {
                 settings.yawExpo = Double(message[10]) / 100
+            }
+            pingSettingsListeners()
+            
+        case .MSP_PID:
+            settings.pidValues = [[Double]]()
+            for var i = 0; i < message.count / 3; i++ {
+                settings.pidValues!.append([Double]())
+                
+                if i <= 3 || i >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
+                    settings.pidValues![i].append(Double(message[i*3]) / 10)
+                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 1000)
+                    settings.pidValues![i].append(Double(message[i*3 + 2]))
+                } else if i == 4 {      // Pos
+                    settings.pidValues![i].append(Double(message[i*3]) / 100)
+                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 100)
+                    settings.pidValues![i].append(Double(message[i*3 + 2]) / 1000)
+                } else {                // PosR, NavR
+                    settings.pidValues![i].append(Double(message[i*3]) / 10)
+                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 100)
+                    settings.pidValues![i].append(Double(message[i*3 + 2]) / 1000)
+                }
             }
             pingSettingsListeners()
             
@@ -292,15 +328,15 @@ class MSPParser {
                 return false
             }
             var offset = 0
-            misc.midRC = getInt16(message, index: offset)
+            misc.midRC = readInt16(message, index: offset)
             offset += 2
-            misc.minThrottle = getInt16(message, index: offset) // 0-2000
+            misc.minThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.maxThrottle = getInt16(message, index: offset) // 0-2000
+            misc.maxThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.minCommand = getInt16(message, index: offset) // 0-2000
+            misc.minCommand = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.failsafeThrottle = getInt16(message, index: offset) // 0-2000
+            misc.failsafeThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
             misc.gpsType = Int(message[offset++])
             misc.gpsBaudRate = Int(message[offset++])
@@ -308,7 +344,7 @@ class MSPParser {
             misc.multiwiiCurrentOutput = Int(message[offset++])
             misc.rssiChannel = Int(message[offset++])
             misc.placeholder2 = Int(message[offset++])
-            misc.magDeclination = Double(getInt16(message, index: offset)) / 10 // -18000-18000
+            misc.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
             offset += 2;
             misc.vbatScale = Int(message[offset++]) // 10-200
             misc.vbatMinCellVoltage = Double(message[offset++]) / 10; // 10-50
@@ -322,6 +358,19 @@ class MSPParser {
             for (var i = 0; i < message.count; i++) {
                 if message[i] == 0x3B {     // ; (delimiter char)
                     settings.boxNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
+                    buf.removeAll()
+                } else {
+                    buf.append(message[i])
+                }
+            }
+            pingSettingsListeners()
+            
+        case .MSP_PIDNAMES:
+            settings.pidNames = [String]()
+            var buf = [UInt8]()
+            for (var i = 0; i < message.count; i++) {
+                if message[i] == 0x3B {     // ; (delimiter char)
+                    settings.pidNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()
                 } else {
                     buf.append(message[i])
@@ -367,13 +416,13 @@ class MSPParser {
                 return false
             }
             settings.mixerConfiguration = Int(message[0])
-            settings.features = BaseFlightFeature(rawValue: getUInt32(message, index: 1))
+            settings.features = BaseFlightFeature(rawValue: readUInt32(message, index: 1))
             settings.serialRxType = Int(message[5])
-            settings.boardAlignRoll = Int(getInt16(message, index: 6))
-            settings.boardAlignPitch = Int(getInt16(message, index: 8))
-            settings.boardAlignYaw = Int(getInt16(message, index: 10))
-            settings.currentScale = Int(getInt16(message, index: 12))
-            settings.currentOffset = Int(getInt16(message, index: 14))
+            settings.boardAlignRoll = Int(readInt16(message, index: 6))
+            settings.boardAlignPitch = Int(readInt16(message, index: 8))
+            settings.boardAlignYaw = Int(readInt16(message, index: 10))
+            settings.currentScale = Int(readInt16(message, index: 12))
+            settings.currentOffset = Int(readInt16(message, index: 14))
             pingSettingsListeners()
 
         // Cleanflight-specific
@@ -413,7 +462,7 @@ class MSPParser {
                 return false
             }
             config.boardInfo = String(format: "%c%c%c%c", message[0], message[1], message[2], message[3])
-            config.boardVersion = getUInt16(message, index: 4)
+            config.boardVersion = readUInt16(message, index: 4)
             pingDataListeners()
             
         case .MSP_MODE_RANGES:
@@ -435,21 +484,13 @@ class MSPParser {
             settings.modeRangeSlots = nRanges
             pingSettingsListeners()
             
-        case .MSP_UID:
-            if message.count < 12 {
+        case .MSP_PID_CONTROLLER:
+            if message.count < 1 {
                 return false
             }
-            config.uid = String(format: "%04x%04x%04x", getUInt32(message, index: 0), getUInt32(message, index: 4), getUInt32(message, index: 8))
-            pingDataListeners()
-            
-        case .MSP_ACC_TRIM:
-            if message.count < 4 {
-                return false
-            }
-            config.accelerometerTrimPitch = getInt16(message, index: 0)
-            config.accelerometerTrimRoll = getInt16(message, index: 2)
-            pingDataListeners()
-            
+            settings.pidController = Int(message[0])
+            pingSettingsListeners()
+
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -461,7 +502,11 @@ class MSPParser {
             .MSP_SET_MODE_RANGE,
             .MSP_SET_ARMING_CONFIG,
             .MSP_SET_RC_TUNING,
-            .MSP_SET_RX_MAP:
+            .MSP_SET_RX_MAP,
+            .MSP_SET_PID_CONTROLLER,
+            .MSP_SET_PID,
+            .MSP_SELECT_SETTING,
+            .MSP_SET_MOTOR:
             break
             
         default:
@@ -622,11 +667,11 @@ class MSPParser {
         data.append(UInt8(misc.multiwiiCurrentOutput))
         data.append(UInt8(misc.rssiChannel))
         data.append(UInt8(misc.placeholder2))
-        data.appendContentsOf(writeInt16(Int(misc.magDeclination * 10)))
+        data.appendContentsOf(writeInt16(Int(round(misc.magDeclination * 10))))
         data.append(UInt8(misc.vbatScale))
-        data.append(UInt8(misc.vbatMinCellVoltage * 10))
-        data.append(UInt8(misc.vbatMaxCellVoltage * 10))
-        data.append(UInt8(misc.vbatWarningCellVoltage * 10))
+        data.append(UInt8(round(misc.vbatMinCellVoltage * 10)))
+        data.append(UInt8(round(misc.vbatMaxCellVoltage * 10)))
+        data.append(UInt8(round(misc.vbatWarningCellVoltage * 10)))
         
         sendMessage(.MSP_SET_MISC, data: data, retry: 2, callback: callback)
     }
@@ -674,17 +719,17 @@ class MSPParser {
     
     func sendSetRcTuning(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.append(UInt8(settings.rcRate * 100))
-        data.append(UInt8(settings.rcExpo * 100))
-        data.append(UInt8(settings.rollRate * 100))
-        data.append(UInt8(settings.pitchRate * 100))
-        data.append(UInt8(settings.yawRate * 100))
-        data.append(UInt8(settings.dynamicThrottlePid * 100))
-        data.append(UInt8(settings.throttleMid * 100))
-        data.append(UInt8(settings.throttleExpo * 100))
-        data.appendContentsOf(writeInt16(settings.dynamicThrottleBreakpoint))
+        data.append(UInt8(round(settings.rcRate * 100)))
+        data.append(UInt8(round(settings.rcExpo * 100)))
+        data.append(UInt8(round(settings.rollRate * 100)))
+        data.append(UInt8(round(settings.pitchRate * 100)))
+        data.append(UInt8(round(settings.yawRate * 100)))
+        data.append(UInt8(round(settings.tpaRate * 100)))
+        data.append(UInt8(round(settings.throttleMid * 100)))
+        data.append(UInt8(round(settings.throttleExpo * 100)))
+        data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
         if Configuration.theConfig.isApiVersionAtLeast("1.10") {
-            data.append(UInt8(settings.yawExpo * 100))
+            data.append(UInt8(round(settings.yawExpo * 100)))
         }
         
         sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
@@ -692,6 +737,39 @@ class MSPParser {
     
     func sendSetRxMap(map: [UInt8], callback:((success:Bool) -> Void)?) {
         sendMessage(.MSP_SET_RX_MAP, data: map, retry: 2, callback: callback)
+    }
+    
+    func sendPidController(pidController: Int,callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SET_PID_CONTROLLER, data: [ UInt8(pidController) ], retry: 2, callback: callback)
+    }
+    
+    func sendPid(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        for (idx,pid) in settings.pidValues!.enumerate() {
+            let p = pid[0]
+            let i = pid[1]
+            let d = pid[2]
+            if idx <= 3 || idx >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
+                data.append(UInt8(round(p * 10)))
+                data.append(UInt8(round(i * 1000)))
+                data.append(UInt8(round(d)))
+            } else if idx == 4 {        // Pos
+                data.append(UInt8(round(p * 100)))
+                data.append(UInt8(round(i * 100)))
+                data.append(UInt8(round(d * 1000)))
+            } else {                    // PosR, NavR
+                data.append(UInt8(round(p * 10)))
+                data.append(UInt8(round(i * 100)))
+                data.append(UInt8(round(d * 1000)))
+            }
+
+        }
+        sendMessage(.MSP_SET_PID, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSelectProfile(profile: Int,callback:((success:Bool) -> Void)?) {
+        // Note: this call includes a write eeprom
+        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
     }
     
     func writeUInt32(i: UInt32) -> [UInt8] {

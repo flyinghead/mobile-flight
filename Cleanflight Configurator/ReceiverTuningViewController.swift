@@ -115,52 +115,89 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     
     func backButtonTapped() {
         // Save settings
+        var somethingChanged = false
+        
         let misc = Misc.theMisc
+
+        let previousRssi = misc.rssiChannel
         misc.rssiChannel = self.rssiChannelPicker!.selectedIndex
         if misc.rssiChannel > 0 {
             misc.rssiChannel += 4
         }
+        somethingChanged = somethingChanged || previousRssi != misc.rssiChannel
+        
         let receiver = Receiver.theReceiver
+        var newMap: [Int]?
         if channelMapPicker?.selectedIndex == 0 {
             // Default
-            receiver.map = [ 0, 1, 3, 2, 4, 5, 6, 7 ]
+            newMap = [ 0, 1, 3, 2, 4, 5, 6, 7 ]
         } else if channelMapPicker!.selectedIndex == 1 {
             // Spektrum
-            receiver.map = [ 1, 2, 3, 0, 4, 5, 6, 7 ]
+            newMap = [ 1, 2, 3, 0, 4, 5, 6, 7 ]
         }
-        self.settings!.throttleMid = self.throttleMid.value
-        self.settings!.throttleExpo = self.throttleExpo.value
+        if newMap != nil {
+            somethingChanged = somethingChanged || newMap! != receiver.map
+            receiver.map = newMap!
+        }
         
-        self.settings!.rcRate = self.rcRate.value
-        self.settings!.rcExpo = self.rcExpo.value
-        self.settings!.yawExpo = self.yawExpo.value
+        // FIXME Due to rounding, these values sometimes change although the resulting saved setting is the same
+        somethingChanged = somethingChanged || settings!.throttleMid != throttleMid.value
+        settings!.throttleMid = throttleMid.value
+        somethingChanged = somethingChanged || settings!.throttleExpo != throttleExpo.value
+        settings!.throttleExpo = throttleExpo.value
         
-        msp.sendSetMisc(misc, callback: { success in
-            if !success {
-                SVProgressHUD.showErrorWithStatus("Save failed")
-            } else {
-                var data = [UInt8]()
-                for b in receiver.map {
-                    data.append(UInt8(b))
-                }
-                self.msp.sendSetRxMap(data, callback: { success in
-                    if !success {
-                        SVProgressHUD.showErrorWithStatus("Save failed")
-                    } else {
-                        self.msp.sendSetRcTuning(self.settings!, callback: { success in
-                            if !success {
-                                SVProgressHUD.showErrorWithStatus("Save failed")
-                            } else {
-                                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-                                    if !success {
-                                        SVProgressHUD.showErrorWithStatus("Save failed")
-                                    }
-                                })
-                            }
-                        })
+        somethingChanged = somethingChanged || settings!.rcRate != rcRate.value
+        settings!.rcRate = rcRate.value
+        somethingChanged = somethingChanged || settings!.rcExpo != rcExpo.value
+        settings!.rcExpo = rcExpo.value
+        somethingChanged = somethingChanged || settings!.yawExpo != yawExpo.value
+        settings!.yawExpo = yawExpo.value
+        
+        if somethingChanged {
+            msp.sendSetMisc(misc, callback: { success in
+                if !success {
+                    self.showSaveFailedError()
+                } else {
+                    var data = [UInt8]()
+                    for b in receiver.map {
+                        data.append(UInt8(b))
                     }
-                })
-            }
+                    self.msp.sendSetRxMap(data, callback: { success in
+                        if !success {
+                            self.showSaveFailedError()
+                        } else {
+                            self.msp.sendSetRcTuning(self.settings!, callback: { success in
+                                if !success {
+                                    self.showSaveFailedError()
+                                } else {
+                                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                        if !success {
+                                            self.showSaveFailedError()
+                                        } else {
+                                            self.showSuccess("Settings saved")
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
+    
+    func showSaveFailedError() {
+        showSuccess("Save failed")
+    }
+    
+    func showError(msg: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus(msg)
+        })
+    }
+    func showSuccess(msg: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus(msg)
         })
     }
 }

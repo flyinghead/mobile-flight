@@ -258,11 +258,13 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             if success {
                 if index >= self.modeRangeSlots - 1 {
                     self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-                        if !success {
-                            dispatch_async(dispatch_get_main_queue(), {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            if success {
+                                SVProgressHUD.showSuccessWithStatus("Settings saved")
+                            } else {
                                 SVProgressHUD.showErrorWithStatus("Save failed")
-                            })
-                        }
+                            }
+                        })
                     })
                 } else {
                     self.sendModeRange(index+1)
