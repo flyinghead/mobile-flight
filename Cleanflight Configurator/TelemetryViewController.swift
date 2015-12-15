@@ -42,6 +42,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
     @IBOutlet weak var modeBeeperLabel: UILabel!
     
     @IBOutlet weak var altitudeLabel: UILabel!
+    @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var distanceToHomeLabel: UILabel!
     @IBOutlet weak var gyroSensor: UIImageView!
     @IBOutlet weak var accSensor: UIImageView!
@@ -160,9 +161,11 @@ class TelemetryViewController: UIViewController, FlightDataListener {
         if gpsData.fix {
             gpsFixImage.image = greenled
             distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+            speedLabel.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
         } else {
             gpsFixImage.image = redled
             distanceToHomeLabel.text = ""
+            speedLabel.text = ""
         }
     }
     @IBAction func disconnectAction(sender: AnyObject) {
