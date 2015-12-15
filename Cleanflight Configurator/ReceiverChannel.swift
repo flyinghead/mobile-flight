@@ -19,9 +19,14 @@ class ReceiverChannel: UIView {
             }
         }
     }
+    @IBInspectable var fontSize: CGFloat = UIFont.systemFontSize() {
+        didSet {
+            labelControl?.font = UIFont.systemFontOfSize(fontSize)
+            valueLabel?.font = UIFont.systemFontOfSize(fontSize)
+        }
+    }
     
     var labelControl: UILabel?
-    //var slider: CustomSlider?
     var slider: LinearGauge?
     var valueLabel: UILabel?
 
@@ -32,6 +37,7 @@ class ReceiverChannel: UIView {
         if (labelControl == nil) {
             labelControl = UILabel()
             labelControl!.text = label
+            labelControl?.font = UIFont.systemFontOfSize(fontSize)
             labelControl?.translatesAutoresizingMaskIntoConstraints = false
             addSubview(labelControl!)
         }
@@ -46,13 +52,13 @@ class ReceiverChannel: UIView {
                 slider?.color = color!
             }
             slider?.backgroundColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1)
-            //slider?.printValue = true
             addSubview(slider!)
         }
         if (valueLabel == nil) {
             valueLabel = UILabel()
             valueLabel?.text = "1500"
             valueLabel?.textAlignment = .Right
+            valueLabel?.font = UIFont.systemFontOfSize(fontSize)
             valueLabel?.translatesAutoresizingMaskIntoConstraints = false
             addSubview(valueLabel!)
 
@@ -86,19 +92,4 @@ class ReceiverChannel: UIView {
         valueLabel?.text = String(format: "%d", value)
         slider?.setNeedsDisplay()
     }
-}
-
-class CustomSlider : UISlider {
-    var color: UIColor?
-    
-    override func drawRect(rect: CGRect) {
-        if (color != nil) {
-            color?.set()
-        }
-        var fillingRect = rect
-        fillingRect.size.width = CGFloat((max(min(value,maximumValue),minimumValue) - minimumValue) / (maximumValue - minimumValue)) * fillingRect.size.width
-        UIRectFill(fillingRect)
-    }
-    
-    override var currentThumbImage: UIImage? { get { return nil } }
 }

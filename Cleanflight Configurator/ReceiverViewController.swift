@@ -60,6 +60,16 @@ class ReceiverViewController: UIViewController, FlightDataListener {
         timer = nil
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setToolbarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setToolbarHidden(false, animated: animated)
+    }
+    
     func timerDidFire(sender: AnyObject) {
 //        msp.sendMessage(.MSP_MISC, data: nil)
         msp.sendMessage(.MSP_RC, data: nil)
