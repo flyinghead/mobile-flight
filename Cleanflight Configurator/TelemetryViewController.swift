@@ -116,7 +116,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
         headingIndicator.setNeedsDisplay()
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
-        altitudeLabel.text = String(format: "%.1lf m", Configuration.theConfig.isBarometerActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
+        altitudeLabel.text = String(format: "%.1f m", locale: NSLocale.currentLocale(), Configuration.theConfig.isBarometerActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
     }
     
     private func setModeLabel(label: UILabel, on: Bool) {
@@ -144,8 +144,8 @@ class TelemetryViewController: UIViewController, FlightDataListener {
             setModeLabel(modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode!))
             setModeLabel(modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
         }
-        voltLabel.text = String(format: "%.1lf V", config.voltage)
-        rssiLabel.text = String(format: "%d %%", config.rssi * 100 / 1023)
+        voltLabel.text = String(format: "%.1f V", locale: NSLocale.currentLocale(), config.voltage)
+        rssiLabel.text = String(format: "%d %%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
         
         accSensor.image = config.isGyroAndAccActive() ? accSensorOn : accSensorOff
         gyroSensor.image = config.isGyroAndAccActive() ? gyroSensorOn : gyroSensorOff
@@ -159,7 +159,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
         let gpsData = GPSData.theGPSData
         if gpsData.fix {
             gpsFixImage.image = greenled
-            distanceToHomeLabel.text = String(format: "%d m", gpsData.distanceToHome)
+            distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
         } else {
             gpsFixImage.image = redled
             distanceToHomeLabel.text = ""

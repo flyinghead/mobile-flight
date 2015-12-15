@@ -74,8 +74,8 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
     }
     
     private func updateFieldText() {
-        let stringFormat = String(format: "%%.%dlf", decimalDigits)
-        self.text = String(format: stringFormat, value)
+        let stringFormat = String(format: "%%.%df", decimalDigits)
+        self.text = String(format: stringFormat, locale: NSLocale.currentLocale(), value)
     }
     
     private func enforceMinMax() {

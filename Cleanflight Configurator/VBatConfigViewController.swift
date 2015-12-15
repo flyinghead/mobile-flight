@@ -10,10 +10,11 @@ import UIKit
 
 class VBatConfigViewController: ConfigChildViewController {
     @IBOutlet weak var vbatSwitch: UISwitch!
-    @IBOutlet weak var minVoltage: UITextField!
-    @IBOutlet weak var warningVoltage: UITextField!
-    @IBOutlet weak var maxVoltage: UITextField!
-    @IBOutlet weak var voltageScale: UITextField!
+    @IBOutlet weak var minVoltage: NumberField!
+    @IBOutlet weak var warningVoltage: NumberField!
+    @IBOutlet weak var maxVoltage: NumberField!
+    @IBOutlet weak var voltageScale: NumberField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,18 +43,19 @@ class VBatConfigViewController: ConfigChildViewController {
         super.viewWillAppear(animated)
         
         vbatSwitch.on = settings!.features!.contains(.VBat)
-        minVoltage.text = String(format: "%.1lf", misc!.vbatMinCellVoltage)
-        warningVoltage.text = String(format: "%.1lf", misc!.vbatWarningCellVoltage)
-        maxVoltage.text = String(format: "%.1lf", misc!.vbatMaxCellVoltage)
-        voltageScale.text = String(format: "%d", misc!.vbatScale)
+        minVoltage.value = misc!.vbatMinCellVoltage
+        warningVoltage.value = misc!.vbatWarningCellVoltage
+        maxVoltage.value = misc!.vbatMaxCellVoltage
+        voltageScale.value = Double(misc!.vbatScale)
     }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
 
-        misc?.vbatMinCellVoltage = Double(minVoltage.text!) ?? 3.3
-        misc?.vbatWarningCellVoltage = Double(warningVoltage.text!) ?? 3.4
-        misc?.vbatMaxCellVoltage = Double(maxVoltage.text!) ?? 4.3
-        misc?.vbatScale = Int(voltageScale.text!) ?? 110
+        misc?.vbatMinCellVoltage = minVoltage.value
+        misc?.vbatWarningCellVoltage = warningVoltage.value
+        misc?.vbatMaxCellVoltage = maxVoltage.value
+        misc?.vbatScale = Int(voltageScale.value)
         configViewController?.refreshUI()
     }
     

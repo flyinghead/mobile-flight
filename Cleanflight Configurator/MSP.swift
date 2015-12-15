@@ -33,7 +33,7 @@ class MSPParser {
     var expectedMsgLength: Int = 0
     var checksum: UInt8 = 0
     var messageBuffer: [UInt8]?
-    var code: MSP_code?
+    var code: UInt8 = 0
     var errors: Int = 0
     var outputQueue = [UInt8]()
     
@@ -69,7 +69,7 @@ class MSPParser {
                 messageBuffer = [UInt8]()
                 state = .Code
             case .Code:
-                code = MSP_code(rawValue: Int(b))
+                code = b
                 checksum ^= b
                 if (expectedMsgLength > 0) {
                     state = .Payload
@@ -83,17 +83,18 @@ class MSPParser {
                     state = .Checksum
                 }
             case .Checksum:
-                if (checksum == b) {
-                    //NSLog("Received MSP %d", code!.rawValue)
-                    if processMessage(code!, message: messageBuffer!) {
-                        removeSendMessageTimer(code!)
+                let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
+                if (checksum == b && mspCode != .MSP_UNKNOWN) {
+                    //NSLog("Received MSP %d", code.rawValue)
+                    if processMessage(mspCode, message: messageBuffer!) {
+                        removeSendMessageTimer(mspCode)
                     }
                 } else {
                     let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
-                    if code != nil {
-                        NSLog("code %d - checksum failed: %@", code!.rawValue, datalog)
+                    if checksum != b {
+                        NSLog("MSP code %d - checksum failed: %@", code, datalog)
                     } else {
-                        NSLog("Unparseable data: %@", datalog)
+                        NSLog("Unknown MSP code %d: %@", code, datalog)
                     }
                     errors++
                 }
@@ -458,7 +459,9 @@ class MSPParser {
             .MSP_MAG_CALIBRATION,
             .MSP_SET_ACC_TRIM,
             .MSP_SET_MODE_RANGE,
-            .MSP_SET_ARMING_CONFIG:
+            .MSP_SET_ARMING_CONFIG,
+            .MSP_SET_RC_TUNING,
+            .MSP_SET_RX_MAP:
             break
             
         default:

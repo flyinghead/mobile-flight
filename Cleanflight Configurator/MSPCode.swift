@@ -9,6 +9,8 @@
 import Foundation
 
 enum MSP_code : Int {
+    case MSP_UNKNOWN =               -1     // Used internally for unknown/unsupported messages
+    
     case MSP_API_VERSION =            1
     case MSP_FC_VARIANT =             2
     case MSP_FC_VERSION =             3

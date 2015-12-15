@@ -18,7 +18,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     var modeRanges: [ModeRange]?
     var modeRangeSlots = 0
     
-    var channelLabels = ["(Delete)"]
+    var channelLabels = ["Delete Range"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -301,8 +301,8 @@ class ModeRangeCell : UITableViewCell {
     private var _channelPicker: MyDownPicker?
     
     @IBAction func rangeChanged(sender: AnyObject) {
-        lowerLabel.text = String(format: "%.0lf", rangeSlider.lowerValue)
-        upperLabel.text = String(format: "%.0lf", rangeSlider.upperValue)
+        lowerLabel.text = String(format: "%.0f", locale: NSLocale.currentLocale(), rangeSlider.lowerValue)
+        upperLabel.text = String(format: "%.0f", locale: NSLocale.currentLocale(), rangeSlider.upperValue)
         
         viewController!.modeRanges![modeRangeIdx].start = Int(rangeSlider.lowerValue)
         viewController!.modeRanges![modeRangeIdx].end = Int(rangeSlider.upperValue)

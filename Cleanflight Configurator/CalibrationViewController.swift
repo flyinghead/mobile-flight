@@ -115,11 +115,13 @@ class CalibrationViewController: UIViewController {
         }
     }
     @IBAction func accTrimPitchChanged(sender: AnyObject) {
-        accTrimPitchField.text = String(format: "%.0lf", accTrimPitchStepper.value)
+        accTrimPitchField.text = String(format: "%.0f", locale: NSLocale.currentLocale(), accTrimPitchStepper.value)
     }
+    
     @IBAction func accTrimRollChanged(sender: AnyObject) {
-        accTrimRollField.text = String(format: "%.0lf", accTrimRollStepper.value)
+        accTrimRollField.text = String(format: "%.0f", locale: NSLocale.currentLocale(), accTrimRollStepper.value)
     }
+    
     @IBAction func accTrimSaveAction(sender: AnyObject) {
         let config = Configuration.theConfig
         config.accelerometerTrimPitch = Int(accTrimPitchStepper.value)

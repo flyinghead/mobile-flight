@@ -13,7 +13,7 @@ class GPSConfigViewController: ConfigChildViewController {
     @IBOutlet weak var gpsSwitch: UISwitch!
     @IBOutlet weak var gpsProtocolField: UITextField!
     @IBOutlet weak var gpsRegionField: UITextField!
-    @IBOutlet weak var magDeclinationField: UITextField!
+    @IBOutlet weak var magDeclinationField: NumberField!
 
     var gpsProtocolPicker: DownPicker?
     var gpsRegionPicker: DownPicker?
@@ -44,7 +44,7 @@ class GPSConfigViewController: ConfigChildViewController {
         super.viewWillDisappear(animated)
         misc?.gpsType = gpsProtocolPicker!.selectedIndex
         misc?.gpsUbxSbas = gpsProtocolPicker!.selectedIndex
-        misc?.magDeclination = Double(magDeclinationField.text!) ?? 0.0
+        misc?.magDeclination = magDeclinationField.value
         configViewController?.refreshUI()
     }
     override func viewWillAppear(animated: Bool) {
@@ -52,8 +52,9 @@ class GPSConfigViewController: ConfigChildViewController {
         gpsSwitch.on = settings!.features?.contains(BaseFlightFeature.GPS) ?? false
         gpsProtocolPicker?.selectedIndex = misc!.gpsType
         gpsRegionPicker?.selectedIndex = misc!.gpsUbxSbas
-        magDeclinationField.text = String(format: "%.1lf", misc!.magDeclination)
+        magDeclinationField.value = misc!.magDeclination
     }
+    
     @IBAction func gpsSwitchChanged(sender: AnyObject) {
         tableView.reloadData()
         if (gpsSwitch.on) {

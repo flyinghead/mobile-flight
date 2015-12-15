@@ -22,6 +22,7 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     
     let DefaultRcMap = "AETR1234"
     let SpektrumRcMap = "TAER1234"
+    let RcMapChoices = ["Default", "JR, Spektrum, Graupner"]
     
     var channelMapPicker: DownPicker?
     var rssiChannelPicker: DownPicker?
@@ -38,7 +39,7 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        channelMapPicker = DownPicker(textField: channelMapField, withData: ["Default", "JR, Spektrum, Graupner"])
+        channelMapPicker = DownPicker(textField: channelMapField, withData: RcMapChoices)
         
         refreshAction(self)
     }
@@ -72,7 +73,6 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
                                         self.settings = Settings(copyOf: Settings.theSettings)
                                         self.rcMap = Receiver.theReceiver.map
                                         self.rssiChannel = Misc.theMisc.rssiChannel
-                                        NSLog("Received rcMap=%@", self.rcMap!)
                                         
                                         var rssiChannels = [ "Disabled" ]
                                         for var i = 0; i < Receiver.theReceiver.activeChannels - 4; i++ {
@@ -86,7 +86,9 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
                                             case self.SpektrumRcMap:
                                                 self.channelMapPicker?.selectedIndex = 1
                                             default:
-                                                self.channelMapPicker!.setData(["Default", "JR, Spektrum, Graupner", rcMapString])
+                                                var choices = self.RcMapChoices
+                                                choices.append(rcMapString)
+                                                self.channelMapPicker!.setData(choices)
                                                 self.channelMapPicker?.selectedIndex = 2
                                             }
                                             self.rssiChannelPicker?.setData(rssiChannels)

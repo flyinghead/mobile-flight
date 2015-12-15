@@ -131,7 +131,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
                 if success {
                     msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 2, callback: { success in
                         if success {
-                            if !Configuration.theConfig.isApiVersionAtLeast("1.6") {
+                            if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
                                 dispatch_async(dispatch_get_main_queue(), {
                                     self.cancelConnection(btComm)
                                     SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
