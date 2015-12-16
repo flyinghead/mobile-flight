@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="STI-Mk-OtV">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Sensors-->
+        <scene sceneID="da6-7e-TuL">
+            <objects>
+                <pageViewController storyboardIdentifier="SensorPagesViewController" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="STI-Mk-OtV" customClass="SensorPagesViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
+                    <tabBarItem key="tabBarItem" title="Sensors" image="Sensors" id="wWe-a1-i01"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OlF-GU-MVM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1728" y="1438"/>
+        </scene>
+        <!--Sonar Sensor-->
+        <scene sceneID="RWj-hF-SvY">
+            <objects>
+                <viewController storyboardIdentifier="SonarViewController" id="qY9-Gk-2zy" userLabel="Sonar Sensor" customClass="SonarViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="EVH-S7-JLW"/>
+                        <viewControllerLayoutGuide type="bottom" id="qwE-ND-zug"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9zv-VC-FdT">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hQg-FD-CJV" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="49" width="560" height="483"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sonar - cm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9M3-ly-fCF">
+                                <rect key="frame" x="256" y="20" width="89" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9M3-ly-fCF" firstAttribute="top" secondItem="EVH-S7-JLW" secondAttribute="bottom" constant="8" id="Fpu-6l-H2o"/>
+                            <constraint firstItem="hQg-FD-CJV" firstAttribute="top" secondItem="9M3-ly-fCF" secondAttribute="bottom" constant="8" id="SSB-HS-SLx"/>
+                            <constraint firstItem="hQg-FD-CJV" firstAttribute="trailing" secondItem="9zv-VC-FdT" secondAttribute="trailingMargin" id="SfG-Cy-oKI"/>
+                            <constraint firstItem="9M3-ly-fCF" firstAttribute="centerX" secondItem="9zv-VC-FdT" secondAttribute="centerX" id="War-Jb-mQ7"/>
+                            <constraint firstItem="hQg-FD-CJV" firstAttribute="leading" secondItem="9zv-VC-FdT" secondAttribute="leadingMargin" id="Xgh-7L-bq5"/>
+                            <constraint firstItem="qwE-ND-zug" firstAttribute="top" secondItem="hQg-FD-CJV" secondAttribute="bottom" id="jpQ-2R-YM3"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="hQg-FD-CJV" id="s5g-X9-Oea"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7ex-EE-x4K" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2961" y="2090"/>
+        </scene>
+        <!--Gyroscope Sensor-->
+        <scene sceneID="56D-ss-JIo">
+            <objects>
+                <viewController storyboardIdentifier="GyroscopeViewController" id="gF3-Z7-dXV" userLabel="Gyroscope Sensor" customClass="GyroscopeViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Yle-7k-6fM"/>
+                        <viewControllerLayoutGuide type="bottom" id="s6D-cR-wHd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Jwa-dR-e7T">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="70I-Kn-s9j" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="49" width="560" height="483"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Gyroscope - °/s" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EX4-vu-PP6">
+                                <rect key="frame" x="224" y="20" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="70I-Kn-s9j" firstAttribute="trailing" secondItem="Jwa-dR-e7T" secondAttribute="trailingMargin" id="2Cj-pQ-c4R"/>
+                            <constraint firstItem="EX4-vu-PP6" firstAttribute="centerX" secondItem="Jwa-dR-e7T" secondAttribute="centerX" id="5nn-5k-yvi"/>
+                            <constraint firstItem="70I-Kn-s9j" firstAttribute="top" secondItem="EX4-vu-PP6" secondAttribute="bottom" constant="8" id="9IO-Tr-mQn"/>
+                            <constraint firstItem="70I-Kn-s9j" firstAttribute="leading" secondItem="Jwa-dR-e7T" secondAttribute="leadingMargin" id="Q0J-Mc-Jng"/>
+                            <constraint firstItem="EX4-vu-PP6" firstAttribute="top" secondItem="Yle-7k-6fM" secondAttribute="bottom" constant="8" id="hk5-rn-Kdn"/>
+                            <constraint firstItem="s6D-cR-wHd" firstAttribute="top" secondItem="70I-Kn-s9j" secondAttribute="bottom" id="rrl-rU-ckQ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="70I-Kn-s9j" id="VbT-aT-hMk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fpq-ru-eOS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1106" y="2090"/>
+        </scene>
+        <!--Barometer Sensor-->
+        <scene sceneID="WSW-SR-9dJ">
+            <objects>
+                <viewController storyboardIdentifier="BarometerViewController" id="NAI-g6-qJF" userLabel="Barometer Sensor" customClass="BarometerViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="bXW-4I-QxN"/>
+                        <viewControllerLayoutGuide type="bottom" id="6wP-Fu-mrQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dom-Fz-Dt9">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B16-RF-Fbz" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="49" width="560" height="483"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Barometer - meters" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dpP-F2-oUc">
+                                <rect key="frame" x="224" y="20" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="B16-RF-Fbz" firstAttribute="leading" secondItem="dom-Fz-Dt9" secondAttribute="leadingMargin" id="0T4-ke-z3D"/>
+                            <constraint firstItem="dpP-F2-oUc" firstAttribute="top" secondItem="bXW-4I-QxN" secondAttribute="bottom" constant="8" id="E2L-gm-YEb"/>
+                            <constraint firstItem="B16-RF-Fbz" firstAttribute="trailing" secondItem="dom-Fz-Dt9" secondAttribute="trailingMargin" id="LgD-In-PKc"/>
+                            <constraint firstItem="B16-RF-Fbz" firstAttribute="top" secondItem="dpP-F2-oUc" secondAttribute="bottom" constant="8" id="Tc0-Td-srn"/>
+                            <constraint firstItem="6wP-Fu-mrQ" firstAttribute="top" secondItem="B16-RF-Fbz" secondAttribute="bottom" id="Ywt-HI-KsS"/>
+                            <constraint firstItem="dpP-F2-oUc" firstAttribute="centerX" secondItem="dom-Fz-Dt9" secondAttribute="centerX" id="ZhF-fB-fvM"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="B16-RF-Fbz" id="uEw-Cu-mbv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pyP-VI-UU7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2346" y="2090"/>
+        </scene>
+        <!--Magnetometer Sensor-->
+        <scene sceneID="yVi-eF-wzp">
+            <objects>
+                <viewController storyboardIdentifier="MagnetometerViewController" id="ope-IF-TWR" userLabel="Magnetometer Sensor" customClass="MagnetometerViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ZSi-mk-RPZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="pzp-S7-COd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XWA-gy-9qS">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e2f-Zi-sdM" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="49" width="560" height="483"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Magnetometer - Ga" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cI4-ky-5Cc">
+                                <rect key="frame" x="224" y="20" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="pzp-S7-COd" firstAttribute="top" secondItem="e2f-Zi-sdM" secondAttribute="bottom" id="2QX-db-tSJ"/>
+                            <constraint firstItem="e2f-Zi-sdM" firstAttribute="leading" secondItem="XWA-gy-9qS" secondAttribute="leadingMargin" id="Fnw-Lf-4yS"/>
+                            <constraint firstItem="e2f-Zi-sdM" firstAttribute="trailing" secondItem="XWA-gy-9qS" secondAttribute="trailingMargin" id="Hyq-jB-2TD"/>
+                            <constraint firstItem="e2f-Zi-sdM" firstAttribute="top" secondItem="cI4-ky-5Cc" secondAttribute="bottom" constant="8" id="Wd2-wX-kqb"/>
+                            <constraint firstItem="cI4-ky-5Cc" firstAttribute="centerX" secondItem="XWA-gy-9qS" secondAttribute="centerX" id="hxt-ta-uQy"/>
+                            <constraint firstItem="cI4-ky-5Cc" firstAttribute="top" secondItem="ZSi-mk-RPZ" secondAttribute="bottom" constant="8" id="wZ6-Hm-pk1"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="e2f-Zi-sdM" id="n8X-bq-YdA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jtU-aA-Qwa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1726" y="2090"/>
+        </scene>
+        <!--Accelerometer Sensor-->
+        <scene sceneID="KZN-bP-Eyr">
+            <objects>
+                <viewController storyboardIdentifier="AccelerometerViewController" id="FmL-Y8-PuB" userLabel="Accelerometer Sensor" customClass="AccelerometerViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3il-Mw-JGX"/>
+                        <viewControllerLayoutGuide type="bottom" id="aVn-B6-Uhj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="465-LF-771">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ir-HM-jzf" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="57" width="560" height="543"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Accelerometer - g" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y45-JO-gdu">
+                                <rect key="frame" x="224" y="28" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="y45-JO-gdu" firstAttribute="top" secondItem="3il-Mw-JGX" secondAttribute="bottom" constant="8" id="A6k-fr-g9P"/>
+                            <constraint firstItem="3Ir-HM-jzf" firstAttribute="top" secondItem="y45-JO-gdu" secondAttribute="bottom" constant="8" id="GRI-Ee-tUa"/>
+                            <constraint firstItem="3Ir-HM-jzf" firstAttribute="leading" secondItem="465-LF-771" secondAttribute="leadingMargin" id="dEP-5B-r6H"/>
+                            <constraint firstItem="y45-JO-gdu" firstAttribute="centerX" secondItem="465-LF-771" secondAttribute="centerX" id="nLd-GG-t7i"/>
+                            <constraint firstItem="aVn-B6-Uhj" firstAttribute="top" secondItem="3Ir-HM-jzf" secondAttribute="bottom" id="ubL-g1-2HO"/>
+                            <constraint firstItem="3Ir-HM-jzf" firstAttribute="trailing" secondItem="465-LF-771" secondAttribute="trailingMargin" id="uju-uG-d0z"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chartView" destination="3Ir-HM-jzf" id="Sjl-zm-dED"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nLP-Y6-45u" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="489" y="2090"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Sensors" width="30" height="30"/>
+    </resources>
+</document>

@@ -10,6 +10,7 @@ import UIKit
 import SVProgressHUD
 
 class ConnectionViewController: UITableViewController, BluetoothDelegate {
+
     var btPeripherals = [BluetoothPeripheral]()
     let btManager = BluetoothManager()
     
@@ -38,11 +39,11 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return btPeripherals.count
+        return section == 0 ? btPeripherals.count : 1
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -50,47 +51,70 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         case 0:
             return "Bluetooth Devices"
         default:
-            return "Other"
+            return "TCP/IP"
         }
     }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.section == 1 {
+            return 94
+        } else {
+            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        }
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("BluetoothCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(indexPath.section == 0 ? "BluetoothCell" : "TCPCell", forIndexPath: indexPath)
 
-        cell.textLabel?.text = btPeripherals[indexPath.row].name
-        cell.detailTextLabel?.text = btPeripherals[indexPath.row].uuid
-
+        if let tcpCell = cell as? TCPTableViewCell {
+            tcpCell.viewController = self
+        } else {
+            cell.textLabel?.text = btPeripherals[indexPath.row].name
+            cell.detailTextLabel?.text = btPeripherals[indexPath.row].uuid
+        }
+        
         return cell
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        selectedPeripheral = btPeripherals[indexPath.row]
-        btManager.connect(selectedPeripheral!)
-        let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
-        SVProgressHUD.showWithStatus(msg, maskType: .Black)
+        if indexPath.section == 0 {
+            selectedPeripheral = btPeripherals[indexPath.row]
+            btManager.connect(selectedPeripheral!)
+            let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
+            SVProgressHUD.showWithStatus(msg, maskType: .Black)
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 44.0
+        if section == 0 {
+            return 44.0
+        } else {
+            return UITableViewAutomaticDimension
+        }
     }
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let screenRect = UIScreen.mainScreen().applicationFrame;
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: screenRect.size.width, height: 44.0))
-        view.autoresizesSubviews = true
-        view.autoresizingMask = .FlexibleWidth
-        view.userInteractionEnabled = true
-
-        view.contentMode = .ScaleToFill
-        
-        if (refreshBluetoothButton == nil) {
-            refreshBluetoothButton = UIButton(type: .System)
-            refreshBluetoothButton!.addTarget(self, action: "refreshBluetooth", forControlEvents: .TouchDown)
-            refreshBluetoothButton!.setTitle("Refresh", forState: .Normal)
-            refreshBluetoothButton!.setTitle("Refreshing...", forState: .Disabled)
-            refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, screenRect.size.width, 44.0)
+        if section == 0 {
+            let screenRect = UIScreen.mainScreen().applicationFrame;
+            let view = UIView(frame: CGRect(x: 0, y: 0, width: screenRect.size.width, height: 44.0))
+            view.autoresizesSubviews = true
+            view.autoresizingMask = .FlexibleWidth
+            view.userInteractionEnabled = true
+            
+            view.contentMode = .ScaleToFill
+            
+            if (refreshBluetoothButton == nil) {
+                refreshBluetoothButton = UIButton(type: .System)
+                refreshBluetoothButton!.addTarget(self, action: "refreshBluetooth", forControlEvents: .TouchDown)
+                refreshBluetoothButton!.setTitle("Refresh", forState: .Normal)
+                refreshBluetoothButton!.setTitle("Refreshing...", forState: .Disabled)
+                refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, screenRect.size.width, 44.0)
+            }
+            view.addSubview(refreshBluetoothButton!)
+            
+            return view
+        } else {
+            return nil
         }
-        view.addSubview(refreshBluetoothButton!)
-        
-        return view
     }
     
     // MARK
@@ -124,46 +148,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         let btComm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral, andMSP: msp)
         btManager.delegate = btComm
         
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.setStatus("Fetching information...")
-            
-            msp.sendMessage(.MSP_IDENT, data: nil, retry: 2, callback: { success in
-                if success {
-                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 2, callback: { success in
-                        if success {
-                            if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    self.cancelConnection(btComm)
-                                    SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
-                                })
-                            } else {
-                                msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
-                                            if success {
-                                                dispatch_async(dispatch_get_main_queue(), {
-                                                    SVProgressHUD.dismiss()
-                                                    self.selectedPeripheral = nil
-                                                    self.performSegueWithIdentifier("next", sender: self)
-                                                })
-                                            } else {
-                                                self.cancelConnection(btComm)
-                                            }
-                                        })
-                                    } else {
-                                        self.cancelConnection(btComm)
-                                    }
-                                })
-                            }
-                        } else {
-                            self.cancelConnection(btComm)
-                        }
-                    })
-                } else {
-                    self.cancelConnection(btComm)
-                }
-            })
-        })
+        initiateHandShake({ self.cancelConnection(btComm) })
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
@@ -189,6 +174,51 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
 
     // MARK:
     
+    func initiateHandShake(errorCallback: () -> Void) {
+        let msp = self.msp
+
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.setStatus("Fetching information...")
+            
+            msp.sendMessage(.MSP_IDENT, data: nil, retry: 2, callback: { success in
+                if success {
+                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 2, callback: { success in
+                        if success {
+                            if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    errorCallback()
+                                    SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
+                                })
+                            } else {
+                                msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
+                                    if success {
+                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
+                                            if success {
+                                                dispatch_async(dispatch_get_main_queue(), {
+                                                    SVProgressHUD.dismiss()
+                                                    self.selectedPeripheral = nil
+                                                    self.performSegueWithIdentifier("next", sender: self)
+                                                })
+                                            } else {
+                                                errorCallback()
+                                            }
+                                        })
+                                    } else {
+                                        errorCallback()
+                                    }
+                                })
+                            }
+                        } else {
+                            errorCallback()
+                        }
+                    })
+                } else {
+                    errorCallback()
+                }
+            })
+        })
+    }
+    
     private func cancelConnection(btComm: BluetoothComm) {
         let peripheral = selectedPeripheral!
         selectedPeripheral = nil
@@ -197,6 +227,23 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         failedToConnectToPeripheral(peripheral, error: nil)
     }
     
+    func connectTcp(host: String, port: String) {
+        let msg = String(format: "Connecting to %@:%@...", host, port)
+        SVProgressHUD.showWithStatus(msg, maskType: .Black)
+
+        let tcpComm = TCPComm(msp: msp, host: host, port: Int(port))
+        tcpComm.connect({ success in
+            if success {
+                self.initiateHandShake({
+                    tcpComm.close()
+                    SVProgressHUD.showErrorWithStatus("Handshake failed")
+                })
+            } else {
+                SVProgressHUD.showErrorWithStatus("Connection failed")
+            }
+        })
+        
+    }
     
     /*
     // Override to support conditional editing of the table view.
@@ -243,4 +290,15 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
     }
     */
 
+}
+
+class TCPTableViewCell : UITableViewCell {
+    @IBOutlet weak var ipAddressField: UITextField!
+    @IBOutlet weak var ipPortField: UITextField!
+    
+    var viewController: ConnectionViewController?
+    
+    @IBAction func connectAction(sender: AnyObject) {
+        viewController!.connectTcp(ipAddressField.text!, port: ipPortField.text!)
+    }
 }
