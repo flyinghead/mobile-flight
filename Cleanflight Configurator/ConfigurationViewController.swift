@@ -108,38 +108,42 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
 
     func refreshUI() {
-        mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
-        mixerTypeChanged(self)
-        
+        refreshUI(false)
+    }
+    
+    func refreshUI(fullRefresh: Bool) {
+        if fullRefresh {
+            mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
+            mixerTypeChanged(self)
+            oneShotEscSwitch.on = newSettings!.features?.contains(BaseFlightFeature.OneShot125) ?? false
+            disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
+            
+            minimumCommandField.value = Double(newMisc!.minCommand ?? 0)
+            minimumThrottleField.value = Double(newMisc!.minThrottle ?? 0)
+            midThrottleField.value = Double(newMisc!.midRC ?? 0)
+            maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
+            
+            boardPitchField.value = Double(newSettings!.boardAlignPitch ?? 0)
+            boardRollField.value = Double(newSettings!.boardAlignRoll ?? 0)
+            boardYawField.value = Double(newSettings!.boardAlignYaw ?? 0)
+            rssiSwitch.on = newSettings!.features!.contains(BaseFlightFeature.RssiAdc)
+            inFlightCalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.InflightCal)
+            servoGimbalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ServoTilt)
+            softSerialSwitch.on = newSettings!.features!.contains(BaseFlightFeature.SoftSerial)
+            sonarSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Sonar)
+            telemetrySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Telemetry)
+            threeDModeSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ThreeD)
+            ledStripSwitch.on = newSettings!.features!.contains(BaseFlightFeature.LedStrip)
+            displaySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Display)
+            blackboxSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Blackbox)
+            channelForwardingSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ChannelForwarding)
+        }
         motorStopField.text = (newSettings!.features?.contains(BaseFlightFeature.MotorStop) ?? false) ? "On" : "Off"
-        oneShotEscSwitch.on = newSettings!.features?.contains(BaseFlightFeature.OneShot125) ?? false
-        disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
-        
-        minimumCommandField.value = Double(newMisc!.minCommand ?? 0)
-        minimumThrottleField.value = Double(newMisc!.minThrottle ?? 0)
-        midThrottleField.value = Double(newMisc!.midRC ?? 0)
-        maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
-        
-        boardPitchField.value = Double(newSettings!.boardAlignPitch ?? 0)
-        boardRollField.value = Double(newSettings!.boardAlignRoll ?? 0)
-        boardYawField.value = Double(newSettings!.boardAlignYaw ?? 0)
         
         gpsField.text = (newSettings!.features?.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
         vbatField.text = (newSettings!.features?.contains(BaseFlightFeature.VBat) ?? false) ? "On" : "Off"
         failsafeField.text = (newSettings!.features?.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
-        
-        rssiSwitch.on = newSettings!.features!.contains(BaseFlightFeature.RssiAdc)
-        inFlightCalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.InflightCal)
-        servoGimbalSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ServoTilt)
-        softSerialSwitch.on = newSettings!.features!.contains(BaseFlightFeature.SoftSerial)
-        sonarSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Sonar)
-        telemetrySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Telemetry)
-        threeDModeSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ThreeD)
-        ledStripSwitch.on = newSettings!.features!.contains(BaseFlightFeature.LedStrip)
-        displaySwitch.on = newSettings!.features!.contains(BaseFlightFeature.Display)
-        blackboxSwitch.on = newSettings!.features!.contains(BaseFlightFeature.Blackbox)
-        channelForwardingSwitch.on = newSettings!.features!.contains(BaseFlightFeature.ChannelForwarding)
     }
     
     @IBAction func saveAction(sender: AnyObject) {
@@ -251,7 +255,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     func receivedSettingsData() {
         newSettings = Settings(copyOf: Settings.theSettings)
         newMisc = Misc(copyOf: Misc.theMisc)
-        refreshUI()
+        refreshUI(true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

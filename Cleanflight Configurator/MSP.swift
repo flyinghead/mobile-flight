@@ -28,6 +28,8 @@ class MessageRetryHandler {
 }
 
 class MSPParser {
+    var datalog: NSFileHandle?
+    
     var state: ParserState = .Sync1
     var directionOut: Bool = false
     var expectedMsgLength: Int = 0
@@ -45,6 +47,9 @@ class MSPParser {
     let retriedMessageLock = NSObject()
     
     func read(data: [UInt8]) {
+        if datalog != nil {
+            datalog!.writeData(NSData(bytes: data, length: data.count))
+        }
         for b in data {
             switch state {
             case .Sync1:

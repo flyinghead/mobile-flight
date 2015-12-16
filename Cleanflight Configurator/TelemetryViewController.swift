@@ -175,4 +175,35 @@ class TelemetryViewController: UIViewController, FlightDataListener {
             appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
         }
     }
+    
+    func startRecording() {
+        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+        let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
+        
+        do {
+            if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
+                let file = try NSFileHandle(forWritingToURL: fileURL)
+                file.seekToEndOfFile()
+                msp.datalog = file
+            }
+        } catch let error as NSError {
+            NSLog("Cannot open %@: %@", fileURL, error)
+        }
+    }
+    
+    func stopRecording() {
+        if let file = msp.datalog {
+            msp.datalog = nil
+            file.closeFile()
+        }
+    }
+    @IBAction func recordAction(sender: AnyObject) {
+        if msp.datalog != nil {
+            stopRecording()
+            (sender as! UIButton).setTitle("Record", forState: .Normal)
+        } else {
+            startRecording()
+            (sender as! UIButton).setTitle("Stop Recording", forState: .Normal)
+        }
+    }
 }
