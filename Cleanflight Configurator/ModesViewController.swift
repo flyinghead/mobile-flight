@@ -55,6 +55,9 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
     func receivedReceiverData() {
         let channelCount = Receiver.theReceiver.activeChannels - 3
+        while channelCount < channelLabels.count {
+            channelLabels.removeLast()
+        }
         for var i = channelLabels.count; i < channelCount; i++ {
             channelLabels.append(String(format: "AUX%d", i))
         }
