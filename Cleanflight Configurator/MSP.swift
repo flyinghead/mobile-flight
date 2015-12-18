@@ -16,6 +16,7 @@ class MessageRetryHandler {
     let callback: ((success: Bool) -> Void)?
     let maxTries: Int
     var timer: NSTimer?
+    var cancelled = false
     
     var tries = 0
     
@@ -27,8 +28,18 @@ class MessageRetryHandler {
     }
 }
 
+class DataMessageRetryHandler : MessageRetryHandler {
+    let dataCallback: (data: [UInt8]?) -> Void
+    
+    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: (data: [UInt8]?) -> Void) {
+        self.dataCallback = callback
+        super.init(code: code, data: data, maxTries: maxTries, callback: nil)
+    }
+}
+
 class MSPParser {
     var datalog: NSFileHandle?
+    var datalogStart: NSDate?
     
     var state: ParserState = .Sync1
     var directionOut: Bool = false
@@ -48,6 +59,11 @@ class MSPParser {
     
     func read(data: [UInt8]) {
         if datalog != nil {
+            var logData = [UInt8]()
+            // Timestamp in milliseconds since start of logging
+            logData.appendContentsOf(writeUInt32(UInt32(round(-datalogStart!.timeIntervalSinceNow * 1000))))
+            logData.appendContentsOf(writeUInt16(min(data.count, Int(UINT16_MAX))))
+            datalog!.writeData(NSData(bytes: logData, length: logData.count))
             datalog!.writeData(NSData(bytes: data, length: data.count))
         }
         for b in data {
@@ -92,7 +108,7 @@ class MSPParser {
                 if (checksum == b && mspCode != .MSP_UNKNOWN) {
                     //NSLog("Received MSP %d", code.rawValue)
                     if processMessage(mspCode, message: messageBuffer!) {
-                        removeSendMessageTimer(mspCode)
+                        callSuccessCallback(mspCode, data: messageBuffer!)
                     }
                 } else {
                     let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
@@ -107,31 +123,7 @@ class MSPParser {
             }
         }
     }
-    
-    private func readUInt16(array: [UInt8], index: Int) -> Int {
-        return Int(array[index]) + Int(array[index+1]) * 256;
-    }
-    
-    private func readInt16(array: [UInt8], index: Int) -> Int {
-        return Int(array[index]) + Int(Int8(bitPattern: array[index+1])) * 256;
-    }
-    
-    private func readUInt32(array: [UInt8], index: Int) -> UInt32 {
-        var res = UInt32(array[index+3])
-        res = res * 256 + UInt32(array[index+2])
-        res = res * 256 + UInt32(array[index+1])
-        res = res * 256 + UInt32(array[index])
-        return res
-    }
-    
-    private func readInt32(array: [UInt8], index: Int) -> Int {
-        var res = Int(Int8(bitPattern: array[index+3]))
-        res = res * 256 + Int(array[index+2])
-        res = res * 256 + Int(array[index+1])
-        res = res * 256 + Int(array[index])
-        return res
-    }
-    
+
     func processMessage(code: MSP_code, message: [UInt8]) -> Bool {
         let settings = Settings.theSettings
         let config = Configuration.theConfig
@@ -146,7 +138,7 @@ class MSPParser {
             if message.count < 4 {
                 return false
             }
-            NSLog("Using deprecated msp command: MSP_IDENT")
+            NSLog("Received deprecated msp command: MSP_IDENT")
             // Deprecated
             config.version = String(format:"%d.%02d", message[0] / 100, message[0] % 100)
             config.multiType = Int(message[1])
@@ -258,14 +250,14 @@ class MSPParser {
             pingSensorListeners()
             
         case .MSP_ALTITUDE:
-            if message.count < 2 {
+            if message.count < 4 {
                 return false
             }
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0 // correct scale factor
             pingSensorListeners()
             
         case .MSP_SONAR:
-            if message.count < 2 {
+            if message.count < 4 {
                 return false
             }
             sensorData.sonar = readInt32(message,  index: 0);
@@ -496,6 +488,20 @@ class MSPParser {
             settings.pidController = Int(message[0])
             pingSettingsListeners()
 
+        case .MSP_DATAFLASH_SUMMARY:    // FIXME This is just a test
+            if message.count < 13 {
+                return false
+            }
+            let dataflash = Dataflash.theDataflash
+            dataflash.ready = Int(message[0])
+            dataflash.sectors = readUInt32(message, index: 1)
+            dataflash.totalSize = readUInt32(message, index: 5)
+            dataflash.usedSize = readUInt32(message, index: 9)
+            
+        case .MSP_DATAFLASH_READ:
+            // Nothing to do. Handled by the callback
+            break
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -511,7 +517,9 @@ class MSPParser {
             .MSP_SET_PID_CONTROLLER,
             .MSP_SET_PID,
             .MSP_SELECT_SETTING,
-            .MSP_SET_MOTOR:
+            .MSP_SET_MOTOR,
+            .MSP_DATAFLASH_ERASE,
+            .MSP_SET_WP:
             break
             
         default:
@@ -522,27 +530,38 @@ class MSPParser {
         return true
     }
     
-    func removeSendMessageTimer(code: MSP_code) {
-        var callback: ((success: Bool) -> Void)?
+    func callSuccessCallback(code: MSP_code, data: [UInt8]) {
+        var callback: ((success: Bool) -> Void)? = nil
+        var dataCallback: ((data: [UInt8]) -> Void)? = nil
+        
         objc_sync_enter(retriedMessageLock)
         if let retriedMessage = retriedMessages.removeValueForKey(code) {
-            retriedMessage.timer!.invalidate()
-            callback = retriedMessage.callback
+            retriedMessage.cancelled = true
+            retriedMessage.timer?.invalidate()
+            if retriedMessage is DataMessageRetryHandler {
+                dataCallback = (retriedMessage as! DataMessageRetryHandler).dataCallback
+            } else {
+                callback = retriedMessage.callback
+            }
         }
         objc_sync_exit(retriedMessageLock)
-        if callback != nil {
-            callback!(success: true)
-        }
+        callback?(success: true)
+        dataCallback?(data: data)
     }
     
-    func makeSendMessageTimer(handler: MessageRetryHandler) -> NSTimer {
-        return NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "sendMessageTimedOut:", userInfo: handler, repeats: false)
+    func makeSendMessageTimer(handler: MessageRetryHandler) {
+        // FIXME This sucks. NSTimer should not be scheduled on the main thread. Ideally they should be on their own run loop? or concurrent?
+        dispatch_async(dispatch_get_main_queue(), {
+            if !handler.cancelled {
+                handler.timer = NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "sendMessageTimedOut:", userInfo: handler, repeats: false)
+            }
+        })
     }
     
     func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, callback: ((success: Bool) -> Void)?) {
         if retry > 0 || callback != nil {
             let messageRetry = MessageRetryHandler(code: code, data: data, maxTries: retry, callback: callback)
-            messageRetry.timer = makeSendMessageTimer(messageRetry)
+            makeSendMessageTimer(messageRetry)
             
             objc_sync_enter(retriedMessageLock)
             retriedMessages[code] = messageRetry
@@ -575,17 +594,20 @@ class MSPParser {
     func sendMessageTimedOut(timer: NSTimer) {
         let handler = timer.userInfo as! MessageRetryHandler
         if ++handler.tries > handler.maxTries {
+            handler.cancelled = true
             NSLog("sendMessage %d failed", handler.code.rawValue)
             objc_sync_enter(retriedMessageLock)
             retriedMessages.removeValueForKey(handler.code)
             objc_sync_exit(retriedMessageLock)
-            if handler.callback != nil {
-                handler.callback!(success: false)
+            if handler is DataMessageRetryHandler {
+                (handler as! DataMessageRetryHandler).dataCallback(data: nil)
+            } else {
+                handler.callback?(success: false)
             }
             return
         }
         NSLog("Retrying sendMessage %d", handler.code.rawValue)
-        handler.timer = makeSendMessageTimer(handler)
+        makeSendMessageTimer(handler)
 
         sendMessage(handler.code, data: handler.data, retry: 0, callback: nil)
     }
@@ -593,7 +615,8 @@ class MSPParser {
     func cancelRetries() {
         objc_sync_enter(retriedMessageLock)
         for handler in retriedMessages.values {
-            handler.timer!.invalidate()
+            handler.cancelled = true
+            handler.timer?.invalidate()
         }
         objc_sync_exit(retriedMessageLock)
     }
@@ -744,7 +767,7 @@ class MSPParser {
         sendMessage(.MSP_SET_RX_MAP, data: map, retry: 2, callback: callback)
     }
     
-    func sendPidController(pidController: Int,callback:((success:Bool) -> Void)?) {
+    func sendPidController(pidController: Int, callback:((success:Bool) -> Void)?) {
         sendMessage(.MSP_SET_PID_CONTROLLER, data: [ UInt8(pidController) ], retry: 2, callback: callback)
     }
     
@@ -777,10 +800,27 @@ class MSPParser {
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
     }
     
-    func writeUInt32(i: UInt32) -> [UInt8] {
-        return [UInt8(i % 256), UInt8((i >> 8) % 256), UInt8((i >> 16) % 256), UInt8(i >> 24)]
+    func sendDataflashRead(address: UInt32, callback:(data: [UInt8]?) -> Void) {
+        let data = writeUInt32(address)
+        let messageRetry = DataMessageRetryHandler(code: .MSP_DATAFLASH_READ, data: data, maxTries: 3, callback: callback)
+        makeSendMessageTimer(messageRetry)
+        
+        objc_sync_enter(retriedMessageLock)
+        retriedMessages[.MSP_DATAFLASH_READ] = messageRetry
+        objc_sync_exit(retriedMessageLock)
+        sendMessage(.MSP_DATAFLASH_READ, data: data, retry: 0, callback: nil)
     }
-    func writeInt16(i: Int) -> [UInt8] {
-        return [UInt8(UInt(bitPattern: i) & 0xFF), UInt8((UInt(bitPattern: i) >> 8) & 0xFF)]
+    
+    // Waypoint number 0 is GPS Home location, waypoint number 16 is GPS Hold location, other values are ignored
+    // Pass altitude=0 to keep current AltHold value
+    func sendWaypoint(number: Int, latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(number))
+        data.appendContentsOf(writeInt32(Int(latitude * 10000000.0)))
+        data.appendContentsOf(writeInt32(Int(longitude * 10000000.0)))
+        data.appendContentsOf(writeInt32(Int(altitude)))
+        data.appendContentsOf([0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
+        
+        sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
     }
 }

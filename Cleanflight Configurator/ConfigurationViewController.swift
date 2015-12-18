@@ -45,14 +45,14 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     @IBOutlet weak var blackboxSwitch: UISwitch!
     @IBOutlet weak var channelForwardingSwitch: UISwitch!
 
-    var mixerTypePicker: DownPicker?
+    var mixerTypePicker: MyDownPicker?
     
     var newSettings: Settings?
     var newMisc: Misc?
     
     
     override func viewDidLoad() {
-        mixerTypePicker = DownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
+        mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
         
         msp.addDataListener(self)
 
@@ -115,6 +115,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         if fullRefresh {
             mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
             mixerTypeChanged(self)
+            
             oneShotEscSwitch.on = newSettings!.features?.contains(BaseFlightFeature.OneShot125) ?? false
             disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
             
@@ -147,7 +148,9 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
     
     @IBAction func saveAction(sender: AnyObject) {
-        newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
+        if mixerTypePicker!.selectedIndex >= 0 {
+            newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
+        }
         if oneShotEscSwitch.on {
             newSettings!.features!.insert(BaseFlightFeature.OneShot125)
         } else {

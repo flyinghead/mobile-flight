@@ -104,11 +104,17 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
     
     func fieldChanged() {
         if text != nil {
+            // Remove the thousand separators as they confuse the NSNumberFormatter
+            var tmpText = text!
+            if let thousandChar = NSLocale.currentLocale().objectForKey(NSLocaleGroupingSeparator) as! String? {
+                tmpText = tmpText.stringByReplacingOccurrencesOfString(thousandChar, withString: "")
+            }
+            
             let nf = NSNumberFormatter()
             nf.locale = NSLocale.currentLocale()
             nf.maximumSignificantDigits = decimalDigits
             nf.minimumSignificantDigits = 0
-            let value = nf.numberFromString(text!)
+            let value = nf.numberFromString(tmpText)
             if value != nil {
                 stepper.value = value!.doubleValue
                 self._value = stepper.value

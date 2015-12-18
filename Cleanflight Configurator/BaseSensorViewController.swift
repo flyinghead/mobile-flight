@@ -29,6 +29,8 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         chartView.xAxis.enabled = false
         //chartView.xAxis.drawLabelsEnabled = false
         
+        //chartView.leftAxis.drawTopYLabelEntryEnabled = true
+        
         chartView.descriptionText = ""
     }
 
@@ -50,7 +52,7 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         sensorCount = 0
     }
     
-    func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> ChartDataSet {
+    func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
         let dataSet = LineChartDataSet(yVals: data)
         dataSet.label = label
         if (color != nil) {
@@ -61,7 +63,8 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)
-        
+        dataSet.lineWidth = 2
+
         return dataSet;
     }
 }

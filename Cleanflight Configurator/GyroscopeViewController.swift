@@ -18,8 +18,10 @@ class GyroscopeViewController: XYZSensorViewController {
         leftAxis.customAxisMax = 2000;
         leftAxis.customAxisMin = -2000;
         
-        chartView.leftAxis.valueFormatter = NSNumberFormatter()
-        chartView.leftAxis.valueFormatter?.maximumFractionDigits = 0
+        let nf = NSNumberFormatter()
+        nf.locale = NSLocale.currentLocale()
+        nf.maximumFractionDigits = 0
+        chartView.leftAxis.valueFormatter = nf
     }
 
     override func updateSensorData() {

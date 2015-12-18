@@ -14,14 +14,32 @@ class SonarViewController: BarometerViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let leftAxis = chartView.leftAxis;
-        leftAxis.customAxisMax = 2.0;       // FIXME shouldn't use fixed min and max, or should monitor values
-        leftAxis.customAxisMin = -1.0;
+        let leftAxis = chartView.leftAxis
+        leftAxis.customAxisMax = 100.0
+        leftAxis.customAxisMin =  0.0
 
     }
 
     override func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {
-        return makeDataSet(yVals, label: "Sonar", color: UIColor.blueColor());
+        return makeDataSet(yVals, label: "Sonar", color: UIColor.blueColor())
+    }
+
+    override func updateSensorData() {
+        let sonar = Double(SensorData.theSensorData.sonar)
+        
+        samples.append(sonar)
+        
+        let leftAxis = chartView.leftAxis
+        if sonar > leftAxis.customAxisMax {
+            leftAxis.resetCustomAxisMax()
+        }
+        if sonar < leftAxis.customAxisMin {
+            leftAxis.resetCustomAxisMin()
+        }
+    }
+
+    override func timerDidFire(sender: AnyObject) {
+        msp.sendMessage(.MSP_SONAR, data: nil)
     }
 
 }

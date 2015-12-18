@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-class TelemetryViewController: UIViewController, FlightDataListener {
+class TelemetryViewController: UIViewController, FlightDataListener, CLLocationManagerDelegate {
     let redled = UIImage(named: "redled")
     let greenled = UIImage(named: "greenled")
     
@@ -56,6 +57,10 @@ class TelemetryViewController: UIViewController, FlightDataListener {
     var timer2: NSTimer?
     var timer3: NSTimer?
 
+    var locationManager: CLLocationManager?
+    var lastFollowMeUpdate: NSDate?
+    let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -158,7 +163,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
     
     func receivedGpsData() {
         let gpsData = GPSData.theGPSData
-        if gpsData.fix {
+        if gpsData.fix && gpsData.numSat >= 5 {
             gpsFixImage.image = greenled
             distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
             speedLabel.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
@@ -169,8 +174,8 @@ class TelemetryViewController: UIViewController, FlightDataListener {
         }
     }
     @IBAction func disconnectAction(sender: AnyObject) {
-        if let btComm = msp.commChannel as? BluetoothComm {
-            btComm.close()
+        if let comm = msp.commChannel {
+            comm.close()
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
         }
@@ -185,6 +190,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
                 let file = try NSFileHandle(forWritingToURL: fileURL)
                 file.seekToEndOfFile()
                 msp.datalog = file
+                msp.datalogStart = NSDate()
             }
         } catch let error as NSError {
             NSLog("Cannot open %@: %@", fileURL, error)
@@ -194,6 +200,7 @@ class TelemetryViewController: UIViewController, FlightDataListener {
     func stopRecording() {
         if let file = msp.datalog {
             msp.datalog = nil
+            msp.datalogStart = nil
             file.closeFile()
         }
     }
@@ -204,6 +211,38 @@ class TelemetryViewController: UIViewController, FlightDataListener {
         } else {
             startRecording()
             (sender as! UIButton).setTitle("Stop Recording", forState: .Normal)
+        }
+    }
+    @IBAction func followMeSwitchChanged(sender: UISwitch) {
+        if sender.on {
+            if locationManager == nil {
+                locationManager = CLLocationManager()
+            }
+            locationManager!.delegate = self
+            locationManager!.desiredAccuracy = kCLLocationAccuracyBest      // kCLLocationAccuracyBestForNavigation?
+            locationManager!.requestAlwaysAuthorization()
+            locationManager!.startUpdatingLocation()
+            
+        } else {
+            locationManager?.stopUpdatingLocation()
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            if lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod {
+                self.lastFollowMeUpdate = NSDate()
+                let longitude = location.coordinate.longitude
+                let latitude = location.coordinate.latitude
+                NSLog("Sending follow me location %.4f / %.4f", latitude, longitude)
+                msp.sendWaypoint(16, latitude: latitude, longitude: longitude, altitude: 0, callback: { success in
+                    if !success {
+                        self.lastFollowMeUpdate = nil
+                    } else {
+                        
+                    }
+                })
+            }
         }
     }
 }

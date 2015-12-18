@@ -181,11 +181,19 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         let range = modeRanges![rangeIdx]
         
         cell.modeRangeIdx = rangeIdx
+        cell.channelPicker.setData(channelLabels)
         cell.channelPicker.selectedIndex = range.auxChannelId + 1
         cell.rangeSlider.lowerValue = Double(range.start)
         cell.rangeSlider.upperValue = Double(range.end)
         
-        cell.rangeSlider.referenceValue = Double(Receiver.theReceiver.channels[cell.channelPicker.selectedIndex + 3])
+        cell.rangeSlider.referenceValue = 0         // Hidden by default
+        if cell.channelPicker.selectedIndex >= 0 {
+            let rcChannel = cell.channelPicker.selectedIndex + 3
+            let receiver = Receiver.theReceiver
+            if rcChannel < receiver.channels.count {
+                cell.rangeSlider.referenceValue = Double(receiver.channels[rcChannel])
+            }
+        }
         
         cell.rangeChanged(cell.rangeSlider)
 
@@ -298,7 +306,6 @@ class ModeRangeCell : UITableViewCell {
     var channelPicker: MyDownPicker {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
-            _channelPicker!.setData(viewController!.channelLabels)
         }
         return _channelPicker!
     }
@@ -313,11 +320,13 @@ class ModeRangeCell : UITableViewCell {
         viewController!.modeRanges![modeRangeIdx].end = Int(rangeSlider.upperValue)
     }
     @IBAction func channelChanged(sender: AnyObject) {
-        if channelPicker.selectedIndex == 0 {
-            viewController!.modeRanges!.removeAtIndex(modeRangeIdx)
-            viewController!.tableView.reloadData()
-        } else {
-            viewController!.modeRanges![modeRangeIdx].auxChannelId = channelPicker.selectedIndex - 1
+        if channelPicker.selectedIndex >= 0 {
+            if channelPicker.selectedIndex == 0 {
+                viewController!.modeRanges!.removeAtIndex(modeRangeIdx)
+                viewController!.tableView.reloadData()
+            } else {
+                viewController!.modeRanges![modeRangeIdx].auxChannelId = channelPicker.selectedIndex - 1
+            }
         }
     }
 }

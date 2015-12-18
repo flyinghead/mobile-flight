@@ -11,7 +11,11 @@ import UIKit
 @IBDesignable
 class ReceiverChannel: UIView {
 
-    @IBInspectable var label: String = "Channel"
+    @IBInspectable var label: String = "Channel" {
+        didSet {
+            labelControl?.text = label
+        }
+    }
     @IBInspectable var color: UIColor? {
         didSet {
             if color != nil {
@@ -43,8 +47,8 @@ class ReceiverChannel: UIView {
         }
         if (slider == nil) {
             slider = LinearGauge();
-            slider?.minimumValue = 800
-            slider?.maximumValue = 2200
+            slider?.minimumValue = 900
+            slider?.maximumValue = 2100
             slider?.value = 1500
             slider?.cornerRadius = 6
             slider?.translatesAutoresizingMaskIntoConstraints = false

@@ -45,8 +45,8 @@ enum Mode : String {
     case HEADADJ = "HEADADJ"
     case CAMSTAB = "CAMSTAB"
     case CAMTRIG = "CAMTRIG"
-    case GPSHOME = "GPSHOME"
-    case GPSHOLD = "GPSHOLD"
+    case GPSHOME = "GPS HOME"
+    case GPSHOLD = "GPS HOLD"
     case PASSTHRU = "PASSTHRU"
     case BEEPER = "BEEPER"
     case LEDMAX = "LEDMAX"
@@ -302,6 +302,10 @@ class Configuration {
         let refVersion = version.componentsSeparatedByString(".")
         for var i = 0; ;i++ {
             if i >= currentVersion.count {
+                if i >= refVersion.count {
+                    // Same version
+                    return true
+                }
                 return false
             }
             if i >= refVersion.count {
@@ -396,3 +400,11 @@ class MotorData {
     var throttle = [Int](count: 8, repeatedValue: 0)
 }
 
+class Dataflash {
+    static let theDataflash = Dataflash()
+    
+    var ready = 0
+    var sectors: UInt32 = 0
+    var usedSize: UInt32 = 0
+    var totalSize: UInt32 = 0
+}

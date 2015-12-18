@@ -15,6 +15,9 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
     var misc: Misc?
 
     var activeField: UITextField?
+    
+    var savedContentInset: UIEdgeInsets?
+    var savedScrollIndicatorInset: UIEdgeInsets?
 
     func setReference(viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
         self.configViewController = viewController
@@ -41,6 +44,9 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
         let kbSize = info![UIKeyboardFrameBeginUserInfoKey]?.CGRectValue.size
         let contentInsets = UIEdgeInsetsMake(0, 0, kbSize!.height, 0)
         
+        savedContentInset = tableView.contentInset
+        savedScrollIndicatorInset = tableView.scrollIndicatorInsets
+        
         tableView.contentInset = contentInsets
         tableView.scrollIndicatorInsets = contentInsets
         
@@ -58,8 +64,12 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
     }
     
     func keyboardWillHide(notification: NSNotification?) {
-        tableView.contentInset = UIEdgeInsetsZero
-        tableView.scrollIndicatorInsets = UIEdgeInsetsZero
+        if savedContentInset != nil {
+            tableView.contentInset = savedContentInset!
+        }
+        if savedScrollIndicatorInset != nil {
+            tableView.scrollIndicatorInsets = savedScrollIndicatorInset!
+        }
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {

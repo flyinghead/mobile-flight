@@ -24,8 +24,8 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     let SpektrumRcMap = "TAER1234"
     let RcMapChoices = ["Default", "JR, Spektrum, Graupner"]
     
-    var channelMapPicker: DownPicker?
-    var rssiChannelPicker: DownPicker?
+    var channelMapPicker: MyDownPicker?
+    var rssiChannelPicker: MyDownPicker?
     
     var settings: Settings?
     var rcMap: [Int]?
@@ -39,7 +39,7 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        channelMapPicker = DownPicker(textField: channelMapField, withData: RcMapChoices)
+        channelMapPicker = MyDownPicker(textField: channelMapField, withData: RcMapChoices)
         
         refreshAction(self)
     }
@@ -61,7 +61,7 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     }
     
     @IBAction func refreshAction(sender: AnyObject) {
-        rssiChannelPicker = DownPicker(textField: rssiChannelField)
+        rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
         msp.sendMessage(.MSP_RX_MAP, data: nil, retry: 2, callback: { success in
             if success {
                 self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
@@ -119,12 +119,14 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
         
         let misc = Misc.theMisc
 
-        let previousRssi = misc.rssiChannel
-        misc.rssiChannel = self.rssiChannelPicker!.selectedIndex
-        if misc.rssiChannel > 0 {
-            misc.rssiChannel += 4
+        if rssiChannelPicker!.selectedIndex >= 0 {
+            let previousRssi = misc.rssiChannel
+            misc.rssiChannel = rssiChannelPicker!.selectedIndex
+            if misc.rssiChannel > 0 {
+                misc.rssiChannel += 4
+            }
+            somethingChanged = somethingChanged || previousRssi != misc.rssiChannel
         }
-        somethingChanged = somethingChanged || previousRssi != misc.rssiChannel
         
         let receiver = Receiver.theReceiver
         var newMap: [Int]?

@@ -10,25 +10,30 @@ import Foundation
 import CoreFoundation
 
 class TCPComm : NSObject, NSStreamDelegate, CommChannel {
-    var host = "192.168.1.71"
-    var port: Int = 5000
+    let host: String
+    let port: Int
     private var inStream: NSInputStream!
     private var outStream: NSOutputStream!
     
     var msp: MSPParser
+    var connectCallback: ((success: Bool) -> ())?
     
-    init(msp: MSPParser) {
+    init(msp: MSPParser, host: String, port: Int?) {
         self.msp = msp
+        self.host = host
+        self.port = port ?? 23
         super.init()
         msp.commChannel = self
     }
     
-    func connect() {
+    func connect(callback: (success: Bool) -> ()) {
         NSLog("Connecting...")
+        connectCallback = callback
         
         var readStream: Unmanaged<CFReadStream>?, writeStream: Unmanaged<CFWriteStream>?
         
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host, UInt32(port), &readStream, &writeStream)
+
         self.inStream = readStream!.takeRetainedValue()
         self.outStream = writeStream!.takeRetainedValue()
         
@@ -66,21 +71,43 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     }
     
     func stream(stream: NSStream, handleEvent eventCode: NSStreamEvent) {
-        if (eventCode == NSStreamEvent.HasBytesAvailable && stream == inStream) {
-            var buffer = [UInt8](count: 4096, repeatedValue: 0)
-            let len = inStream.read(&buffer, maxLength: buffer.count)
-            if (len > 0) {
-                msp.read(Array<UInt8>(buffer[0..<len]))
-            }
-            else if (len <= 0) {
-                if (len < 0) {
-                    NSLog("Communication error")
+        switch eventCode {
+        case NSStreamEvent.None:
+            connectCallback?(success: false)
+            connectCallback = nil
+            
+        case NSStreamEvent.OpenCompleted:
+            connectCallback?(success: true)
+            connectCallback = nil
+            
+        case NSStreamEvent.HasBytesAvailable:
+            if stream == inStream {
+                var buffer = [UInt8](count: 4096, repeatedValue: 0)
+                let len = inStream.read(&buffer, maxLength: buffer.count)
+                if (len > 0) {
+                    msp.read(Array<UInt8>(buffer[0..<len]))
                 }
-                close();
+                else if (len <= 0) {
+                    if (len < 0) {
+                        NSLog("Communication error")
+                    }
+                    close()
+                }
             }
-        }
-        else if (eventCode == NSStreamEvent.HasSpaceAvailable && stream == outStream) {
-            // FIXME Let assume all write can proceed ... sendIfAvailable()
+            
+        case NSStreamEvent.HasSpaceAvailable:
+            if stream == outStream {
+                // FIXME Let assume all write can proceed ... sendIfAvailable()
+            }
+            
+        case NSStreamEvent.ErrorOccurred:
+            NSLog("NSStreamEvent.ErrorOccurred")
+            
+        case NSStreamEvent.EndEncountered:
+            NSLog("NSStreamEvent.EndEncountered")
+            
+        default:
+            break
         }
     }
     

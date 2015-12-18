@@ -906,7 +906,7 @@
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KuW-BI-zIx">
                                 <rect key="frame" x="20" y="7" width="133" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cancel"/>
+                                <state key="normal" title="Refresh"/>
                                 <connections>
                                     <action selector="cancelAction:" destination="nuR-kD-jb9" eventType="touchUpInside" id="P4G-lD-1U9"/>
                                 </connections>

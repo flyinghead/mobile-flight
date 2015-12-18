@@ -10,13 +10,15 @@ import UIKit
 import DownPicker
 
 class GPSConfigViewController: ConfigChildViewController {
+    let gpsTypeLabels = ["NMEA", "UBLOX"]
+    let gpsRegionLabels = ["Auto-detect", "Europe", "North America", "Japan", "India"]
     @IBOutlet weak var gpsSwitch: UISwitch!
     @IBOutlet weak var gpsProtocolField: UITextField!
     @IBOutlet weak var gpsRegionField: UITextField!
     @IBOutlet weak var magDeclinationField: NumberField!
 
-    var gpsProtocolPicker: DownPicker?
-    var gpsRegionPicker: DownPicker?
+    var gpsProtocolPicker: MyDownPicker?
+    var gpsRegionPicker: MyDownPicker?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +29,9 @@ class GPSConfigViewController: ConfigChildViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        gpsProtocolPicker = DownPicker(textField: gpsProtocolField, withData: ["NMEA", "UBLOX"])
+        gpsProtocolPicker = MyDownPicker(textField: gpsProtocolField, withData: gpsTypeLabels)
         gpsProtocolPicker?.showArrowImage(true)
-        gpsRegionPicker = DownPicker(textField: gpsRegionField, withData: ["Auto-detect", "Europe", "North America", "Japan", "India"])
+        gpsRegionPicker = MyDownPicker(textField: gpsRegionField, withData: gpsRegionLabels)
         gpsRegionPicker?.showArrowImage(true)
         
         magDeclinationField.delegate = self
@@ -42,8 +44,12 @@ class GPSConfigViewController: ConfigChildViewController {
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        misc?.gpsType = gpsProtocolPicker!.selectedIndex
-        misc?.gpsUbxSbas = gpsProtocolPicker!.selectedIndex
+        if gpsProtocolPicker!.selectedIndex >= 0 {
+            misc?.gpsType = gpsProtocolPicker!.selectedIndex
+        }
+        if gpsRegionPicker!.selectedIndex >= 0 {
+            misc?.gpsUbxSbas = gpsRegionPicker!.selectedIndex
+        }
         misc?.magDeclination = magDeclinationField.value
         configViewController?.refreshUI()
     }
@@ -56,11 +62,11 @@ class GPSConfigViewController: ConfigChildViewController {
     }
     
     @IBAction func gpsSwitchChanged(sender: AnyObject) {
-        tableView.reloadData()
         if (gpsSwitch.on) {
             settings!.features!.insert(BaseFlightFeature.GPS)
         } else {
             settings!.features!.remove(BaseFlightFeature.GPS)
         }
+        tableView.reloadData()
     }
 }

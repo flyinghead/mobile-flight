@@ -23,4 +23,19 @@ class MyDownPicker: DownPicker {
         super.textFieldDidEndEditing(textField)
         sendActionsForControlEvents(.EditingDidEnd)
     }
+
+    override var selectedIndex: Int {
+        get {
+            return super.selectedIndex
+        }
+        set(value) {
+            // Hack to get the size of the data array
+            let dataCount = super.pickerView(UIPickerView(), numberOfRowsInComponent: 0)
+            if value < 0 || value >= dataCount {
+                super.selectedIndex = -1
+            } else {
+                super.selectedIndex = value
+            }
+        }
+    }
 }

@@ -148,7 +148,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         let btComm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral, andMSP: msp)
         btManager.delegate = btComm
         
-        initiateHandShake({ self.cancelConnection(btComm) })
+        initiateHandShake({ self.cancelBtConnection(btComm) })
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
@@ -219,12 +219,13 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         })
     }
     
-    private func cancelConnection(btComm: BluetoothComm) {
-        let peripheral = selectedPeripheral!
-        selectedPeripheral = nil
+    private func cancelBtConnection(btComm: BluetoothComm) {
         btManager.delegate = self
         btComm.close()
-        failedToConnectToPeripheral(peripheral, error: nil)
+        if let peripheral = selectedPeripheral {
+            selectedPeripheral = nil
+            failedToConnectToPeripheral(peripheral, error: nil)
+        }
     }
     
     func connectTcp(host: String, port: String) {

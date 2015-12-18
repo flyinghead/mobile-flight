@@ -18,19 +18,21 @@ class BarometerViewController: BaseSensorViewController {
 
         timerInterval = 0.1     // 100ms
         
-        let leftAxis = chartView.leftAxis;
-        leftAxis.startAtZeroEnabled = false;
+        let leftAxis = chartView.leftAxis
+        leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
 
-        leftAxis.customAxisMax = 2.0;       // FIXME shouldn't use fixed min and max, or should monitor values
-        leftAxis.customAxisMin = -1.0;
+        leftAxis.customAxisMax = 2.0
+        leftAxis.customAxisMin = 0.0
         
-        chartView.leftAxis.valueFormatter = NSNumberFormatter()
-        chartView.leftAxis.valueFormatter?.maximumFractionDigits = 1
+        let nf = NSNumberFormatter()
+        nf.locale = NSLocale.currentLocale()
+        nf.maximumFractionDigits = 1
+        chartView.leftAxis.valueFormatter = nf
     }
 
     func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {
-        return makeDataSet(yVals, label: "Altitude", color: UIColor.blueColor());
+        return makeDataSet(yVals, label: "Altitude", color: UIColor.blueColor())
     }
     
     private func updateChartData() {
@@ -41,8 +43,8 @@ class BarometerViewController: BaseSensorViewController {
             yVals.append(ChartDataEntry(value: samples[i], xIndex: i - initialOffset))
         }
         
-        let dataSet = makeDataSet(yVals);
-        
+        let dataSet = makeDataSet(yVals)
+
         let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSet: dataSet)
         
         chartView.data = data
@@ -52,7 +54,7 @@ class BarometerViewController: BaseSensorViewController {
     func receivedSensorData() {
         if (timer != nil) {
             // Don't update the chart if we're not visible
-            sensorCount++;
+            sensorCount++
             updateSensorData()
             if (samples.count > MaxSampleCount) {
                 samples.removeFirst()
@@ -76,7 +78,14 @@ class BarometerViewController: BaseSensorViewController {
     func updateSensorData() {
         let sensorData = SensorData.theSensorData
         
-        samples.append(sensorData.altitude);
-
+        samples.append(sensorData.altitude)
+        
+        let leftAxis = chartView.leftAxis
+        if sensorData.altitude > leftAxis.customAxisMax {
+            leftAxis.resetCustomAxisMax()
+        }
+        if sensorData.altitude < leftAxis.customAxisMin {
+            leftAxis.resetCustomAxisMin()
+        }
     }
 }

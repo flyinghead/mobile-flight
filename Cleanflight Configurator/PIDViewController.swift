@@ -13,8 +13,8 @@ import SVProgressHUD
 class PIDViewController: UITableViewController {
     @IBOutlet weak var profileField: UITextField!
     @IBOutlet weak var pidControllerField: UITextField!
-    var profilePicker: DownPicker?
-    var pidControllerPicker: DownPicker?
+    var profilePicker: MyDownPicker?
+    var pidControllerPicker: MyDownPicker?
     
     // BASIC
     @IBOutlet weak var rollP: NumberField!
@@ -67,8 +67,15 @@ class PIDViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        profilePicker = DownPicker(textField: profileField, withData: [ "1", "2", "3" ])
-        pidControllerPicker = DownPicker(textField: pidControllerField, withData: [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ])
+        profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
+        
+        let pidControllers: [String]
+        if Configuration.theConfig.isApiVersionAtLeast("1.14") {
+            pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
+        } else {
+            pidControllers = [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ]
+        }
+        pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
         
         cancelAction(self)
     }
@@ -156,7 +163,9 @@ class PIDViewController: UITableViewController {
     }
 
     @IBAction func saveAction(sender: AnyObject) {
-        settings!.pidController = pidControllerPicker!.selectedIndex
+        if pidControllerPicker!.selectedIndex >= 0 {
+            settings!.pidController = pidControllerPicker!.selectedIndex
+        }
         profile = profilePicker!.selectedIndex
         
         settings?.rollRate = rollRate.value

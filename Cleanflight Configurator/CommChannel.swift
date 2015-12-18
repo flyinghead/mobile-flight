@@ -10,4 +10,5 @@ import Foundation
 
 protocol CommChannel {
     func flushOut()
+    func close()
 }
