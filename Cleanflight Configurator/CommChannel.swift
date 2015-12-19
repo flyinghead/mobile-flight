@@ -11,4 +11,5 @@ import Foundation
 protocol CommChannel {
     func flushOut()
     func close()
+    var connected: Bool { get }
 }

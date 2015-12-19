@@ -229,6 +229,13 @@ class MSPParser {
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = readUInt16(message, index: 12)
             gpsData.headingOverGround = readUInt16(message, index: 14)
+            
+            if gpsData.fix {
+                gpsData.lastKnownGoodLatitude = gpsData.latitude
+                gpsData.lastKnownGoodLongitude = gpsData.longitude
+                gpsData.lastKnownGoodAltitude = gpsData.altitude
+                gpsData.lastKnownGoodTimestamp = NSDate()
+            }
             pingGpsListeners()
             
         case .MSP_COMP_GPS:

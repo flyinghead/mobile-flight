@@ -261,7 +261,7 @@ class Configuration {
     var cycleTime: Int?
     var i2cError: Int?
     var activeSensors: Int?
-    var mode: UInt32?
+    var mode: UInt32!
     var profile: Int?
     
     // MSP_ANALOG
@@ -360,6 +360,12 @@ class GPSData {
     var distanceToHome = 0
     var directionToHome = 0
     var update = 0
+    
+    // FIXME for debug
+    var lastKnownGoodLatitude = 48.8863
+    var lastKnownGoodLongitude = 2.3052
+    var lastKnownGoodAltitude = 40
+    var lastKnownGoodTimestamp: NSDate? = NSDate()
     
     private var _satellites = [Satellite]()
     

@@ -8,6 +8,7 @@
 
 import UIKit
 import SVProgressHUD
+import MapKit
 
 class CalibrationViewController: UIViewController {
     @IBOutlet weak var calAccButton: UIButton!
@@ -136,5 +137,18 @@ class CalibrationViewController: UIViewController {
                 })
             }
         })
+    }
+    
+    @IBAction func findMe(sender: AnyObject) {
+        let gpsData = GPSData.theGPSData
+        if gpsData.lastKnownGoodTimestamp != nil {
+            let coordinates = CLLocationCoordinate2D(latitude: gpsData.lastKnownGoodLatitude, longitude: gpsData.lastKnownGoodLongitude)
+            let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinates, addressDictionary: nil))
+            let df = NSDateFormatter()
+            df.timeStyle = .MediumStyle
+            df.dateStyle = .NoStyle
+            mapItem.name = String(format:"Aircraft at %@", df.stringFromDate(gpsData.lastKnownGoodTimestamp!))
+            mapItem.openInMapsWithLaunchOptions(nil)
+        }
     }
 }

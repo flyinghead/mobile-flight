@@ -233,6 +233,12 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
 
         let tcpComm = TCPComm(msp: msp, host: host, port: Int(port))
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(5) * NSEC_PER_SEC)), dispatch_get_main_queue() , {
+            if !tcpComm.connected && !tcpComm.networkLost {
+                SVProgressHUD.showErrorWithStatus("Connection time out")
+                tcpComm.close()
+            }
+        })
         tcpComm.connect({ success in
             if success {
                 self.initiateHandShake({

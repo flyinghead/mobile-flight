@@ -9,24 +9,7 @@
 import UIKit
 import CoreLocation
 
-class TelemetryViewController: UIViewController, FlightDataListener, CLLocationManagerDelegate {
-    let redled = UIImage(named: "redled")
-    let greenled = UIImage(named: "greenled")
-    
-    let gyroSensorOn = UIImage(named: "sensor_gyro_on")
-    let gyroSensorOff = UIImage(named: "sensor_gyro_off")
-    let accSensorOn = UIImage(named: "sensor_acc_on")
-    let accSensorOff = UIImage(named: "sensor_acc_off")
-    let magSensorOn = UIImage(named: "sensor_mag_on")
-    let magSensorOff = UIImage(named: "sensor_mag_off")
-    let baroSensorOn = UIImage(named: "sensor_baro_on")
-    let baroSensorOff = UIImage(named: "sensor_baro_off")
-    let gpsSensorOn = UIImage(named: "sensor_sat_on")
-    let gpsSensorOff = UIImage(named: "sensor_sat_off")
-    let sonarSensorOn = UIImage(named: "sensor_sonar_on")
-    let sonarSensorOff = UIImage(named: "sensor_sonar_off")
-    
-    
+class TelemetryView : UIView {
     @IBOutlet weak var attitudeIndicator: AttitudeIndicator!
     @IBOutlet weak var headingIndicator: HeadingIndicator!
     @IBOutlet weak var voltLabel: UILabel!
@@ -52,17 +35,63 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     @IBOutlet weak var gpsSensor: UIImageView!
     @IBOutlet weak var sonarSensor: UIImageView!
     
-    var timerInterval = 0.1     // 100ms by default. Latency for MSP_ATTITUDE is around 40-70 ms
-    var timer: NSTimer?
-    var timer2: NSTimer?
-    var timer3: NSTimer?
+}
 
+class TelemetryViewController: UIViewController, FlightDataListener, CLLocationManagerDelegate {
+    let redled = UIImage(named: "redled")
+    let greenled = UIImage(named: "greenled")
+    
+    let gyroSensorOn = UIImage(named: "sensor_gyro_on")
+    let gyroSensorOff = UIImage(named: "sensor_gyro_off")
+    let accSensorOn = UIImage(named: "sensor_acc_on")
+    let accSensorOff = UIImage(named: "sensor_acc_off")
+    let magSensorOn = UIImage(named: "sensor_mag_on")
+    let magSensorOff = UIImage(named: "sensor_mag_off")
+    let baroSensorOn = UIImage(named: "sensor_baro_on")
+    let baroSensorOff = UIImage(named: "sensor_baro_off")
+    let gpsSensorOn = UIImage(named: "sensor_sat_on")
+    let gpsSensorOff = UIImage(named: "sensor_sat_off")
+    let sonarSensorOn = UIImage(named: "sensor_sonar_on")
+    let sonarSensorOff = UIImage(named: "sensor_sonar_off")
+    
+    @IBOutlet weak var landscapeView: TelemetryView!
+    @IBOutlet weak var portraitView: TelemetryView!
+    var theView: TelemetryView!
+    
+    let veryFastTimerInterval = 0.1     // 100ms by default. Latency for MSP_ATTITUDE is around 40-70 ms
+    var veryFastTimer: NSTimer?
+    var fastTimer: NSTimer?
+    var slowTimer: NSTimer?
+    
     var locationManager: CLLocationManager?
     var lastFollowMeUpdate: NSDate?
     let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
     
+    var isShowingLandscapeView = false
+    
+    func orientationChanged() {
+        let orientation = UIDevice.currentDevice().orientation
+        if orientation.isLandscape && !isShowingLandscapeView {
+            isShowingLandscapeView = true
+            theView = landscapeView
+            portraitView.hidden = true
+            landscapeView.hidden = false
+        } else if orientation == .Portrait && isShowingLandscapeView {
+            isShowingLandscapeView = false
+            theView = portraitView
+            portraitView.hidden = false
+            landscapeView.hidden = true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        isShowingLandscapeView = false
+        theView = portraitView
+        orientationChanged()
+        UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIDeviceOrientationDidChangeNotification, object: nil)
         
         msp.addDataListener(self)
     }
@@ -70,59 +99,64 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     override func viewWillAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if (timer == nil) {
-            timer = NSTimer.scheduledTimerWithTimeInterval(timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+        if (veryFastTimer == nil) {
+            veryFastTimer = NSTimer.scheduledTimerWithTimeInterval(veryFastTimerInterval, target: self, selector: "veryFastTimerDidFire:", userInfo: nil, repeats: true)
         }
-        if (timer2 == nil) {
-            timer2 = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "timer2DidFire:", userInfo: nil, repeats: true)
+        if (fastTimer == nil) {
+            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
         }
-        if (timer3 == nil) {
-            timer3 = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "timer3DidFire:", userInfo: nil, repeats: true)
+        if (slowTimer == nil) {
+            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
         }
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        timer?.invalidate()
-        timer = nil
-        timer2?.invalidate()
-        timer2 = nil
-        timer3?.invalidate()
-        timer3 = nil
+        veryFastTimer?.invalidate()
+        veryFastTimer = nil
+        fastTimer?.invalidate()
+        fastTimer = nil
+        slowTimer?.invalidate()
+        slowTimer = nil
+        VoiceMessage.theVoice.stopAlerts()
     }
-    
-    func timerDidFire(sender: AnyObject) {
+
+    func veryFastTimerDidFire(sender: AnyObject) {
         if Settings.theSettings.boxNames != nil {
             msp.sendMessage(.MSP_ATTITUDE, data: nil)
         }
     }
-    func timer2DidFire(sender: AnyObject) {
+    
+    func fastTimerDidFire(sender: AnyObject) {
         if Settings.theSettings.boxNames != nil {
             msp.sendMessage(.MSP_STATUS, data: nil)
             msp.sendMessage(.MSP_ALTITUDE, data: nil)
         }
     }
-    func timer3DidFire(sender: AnyObject) {
+    
+    func slowTimerDidFire(sender: AnyObject) {
         if Settings.theSettings.boxNames != nil {
             msp.sendMessage(.MSP_RAW_GPS, data: nil)
             msp.sendMessage(.MSP_COMP_GPS, data: nil)
             msp.sendMessage(.MSP_ANALOG, data: nil)
         }
+        VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
+
     }
     
     func receivedSensorData() {
         let sensorData = SensorData.theSensorData
-        attitudeIndicator.roll = sensorData.kinematicsX
-        attitudeIndicator.pitch = sensorData.kinematicsY
-        attitudeIndicator.setNeedsDisplay()
+        theView.attitudeIndicator.roll = sensorData.kinematicsX
+        theView.attitudeIndicator.pitch = sensorData.kinematicsY
+        theView.attitudeIndicator.setNeedsDisplay()
         
         // FIXME We should use magnetic compass instead?
-        headingIndicator.heading = sensorData.kinematicsZ
-        headingIndicator.setNeedsDisplay()
+        theView.headingIndicator.heading = sensorData.kinematicsZ
+        theView.headingIndicator.setNeedsDisplay()
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
-        altitudeLabel.text = String(format: "%.1f m", locale: NSLocale.currentLocale(), Configuration.theConfig.isBarometerActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
+        theView.altitudeLabel.text = String(format: "%.1f m", locale: NSLocale.currentLocale(), Configuration.theConfig.isBarometerActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
     }
     
     private func setModeLabel(label: UILabel, on: Bool) {
@@ -140,37 +174,38 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         let settings = Settings.theSettings
         
         if config.mode != nil {
-            setModeLabel(modeArmedLabel, on: settings.isModeOn(Mode.ARM, forStatus: config.mode!))
-            setModeLabel(modeAngleLabel, on: settings.isModeOn(Mode.ANGLE, forStatus: config.mode!))
-            setModeLabel(modeHorizonLabel, on: settings.isModeOn(Mode.HORIZON, forStatus: config.mode!))
-            setModeLabel(modeBaroLabel, on: settings.isModeOn(Mode.BARO, forStatus: config.mode!))
-            setModeLabel(modeMagLabel, on: settings.isModeOn(Mode.MAG, forStatus: config.mode!))
-            setModeLabel(modeGpsHomeLabel, on: settings.isModeOn(Mode.GPSHOME, forStatus: config.mode!))
-            setModeLabel(modeGpsHoldLabel, on: settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode!))
-            setModeLabel(modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode!))
-            setModeLabel(modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
+            setModeLabel(theView.modeArmedLabel, on: settings.isModeOn(Mode.ARM, forStatus: config.mode!))
+            setModeLabel(theView.modeAngleLabel, on: settings.isModeOn(Mode.ANGLE, forStatus: config.mode!))
+            setModeLabel(theView.modeHorizonLabel, on: settings.isModeOn(Mode.HORIZON, forStatus: config.mode!))
+            setModeLabel(theView.modeBaroLabel, on: settings.isModeOn(Mode.BARO, forStatus: config.mode!))
+            setModeLabel(theView.modeMagLabel, on: settings.isModeOn(Mode.MAG, forStatus: config.mode!))
+            setModeLabel(theView.modeGpsHomeLabel, on: settings.isModeOn(Mode.GPSHOME, forStatus: config.mode!))
+            setModeLabel(theView.modeGpsHoldLabel, on: settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode!))
+            setModeLabel(theView.modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode!))
+            setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
         }
-        voltLabel.text = String(format: "%.1f V", locale: NSLocale.currentLocale(), config.voltage)
-        rssiLabel.text = String(format: "%d %%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
+        theView.voltLabel.text = String(format: "%.1f V", locale: NSLocale.currentLocale(), config.voltage)
         
-        accSensor.image = config.isGyroAndAccActive() ? accSensorOn : accSensorOff
-        gyroSensor.image = config.isGyroAndAccActive() ? gyroSensorOn : gyroSensorOff
-        magSensor.image = config.isMagnetometerActive() ? magSensorOn : magSensorOff
-        baroSensor.image = config.isBarometerActive() ? baroSensorOn : baroSensorOff
-        gpsSensor.image = config.isGPSActive() ? gpsSensorOn : gpsSensorOff
-        sonarSensor.image = config.isSonarActive() ? sonarSensorOn : sonarSensorOff
+        theView.rssiLabel.text = String(format: "%d %%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
+        
+        theView.accSensor.image = config.isGyroAndAccActive() ? accSensorOn : accSensorOff
+        theView.gyroSensor.image = config.isGyroAndAccActive() ? gyroSensorOn : gyroSensorOff
+        theView.magSensor.image = config.isMagnetometerActive() ? magSensorOn : magSensorOff
+        theView.baroSensor.image = config.isBarometerActive() ? baroSensorOn : baroSensorOff
+        theView.gpsSensor.image = config.isGPSActive() ? gpsSensorOn : gpsSensorOff
+        theView.sonarSensor.image = config.isSonarActive() ? sonarSensorOn : sonarSensorOff
     }
     
     func receivedGpsData() {
         let gpsData = GPSData.theGPSData
         if gpsData.fix && gpsData.numSat >= 5 {
-            gpsFixImage.image = greenled
-            distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
-            speedLabel.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
+            theView.gpsFixImage.image = greenled
+            theView.distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+            theView.speedLabel.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
         } else {
-            gpsFixImage.image = redled
-            distanceToHomeLabel.text = ""
-            speedLabel.text = ""
+            theView.gpsFixImage.image = redled
+            theView.distanceToHomeLabel.text = ""
+            theView.speedLabel.text = ""
         }
     }
     @IBAction func disconnectAction(sender: AnyObject) {

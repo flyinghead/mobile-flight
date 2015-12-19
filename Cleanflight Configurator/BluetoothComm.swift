@@ -16,6 +16,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     let btQueue: dispatch_queue_t
     
     private var _closed = false
+    private var _connected = true
     
     init(withBluetoothManager btManager: BluetoothManager, andPeripheral peripheral: BluetoothPeripheral, andMSP msp: MSPParser) {
         self.btManager = btManager
@@ -39,6 +40,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func close() {
+        _connected = false
         _closed = true
         btManager.disconnect(peripheral)
         msp.cancelRetries()
@@ -53,6 +55,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     
     func connectedPeripheral(peripheral: BluetoothPeripheral) {
         self.peripheral = peripheral
+        _connected = true
         dispatch_async(dispatch_get_main_queue(), {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
             SVProgressHUD.dismiss()
@@ -65,7 +68,9 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     
     func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
         if !_closed {
+            _connected = false
             dispatch_async(dispatch_get_main_queue(), {
+                VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
                 if !SVProgressHUD.isVisible() {
                     NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                     SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
@@ -87,4 +92,5 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
         msp.read(data)
     }
     
+    var connected: Bool { return _connected }
 }
