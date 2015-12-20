@@ -270,6 +270,9 @@ class Configuration {
     var rssi = 0
     var amperage = 0.0
     
+    // Local
+    var batteryCells = 0
+    
     // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
     // FIXME Move this to Settings or elsewhere
     var accelerometerTrimPitch = 0
@@ -361,11 +364,11 @@ class GPSData {
     var directionToHome = 0
     var update = 0
     
-    // FIXME for debug
-    var lastKnownGoodLatitude = 48.8863
-    var lastKnownGoodLongitude = 2.3052
-    var lastKnownGoodAltitude = 40
-    var lastKnownGoodTimestamp: NSDate? = NSDate()
+    // Local
+    var lastKnownGoodLatitude = 0.0
+    var lastKnownGoodLongitude = 0.0
+    var lastKnownGoodAltitude = 0
+    var lastKnownGoodTimestamp: NSDate?
     
     private var _satellites = [Satellite]()
     

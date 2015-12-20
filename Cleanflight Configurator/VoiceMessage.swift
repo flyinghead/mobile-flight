@@ -92,6 +92,41 @@ class GPSFixLostAlarm : VoiceAlarm {
     }
 }
 
+class BatteryLowAlarm : VoiceAlarm {
+    enum Status {
+        case Good, Warning, Critical
+    }
+    
+    override var on: Bool {
+        return batteryStatus() != .Good
+    }
+    
+    func batteryStatus() -> Status {
+        if CommunicationLostAlarm().on {
+            return .Good
+        }
+        let settings = Settings.theSettings
+        let config = Configuration.theConfig
+        let misc = Misc.theMisc
+        
+        if settings.features?.contains(.VBat) ?? false
+            && config.batteryCells > 0
+            && config.voltage > 0 {
+            let voltsPerCell = config.voltage / Double(config.batteryCells)
+            if voltsPerCell <= misc.vbatMinCellVoltage {
+                return .Critical
+            } else if voltsPerCell <= misc.vbatWarningCellVoltage {
+                return .Warning
+            }
+        }
+        return .Good
+    }
+    
+    override func voiceAlert() -> VoiceAlert {
+        return VoiceAlert(speech: batteryStatus() == .Critical ? "Battery level critical" : "Battery low", repeatInterval: 10.0, condition: { self.on })
+    }
+}
+
 class VoiceMessage: NSObject, FlightDataListener {
     static let theVoice = VoiceMessage()
     let synthesizer = AVSpeechSynthesizer()

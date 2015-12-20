@@ -278,6 +278,11 @@ class MSPParser {
             config.mAhDrawn = readUInt16(message, index: 1)
             config.rssi = readUInt16(message, index: 3)                      // 0-1023
             config.amperage = Double(readInt16(message, index: 5)) / 100     // A
+            if settings.features?.contains(.VBat) ?? false {
+                if config.batteryCells == 0  && misc.vbatMaxCellVoltage > 0 {
+                    config.batteryCells = Int(config.voltage / misc.vbatMaxCellVoltage + 1)
+                }
+            }
             pingDataListeners()
             
         case .MSP_RC_TUNING:

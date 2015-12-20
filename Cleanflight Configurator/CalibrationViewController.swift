@@ -149,6 +149,8 @@ class CalibrationViewController: UIViewController {
             df.dateStyle = .NoStyle
             mapItem.name = String(format:"Aircraft at %@", df.stringFromDate(gpsData.lastKnownGoodTimestamp!))
             mapItem.openInMapsWithLaunchOptions(nil)
+        } else {
+            SVProgressHUD.showErrorWithStatus("No known GPS location")
         }
     }
 }

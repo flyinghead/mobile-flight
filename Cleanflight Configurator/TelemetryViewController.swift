@@ -99,6 +99,13 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     override func viewWillAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        // For enabled features
+        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+            self.msp.sendMessage(.MSP_STATUS, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.MSP_MISC, data: nil)
+            })
+        })
+        
         if (veryFastTimer == nil) {
             veryFastTimer = NSTimer.scheduledTimerWithTimeInterval(veryFastTimerInterval, target: self, selector: "veryFastTimerDidFire:", userInfo: nil, repeats: true)
         }
@@ -141,8 +148,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             msp.sendMessage(.MSP_COMP_GPS, data: nil)
             msp.sendMessage(.MSP_ANALOG, data: nil)
         }
-        VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
-
     }
     
     func receivedSensorData() {
@@ -185,6 +190,7 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
         }
         theView.voltLabel.text = String(format: "%.1f V", locale: NSLocale.currentLocale(), config.voltage)
+        VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         
         theView.rssiLabel.text = String(format: "%d %%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
         
@@ -207,7 +213,9 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             theView.distanceToHomeLabel.text = ""
             theView.speedLabel.text = ""
         }
+        VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
+    
     @IBAction func disconnectAction(sender: AnyObject) {
         if let comm = msp.commChannel {
             comm.close()
