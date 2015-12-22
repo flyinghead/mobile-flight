@@ -519,69 +519,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4ov-b7-QQI" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                    <rect key="frame" x="495" y="7" width="97" height="30"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="60" id="jOb-rh-JLx"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
-                                                            <integer key="value" value="0"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
-                                                            <real key="value" value="23"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
-                                                            <real key="value" value="0.0"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
-                                                            <real key="value" value="255"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
-                                                            <real key="value" value="1"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="D" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFy-NU-Jua">
-                                                    <rect key="frame" x="466" y="11" width="21" height="21"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Aqw-fq-SK5" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                    <rect key="frame" x="361" y="7" width="97" height="30"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="60" id="1fk-A3-WCI"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
-                                                            <real key="value" value="0.029999999999999999"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
-                                                            <integer key="value" value="3"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
-                                                            <real key="value" value="0.0"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
-                                                            <real key="value" value="0.255"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
-                                                            <real key="value" value="0.001"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="I" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O5t-cE-gp9">
-                                                    <rect key="frame" x="332" y="11" width="21" height="21"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="y8d-iQ-oTR" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="y8d-iQ-oTR" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                     <rect key="frame" x="227" y="7" width="97" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="60" id="6sQ-js-1nS"/>
@@ -606,7 +544,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="P" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6b-Cu-dhW">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" misplaced="YES" text="P" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6b-Cu-dhW">
                                                     <rect key="frame" x="198" y="11" width="21" height="21"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -616,19 +554,11 @@
                                             <constraints>
                                                 <constraint firstItem="X4a-G0-hIT" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="UiZ-LA-RkV"/>
                                                 <constraint firstItem="y8d-iQ-oTR" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="XGN-F6-0zO"/>
-                                                <constraint firstItem="O5t-cE-gp9" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="ZJy-hM-g6l"/>
                                                 <constraint firstItem="Z6b-Cu-dhW" firstAttribute="leading" secondItem="X4a-G0-hIT" secondAttribute="trailing" constant="8" id="cPy-fG-12b"/>
-                                                <constraint firstItem="4ov-b7-QQI" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="d1x-aR-Ahc"/>
-                                                <constraint firstItem="aFy-NU-Jua" firstAttribute="leading" secondItem="Aqw-fq-SK5" secondAttribute="trailing" constant="12" id="k54-1A-bqM"/>
-                                                <constraint firstItem="O5t-cE-gp9" firstAttribute="leading" secondItem="y8d-iQ-oTR" secondAttribute="trailing" constant="12" id="kNe-Uc-ld8"/>
-                                                <constraint firstItem="aFy-NU-Jua" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="mts-Mb-5dy"/>
                                                 <constraint firstItem="X4a-G0-hIT" firstAttribute="leading" secondItem="Xv1-2c-afW" secondAttribute="leadingMargin" id="mwA-El-Qsq"/>
-                                                <constraint firstItem="Aqw-fq-SK5" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="niI-Oe-voL"/>
-                                                <constraint firstItem="Aqw-fq-SK5" firstAttribute="leading" secondItem="O5t-cE-gp9" secondAttribute="trailing" constant="8" id="uBa-p1-tmx"/>
-                                                <constraint firstItem="4ov-b7-QQI" firstAttribute="trailing" secondItem="Xv1-2c-afW" secondAttribute="trailingMargin" id="uJl-tv-oiV"/>
                                                 <constraint firstItem="y8d-iQ-oTR" firstAttribute="leading" secondItem="Z6b-Cu-dhW" secondAttribute="trailing" constant="8" id="vP5-7t-YSg"/>
                                                 <constraint firstItem="Z6b-Cu-dhW" firstAttribute="centerY" secondItem="Xv1-2c-afW" secondAttribute="centerY" id="yoo-F5-ncx"/>
-                                                <constraint firstItem="4ov-b7-QQI" firstAttribute="leading" secondItem="aFy-NU-Jua" secondAttribute="trailing" constant="8" id="zVr-FO-sES"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="y8d-iQ-oTR" secondAttribute="trailing" constant="175" id="z2T-Rp-1hJ"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1594,8 +1524,6 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="1400"/>
                     <connections>
-                        <outlet property="altD" destination="4ov-b7-QQI" id="6kw-um-BTg"/>
-                        <outlet property="altI" destination="Aqw-fq-SK5" id="xq0-lN-GJc"/>
                         <outlet property="altP" destination="y8d-iQ-oTR" id="FHI-ao-fQh"/>
                         <outlet property="angleLevel" destination="ozn-64-rWT" id="Maa-w2-SCY"/>
                         <outlet property="horizonLevel" destination="JAg-GT-Wdb" id="E6o-JX-Vu2"/>

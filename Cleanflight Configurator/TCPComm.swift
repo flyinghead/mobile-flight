@@ -21,7 +21,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     var connectCallback: ((success: Bool) -> ())?
     var _connected = false
     var networkLost = false
-    var reachability: SCNetworkReachability?
+    var _reachability: SCNetworkReachability!
     
     init(msp: MSPParser, host: String, port: Int?) {
         self.msp = msp
@@ -54,12 +54,25 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         startReachabilityNotifier()
     }
     
-    func startReachabilityNotifier() {
+    private var reachability: SCNetworkReachability {
+        if _reachability == nil {
+            _reachability = SCNetworkReachabilityCreateWithName(nil, host)!
+        }
+        return _reachability
+    }
+    
+    var reachable: Bool {
+        var flags : SCNetworkReachabilityFlags = []
+        SCNetworkReachabilityGetFlags(reachability, &flags)
+        return flags.contains(.IsDirect)
+    }
+    
+    private func startReachabilityNotifier() {
         // Start NetworkReachability notifications
         var context = SCNetworkReachabilityContext(version: 0, info: UnsafeMutablePointer(Unmanaged.passUnretained(self).toOpaque()), retain: nil, release: nil, copyDescription: nil)
-        reachability = SCNetworkReachabilityCreateWithName(nil, host)!
-        SCNetworkReachabilitySetCallback(reachability!, { (_, flags, info) in
-            let isDirect = (flags.rawValue & UInt32(kSCNetworkFlagsIsDirect)) != 0
+        SCNetworkReachabilitySetCallback(reachability, { (_, flags, info) in
+            //let isDirect = (flags.rawValue & UInt32(kSCNetworkFlagsIsDirect)) != 0
+            let isDirect = flags.contains(.IsDirect)
             let myself = Unmanaged<TCPComm>.fromOpaque(COpaquePointer(info)).takeUnretainedValue()
             let hadLostNetwork = myself.networkLost
             myself.networkLost = !isDirect
@@ -77,7 +90,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
                 })
             }
         }, &context)
-        SCNetworkReachabilityScheduleWithRunLoop(reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
+        SCNetworkReachabilityScheduleWithRunLoop(reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes)
     }
     
     private func sendIfAvailable() {
@@ -141,7 +154,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             _connected = false
             VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
             if !SVProgressHUD.isVisible() {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection:", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                 SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
             }
             closeStreams()
@@ -158,7 +171,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         }
     }
     
-    func userCancelledReconnection() {
+    func userCancelledReconnection(notification: NSNotification) {
         close()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
         SVProgressHUD.dismiss()
@@ -168,9 +181,9 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
     func close() {
         closeStreams()
-        if reachability != nil {
-            SCNetworkReachabilityUnscheduleFromRunLoop(reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
-            reachability = nil
+        if _reachability != nil {
+            SCNetworkReachabilityUnscheduleFromRunLoop(_reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
+            _reachability = nil
         }
     }
     

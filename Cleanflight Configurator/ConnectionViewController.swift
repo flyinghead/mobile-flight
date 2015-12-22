@@ -9,7 +9,7 @@
 import UIKit
 import SVProgressHUD
 
-class ConnectionViewController: UITableViewController, BluetoothDelegate {
+class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActionSheetDelegate {
 
     var btPeripherals = [BluetoothPeripheral]()
     let btManager = BluetoothManager()
@@ -228,11 +228,29 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
         }
     }
     
-    func connectTcp(host: String, port: String) {
+    func connectTcp(sender: AnyObject, host: String, port: String) {
+        let tcpComm = TCPComm(msp: msp, host: host, port: Int(port))
+        if !tcpComm.reachable {
+            let alertController = UIAlertController(title: nil, message: "You don't seem to be connected to the right Wi-Fi network", preferredStyle: UIAlertControllerStyle.ActionSheet)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: "Try Anyway", style: UIAlertActionStyle.Default, handler: { alertController in
+                self.doConnectTcp(host, port: port)
+            }))
+            alertController.addAction(UIAlertAction(title: "Open Settings", style: UIAlertActionStyle.Default, handler: { alertController in
+                UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+            }))
+            presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            doConnectTcp(host, port: port)
+        }
+    }
+    
+    private func doConnectTcp(host: String, port: String) {
+        let tcpComm = TCPComm(msp: msp, host: host, port: Int(port))
+        
         let msg = String(format: "Connecting to %@:%@...", host, port)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
-
-        let tcpComm = TCPComm(msp: msp, host: host, port: Int(port))
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(5) * NSEC_PER_SEC)), dispatch_get_main_queue() , {
             if !tcpComm.connected && !tcpComm.networkLost {
                 SVProgressHUD.showErrorWithStatus("Connection time out")
@@ -249,7 +267,6 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate {
                 SVProgressHUD.showErrorWithStatus("Connection failed")
             }
         })
-        
     }
     
     /*
@@ -306,6 +323,6 @@ class TCPTableViewCell : UITableViewCell {
     var viewController: ConnectionViewController?
     
     @IBAction func connectAction(sender: AnyObject) {
-        viewController!.connectTcp(ipAddressField.text!, port: ipPortField.text!)
+        viewController!.connectTcp(sender, host: ipAddressField.text!, port: ipPortField.text!)
     }
 }

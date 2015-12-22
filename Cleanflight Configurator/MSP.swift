@@ -458,11 +458,15 @@ class MSPParser {
             pingDataListeners()
             
         case .MSP_BUILD_INFO:
-            if message.count < 11 {
+            if message.count < 19 {
                 return false
             }
             let date = NSString(bytes: message, length: 11, encoding: NSUTF8StringEncoding)
-            let time = NSString(bytes: Array<UInt8>(message[11..<message.count]), length: 8, encoding: NSUTF8StringEncoding)
+            let time = NSString(bytes: Array<UInt8>(message[11..<19]), length: 8, encoding: NSUTF8StringEncoding)
+            if message.count >= 26 {
+                let revision  = NSString(bytes: Array<UInt8>(message[19..<26]), length: 7, encoding: NSUTF8StringEncoding)
+                NSLog("revision %@", revision!)
+            }
             config.buildInfo = String(format: "%@ %@", date!, time!)
             pingDataListeners()
             

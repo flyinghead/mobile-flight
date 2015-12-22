@@ -102,8 +102,13 @@ class BatteryLowAlarm : VoiceAlarm {
     }
     
     func batteryStatus() -> Status {
-        if CommunicationLostAlarm().on {
-            return .Good
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        if let comm = appDelegate.msp.commChannel {
+            if !comm.connected {
+                return .Good        // Comm lost, no need for battery alarm
+            }
+        } else {
+            return .Good            // Not connected, same thing
         }
         let settings = Settings.theSettings
         let config = Configuration.theConfig

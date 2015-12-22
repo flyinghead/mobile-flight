@@ -28,8 +28,6 @@ class PIDViewController: UITableViewController {
     @IBOutlet weak var yawD: NumberField!
     // ALT
     @IBOutlet weak var altP: NumberField!
-    @IBOutlet weak var altI: NumberField!
-    @IBOutlet weak var altD: NumberField!
     @IBOutlet weak var varioP: NumberField!
     @IBOutlet weak var varioI: NumberField!
     @IBOutlet weak var varioD: NumberField!
@@ -125,8 +123,6 @@ class PIDViewController: UITableViewController {
                                                     self.yawD.value = pid[2]
                                                     pid = settings.getPID(.Alt)!
                                                     self.altP.value = pid[0]
-                                                    self.altI.value = pid[1]
-                                                    self.altD.value = pid[2]
                                                     pid = settings.getPID(.Vel)!
                                                     self.varioP.value = pid[0]
                                                     self.varioI.value = pid[1]
@@ -178,7 +174,7 @@ class PIDViewController: UITableViewController {
         pids.append([ rollP.value, rollI.value, rollD.value ])
         pids.append([ pitchP.value, pitchI.value, pitchD.value ])
         pids.append([ yawP.value, yawI.value, yawD.value ])
-        pids.append([ altP.value, altI.value, altD.value ])
+        pids.append([ altP.value, 0.0, 0.0 ])
         pids.append([ posP.value, posI.value, 0.0 ])
         pids.append([ posRP.value, posRI.value, posRD.value ])
         pids.append([ navRP.value, navRI.value, navRD.value ])
