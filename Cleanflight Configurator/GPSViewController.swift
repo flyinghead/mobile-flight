@@ -65,7 +65,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (section == 0) {
-            return 7
+            return 9
         } else {
             return GPSData.theGPSData.satellites.count;
         }
@@ -98,22 +98,28 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 }
             case 1:
                 cell.textLabel!.text = "Altitude"
-                cell.detailTextLabel!.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.altitude)
+                cell.detailTextLabel!.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.altitude)
             case 2:
                 cell.textLabel!.text = "Latitude"
-                cell.detailTextLabel!.text = String(format: "%.4f °", locale: NSLocale.currentLocale(), gpsData.latitude)
+                cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.latitude)
             case 3:
                 cell.textLabel!.text = "Longitude"
-                cell.detailTextLabel!.text = String(format: "%.4f °", locale: NSLocale.currentLocale(), gpsData.longitude)
+                cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.longitude)
             case 4:
                 cell.textLabel!.text = "Speed"
-                cell.detailTextLabel!.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
+                cell.detailTextLabel!.text = String(format: "%.1fkm/h", locale: NSLocale.currentLocale(), gpsData.speed)
             case 5:
+                cell.textLabel!.text = "Heading"
+                cell.detailTextLabel!.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
+            case 6:
                 cell.textLabel!.text = "Satellites"
                 cell.detailTextLabel!.text = String(format: "%d", locale: NSLocale.currentLocale(), gpsData.numSat)
-            case 6:
+            case 7:
                 cell.textLabel!.text = "Distance to Home"
-                cell.detailTextLabel!.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+                cell.detailTextLabel!.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+            case 8:
+                cell.textLabel!.text = "Direction to Home"
+                cell.detailTextLabel!.text = String(format: "%d°", locale: NSLocale.currentLocale(), gpsData.directionToHome)
             default:
                 break
             }

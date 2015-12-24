@@ -93,7 +93,7 @@ class ReceiverChannel: UIView {
     
     func setValue(value: Int) {
         slider?.value = Double(value)
-        valueLabel?.text = String(format: "%d", value)
+        valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), value)
         slider?.setNeedsDisplay()
     }
 }

@@ -88,7 +88,7 @@ class Settings {
     static let theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
-    var autoDisarmDelay: Int?
+    var autoDisarmDelay: Int?       // sec
     var disarmKillSwitch = false
     
     // MSP_BF_CONFIG / MSP_SET_BF_CONFIG
@@ -200,11 +200,11 @@ class Misc {
     var multiwiiCurrentOutput = 0
     var rssiChannel = 0
     var placeholder2 = 0
-    var magDeclination = 0.0
+    var magDeclination = 0.0         // degree
     var vbatScale = 0
-    var vbatMinCellVoltage = 0.0
-    var vbatMaxCellVoltage = 0.0
-    var vbatWarningCellVoltage = 0.0
+    var vbatMinCellVoltage = 0.0     // V
+    var vbatMaxCellVoltage = 0.0     // V
+    var vbatWarningCellVoltage = 0.0 // V
     
     private init() {
     }
@@ -258,14 +258,14 @@ class Configuration {
     var uid: String?
 
     // MSP_STATUS
-    var cycleTime: Int?
+    var cycleTime: Int?     // microsecond?
     var i2cError: Int?
     var activeSensors: Int?
     var mode: UInt32!
     var profile: Int?
     
     // MSP_ANALOG
-    var voltage = 0.0
+    var voltage = 0.0       // V
     var mAhDrawn = 0
     var rssi = 0
     var amperage = 0.0
@@ -353,15 +353,15 @@ class GPSData {
     static let theGPSData = GPSData()
     
     var fix = false
-    var latitude = 0.0
-    var longitude = 0.0
-    var altitude = 0
-    var speed = 0
-    var headingOverGround = 0
+    var latitude = 0.0          // degree
+    var longitude = 0.0         // degree
+    var altitude = 0            // m
+    var speed = 0.0             // km/h
+    var headingOverGround = 0.0 // degree
     var numSat = 0
     
-    var distanceToHome = 0
-    var directionToHome = 0
+    var distanceToHome = 0      // m
+    var directionToHome = 0     // degree
     var update = 0
     
     // Local
@@ -397,8 +397,8 @@ class SensorData {
     var accelerometerX = 0.0, accelerometerY = 0.0, accelerometerZ = 0.0
     var gyroscopeX = 0.0, gyroscopeY = 0.0, gyroscopeZ = 0.0
     var magnetometerX = 0.0, magnetometerY = 0.0, magnetometerZ = 0.0
-    var altitude = 0.0
-    var sonar = 0
+    var altitude = 0.0          // m
+    var sonar = 0               // cm
     var kinematicsX = 0.0, kinematicsY = 0.0, kinematicsZ = 0.0
 }
 

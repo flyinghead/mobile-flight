@@ -1,1 +1,6 @@
 - Access violation due to reachability callback being called after connection is closed
+- Licensing:
+    + flight instruments and many icons stolen from Cleanflight Configurator
+    + calibrate icon stolen on the web
+    + map, tuning, (new calibrate), battery, signal icons "designed by Freepik" mandatory in credits
++ compass: <div>Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>

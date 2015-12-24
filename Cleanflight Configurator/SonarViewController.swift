@@ -18,6 +18,10 @@ class SonarViewController: BarometerViewController {
         leftAxis.customAxisMax = 100.0
         leftAxis.customAxisMin =  0.0
 
+        let nf = NSNumberFormatter()
+        nf.locale = NSLocale.currentLocale()
+        nf.maximumFractionDigits = 0
+        leftAxis.valueFormatter = nf
     }
 
     override func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {

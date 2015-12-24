@@ -80,7 +80,7 @@ class LinearGauge: UIView {
         UIRectFill(CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.width * CGFloat(normalizedValue), height: rect.height))
         if printValue {
             // FIXME Set font name and size externally. Find a way to have text always visible regardless of fore/background color
-            let label = NSString(format: "%.0lf", value)
+            let label = NSString(format: "%.0f", value)
             
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = NSTextAlignment.Center

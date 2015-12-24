@@ -161,7 +161,8 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         theView.headingIndicator.setNeedsDisplay()
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
-        theView.altitudeLabel.text = String(format: "%.1f m", locale: NSLocale.currentLocale(), Configuration.theConfig.isBarometerActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
+        let config = Configuration.theConfig
+        theView.altitudeLabel.text = String(format: "%.1fm", locale: NSLocale.currentLocale(), config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
     }
     
     private func setModeLabel(label: UILabel, on: Bool) {
@@ -189,10 +190,10 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             setModeLabel(theView.modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode!))
             setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
         }
-        theView.voltLabel.text = String(format: "%.1f V", locale: NSLocale.currentLocale(), config.voltage)
+        theView.voltLabel.text = String(format: "%.1fV", locale: NSLocale.currentLocale(), config.voltage)
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         
-        theView.rssiLabel.text = String(format: "%d %%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
+        theView.rssiLabel.text = String(format: "%d%%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
         
         theView.accSensor.image = config.isGyroAndAccActive() ? accSensorOn : accSensorOff
         theView.gyroSensor.image = config.isGyroAndAccActive() ? gyroSensorOn : gyroSensorOff
@@ -206,8 +207,8 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         let gpsData = GPSData.theGPSData
         if gpsData.fix && gpsData.numSat >= 5 {
             theView.gpsFixImage.image = greenled
-            theView.distanceToHomeLabel.text = String(format: "%d m", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
-            theView.speedLabel.text = String(format: "%d cm/s", locale: NSLocale.currentLocale(), gpsData.speed)
+            theView.distanceToHomeLabel.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+            theView.speedLabel.text = String(format: "%.1fkm/h", locale: NSLocale.currentLocale(), gpsData.speed)
         } else {
             theView.gpsFixImage.image = redled
             theView.distanceToHomeLabel.text = ""

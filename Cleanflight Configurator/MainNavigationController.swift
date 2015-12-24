@@ -21,6 +21,13 @@ class MainNavigationController: UITabBarController {
         if let controller = storyboard.instantiateInitialViewController() {
             viewControllers!.insert(controller, atIndex: 8)
         }
+        storyboard = UIStoryboard(name: "Telemetry", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 0)
+            selectedViewController = controller
+        }
+        let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
+        viewControllers!.insert(controller, atIndex: 1)
     }
 
     override func didReceiveMemoryWarning() {

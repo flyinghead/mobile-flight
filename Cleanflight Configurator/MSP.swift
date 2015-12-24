@@ -227,8 +227,8 @@ class MSPParser {
             gpsData.latitude = Double(readInt32(message, index: 2)) / 10000000
             gpsData.longitude = Double(readInt32(message, index: 6)) / 10000000
             gpsData.altitude = readUInt16(message, index: 10)
-            gpsData.speed = readUInt16(message, index: 12)
-            gpsData.headingOverGround = readUInt16(message, index: 14)
+            gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
+            gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 10th of degree to degree
             
             if gpsData.fix {
                 gpsData.lastKnownGoodLatitude = gpsData.latitude

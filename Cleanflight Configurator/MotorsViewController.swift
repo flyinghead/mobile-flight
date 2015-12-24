@@ -166,14 +166,14 @@ class MotorsViewController: UIViewController, FlightDataListener {
     func receivedMotorData() {
         if (timer != nil) {
             let motorData = MotorData.theMotorData
-            value1.text = String(format: "%d", motorData.throttle[0])
-            value2.text = String(format: "%d", motorData.throttle[1])
-            value3.text = String(format: "%d", motorData.throttle[2])
-            value4.text = String(format: "%d", motorData.throttle[3])
-            value5.text = String(format: "%d", motorData.throttle[4])
-            value6.text = String(format: "%d", motorData.throttle[5])
-            value7.text = String(format: "%d", motorData.throttle[6])
-            value8.text = String(format: "%d", motorData.throttle[7])
+            value1.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[0])
+            value2.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[1])
+            value3.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[2])
+            value4.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[3])
+            value5.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[4])
+            value6.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[5])
+            value7.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[6])
+            value8.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[7])
         }
     }
     

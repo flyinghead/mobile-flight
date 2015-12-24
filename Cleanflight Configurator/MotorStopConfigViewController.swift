@@ -49,7 +49,7 @@ class MotorStopConfigViewController: ConfigChildViewController {
     }
     @IBAction func disarmDelayStep(sender: AnyObject) {
         settings!.autoDisarmDelay = Int(disarmDelayStepper.value)
-        disarmDelayLabel.text = String(format: "Disarm motors after %d seconds", settings!.autoDisarmDelay ?? 5)
+        disarmDelayLabel.text = String(format: "Disarm motors after %d seconds", locale: NSLocale.currentLocale(), settings!.autoDisarmDelay ?? 5)
     }
     
     override func viewWillDisappear(animated: Bool) {
