@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3707FF76AA548F860426D98C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36398CC8E2486DF5E7F3FAF /* Pods.framework */; };
+		AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE00734C1C24C2780000926F /* VoiceMessage.swift */; };
 		AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
@@ -16,6 +17,10 @@
 		AE48F6DE1C1F25A6004E949F /* ModeTableViewFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */; };
 		AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */; };
 		AE48F6E31C1F6F8A004E949F /* MyUINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */; };
+		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
+		AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */; };
+		AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */; };
+		AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */; };
 		AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */; };
 		AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */; };
 		AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */; };
@@ -28,12 +33,17 @@
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
 		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
+		AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A681C26BE6F006BC53E /* TODO.txt */; };
+		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
+		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
 		AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */; };
 		AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D831C1E187700FB183E /* ModesViewController.swift */; };
 		AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */; };
 		AECE8D881C1EBE3E00FB183E /* MyDownPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */; };
+		AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */; };
+		AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
 		AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */; };
 		AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2401C10C852004232AA /* CommChannel.swift */; };
 		AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */; };
@@ -59,6 +69,7 @@
 		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
 		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
 		AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+		AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
 /* End PBXBuildFile section */
@@ -95,6 +106,7 @@
 
 /* Begin PBXFileReference section */
 		9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +115,10 @@
 		AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModeTableViewFooter.xib; sourceTree = "<group>"; };
 		AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverTuningViewController.swift; sourceTree = "<group>"; };
 		AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyUINavigationController.swift; sourceTree = "<group>"; };
+		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
+		AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
+		AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Sensors.storyboard; sourceTree = "<group>"; };
+		AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataflashController.swift; sourceTree = "<group>"; };
 		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -121,12 +137,17 @@
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
 		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
 		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
+		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
+		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
+		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
 		AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
 		AECE8D831C1E187700FB183E /* ModesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModesViewController.swift; sourceTree = "<group>"; };
 		AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderReferenceThumbLayer.swift; sourceTree = "<group>"; };
 		AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyDownPicker.swift; sourceTree = "<group>"; };
+		AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIDViewController.swift; sourceTree = "<group>"; };
+		AEDA78B11C20A52C00AD4845 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSViewController.swift; sourceTree = "<group>"; };
 		AEDDD2401C10C852004232AA /* CommChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommChannel.swift; sourceTree = "<group>"; };
 		AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverChannel.swift; sourceTree = "<group>"; };
@@ -152,6 +173,7 @@
 		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCode.swift; sourceTree = "<group>"; };
+		AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlinkingLabel.swift; sourceTree = "<group>"; };
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
@@ -205,14 +227,15 @@
 		AE1F73E31C18C5AB0029C330 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
-				AEDDD2601C122F43004232AA /* SensorPagesViewController.swift */,
-				AEDDD2621C12316C004232AA /* BaseSensorViewController.swift */,
+				AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */,
 				AEDDD2641C12338F004232AA /* AccelerometerViewController.swift */,
-				AEDDD2661C124045004232AA /* GyroscopeViewController.swift */,
-				AEDDD2681C12DCE3004232AA /* XYZSensorViewController.swift */,
-				AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */,
 				AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */,
+				AEDDD2621C12316C004232AA /* BaseSensorViewController.swift */,
+				AEDDD2661C124045004232AA /* GyroscopeViewController.swift */,
+				AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */,
+				AEDDD2601C122F43004232AA /* SensorPagesViewController.swift */,
 				AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */,
+				AEDDD2681C12DCE3004232AA /* XYZSensorViewController.swift */,
 			);
 			name = Sensors;
 			sourceTree = "<group>";
@@ -220,13 +243,14 @@
 		AE1F73E41C18C63F0029C330 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
-				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
-				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
-				AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */,
-				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
-				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
+				AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */,
 				AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */,
+				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
+				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
+				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
+				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
+				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
+				AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */,
 			);
 			name = Configuration;
 			sourceTree = "<group>";
@@ -234,6 +258,7 @@
 		AE72AB4D1C0F3D230020C4B0 = {
 			isa = PBXGroup;
 			children = (
+				AEA48A681C26BE6F006BC53E /* TODO.txt */,
 				AEDDD2781C1615C8004232AA /* Podfile */,
 				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
@@ -257,42 +282,46 @@
 		AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */ = {
 			isa = PBXGroup;
 			children = (
-				AECE8D821C1E14B500FB183E /* RangeSlider */,
+				AEA48A671C25CFDD006BC53E /* Communication */,
 				AE1F73E41C18C63F0029C330 /* Configuration */,
+				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
-				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
-				AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */,
-				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
-				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
-				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
-				AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
-				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
-				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
 				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
-				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
+				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
+				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
+				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
+				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
+				AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
-				AEDDD2401C10C852004232AA /* CommChannel.swift */,
-				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
-				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
-				AEDDD2701C158648004232AA /* TelemetryViewController.swift */,
-				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
-				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
-				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
-				AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */,
-				AEDDD2801C188701004232AA /* ConnectionViewController.swift */,
-				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
 				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
 				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
-				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
-				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
-				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
+				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
+				AEA48A781C29E421006BC53E /* MapViewController.swift */,
 				AECE8D831C1E187700FB183E /* ModesViewController.swift */,
+				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
+				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
+				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
-				AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */,
-				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
 				AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */,
+				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
+				AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */,
+				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
+				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
+				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
+				AEDDD2701C158648004232AA /* TelemetryViewController.swift */,
+				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
+				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
+				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
+				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
+				AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */,
+				AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */,
+				AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */,
+				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
+				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
 			);
 			path = "Cleanflight Configurator";
 			sourceTree = "<group>";
@@ -313,6 +342,18 @@
 				AE72AB7D1C0F3D230020C4B0 /* Info.plist */,
 			);
 			path = "Cleanflight ConfiguratorUITests";
+			sourceTree = "<group>";
+		};
+		AEA48A671C25CFDD006BC53E /* Communication */ = {
+			isa = PBXGroup;
+			children = (
+				AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */,
+				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
+				AEDDD2401C10C852004232AA /* CommChannel.swift */,
+				AEDDD2801C188701004232AA /* ConnectionViewController.swift */,
+				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
+			);
+			name = Communication;
 			sourceTree = "<group>";
 		};
 		AECE8D821C1E14B500FB183E /* RangeSlider */ = {
@@ -398,6 +439,7 @@
 				TargetAttributes = {
 					AE72AB551C0F3D230020C4B0 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = C6JHP2HS9Q;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -442,6 +484,10 @@
 				AE48F6DE1C1F25A6004E949F /* ModeTableViewFooter.xib in Resources */,
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
+				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
+				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
+				AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */,
+				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AEDDD2791C1615C8004232AA /* Podfile in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
 			);
@@ -516,11 +562,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */,
+				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
+				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
+				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
 				AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */,
 				AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */,
 				AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */,
@@ -532,6 +582,7 @@
 				AE48F6E31C1F6F8A004E949F /* MyUINavigationController.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
+				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
@@ -539,6 +590,7 @@
 				AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */,
 				AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */,
 				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
+				AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */,
 				AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */,
 				AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */,
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
@@ -562,6 +614,7 @@
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
 				AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
+				AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -705,11 +758,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -721,11 +777,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
 			};
 			name = Release;
