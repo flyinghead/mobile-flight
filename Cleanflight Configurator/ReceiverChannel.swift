@@ -60,7 +60,7 @@ class ReceiverChannel: UIView {
         }
         if (valueLabel == nil) {
             valueLabel = UILabel()
-            valueLabel?.text = "1500"
+            valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), 2000)
             valueLabel?.textAlignment = .Right
             valueLabel?.font = UIFont.systemFontOfSize(fontSize)
             valueLabel?.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +68,11 @@ class ReceiverChannel: UIView {
 
             let v1 = NSLayoutConstraint(item: labelControl!, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: 0)
             addConstraint(v1)
-            let w1 = NSLayoutConstraint(item: labelControl!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 0, constant: 65)
+            
+            labelControl!.text = "Throttle"
+            let w1 = NSLayoutConstraint(item: labelControl!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 0, constant: labelControl?.intrinsicContentSize().width ?? 65)
+            labelControl!.text = label
+            
             addConstraint(w1)
             let left1 = NSLayoutConstraint(item: labelControl!, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0)
             addConstraint(left1)
@@ -82,13 +86,14 @@ class ReceiverChannel: UIView {
             
             let v3 = NSLayoutConstraint(item: valueLabel!, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: 0)
             addConstraint(v3)
-            let w3 = NSLayoutConstraint(item: valueLabel!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 0, constant: 40)
+            let w3 = NSLayoutConstraint(item: valueLabel!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 0, constant: valueLabel?.intrinsicContentSize().width ?? 45)
             addConstraint(w3)
             let right3 = NSLayoutConstraint(item: valueLabel!, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0)
             addConstraint(right3)
             let left3 = NSLayoutConstraint(item: slider!, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: valueLabel, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: -8)
             addConstraint(left3)
         }
+        setValue(0)
     }
     
     func setValue(value: Int) {

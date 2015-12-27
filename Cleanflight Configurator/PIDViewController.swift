@@ -66,6 +66,7 @@ class PIDViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
+        profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
         
         let pidControllers: [String]
         if Configuration.theConfig.isApiVersionAtLeast("1.14") {
@@ -219,7 +220,7 @@ class PIDViewController: UITableViewController {
         })
     }
     
-    @IBAction func profileChanged(sender: AnyObject) {
+    func profileChanged(sender: AnyObject) {
         msp.sendSelectProfile(profilePicker!.selectedIndex, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 if success {

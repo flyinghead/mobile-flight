@@ -768,13 +768,13 @@
                             <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0oz-VT-H27">
                                 <rect key="frame" x="16" y="28" width="82" height="77"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="battery" translatesAutoresizingMaskIntoConstraints="NO" id="g9M-qu-4Fy">
+                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="battery" translatesAutoresizingMaskIntoConstraints="NO" id="g9M-qu-4Fy">
                                         <rect key="frame" x="8" y="8" width="15" height="15"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signal" translatesAutoresizingMaskIntoConstraints="NO" id="elJ-6m-GJk">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="signal" translatesAutoresizingMaskIntoConstraints="NO" id="elJ-6m-GJk">
                                         <rect key="frame" x="8" y="31" width="15" height="15"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gps_small" translatesAutoresizingMaskIntoConstraints="NO" id="5HP-v7-I65">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="gps_small" translatesAutoresizingMaskIntoConstraints="NO" id="5HP-v7-I65">
                                         <rect key="frame" x="8" y="54" width="15" height="15"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="12.1V" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GAi-C0-F6k" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">

@@ -44,8 +44,12 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
         let kbSize = info![UIKeyboardFrameBeginUserInfoKey]?.CGRectValue.size
         let contentInsets = UIEdgeInsetsMake(0, 0, kbSize!.height, 0)
         
-        savedContentInset = tableView.contentInset
-        savedScrollIndicatorInset = tableView.scrollIndicatorInsets
+        if savedContentInset == nil {
+            savedContentInset = tableView.contentInset
+        }
+        if savedScrollIndicatorInset == nil {
+            savedScrollIndicatorInset = tableView.scrollIndicatorInsets
+        }
         
         tableView.contentInset = contentInsets
         tableView.scrollIndicatorInsets = contentInsets

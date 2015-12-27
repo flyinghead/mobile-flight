@@ -55,9 +55,11 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
     func receivedReceiverData() {
         let channelCount = Receiver.theReceiver.activeChannels - 3
+        // If the receiver config has changed, remove extraneous channels
         while channelCount < channelLabels.count {
             channelLabels.removeLast()
         }
+        // Similarly, add missing channels if needed
         for var i = channelLabels.count; i < channelCount; i++ {
             channelLabels.append(String(format: "AUX%d", i))
         }
@@ -306,6 +308,7 @@ class ModeRangeCell : UITableViewCell {
     var channelPicker: MyDownPicker {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
+            _channelPicker?.addTarget(self, action: "channelChanged:", forControlEvents: .ValueChanged)
         }
         return _channelPicker!
     }
@@ -319,7 +322,7 @@ class ModeRangeCell : UITableViewCell {
         viewController!.modeRanges![modeRangeIdx].start = Int(rangeSlider.lowerValue)
         viewController!.modeRanges![modeRangeIdx].end = Int(rangeSlider.upperValue)
     }
-    @IBAction func channelChanged(sender: AnyObject) {
+    func channelChanged(sender: AnyObject) {
         if channelPicker.selectedIndex >= 0 {
             if channelPicker.selectedIndex == 0 {
                 viewController!.modeRanges!.removeAtIndex(modeRangeIdx)

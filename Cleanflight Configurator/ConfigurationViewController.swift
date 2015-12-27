@@ -53,6 +53,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     override func viewDidLoad() {
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
+        mixerTypePicker!.addTarget(self, action: "mixerTypeChanged:", forControlEvents: .ValueChanged)
         
         msp.addDataListener(self)
 
@@ -246,7 +247,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         fetchInformation()
     }
     
-    @IBAction func mixerTypeChanged(sender: AnyObject) {
+    func mixerTypeChanged(sender: AnyObject) {
         mixerTypeView.image = MultiTypes.getImage(mixerTypePicker!.selectedIndex + 1)
         enableSaveAndCancel()
     }

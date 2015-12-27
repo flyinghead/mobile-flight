@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-class NumberField: UITextField, UIInputViewAudioFeedback {
+class NumberField: UITextField {
     
     @IBInspectable var decimalDigits: Int = 0 {
         didSet {
@@ -60,7 +60,7 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
     }
     
     let stepper = UIStepper()
-    let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+    let toolbar = InputAccessoryToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -123,13 +123,9 @@ class NumberField: UITextField, UIInputViewAudioFeedback {
     }
     
     func stepperChanged() {
-        UIDevice.currentDevice().playInputClick()     // Doesn't work?
+        UIDevice.currentDevice().playInputClick()
         value = stepper.value
         updateFieldText()
-    }
-    
-    var enableInputClicksWhenVisible: Bool {
-        return true
     }
 }
 
@@ -153,5 +149,11 @@ class ThrottleField : NumberField {
                 })
             }
         })
+    }
+}
+
+class InputAccessoryToolbar : UIToolbar, UIInputViewAudioFeedback {
+    var enableInputClicksWhenVisible: Bool {
+        return true
     }
 }
