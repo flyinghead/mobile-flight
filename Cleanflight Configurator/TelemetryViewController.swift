@@ -94,6 +94,30 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIDeviceOrientationDidChangeNotification, object: nil)
         
         msp.addDataListener(self)
+        
+        theView.voltLabel.text = "?"
+        theView.rssiLabel.text = "?"
+        setModeLabel(theView.modeArmedLabel, on: false)
+        setModeLabel(theView.modeAngleLabel, on: false)
+        setModeLabel(theView.modeHorizonLabel, on: false)
+        setModeLabel(theView.modeBaroLabel, on: false)
+        setModeLabel(theView.modeMagLabel, on: false)
+        setModeLabel(theView.modeGpsHomeLabel, on: false)
+        setModeLabel(theView.modeGpsHoldLabel, on: false)
+        setModeLabel(theView.modeBeeperLabel, on: false)
+        setModeLabel(theView.modeOsdLabel, on: false)
+
+        theView.altitudeLabel.text = ""
+        theView.speedLabel.text = ""
+        theView.distanceToHomeLabel.text = ""
+        
+        theView.gyroSensor.image = gyroSensorOff
+        theView.accSensor.image = accSensorOff
+        theView.magSensor.image = magSensorOff
+        theView.gpsSensor.image = gpsSensorOff
+        theView.baroSensor.image = baroSensorOff
+        theView.sonarSensor.image = sonarSensorOff
+        
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -152,17 +176,16 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     
     func receivedSensorData() {
         let sensorData = SensorData.theSensorData
-        theView.attitudeIndicator.roll = sensorData.kinematicsX
-        theView.attitudeIndicator.pitch = sensorData.kinematicsY
+        theView.attitudeIndicator.roll = sensorData.rollAngle
+        theView.attitudeIndicator.pitch = sensorData.pitchAngle
         theView.attitudeIndicator.setNeedsDisplay()
         
-        // FIXME We should use magnetic compass instead?
-        theView.headingIndicator.heading = sensorData.kinematicsZ
+        theView.headingIndicator.heading = sensorData.heading
         theView.headingIndicator.setNeedsDisplay()
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
         let config = Configuration.theConfig
-        theView.altitudeLabel.text = String(format: "%.1fm", locale: NSLocale.currentLocale(), config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
+        theView.altitudeLabel.text = formatWithUnit(config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude), unit: "m")
     }
     
     private func setModeLabel(label: UILabel, on: Bool) {
@@ -179,21 +202,20 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         let config = Configuration.theConfig
         let settings = Settings.theSettings
         
-        if config.mode != nil {
-            setModeLabel(theView.modeArmedLabel, on: settings.isModeOn(Mode.ARM, forStatus: config.mode!))
-            setModeLabel(theView.modeAngleLabel, on: settings.isModeOn(Mode.ANGLE, forStatus: config.mode!))
-            setModeLabel(theView.modeHorizonLabel, on: settings.isModeOn(Mode.HORIZON, forStatus: config.mode!))
-            setModeLabel(theView.modeBaroLabel, on: settings.isModeOn(Mode.BARO, forStatus: config.mode!))
-            setModeLabel(theView.modeMagLabel, on: settings.isModeOn(Mode.MAG, forStatus: config.mode!))
-            setModeLabel(theView.modeGpsHomeLabel, on: settings.isModeOn(Mode.GPSHOME, forStatus: config.mode!))
-            setModeLabel(theView.modeGpsHoldLabel, on: settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode!))
-            setModeLabel(theView.modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode!))
-            setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode!))
-        }
+        setModeLabel(theView.modeArmedLabel, on: settings.isModeOn(Mode.ARM, forStatus: config.mode))
+        setModeLabel(theView.modeAngleLabel, on: settings.isModeOn(Mode.ANGLE, forStatus: config.mode))
+        setModeLabel(theView.modeHorizonLabel, on: settings.isModeOn(Mode.HORIZON, forStatus: config.mode))
+        setModeLabel(theView.modeBaroLabel, on: settings.isModeOn(Mode.BARO, forStatus: config.mode))
+        setModeLabel(theView.modeMagLabel, on: settings.isModeOn(Mode.MAG, forStatus: config.mode))
+        setModeLabel(theView.modeGpsHomeLabel, on: settings.isModeOn(Mode.GPSHOME, forStatus: config.mode))
+        setModeLabel(theView.modeGpsHoldLabel, on: settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode))
+        setModeLabel(theView.modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode))
+        setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode))
+
         theView.voltLabel.text = String(format: "%.1fV", locale: NSLocale.currentLocale(), config.voltage)
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         
-        theView.rssiLabel.text = String(format: "%d%%", locale: NSLocale.currentLocale(), config.rssi * 100 / 1023)
+        theView.rssiLabel.text = String(format: "%d%%", locale: NSLocale.currentLocale(), config.rssi)
         
         theView.accSensor.image = config.isGyroAndAccActive() ? accSensorOn : accSensorOff
         theView.gyroSensor.image = config.isGyroAndAccActive() ? gyroSensorOn : gyroSensorOff
@@ -208,7 +230,7 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         if gpsData.fix && gpsData.numSat >= 5 {
             theView.gpsFixImage.image = greenled
             theView.distanceToHomeLabel.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
-            theView.speedLabel.text = String(format: "%.1fkm/h", locale: NSLocale.currentLocale(), gpsData.speed)
+            theView.speedLabel.text = formatWithUnit(gpsData.speed, unit: "km/h")
         } else {
             theView.gpsFixImage.image = redled
             theView.distanceToHomeLabel.text = ""

@@ -135,7 +135,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType!)
+        modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType)
         
         //enableMotorView.translatesAutoresizingMaskIntoConstraints = false
         

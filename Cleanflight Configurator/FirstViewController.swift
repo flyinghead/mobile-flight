@@ -100,11 +100,7 @@ class FirstViewController: UIViewController, FlightDataListener, BluetoothDelega
         let config = Configuration.theConfig
         
         version.text = config.version;
-        if (config.multiType != nil) {
-            multiType.text = String(format: "%d", config.multiType!)
-        } else {
-            multiType.text = ""
-        }
+        multiType.text = String(format: "%d", config.multiType)
         if (config.mspVersion != nil) {
             mspVersion.text = String(format: "%d", config.mspVersion!)
         } else {

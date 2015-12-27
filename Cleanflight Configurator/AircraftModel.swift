@@ -234,7 +234,7 @@ class Configuration {
     
     // MSP_IDENT
     var version: String?
-    var multiType: Int?
+    var multiType: Int = 3      // Quad X by default
     var mspVersion: Int?
     var capability: UInt32?
     
@@ -260,15 +260,15 @@ class Configuration {
     // MSP_STATUS
     var cycleTime: Int?     // microsecond?
     var i2cError: Int?
-    var activeSensors: Int?
-    var mode: UInt32!
-    var profile: Int?
+    var activeSensors = 0
+    var mode: UInt32 = 0
+    var profile = 0
     
     // MSP_ANALOG
     var voltage = 0.0       // V
     var mAhDrawn = 0
-    var rssi = 0
-    var amperage = 0.0
+    var rssi = 0            // %
+    var amperage = 0.0      // A
     
     // Local
     var batteryCells = 0
@@ -279,22 +279,22 @@ class Configuration {
     var accelerometerTrimRoll = 0
 
     func isGyroAndAccActive() -> Bool {
-        return activeSensors != nil && activeSensors! & 1 > 0;
+        return activeSensors & 1 > 0;
     }
     func isBarometerActive() -> Bool {
-        return activeSensors != nil && activeSensors! & 2 > 0;
+        return activeSensors & 2 > 0;
     }
     
     func isMagnetometerActive() -> Bool {
-        return activeSensors != nil && activeSensors! & 4 > 0;
+        return activeSensors & 4 > 0;
     }
     
     func isGPSActive() -> Bool {
-        return activeSensors != nil && activeSensors! & 8 > 0;
+        return activeSensors & 8 > 0;
     }
     
     func isSonarActive() -> Bool {
-        return activeSensors != nil && activeSensors! & 16 > 0;
+        return activeSensors & 16 > 0;
     }
     
     func isApiVersionAtLeast(version: String) -> Bool {
@@ -394,12 +394,18 @@ class Receiver {
 class SensorData {
     static let theSensorData = SensorData()
     
+    // MSP_RAW_IMU
     var accelerometerX = 0.0, accelerometerY = 0.0, accelerometerZ = 0.0
     var gyroscopeX = 0.0, gyroscopeY = 0.0, gyroscopeZ = 0.0
     var magnetometerX = 0.0, magnetometerY = 0.0, magnetometerZ = 0.0
+    // MSP_ALTITUDE
     var altitude = 0.0          // m
+    // MSP_SONAR
     var sonar = 0               // cm
-    var kinematicsX = 0.0, kinematicsY = 0.0, kinematicsZ = 0.0
+    // MSP_ATTITUDE
+    var rollAngle = 0.0
+    var pitchAngle = 0.0
+    var heading = 0.0
 }
 
 class MotorData {

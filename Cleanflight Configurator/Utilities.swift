@@ -48,3 +48,12 @@ func writeInt16(i: Int) -> [UInt8] {
     let ui = UInt(bitPattern: i)
     return [UInt8(ui & 0xFF), UInt8((ui >> 8) & 0xFF)]
 }
+
+// Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.
+func formatWithUnit(reading: Double, unit: String) -> String {
+    if reading < 10 {
+        return String(format: "%.1f%@", locale: NSLocale.currentLocale(), reading, unit)
+    } else {
+        return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, unit)
+    }
+}

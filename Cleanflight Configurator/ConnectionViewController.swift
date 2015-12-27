@@ -17,6 +17,8 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     var selectedPeripheral: BluetoothPeripheral?
     
     var refreshBluetoothButton: UIButton?
+    
+    var replayFiles: [NSURL]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,10 +41,28 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch (section) {
+        case 0:
+            return btPeripherals.count
+        case 1:
+            return 1
+        case 2:
+            let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+            do {
+                guard let urls: [NSURL]? = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsURL, includingPropertiesForKeys: [kCFURLNameKey as String], options: NSDirectoryEnumerationOptions.SkipsHiddenFiles) else {
+                    return 0
+                }
+                replayFiles = urls!
+                return urls!.count
+            } catch {
+            }
+        default:
+            return 0
+        }
         return section == 0 ? btPeripherals.count : 1
     }
 
@@ -50,8 +70,10 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
         switch section {
         case 0:
             return "Bluetooth Devices"
-        default:
+        case 1:
             return "TCP/IP"
+        default:
+            return "Replay"
         }
     }
     
@@ -64,26 +86,53 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(indexPath.section == 0 ? "BluetoothCell" : "TCPCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(indexPath.section == 1 ? "TCPCell" : "BluetoothCell", forIndexPath: indexPath)
 
-        if let tcpCell = cell as? TCPTableViewCell {
-            tcpCell.viewController = self
-        } else {
+        switch indexPath.section {
+        case 0:
             cell.textLabel?.text = btPeripherals[indexPath.row].name
             cell.detailTextLabel?.text = btPeripherals[indexPath.row].uuid
+        case 1:
+            let tcpCell = cell as! TCPTableViewCell
+            tcpCell.viewController = self
+            
+        case 2:
+            if replayFiles != nil && replayFiles!.count > indexPath.row {
+                cell.textLabel?.text = replayFiles![indexPath.row].lastPathComponent ?? "?"
+                cell.detailTextLabel?.text = ""
+            }
+        default:
+            break
         }
         
         return cell
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        case  0:
             selectedPeripheral = btPeripherals[indexPath.row]
             btManager.connect(selectedPeripheral!)
             let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
             SVProgressHUD.showWithStatus(msg, maskType: .Black)
+        case 1:
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        case 2:
+            if replayFiles != nil && indexPath.row < replayFiles!.count {
+                let fileUrl = replayFiles![indexPath.row]
+                do {
+                    let file = try NSFileHandle(forReadingFromURL: fileUrl)
+                    _ = ReplayComm(datalog: file, msp: msp)
+                } catch let error as NSError {
+                    NSLog("Cannot open %@: %@", fileUrl, error)
+                    SVProgressHUD.showErrorWithStatus("File open failed")
+                }
+            }
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            self.performSegueWithIdentifier("next", sender: self)
+        default:
+            break
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
@@ -239,6 +288,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
             alertController.addAction(UIAlertAction(title: "Open Settings", style: UIAlertActionStyle.Default, handler: { alertController in
                 UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
             }))
+            alertController.popoverPresentationController?.sourceView = (sender as! UIView)
             presentViewController(alertController, animated: true, completion: nil)
         } else {
             doConnectTcp(host, port: port)
@@ -304,16 +354,19 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if let viewController = segue.destinationViewController as? MainNavigationController {
+            if msp.commChannel is ReplayComm {
+                // Remove not available tabs
+                viewController.removeViewControllersForReplay()
+            } else {
+                viewController.enableAllViewControllers()
+            }
+        }
     }
-    */
-
 }
 
 class TCPTableViewCell : UITableViewCell {

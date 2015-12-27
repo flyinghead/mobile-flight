@@ -228,7 +228,7 @@ class MSPParser {
             gpsData.longitude = Double(readInt32(message, index: 6)) / 10000000
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
-            gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 10th of degree to degree
+            gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
             
             if gpsData.fix {
                 gpsData.lastKnownGoodLatitude = gpsData.latitude
@@ -251,9 +251,9 @@ class MSPParser {
             if message.count < 6 {
                 return false
             }
-            sensorData.kinematicsX = Double(readInt16(message, index: 0)) / 10.0   // x
-            sensorData.kinematicsY = Double(readInt16(message, index: 2)) / 10.0   // y
-            sensorData.kinematicsZ = Double(readInt16(message, index: 4))          // z
+            sensorData.rollAngle = Double(readInt16(message, index: 0)) / 10.0   // x
+            sensorData.pitchAngle = Double(readInt16(message, index: 2)) / 10.0   // y
+            sensorData.heading = Double(readInt16(message, index: 4))          // z
             pingSensorListeners()
             
         case .MSP_ALTITUDE:
@@ -274,10 +274,10 @@ class MSPParser {
             if message.count < 7 {
                 return false
             }
-            config.voltage = Double(message[0]) / 10
+            config.voltage = Double(message[0]) / 10                                    // 1/10 V
             config.mAhDrawn = readUInt16(message, index: 1)
-            config.rssi = readUInt16(message, index: 3)                      // 0-1023
-            config.amperage = Double(readInt16(message, index: 5)) / 100     // A
+            config.rssi = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
+            config.amperage = Double(readInt16(message, index: 5)) / 100                // 1/100 A
             if settings.features?.contains(.VBat) ?? false {
                 if config.batteryCells == 0  && misc.vbatMaxCellVoltage > 0 {
                     config.batteryCells = Int(config.voltage / misc.vbatMaxCellVoltage + 1)

@@ -107,7 +107,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.longitude)
             case 4:
                 cell.textLabel!.text = "Speed"
-                cell.detailTextLabel!.text = String(format: "%.1fkm/h", locale: NSLocale.currentLocale(), gpsData.speed)
+                cell.detailTextLabel!.text = formatWithUnit(gpsData.speed, unit: "km/h")
             case 5:
                 cell.textLabel!.text = "Heading"
                 cell.detailTextLabel!.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)

@@ -59,7 +59,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Required for Follow Me feature</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Required for Follow Me feature</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Required to display your position on the map</string>
 </dict>
 </plist>

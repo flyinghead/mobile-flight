@@ -9,10 +9,10 @@
 import UIKit
 
 class MainNavigationController: UITabBarController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    var myallViewControllers: [UIViewController]?       // allViewControllers conflicts silently with a var of the superclass !!
+    
+    override func awakeFromNib() {
+        
         var storyboard = UIStoryboard(name: "Configuration", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
             viewControllers!.insert(controller, atIndex: 6)
@@ -28,13 +28,36 @@ class MainNavigationController: UITabBarController {
         }
         let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
         viewControllers!.insert(controller, atIndex: 1)
+        
+        myallViewControllers = viewControllers
     }
-
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    func removeViewControllersForReplay() {
+        let filteredVC = viewControllers?.filter({
+            var viewController = $0
+            if let navigationController = viewController as? UINavigationController {
+                viewController = navigationController.topViewController ?? viewController
+            }
+            return viewController is TelemetryViewController
+                || viewController is MapViewController
+                || viewController is GPSViewController
+                || viewController is SensorPagesViewController
+        })
+        setViewControllers(filteredVC, animated: false)
+    }
+    
+    func enableAllViewControllers() {
+        setViewControllers(myallViewControllers, animated: false)
+    }
 
     /*
     // MARK: - Navigation
