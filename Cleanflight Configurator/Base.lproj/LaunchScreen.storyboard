@@ -3,12 +3,14 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
             <objects>
-                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                <viewController restorationIdentifier="LaunchViewController" id="01J-lp-oVM" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
@@ -16,7 +18,29 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ground Control Station for Cleanflight aircrafts" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VrZ-6R-XCe">
+                                <rect key="frame" x="76" y="291" width="449.5" height="17.5"/>
+                                <fontDescription key="fontDescription" name="Copperplate" family="Copperplate" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MobileFlight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JzI-pq-ijr">
+                                <rect key="frame" x="210" y="129" width="180.5" height="42"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="32"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="VrZ-6R-XCe" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Hic-Cf-m18"/>
+                            <constraint firstItem="JzI-pq-ijr" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Jey-OS-QNf"/>
+                            <constraint firstItem="VrZ-6R-XCe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="15" id="jw9-DV-Obk"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="VrZ-6R-XCe" secondAttribute="trailing" constant="15" id="lPu-3D-smJ"/>
+                            <constraint firstItem="VrZ-6R-XCe" firstAttribute="centerY" secondItem="JzI-pq-ijr" secondAttribute="centerY" multiplier="2" id="rWY-H9-Nt8"/>
+                            <constraint firstItem="VrZ-6R-XCe" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="wKa-Mr-87v"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>

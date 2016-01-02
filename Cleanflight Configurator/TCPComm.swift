@@ -181,6 +181,8 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
     func close() {
         closeStreams()
+        msp.cancelRetries()
+        msp.commChannel = nil
         if _reachability != nil {
             SCNetworkReachabilityUnscheduleFromRunLoop(_reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
             _reachability = nil

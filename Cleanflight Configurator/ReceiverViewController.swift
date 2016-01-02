@@ -58,7 +58,7 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         }
     }
     
-    func channelLabel(i: Int) -> String {
+    class func channelLabel(i: Int) -> String {
         switch i {
         case 0:
             return "Roll"
@@ -81,10 +81,18 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("ChannelCell", forIndexPath: indexPath) as! ChannelCell
         let channelNum = indexPath.row
-        cell.channelView.label = channelLabel(channelNum)
+        cell.channelView.label = ReceiverViewController.channelLabel(channelNum)
         cell.channelView.color = channelNum >= colors.count ? colors[colors.count - 1] : colors[channelNum]
         cell.channelView.setValue(Receiver.theReceiver.channels[channelNum])
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 1
+        } else {
+            return super.tableView(tableView, heightForHeaderInSection: section)
+        }
     }
 }
 

@@ -9,16 +9,27 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
 
     var window: UIWindow?
     var msp = MSPParser()
+    
+    var statusTimer: NSTimer?
+    var armed = false
+    
+    var completionHandler: ((UIBackgroundFetchResult) -> Void)?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
         pageControl.backgroundColor = UIColor.whiteColor()
+        
+        registerInitialUserDefaults()
+        
+        msp.addDataListener(self)
+        
+        UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
         return true
     }
@@ -31,12 +42,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        stopTimer()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        startTimer()
     }
-
+    
+    func startTimer() {
+        if msp.commChannel != nil {
+            //NSLog("AppDelegate starting statusTimer")
+            statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
+        }
+    }
+    
+    func stopTimer() {
+        if statusTimer != nil {
+            //NSLog("AppDelegate stopping statusTimer")
+            statusTimer!.invalidate()
+            statusTimer = nil
+        }
+    }
+    
+    func statusTimerDidFire(timer: NSTimer) {
+        msp.sendMessage(.MSP_STATUS, data: nil)
+    }
+    
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
@@ -45,7 +77,64 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+        return true
+    }
+    
+    func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+        return true
+    }
+    
+    func receivedData() {
+        if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
+            armed = true
+            if userDefaultEnabled(.RecordFlightlog) {
+                startFlightlogRecording()
+            }
+        }
+        else if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && armed {
+            armed = false
+            stopFlightlogRecording()
+        }
+        if completionHandler != nil {
+            completionHandler!(.NewData)
+            completionHandler = nil
+        }
+    }
+    
+    func startFlightlogRecording() {
+        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+        let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
+        
+        do {
+            if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
+                let file = try NSFileHandle(forWritingToURL: fileURL)
+                file.seekToEndOfFile()
+                msp.datalog = file
+                msp.datalogStart = NSDate()
+            }
+        } catch let error as NSError {
+            NSLog("Cannot open %@: %@", fileURL, error)
+        }
+    }
 
+    func stopFlightlogRecording() {
+        if let file = msp.datalog {
+            msp.datalog = nil
+            msp.datalogStart = nil
+            file.closeFile()
+        }
+    }
+
+    // FIXME Doesn't seem to be ever called
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        if !userDefaultEnabled(.RecordFlightlog) {
+            completionHandler(.NoData)
+            return
+        }
+        self.completionHandler = completionHandler
+        msp.sendMessage(.MSP_STATUS, data: nil)
+    }
 }
 
 extension UIViewController {

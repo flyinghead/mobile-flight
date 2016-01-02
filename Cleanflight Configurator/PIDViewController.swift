@@ -67,6 +67,7 @@ class PIDViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
         profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
+        profilePicker?.setPlaceholder("")           // To keep width down
         
         let pidControllers: [String]
         if Configuration.theConfig.isApiVersionAtLeast("1.14") {
@@ -75,6 +76,7 @@ class PIDViewController: UITableViewController {
             pidControllers = [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ]
         }
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
+        pidControllerPicker?.setPlaceholder("")     // To keep width down
         
         cancelAction(self)
     }
@@ -85,69 +87,65 @@ class PIDViewController: UITableViewController {
     }
     
     @IBAction func cancelAction(sender: AnyObject) {
-        msp.sendMessage(.MSP_STATUS, data: nil, retry: 2, callback: { success in
+        self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
             if success {
-                self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.MSP_PIDNAMES, data: nil, retry: 2, callback: { success in
                     if success {
-                        self.msp.sendMessage(.MSP_PIDNAMES, data: nil, retry: 2, callback: { success in
+                        self.msp.sendMessage(.MSP_PID_CONTROLLER, data: nil, retry: 2, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_PID_CONTROLLER, data: nil, retry: 2, callback: { success in
+                                self.msp.sendMessage(.MSP_PID, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        self.msp.sendMessage(.MSP_PID, data: nil, retry: 2, callback: { success in
-                                            if success {
-                                                dispatch_async(dispatch_get_main_queue(), {
-                                                    let settings = Settings.theSettings
-                                                    self.settings = settings
-                                                    self.profile = Configuration.theConfig.profile ?? 0
-                                                    
-                                                    self.pidControllerPicker?.selectedIndex = settings.pidController
-                                                    self.profilePicker?.selectedIndex = self.profile!
-                                                    
-                                                    self.rollRate.value = settings.rollRate
-                                                    self.pitchRate.value = settings.pitchRate
-                                                    self.yawRate.value = settings.yawRate
-                                                    
-                                                    self.tpaRate.value = settings.tpaRate
-                                                    self.tpaBreakpoint.value = Double(settings.tpaBreakpoint)
-                                                    
-                                                    var pid = settings.getPID(.Pitch)!
-                                                    self.pitchP.value = pid[0]
-                                                    self.pitchI.value = pid[1]
-                                                    self.pitchD.value = pid[2]
-                                                    pid = settings.getPID(.Roll)!
-                                                    self.rollP.value = pid[0]
-                                                    self.rollI.value = pid[1]
-                                                    self.rollD.value = pid[2]
-                                                    pid = settings.getPID(.Yaw)!
-                                                    self.yawP.value = pid[0]
-                                                    self.yawI.value = pid[1]
-                                                    self.yawD.value = pid[2]
-                                                    pid = settings.getPID(.Alt)!
-                                                    self.altP.value = pid[0]
-                                                    pid = settings.getPID(.Vel)!
-                                                    self.varioP.value = pid[0]
-                                                    self.varioI.value = pid[1]
-                                                    self.varioD.value = pid[2]
-                                                    pid = settings.getPID(.Mag)!
-                                                    self.magP.value = pid[0]
-                                                    pid = settings.getPID(.Pos)!
-                                                    self.posP.value = pid[0]
-                                                    self.posI.value = pid[1]
-                                                    pid = settings.getPID(.PosR)!
-                                                    self.posRP.value = pid[0]
-                                                    self.posRI.value = pid[1]
-                                                    self.posRD.value = pid[2]
-                                                    pid = settings.getPID(.NavR)!
-                                                    self.navRP.value = pid[0]
-                                                    self.navRI.value = pid[1]
-                                                    self.navRD.value = pid[2]
-                                                    pid = settings.getPID(.Level)!
-                                                    self.angleLevel.value = pid[0]
-                                                    self.horizonLevel.value = pid[1]
-                                                    self.horizonTransition.value = pid[2]
-
-                                                })
-                                            }
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            let settings = Settings.theSettings
+                                            self.settings = settings
+                                            self.profile = Configuration.theConfig.profile ?? 0
+                                            
+                                            self.pidControllerPicker?.selectedIndex = settings.pidController
+                                            self.profilePicker?.selectedIndex = self.profile!
+                                            
+                                            self.rollRate.value = settings.rollRate
+                                            self.pitchRate.value = settings.pitchRate
+                                            self.yawRate.value = settings.yawRate
+                                            
+                                            self.tpaRate.value = settings.tpaRate
+                                            self.tpaBreakpoint.value = Double(settings.tpaBreakpoint)
+                                            
+                                            var pid = settings.getPID(.Pitch)!
+                                            self.pitchP.value = pid[0]
+                                            self.pitchI.value = pid[1]
+                                            self.pitchD.value = pid[2]
+                                            pid = settings.getPID(.Roll)!
+                                            self.rollP.value = pid[0]
+                                            self.rollI.value = pid[1]
+                                            self.rollD.value = pid[2]
+                                            pid = settings.getPID(.Yaw)!
+                                            self.yawP.value = pid[0]
+                                            self.yawI.value = pid[1]
+                                            self.yawD.value = pid[2]
+                                            pid = settings.getPID(.Alt)!
+                                            self.altP.value = pid[0]
+                                            pid = settings.getPID(.Vel)!
+                                            self.varioP.value = pid[0]
+                                            self.varioI.value = pid[1]
+                                            self.varioD.value = pid[2]
+                                            pid = settings.getPID(.Mag)!
+                                            self.magP.value = pid[0]
+                                            pid = settings.getPID(.Pos)!
+                                            self.posP.value = pid[0]
+                                            self.posI.value = pid[1]
+                                            pid = settings.getPID(.PosR)!
+                                            self.posRP.value = pid[0]
+                                            self.posRI.value = pid[1]
+                                            self.posRD.value = pid[2]
+                                            pid = settings.getPID(.NavR)!
+                                            self.navRP.value = pid[0]
+                                            self.navRI.value = pid[1]
+                                            self.navRD.value = pid[2]
+                                            pid = settings.getPID(.Level)!
+                                            self.angleLevel.value = pid[0]
+                                            self.horizonLevel.value = pid[1]
+                                            self.horizonTransition.value = pid[2]
+                                            
                                         })
                                     }
                                 })

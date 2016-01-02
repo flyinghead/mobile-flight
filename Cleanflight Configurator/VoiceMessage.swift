@@ -44,6 +44,8 @@ class VoiceAlert: NSObject {
 
 class VoiceAlarm {
     var on: Bool { return false }
+    var enabled: Bool { return true }
+    
     func voiceAlert() -> VoiceAlert! {
         return nil
     }
@@ -61,6 +63,9 @@ class CommunicationLostAlarm : VoiceAlarm {
         } else {
             return false
         }
+    }
+    override var enabled: Bool {
+        return userDefaultEnabled(.ConnectionLostAlarm)
     }
     
     override func voiceAlert() -> VoiceAlert {
@@ -86,6 +91,9 @@ class GPSFixLostAlarm : VoiceAlarm {
         let gpsData = GPSData.theGPSData
         return !gpsData.fix || gpsData.numSat < 5
     }
+    override var enabled: Bool {
+        return userDefaultEnabled(.GPSFixLostAlarm)
+    }
     
     override func voiceAlert() -> VoiceAlert {
         return VoiceAlert(speech: "GPS Fix Lost", repeatInterval: 10.0, condition: { self.on })
@@ -100,7 +108,10 @@ class BatteryLowAlarm : VoiceAlarm {
     override var on: Bool {
         return batteryStatus() != .Good
     }
-    
+    override var enabled: Bool {
+        return userDefaultEnabled(.BatteryLowAlarm)
+    }
+
     func batteryStatus() -> Status {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         if let comm = appDelegate.msp.commChannel {

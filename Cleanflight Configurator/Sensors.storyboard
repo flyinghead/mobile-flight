@@ -12,6 +12,7 @@
                 <pageViewController storyboardIdentifier="SensorPagesViewController" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="STI-Mk-OtV" customClass="SensorPagesViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <tabBarItem key="tabBarItem" title="Sensors" image="Sensors" id="wWe-a1-i01"/>
+                    <navigationItem key="navigationItem" title="Sensors" id="Mf7-n7-lad"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OlF-GU-MVM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -35,6 +35,8 @@ class TelemetryView : UIView {
     @IBOutlet weak var gpsSensor: UIImageView!
     @IBOutlet weak var sonarSensor: UIImageView!
     
+    @IBOutlet weak var followMeSwitch: UISwitch!
+    @IBOutlet weak var recordSwitch: UISwitch!
 }
 
 class TelemetryViewController: UIViewController, FlightDataListener, CLLocationManagerDelegate {
@@ -118,16 +120,20 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         theView.baroSensor.image = baroSensorOff
         theView.sonarSensor.image = sonarSensorOff
         
+        theView.recordSwitch.on = userDefaultEnabled(.RecordFlightlog)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+    }
+    
+    func userDefaultsDidChange(sender: AnyObject) {
+        theView.recordSwitch.on = userDefaultEnabled(.RecordFlightlog)
     }
 
     override func viewWillAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         
         // For enabled features
         msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_STATUS, data: nil, retry: 2, callback: { success in
-                self.msp.sendMessage(.MSP_MISC, data: nil)
-            })
+            self.msp.sendMessage(.MSP_MISC, data: nil)
         })
         
         if (veryFastTimer == nil) {
@@ -139,10 +145,18 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         if (slowTimer == nil) {
             slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
         }
+        
+        if msp.commChannel is ReplayComm {
+            theView.followMeSwitch.enabled = false
+            theView.recordSwitch.enabled = false
+        } else {
+            theView.followMeSwitch.enabled = true
+            theView.recordSwitch.enabled = true
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         veryFastTimer?.invalidate()
         veryFastTimer = nil
@@ -161,7 +175,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     
     func fastTimerDidFire(sender: AnyObject) {
         if Settings.theSettings.boxNames != nil {
-            msp.sendMessage(.MSP_STATUS, data: nil)
             msp.sendMessage(.MSP_ALTITUDE, data: nil)
         }
     }
@@ -270,15 +283,20 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             file.closeFile()
         }
     }
-    @IBAction func recordAction(sender: AnyObject) {
-        if msp.datalog != nil {
-            stopRecording()
-            (sender as! UIButton).setTitle("Record", forState: .Normal)
+    
+    @IBAction func recordSwitchChanged(sender: UISwitch) {
+        if sender.on {
+            if msp.datalog == nil {
+                startRecording()
+                if msp.datalog == nil {
+                    sender.on = false
+                }
+            }
         } else {
-            startRecording()
-            (sender as! UIButton).setTitle("Stop Recording", forState: .Normal)
+            stopRecording()
         }
     }
+    
     @IBAction func followMeSwitchChanged(sender: UISwitch) {
         if sender.on {
             if locationManager == nil {

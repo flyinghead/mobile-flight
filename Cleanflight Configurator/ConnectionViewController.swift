@@ -13,12 +13,13 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
 
     var btPeripherals = [BluetoothPeripheral]()
     let btManager = BluetoothManager()
-    
     var selectedPeripheral: BluetoothPeripheral?
-    
     var refreshBluetoothButton: UIButton?
     
     var replayFiles: [NSURL]?
+    
+    var restoredIpAddress = "192.168.4.1"
+    var restoredIpPort = "23"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,6 +96,12 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
         case 1:
             let tcpCell = cell as! TCPTableViewCell
             tcpCell.viewController = self
+            if tcpCell.ipAddressField.text?.isEmpty ?? true {
+                tcpCell.ipAddressField.text = restoredIpAddress
+            }
+            if tcpCell.ipPortField.text?.isEmpty ?? true {
+                tcpCell.ipPortField.text = restoredIpPort
+            }
             
         case 2:
             if replayFiles != nil && replayFiles!.count > indexPath.row {
@@ -197,7 +204,11 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
         let btComm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral, andMSP: msp)
         btManager.delegate = btComm
         
-        initiateHandShake({ self.cancelBtConnection(btComm) })
+        initiateHandShake({ success in
+            if !success {
+                self.cancelBtConnection(btComm)
+            }
+        })
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
@@ -222,7 +233,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     }
 
     // MARK:
-    
+    /*
     func initiateHandShake(errorCallback: () -> Void) {
         let msp = self.msp
 
@@ -267,7 +278,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
             })
         })
     }
-    
+    */
     private func cancelBtConnection(btComm: BluetoothComm) {
         btManager.delegate = self
         btComm.close()
@@ -309,9 +320,11 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
         })
         tcpComm.connect({ success in
             if success {
-                self.initiateHandShake({
-                    tcpComm.close()
-                    SVProgressHUD.showErrorWithStatus("Handshake failed")
+                self.initiateHandShake({ success in
+                    if !success {
+                        tcpComm.close()
+                        SVProgressHUD.showErrorWithStatus("Handshake failed")
+                    }
                 })
             } else {
                 SVProgressHUD.showErrorWithStatus("Connection failed")
@@ -366,6 +379,17 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
                 viewController.enableAllViewControllers()
             }
         }
+    }
+    
+    override func encodeRestorableStateWithCoder(coder: NSCoder) {
+        let tcpCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as! TCPTableViewCell
+        coder.encodeObject(tcpCell.ipAddressField.text)
+        coder.encodeObject(tcpCell.ipPortField.text)
+    }
+    
+    override func decodeRestorableStateWithCoder(coder: NSCoder) {
+        restoredIpAddress = coder.decodeObject() as? String ?? restoredIpAddress
+        restoredIpPort = coder.decodeObject() as? String ?? restoredIpPort
     }
 }
 

@@ -16,11 +16,11 @@
 		AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */; };
 		AE48F6DE1C1F25A6004E949F /* ModeTableViewFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */; };
 		AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */; };
-		AE48F6E31C1F6F8A004E949F /* MyUINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */; };
 		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
 		AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */; };
 		AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */; };
 		AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */; };
+		AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71D8201C3596C800CC0AEB /* ServosViewController.swift */; };
 		AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */; };
 		AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */; };
 		AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */; };
@@ -33,9 +33,18 @@
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
 		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
+		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A681C26BE6F006BC53E /* TODO.txt */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
+		AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEBA640D1C3086CF00783ECE /* Connection.storyboard */; };
+		AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */; };
+		AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64111C30A3B100783ECE /* WifiViewController.swift */; };
+		AEBA64141C3125B000783ECE /* InitiateHandshakeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64131C3125B000783ECE /* InitiateHandshakeExtension.swift */; };
+		AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64151C312B7800783ECE /* BluetoothViewController.swift */; };
+		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
+		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
+		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
 		AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */; };
@@ -115,11 +124,11 @@
 		AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingIndicator.swift; sourceTree = "<group>"; };
 		AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModeTableViewFooter.xib; sourceTree = "<group>"; };
 		AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverTuningViewController.swift; sourceTree = "<group>"; };
-		AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyUINavigationController.swift; sourceTree = "<group>"; };
 		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
 		AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Sensors.storyboard; sourceTree = "<group>"; };
 		AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataflashController.swift; sourceTree = "<group>"; };
+		AE71D8201C3596C800CC0AEB /* ServosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServosViewController.swift; sourceTree = "<group>"; };
 		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -138,9 +147,18 @@
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
 		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
 		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
+		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		AEBA640D1C3086CF00783ECE /* Connection.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Connection.storyboard; sourceTree = "<group>"; };
+		AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConnectionViewController.swift; sourceTree = "<group>"; };
+		AEBA64111C30A3B100783ECE /* WifiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiViewController.swift; sourceTree = "<group>"; };
+		AEBA64131C3125B000783ECE /* InitiateHandshakeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitiateHandshakeExtension.swift; sourceTree = "<group>"; };
+		AEBA64151C312B7800783ECE /* BluetoothViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
+		AEBA64171C31538F00783ECE /* ReplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayViewController.swift; sourceTree = "<group>"; };
+		AEBA64191C332B3100783ECE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		AEBA641B1C342BD900783ECE /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
 		AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
@@ -309,13 +327,15 @@
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
-				AE48F6E21C1F6F8A004E949F /* MyUINavigationController.swift */,
 				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
 				AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */,
 				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
 				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
 				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
+				AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */,
+				AE71D8201C3596C800CC0AEB /* ServosViewController.swift */,
 				AEDDD2701C158648004232AA /* TelemetryViewController.swift */,
+				AEBA641B1C342BD900783ECE /* UserDefaults.swift */,
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
 				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
 				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
@@ -324,6 +344,7 @@
 				AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */,
 				AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */,
 				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
+				AEBA64191C332B3100783ECE /* Settings.bundle */,
 			);
 			path = "Cleanflight Configurator";
 			sourceTree = "<group>";
@@ -351,10 +372,16 @@
 			children = (
 				AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */,
 				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
+				AEBA64151C312B7800783ECE /* BluetoothViewController.swift */,
 				AEDDD2401C10C852004232AA /* CommChannel.swift */,
 				AEDDD2801C188701004232AA /* ConnectionViewController.swift */,
+				AEBA64131C3125B000783ECE /* InitiateHandshakeExtension.swift */,
+				AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */,
 				AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */,
+				AEBA64171C31538F00783ECE /* ReplayViewController.swift */,
 				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
+				AEBA64111C30A3B100783ECE /* WifiViewController.swift */,
+				AEBA640D1C3086CF00783ECE /* Connection.storyboard */,
 			);
 			name = Communication;
 			sourceTree = "<group>";
@@ -484,6 +511,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
 				AE48F6DE1C1F25A6004E949F /* ModeTableViewFooter.xib in Resources */,
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
@@ -492,6 +520,7 @@
 				AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AEDDD2791C1615C8004232AA /* Podfile in Resources */,
+				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -566,6 +595,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */,
+				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
@@ -582,12 +612,14 @@
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */,
-				AE48F6E31C1F6F8A004E949F /* MyUINavigationController.swift in Sources */,
+				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
+				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
+				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
 				AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */,
@@ -606,6 +638,7 @@
 				AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
+				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
@@ -616,9 +649,12 @@
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
 				AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */,
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
+				AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */,
 				AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */,
+				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
 				AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */,
+				AEBA64141C3125B000783ECE /* InitiateHandshakeExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

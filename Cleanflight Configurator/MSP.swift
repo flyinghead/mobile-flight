@@ -38,6 +38,8 @@ class DataMessageRetryHandler : MessageRetryHandler {
 }
 
 class MSPParser {
+    let CHANNEL_FORWARDING_DISABLED = 0xFF
+    
     var datalog: NSFileHandle?
     var datalogStart: NSDate?
     
@@ -176,7 +178,42 @@ class MSPParser {
             sensorData.magnetometerZ = Double(readInt16(message, index: 16)) / 1090
             
             pingSensorListeners()
-            
+        
+        case .MSP_SERVO:
+            if message.count < 16 {
+                return false
+            }
+            for var i = 0; i < 8; i++ {
+                motorData.servoValue[i] = readUInt16(message, index: i*2)
+            }
+            pingMotorListeners()
+        
+        case .MSP_SERVO_CONFIGURATIONS:
+            let servoConfSize = 14
+            var servoConfigs = [ServoConfig]()
+            for (var i = 0; (i + 1) * servoConfSize <= message.count; i++) {
+                let offset = i * servoConfSize
+                var servoConfig = ServoConfig(
+                    minimumRC: readInt16(message, index: offset),
+                    middleRC: readInt16(message, index: offset + 4),
+                    maximumRC: readInt16(message, index: offset + 2),
+                    rate: readInt8(message, index: offset + 6),
+                    minimumAngle: Int(message[offset + 7]),
+                    maximumAngle: Int(message[offset + 8]),
+                    rcChannel: Int(message[offset + 9]),
+                    reversedSources: readUInt32(message, index: offset + 10)
+                )
+                if servoConfig.rcChannel == CHANNEL_FORWARDING_DISABLED {
+                    servoConfig.rcChannel = nil
+                }
+                servoConfigs.append(servoConfig)
+            }
+            if servoConfigs.count == 0 {
+                return false
+            }
+            settings.servoConfigs = servoConfigs
+            pingSettingsListeners()
+        
         case .MSP_MOTOR:
             if message.count < 16 {
                 return false
@@ -361,6 +398,13 @@ class MSPParser {
             misc.vbatWarningCellVoltage = Double(message[offset++]) / 10; // 10-50
             pingDataListeners()
             
+        case .MSP_MOTOR_PINS:
+            // Unused
+            if message.count < 8 {
+                return false
+            }
+            break;
+            
         case .MSP_BOXNAMES:
             settings.boxNames = [String]()
             var buf = [UInt8]()
@@ -535,7 +579,8 @@ class MSPParser {
             .MSP_SELECT_SETTING,
             .MSP_SET_MOTOR,
             .MSP_DATAFLASH_ERASE,
-            .MSP_SET_WP:
+            .MSP_SET_WP,
+            .MSP_SET_SERVO_CONFIGURATION:
             break
             
         default:
@@ -838,5 +883,20 @@ class MSPParser {
         data.appendContentsOf([0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
         
         sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
+    }
+    
+    func setServoConfig(servoIdx: Int, servoConfig: ServoConfig, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(servoIdx))
+        data.appendContentsOf(writeInt16(servoConfig.minimumRC))
+        data.appendContentsOf(writeInt16(servoConfig.maximumRC))
+        data.appendContentsOf(writeInt16(servoConfig.middleRC))
+        data.append(writeInt8(servoConfig.rate))
+        data.append(UInt8(servoConfig.minimumAngle))
+        data.append(UInt8(servoConfig.maximumAngle))
+        data.append(UInt8(servoConfig.rcChannel == nil ? CHANNEL_FORWARDING_DISABLED : servoConfig.rcChannel!))
+        data.appendContentsOf(writeUInt32(servoConfig.reversedSources))
+        
+        sendMessage(.MSP_SET_SERVO_CONFIGURATION, data: data, retry: 2, callback: callback)
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 
 class GPSConfigViewController: ConfigChildViewController {
-    let gpsTypeLabels = ["NMEA", "UBLOX"]
+    let gpsTypeLabels = ["NMEA", "u-blox"]
     let gpsRegionLabels = ["Auto-detect", "Europe", "North America", "Japan", "India"]
     @IBOutlet weak var gpsSwitch: UISwitch!
     @IBOutlet weak var gpsProtocolField: UITextField!
@@ -31,8 +31,11 @@ class GPSConfigViewController: ConfigChildViewController {
         
         gpsProtocolPicker = MyDownPicker(textField: gpsProtocolField, withData: gpsTypeLabels)
         gpsProtocolPicker?.showArrowImage(true)
+        gpsProtocolPicker?.setPlaceholder("")
+        
         gpsRegionPicker = MyDownPicker(textField: gpsRegionField, withData: gpsRegionLabels)
         gpsRegionPicker?.showArrowImage(true)
+        gpsRegionPicker?.setPlaceholder("")
         
         magDeclinationField.delegate = self
     }

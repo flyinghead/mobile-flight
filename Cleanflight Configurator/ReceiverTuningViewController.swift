@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ReceiverTuningViewController: UITableViewController, BackButtonListener {
+class ReceiverTuningViewController: UITableViewController {
     @IBOutlet weak var channelMapField: UITextField!
     @IBOutlet weak var rssiChannelField: UITextField!
 
@@ -40,6 +40,10 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         channelMapPicker = MyDownPicker(textField: channelMapField, withData: RcMapChoices)
+        channelMapPicker!.setPlaceholder("")
+        
+        rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
+        rssiChannelPicker!.setPlaceholder("")
         
         refreshAction(self)
     }
@@ -49,6 +53,12 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
         // Dispose of any resources that can be recreated.
     }
 
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        saveIfNeeded()
+    }
+    
     func getRcMapString() -> String {
         let reference = ["A", "E", "R", "T", "1", "2", "3", "4"]
         var string = ""
@@ -61,7 +71,6 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     }
     
     @IBAction func refreshAction(sender: AnyObject) {
-        rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
         msp.sendMessage(.MSP_RX_MAP, data: nil, retry: 2, callback: { success in
             if success {
                 self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
@@ -113,7 +122,7 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
         })
     }
     
-    func backButtonTapped() {
+    func saveIfNeeded() {
         // Save settings
         var somethingChanged = false
         
@@ -189,17 +198,13 @@ class ReceiverTuningViewController: UITableViewController, BackButtonListener {
     }
     
     func showSaveFailedError() {
-        showSuccess("Save failed")
-    }
-    
-    func showError(msg: String) {
         dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus(msg)
+            SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }
     func showSuccess(msg: String) {
         dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus(msg)
+            SVProgressHUD.showSuccessWithStatus(msg)
         })
     }
 }

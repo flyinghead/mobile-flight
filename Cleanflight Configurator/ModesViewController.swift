@@ -12,7 +12,6 @@ import SVProgressHUD
 
 class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
     var fastTimer: NSTimer?
-    var slowTimer: NSTimer?
     var dontReloadTable = false
 
     var modeRanges: [ModeRange]?
@@ -80,9 +79,6 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         if (fastTimer == nil) {
             fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
         }
-        if slowTimer == nil {
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.333, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
-        }
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -90,19 +86,11 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         fastTimer?.invalidate()
         fastTimer = nil
-        slowTimer?.invalidate()
-        slowTimer = nil
     }
     
     func fastTimerDidFire(sender: AnyObject?) {
         if modeRanges != nil {
             msp.sendMessage(.MSP_RC, data: nil)
-        }
-    }
-    
-    func slowTimerDidFire(sender: AnyObject) {
-        if modeRanges != nil {
-            msp.sendMessage(.MSP_STATUS, data: nil)
         }
     }
     
@@ -309,6 +297,7 @@ class ModeRangeCell : UITableViewCell {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
             _channelPicker?.addTarget(self, action: "channelChanged:", forControlEvents: .ValueChanged)
+            _channelPicker?.setPlaceholder("")
         }
         return _channelPicker!
     }

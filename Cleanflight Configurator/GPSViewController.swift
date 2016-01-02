@@ -11,7 +11,6 @@ import UIKit
 class GPSViewController : UITableViewController, FlightDataListener {
     
     var fastTimer: NSTimer?
-    var slowTimer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,10 +25,6 @@ class GPSViewController : UITableViewController, FlightDataListener {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if slowTimer == nil {
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
-
-        }
         if (fastTimer == nil) {
             // Cleanflight/chrome uses 75ms interval
             fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
@@ -41,8 +36,6 @@ class GPSViewController : UITableViewController, FlightDataListener {
         
         fastTimer?.invalidate()
         fastTimer = nil
-        slowTimer?.invalidate()
-        slowTimer = nil
     }
     
     func fastTimerDidFire(sender: AnyObject) {
@@ -51,10 +44,6 @@ class GPSViewController : UITableViewController, FlightDataListener {
             msp.sendMessage(.MSP_COMP_GPS, data: nil)
             msp.sendMessage(.MSP_GPSSVINFO, data: nil)
         }
-    }
-    
-    func slowTimerDidFire(sender: AnyObject) {
-        msp.sendMessage(.MSP_STATUS, data: nil)
     }
     
     // MARK: - Table View

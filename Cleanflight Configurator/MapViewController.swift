@@ -77,6 +77,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
         if locationManager == nil {
             locationManager = CLLocationManager()
             locationManager?.delegate = self

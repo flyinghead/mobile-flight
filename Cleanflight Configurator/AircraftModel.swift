@@ -64,11 +64,23 @@ enum Mode : String {
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
 }
+
 struct ModeRange {
     var id = 0
     var auxChannelId = 0
     var start = 0
     var end = 0
+}
+
+struct ServoConfig {
+    var minimumRC = 0
+    var middleRC = 0
+    var maximumRC = 0
+    var rate = 0
+    var minimumAngle = 0
+    var maximumAngle = 0
+    var rcChannel: Int?
+    var reversedSources: UInt32 = 0
 }
 
 enum PIDName : String {
@@ -85,7 +97,7 @@ enum PIDName : String {
 }
 
 class Settings {
-    static let theSettings = Settings()
+    static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
     var autoDisarmDelay: Int?       // sec
@@ -131,6 +143,9 @@ class Settings {
     // MSP_PID_CONTROLLER
     var pidController = 0
     
+    // MSP_SERVO_CONFIGURATIONS / MSP_SET_SERVO_CONFIGURATION
+    var servoConfigs: [ServoConfig]?
+    
     private init() {
         
     }
@@ -162,6 +177,12 @@ class Settings {
         self.throttleMid = copyOf.throttleMid
         self.throttleExpo = copyOf.throttleExpo
         self.tpaBreakpoint = copyOf.tpaBreakpoint
+        
+        self.pidNames = copyOf.pidNames
+        self.pidValues = copyOf.pidValues
+        self.pidController = copyOf.pidController
+        
+        self.servoConfigs = copyOf.servoConfigs
     }
     
     func isModeOn(mode: Mode, forStatus status: UInt32) -> Bool {
@@ -186,7 +207,7 @@ class Settings {
 }
 
 class Misc {
-    static let theMisc = Misc()
+    static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
     var midRC = 1500            // rxConfig.midrc [1401 - 1599], also set by RX_CONFIG (but then no range is enforced...)
@@ -230,7 +251,7 @@ class Misc {
 }
 
 class Configuration {
-    static let theConfig = Configuration()
+    static var theConfig = Configuration()
     
     // MSP_IDENT
     var version: String?
@@ -350,7 +371,7 @@ struct Satellite {
 }
 
 class GPSData {
-    static let theGPSData = GPSData()
+    static var theGPSData = GPSData()
     
     var fix = false
     var latitude = 0.0          // degree
@@ -383,7 +404,7 @@ class GPSData {
 }
 
 class Receiver {
-    static let theReceiver = Receiver()
+    static var theReceiver = Receiver()
     
     var activeChannels = 0
     var channels = [Int](count: 18, repeatedValue: 0)   // Length must match MAX_SUPPORTED_RC_CHANNEL_COUNT in cleanflight
@@ -392,7 +413,7 @@ class Receiver {
 }
 
 class SensorData {
-    static let theSensorData = SensorData()
+    static var theSensorData = SensorData()
     
     // MSP_RAW_IMU
     var accelerometerX = 0.0, accelerometerY = 0.0, accelerometerZ = 0.0
@@ -409,17 +430,31 @@ class SensorData {
 }
 
 class MotorData {
-    static let theMotorData = MotorData()
+    static var theMotorData = MotorData()
     
+    // MSP_MOTOR
     var nMotors = 8
     var throttle = [Int](count: 8, repeatedValue: 0)
+    // MSP_SERVO
+    var servoValue = [Int](count: 8, repeatedValue: 0)
 }
 
 class Dataflash {
-    static let theDataflash = Dataflash()
+    static var theDataflash = Dataflash()
     
     var ready = 0
     var sectors: UInt32 = 0
     var usedSize: UInt32 = 0
     var totalSize: UInt32 = 0
+}
+
+func resetAircraftModel() {
+    Settings.theSettings = Settings()
+    Misc.theMisc = Misc()
+    Configuration.theConfig = Configuration()
+    GPSData.theGPSData = GPSData()
+    Receiver.theReceiver = Receiver()
+    SensorData.theSensorData = SensorData()
+    MotorData.theMotorData = MotorData()
+    Dataflash.theDataflash = Dataflash()
 }

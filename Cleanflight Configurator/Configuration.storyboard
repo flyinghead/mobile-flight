@@ -118,14 +118,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="119.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="quad_x" translatesAutoresizingMaskIntoConstraints="NO" id="6XH-Z9-nfU">
-                                                    <rect key="frame" x="27" y="6" width="183" height="119"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="quad_x" translatesAutoresizingMaskIntoConstraints="NO" id="6XH-Z9-nfU">
+                                                    <rect key="frame" x="27" y="8" width="103.5" height="103.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="6XH-Z9-nfU" secondAttribute="height" multiplier="1:1" id="4Tr-gx-TnR"/>
                                                     </constraints>
                                                 </imageView>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="PPM to SERVO" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PLV-Wj-oPB">
-                                                    <rect key="frame" x="433" y="45" width="159" height="30"/>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="PPM to SERVO" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PLV-Wj-oPB">
+                                                    <rect key="frame" x="463" y="45" width="129" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
@@ -136,7 +136,7 @@
                                                 <constraint firstItem="PLV-Wj-oPB" firstAttribute="centerY" secondItem="XRm-kP-Ago" secondAttribute="centerY" id="RsX-MF-jAP"/>
                                                 <constraint firstItem="6XH-Z9-nfU" firstAttribute="leading" secondItem="XRm-kP-Ago" secondAttribute="leadingMargin" constant="19" id="Xd8-Uh-Jzh"/>
                                                 <constraint firstItem="PLV-Wj-oPB" firstAttribute="trailing" secondItem="XRm-kP-Ago" secondAttribute="trailingMargin" id="fWh-TJ-unP"/>
-                                                <constraint firstItem="6XH-Z9-nfU" firstAttribute="height" secondItem="XRm-kP-Ago" secondAttribute="height" id="mjx-VQ-SBk"/>
+                                                <constraint firstItem="6XH-Z9-nfU" firstAttribute="height" secondItem="XRm-kP-Ago" secondAttribute="height" constant="-16" id="mjx-VQ-SBk"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -953,10 +953,10 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Configuration" image="Config" selectedImage="Config" id="Yrd-at-HNP"/>
-                    <navigationItem key="navigationItem" id="eZl-Nz-tVM">
+                    <navigationItem key="navigationItem" title="Configuration" id="eZl-Nz-tVM">
                         <barButtonItem key="leftBarButtonItem" style="plain" id="KoH-0m-oEk">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KuW-BI-zIx">
-                                <rect key="frame" x="20" y="7" width="133" height="30"/>
+                                <rect key="frame" x="20" y="7" width="60" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Refresh"/>
                                 <connections>
@@ -966,7 +966,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="40A-RB-PjQ">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ydr-Ug-fln">
-                                <rect key="frame" x="447" y="7" width="133" height="30"/>
+                                <rect key="frame" x="520" y="7" width="60" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
@@ -1601,7 +1601,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oa9-Bb-XYG">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oa9-Bb-XYG">
                                                     <rect key="frame" x="495" y="7" width="97" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -1629,7 +1629,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="North America" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bZI-sq-CBy">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="North America" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bZI-sq-CBy">
                                                     <rect key="frame" x="474" y="7" width="118" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>

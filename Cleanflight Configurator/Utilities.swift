@@ -8,6 +8,10 @@
 
 import Foundation
 
+func readInt8(array: [UInt8], index: Int) -> Int {
+    return Int(Int8(bitPattern: array[index]));
+}
+
 func readUInt16(array: [UInt8], index: Int) -> Int {
     return Int(array[index]) + Int(array[index+1]) * 256;
 }
@@ -47,6 +51,10 @@ func writeUInt16(i: Int) -> [UInt8] {
 func writeInt16(i: Int) -> [UInt8] {
     let ui = UInt(bitPattern: i)
     return [UInt8(ui & 0xFF), UInt8((ui >> 8) & 0xFF)]
+}
+
+func writeInt8(i: Int) -> UInt8 {
+    return UInt8(bitPattern: Int8(i))
 }
 
 // Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.

@@ -10,7 +10,7 @@ import UIKit
 import SVProgressHUD
 import MapKit
 
-class CalibrationViewController: UIViewController {
+class CalibrationViewController: UIViewController, FlightDataListener {
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
     @IBOutlet weak var calAccImgButton: UIButton!
@@ -25,8 +25,6 @@ class CalibrationViewController: UIViewController {
     
     var calibrationStart: NSDate?
     
-    var timer: NSTimer?
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -49,44 +47,17 @@ class CalibrationViewController: UIViewController {
         accTrimRollStepper.value = Double(config.accelerometerTrimRoll)
         accTrimRollChanged(accTrimRollStepper)
         
+        msp.addDataListener(self)
+        
         // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-
-        startTimer()
-    }
-    
-    private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    private func startTimer() {
-        if (timer == nil) {
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-        }
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    func receivedData() {
+        let config = Configuration.theConfig
         
-        stopTimer()
-    }
-    
-    func timerDidFire(timer: NSTimer) {
-        msp.sendMessage(.MSP_STATUS, data: nil, retry: 0, callback: { success in
-            if success {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let config = Configuration.theConfig
-                    
-                    let armed = Settings.theSettings.isModeOn(.ARM, forStatus: config.mode)
-                    self.enableAccCalibration(!armed && config.isGyroAndAccActive())
-                    self.enableMagCalibration(!armed && config.isMagnetometerActive())
-                })
-            }
-        })
+        let armed = Settings.theSettings.isModeOn(.ARM, forStatus: config.mode)
+        self.enableAccCalibration(!armed && config.isGyroAndAccActive())
+        self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }
     
     func enableAccCalibration(enabled: Bool) {
@@ -99,8 +70,19 @@ class CalibrationViewController: UIViewController {
         calMagImgButton.enabled = calMagButton.enabled
     }
     
+    private func startTimer() {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.startTimer()
+    }
+    
+    private func stopTimer() {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
+    }
+    
     @IBAction func calibrateAccelerometer(sender: AnyObject) {
         stopTimer()
+
         enableAccCalibration(false)
         msp.sendMessage(.MSP_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
@@ -112,6 +94,7 @@ class CalibrationViewController: UIViewController {
                     SVProgressHUD.showErrorWithStatus("Cannot start calibration")
                     self.enableAccCalibration(true)
                     self.startTimer()
+
                 }
             })
         })
@@ -143,6 +126,7 @@ class CalibrationViewController: UIViewController {
                     SVProgressHUD.showErrorWithStatus("Cannot start calibration")
                     self.enableMagCalibration(true)
                     self.startTimer()
+
                 }
             })
         })

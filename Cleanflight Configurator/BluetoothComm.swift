@@ -44,6 +44,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
         _closed = true
         btManager.disconnect(peripheral)
         msp.cancelRetries()
+        msp.commChannel = nil
     }
     
     // MARK: BluetoothDelegate

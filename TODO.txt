@@ -1,18 +1,40 @@
+Finish Settings: detect pref changes, set default prefs, etc.
+
 - Access violation due to reachability callback being called after connection is closed
-- Licensing:
+- Connection timeout is triggered if disconnecting within 5 secs
+- Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
+- Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
-    + map, tuning, (new calibrate), battery, signal icons "designed by Freepik" mandatory in credits
-    + compass: <div>Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 - Replay:
     - dump full AircraftModel at start of session.
     - visual indication of replay (pause/play, FF, REW ?)
-    - disable buttons and tabs that are N/A: Config, Motors, Receiver, Modes, calib, pid, dataflash, about
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
 - Alarm settings
-- Remove borders of text field in config and elsewhere. See Pages
 - App icon
 - Sexy launch screen and connection page
 - Map: Add pin for RTH location
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
+- Units: metrics / imperial
+- Record: move to Settings. "Log flight data" on/off will record flight data for every flight
+- Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
+- Follow Me: only works with Telemetry screen
+- Telemetry (map?): Display active profile
+- Settings: Map type (sat, hybrid, map)
+- Backup / Restore
+- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO
+  "Almost nobody uses it..."
+
+- Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
+    Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
+
+DONE:
+- Remove borders of text field in config and elsewhere. See Pages
+- Replay: disable buttons and tabs that are N/A: Config, Motors, Receiver, Modes, calib, pid, dataflash, about
+- Reset AircraftModel when connecting and when starting replay
+- Record: For each session, display date
+- Licensing: Put this in Settings.app (Acknoledgements)
+    + map, tuning, (new calibrate), battery, signal icons "designed by Freepik" mandatory in credits
+    + compass: <div>Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+- MyUINavigationController "Back" button detector doesn't work if launched from "More..." VC

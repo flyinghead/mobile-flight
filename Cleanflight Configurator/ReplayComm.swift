@@ -38,6 +38,7 @@ class ReplayComm : NSObject, CommChannel {
     func close() {
         datalog.closeFile()
         closed = true
+        msp.commChannel = nil
     }
     
     func read() {
@@ -61,7 +62,9 @@ class ReplayComm : NSObject, CommChannel {
         let delay = Double(timestamp)/1000 + datalogStart.timeIntervalSinceNow
         
         if delay <= 0 {
-            processData(nil)
+            dispatch_async(dispatch_get_main_queue(), {
+                self.processData(nil)
+            })
             return
         }
         _ = NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: "processData:", userInfo: nil, repeats: false)

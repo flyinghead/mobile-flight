@@ -54,6 +54,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     override func viewDidLoad() {
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
         mixerTypePicker!.addTarget(self, action: "mixerTypeChanged:", forControlEvents: .ValueChanged)
+        mixerTypePicker!.setPlaceholder("")
         
         msp.addDataListener(self)
 
@@ -184,6 +185,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
         
         showWaitIndicator("Saving settings")
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
         msp.sendSetMisc(newMisc!, callback: { success in
             if success {
                 self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
@@ -200,6 +203,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                                 // Wait 1500 ms
                                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1500 * Double(NSEC_PER_MSEC))), dispatch_get_main_queue(), {
                                                     self.saveButton.enabled = true
+                                                    appDelegate.startTimer()
                                                     // Refetch information from FC
                                                     self.fetchInformation()
                                                 })
