@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
 
@@ -54,7 +55,7 @@ class MSPParser {
     
     var dataListeners = [FlightDataListener]()
     var dataListenersLock = NSObject()
-    var commChannel: CommChannel?
+    private var commChannel: CommChannel?
     
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
@@ -63,7 +64,7 @@ class MSPParser {
         if datalog != nil {
             var logData = [UInt8]()
             // Timestamp in milliseconds since start of logging
-            logData.appendContentsOf(writeUInt32(UInt32(round(-datalogStart!.timeIntervalSinceNow * 1000))))
+            logData.appendContentsOf(writeUInt32(Int(round(-datalogStart!.timeIntervalSinceNow * 1000))))
             logData.appendContentsOf(writeUInt16(min(data.count, Int(UINT16_MAX))))
             datalog!.writeData(NSData(bytes: logData, length: logData.count))
             datalog!.writeData(NSData(bytes: data, length: data.count))
@@ -273,6 +274,8 @@ class MSPParser {
                 gpsData.lastKnownGoodAltitude = gpsData.altitude
                 gpsData.lastKnownGoodTimestamp = NSDate()
             }
+            gpsData.maxAltitude = max(gpsData.maxAltitude, gpsData.altitude)
+            gpsData.maxSpeed = max(gpsData.maxSpeed, gpsData.speed)
             pingGpsListeners()
             
         case .MSP_COMP_GPS:
@@ -282,6 +285,7 @@ class MSPParser {
             gpsData.distanceToHome = readUInt16(message, index: 0)
             gpsData.directionToHome = readUInt16(message, index: 2)
             gpsData.update = Int(message[4])
+            gpsData.maxDistanceToHome = max(gpsData.maxDistanceToHome, gpsData.distanceToHome)
             pingGpsListeners()
             
         case .MSP_ATTITUDE:
@@ -298,6 +302,7 @@ class MSPParser {
                 return false
             }
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0 // correct scale factor
+            sensorData.maxAltitude = max(sensorData.maxAltitude, sensorData.altitude)
             pingSensorListeners()
             
         case .MSP_SONAR:
@@ -315,11 +320,12 @@ class MSPParser {
             config.mAhDrawn = readUInt16(message, index: 1)
             config.rssi = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
             config.amperage = Double(readInt16(message, index: 5)) / 100                // 1/100 A
-            if settings.features?.contains(.VBat) ?? false {
+            if settings.features.contains(.VBat) ?? false {
                 if config.batteryCells == 0  && misc.vbatMaxCellVoltage > 0 {
                     config.batteryCells = Int(config.voltage / misc.vbatMaxCellVoltage + 1)
                 }
             }
+            config.maxAmperage = max(config.maxAmperage, config.amperage)
             pingDataListeners()
             
         case .MSP_RC_TUNING:
@@ -448,7 +454,7 @@ class MSPParser {
             }
             var sats = [Satellite]()
             for (var i = 0; i < numSat; i++) {
-                sats.append(Satellite(channel: Int(message[i * 4 + 1]), svid: Int(message[i * 4 + 2]), quality: GpsSatQuality(rawValue: message[i * 4 + 3]), cno: Int(message[i * 4 + 4])))
+                sats.append(Satellite(channel: Int(message[i * 4 + 1]), svid: Int(message[i * 4 + 2]), quality: GpsSatQuality(rawValue: Int(message[i * 4 + 3])), cno: Int(message[i * 4 + 4])))
             }
             gpsData.satellites = sats
             
@@ -742,6 +748,11 @@ class MSPParser {
             listener.receivedSettingsData?()
         }
     }
+    func pingCommunicationStatusListeners(status: Bool) {
+        pingListeners { (listener) -> Void in
+            listener.communicationStatus?(status)
+        }
+    }
     
     func sendSetMisc(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
@@ -767,14 +778,14 @@ class MSPParser {
     
     func sendSetBfConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.append(UInt8(settings.mixerConfiguration!))
-        data.appendContentsOf(writeUInt32(settings.features!.rawValue))
-        data.append(UInt8(settings.serialRxType!))
-        data.appendContentsOf(writeInt16(settings.boardAlignRoll!))
-        data.appendContentsOf(writeInt16(settings.boardAlignPitch!))
-        data.appendContentsOf(writeInt16(settings.boardAlignYaw!))
-        data.appendContentsOf(writeInt16(settings.currentScale!))
-        data.appendContentsOf(writeInt16(settings.currentOffset!))
+        data.append(UInt8(settings.mixerConfiguration))
+        data.appendContentsOf(writeUInt32(settings.features.rawValue))
+        data.append(UInt8(settings.serialRxType))
+        data.appendContentsOf(writeInt16(settings.boardAlignRoll))
+        data.appendContentsOf(writeInt16(settings.boardAlignPitch))
+        data.appendContentsOf(writeInt16(settings.boardAlignYaw))
+        data.appendContentsOf(writeInt16(settings.currentScale))
+        data.appendContentsOf(writeInt16(settings.currentOffset))
         
         sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: 2, callback: callback)
     }
@@ -800,7 +811,7 @@ class MSPParser {
     
     func sendSetArmingConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.append(UInt8(settings.autoDisarmDelay!))
+        data.append(UInt8(settings.autoDisarmDelay))
         data.append(UInt8(settings.disarmKillSwitch ? 1 : 0))
         
         sendMessage(.MSP_SET_ARMING_CONFIG, data: data, retry: 2, callback: callback)
@@ -861,7 +872,7 @@ class MSPParser {
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
     }
     
-    func sendDataflashRead(address: UInt32, callback:(data: [UInt8]?) -> Void) {
+    func sendDataflashRead(address: Int, callback:(data: [UInt8]?) -> Void) {
         let data = writeUInt32(address)
         let messageRetry = DataMessageRetryHandler(code: .MSP_DATAFLASH_READ, data: data, maxTries: 3, callback: callback)
         makeSendMessageTimer(messageRetry)
@@ -898,5 +909,30 @@ class MSPParser {
         data.appendContentsOf(writeUInt32(servoConfig.reversedSources))
         
         sendMessage(.MSP_SET_SERVO_CONFIGURATION, data: data, retry: 2, callback: callback)
+    }
+
+    func openCommChannel(commChannel: CommChannel) {
+        self.commChannel = commChannel
+        pingCommunicationStatusListeners(true)
+    }
+    
+    func closeCommChannel() {
+        cancelRetries()
+        commChannel?.close()
+        commChannel = nil
+        FlightLogFile.close(self)
+        pingCommunicationStatusListeners(false)
+    }
+    
+    var communicationEstablished: Bool {
+        return commChannel != nil
+    }
+    
+    var communicationHealthy: Bool {
+        return communicationEstablished && commChannel!.connected
+    }
+    
+    var replaying: Bool {
+        return commChannel is ReplayComm
     }
 }

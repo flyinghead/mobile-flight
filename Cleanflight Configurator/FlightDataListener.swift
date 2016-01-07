@@ -15,4 +15,5 @@ import Foundation
     optional func receivedSensorData()
     optional func receivedMotorData()
     optional func receivedSettingsData()
+    optional func communicationStatus(status: Bool)     // true: communication established, false: communication closed permanently
 }

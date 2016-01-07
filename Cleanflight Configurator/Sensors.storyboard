@@ -53,6 +53,7 @@
                     </view>
                     <connections>
                         <outlet property="chartView" destination="hQg-FD-CJV" id="s5g-X9-Oea"/>
+                        <outlet property="titleLabel" destination="9M3-ly-fCF" id="rBk-SY-0UO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7ex-EE-x4K" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -135,6 +136,7 @@
                     </view>
                     <connections>
                         <outlet property="chartView" destination="B16-RF-Fbz" id="uEw-Cu-mbv"/>
+                        <outlet property="titleLabel" destination="dpP-F2-oUc" id="47G-e3-7on"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pyP-VI-UU7" userLabel="First Responder" sceneMemberID="firstResponder"/>

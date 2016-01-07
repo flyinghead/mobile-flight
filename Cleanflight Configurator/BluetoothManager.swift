@@ -152,7 +152,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             notifyReceivedData(peripheral, enabled: true)
             delegate?.connectedPeripheral(BluetoothPeripheral(peripheral))
         } else {
-            NSLog("Error discovering characteristics for service %@: ", service.UUID.UUIDString, error!)
+            NSLog("Error discovering characteristics for service %@: %@", service.UUID.UUIDString, error!)
             activePeripheral = nil
             manager.cancelPeripheralConnection(peripheral)
             delegate?.failedToConnectToPeripheral(BluetoothPeripheral(peripheral), error: error)
@@ -167,8 +167,23 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             nsdata.getBytes(&data, length:nsdata.length)
 
             delegate?.receivedData(BluetoothPeripheral(peripheral), data: data)
+        } else {
+            NSLog("Error updating value for characteristic: %@", error!)
         }
     }
+    /*
+    func peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor descriptor: CBDescriptor, error: NSError?) {
+        NSLog("didUpdateValueForDescriptor: %@", error ?? "?")
+    }
+    
+    func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+        NSLog("didWriteValueForCharacteristic: %@", error ?? "?")
+    }
+    
+    func peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+        NSLog("didUpdateNotificationStateForCharacteristic: %@", error ?? "?")
+    }
+    */
     // MARK:
     
     func connect(peripheral: BluetoothPeripheral) {

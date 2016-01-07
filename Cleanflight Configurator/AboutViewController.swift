@@ -63,7 +63,7 @@ class AboutViewController: UITableViewController {
                 cell.detailTextLabel!.text = config.fcVersion
             case 2:
                 cell.textLabel!.text = "Protocol Version"
-                cell.detailTextLabel!.text = config.msgProtocolVersion == nil ? "" : String(format: "%d", config.msgProtocolVersion!)
+                cell.detailTextLabel!.text = String(format: "%d", config.msgProtocolVersion)
             case 3:
                 cell.textLabel!.text = "API Version"
                 cell.detailTextLabel!.text = config.apiVersion
@@ -80,7 +80,7 @@ class AboutViewController: UITableViewController {
                 cell.detailTextLabel!.text = config.boardInfo
             case 1:
                 cell.textLabel!.text = "Version"
-                cell.detailTextLabel!.text = config.boardVersion == nil ? "" : String(format: "%d", config.boardVersion!)
+                cell.detailTextLabel!.text = String(format: "%d", config.boardVersion)
             case 2:
                 cell.textLabel!.text = "UID"
                 cell.detailTextLabel!.text = config.uid ?? ""

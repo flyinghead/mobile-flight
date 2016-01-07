@@ -32,9 +32,9 @@ class VBatConfigViewController: ConfigChildViewController {
 
     @IBAction func vbatSwitchChanged(sender: AnyObject) {
         if vbatSwitch.on {
-            settings?.features!.insert(.VBat)
+            settings?.features.insert(.VBat)
         } else {
-            settings?.features!.remove(.VBat)
+            settings?.features.remove(.VBat)
         }
         tableView.reloadData()
     }
@@ -42,7 +42,7 @@ class VBatConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        vbatSwitch.on = settings!.features!.contains(.VBat)
+        vbatSwitch.on = settings!.features.contains(.VBat)
         minVoltage.value = misc!.vbatMinCellVoltage
         warningVoltage.value = misc!.vbatWarningCellVoltage
         maxVoltage.value = misc!.vbatMaxCellVoltage

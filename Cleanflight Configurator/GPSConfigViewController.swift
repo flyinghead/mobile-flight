@@ -58,7 +58,7 @@ class GPSConfigViewController: ConfigChildViewController {
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        gpsSwitch.on = settings!.features?.contains(BaseFlightFeature.GPS) ?? false
+        gpsSwitch.on = settings!.features.contains(BaseFlightFeature.GPS) ?? false
         gpsProtocolPicker?.selectedIndex = misc!.gpsType
         gpsRegionPicker?.selectedIndex = misc!.gpsUbxSbas
         magDeclinationField.value = misc!.magDeclination
@@ -66,9 +66,9 @@ class GPSConfigViewController: ConfigChildViewController {
     
     @IBAction func gpsSwitchChanged(sender: AnyObject) {
         if (gpsSwitch.on) {
-            settings!.features!.insert(BaseFlightFeature.GPS)
+            settings!.features.insert(BaseFlightFeature.GPS)
         } else {
-            settings!.features!.remove(BaseFlightFeature.GPS)
+            settings!.features.remove(BaseFlightFeature.GPS)
         }
         tableView.reloadData()
     }

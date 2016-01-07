@@ -93,7 +93,7 @@ class MainConnectionViewController: UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateInitialViewController() as! MainNavigationController
         
-        if msp.commChannel is ReplayComm {
+        if msp.replaying {
             // Remove not available tabs
             viewController.removeViewControllersForReplay()
         } else {

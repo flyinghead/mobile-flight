@@ -28,7 +28,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         self.host = host
         self.port = port ?? 23
         super.init()
-        msp.commChannel = self
+        msp.openCommChannel(self)
     }
     
     func connect(callback: ((success: Bool) -> ())?) {
@@ -85,6 +85,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             if hadLostNetwork && !myself.networkLost && !myself._connected {
                 myself.connect({ success in
                     if success {
+                        NSNotificationCenter.defaultCenter().removeObserver(myself, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                         SVProgressHUD.dismiss()
                     }
                 })
@@ -161,6 +162,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             if !networkLost {
                 connect({ success in
                     if success {
+                        NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                         SVProgressHUD.dismiss()
                     }
                 })
@@ -172,7 +174,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     }
     
     func userCancelledReconnection(notification: NSNotification) {
-        close()
+        msp.closeCommChannel()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
         SVProgressHUD.dismiss()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -181,8 +183,6 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
     func close() {
         closeStreams()
-        msp.cancelRetries()
-        msp.commChannel = nil
         if _reachability != nil {
             SCNetworkReachabilityUnscheduleFromRunLoop(_reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
             _reachability = nil

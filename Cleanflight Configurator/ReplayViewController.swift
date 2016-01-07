@@ -15,9 +15,6 @@ class ReplayViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
@@ -27,6 +24,12 @@ class ReplayViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -72,22 +75,37 @@ class ReplayViewController: UITableViewController {
         
         switch indexPath.section {
         case 0:
-            let title: String
+            var title: String?
+            var detail: String?
             if replayFiles != nil && replayFiles!.count > indexPath.row {
                 let fileUrl = replayFiles![indexPath.row]
                 do {
-                    let attrs = try NSFileManager.defaultManager().attributesOfItemAtPath(fileUrl.path!)
-                    let date = attrs[NSFileCreationDate] as! NSDate
-                    let df = NSDateFormatter()
-                    df.dateStyle = .ShortStyle
-                    df.timeStyle = .ShortStyle
-                    title = df.stringFromDate(date)
-                } catch let error as NSError {
-                    NSLog("Cannot get attributes of %@: %@", fileUrl, error)
+                    try TryCatch.tryBlock({
+                        do {
+                            let attrs = try NSFileManager.defaultManager().attributesOfItemAtPath(fileUrl.path!)
+                            let date = attrs[NSFileCreationDate] as! NSDate
+                            let df = NSDateFormatter()
+                            df.dateStyle = .ShortStyle
+                            df.timeStyle = .ShortStyle
+                            title = df.stringFromDate(date)
+                            
+                            let (file, stats) = try FlightLogFile.openForReading(fileUrl)
+                            file.closeFile()
+                            if stats != nil {
+                                detail = String(format: "%02d:%02d", Int(stats!.flightTime) / 60, Int(round(stats!.flightTime)) % 60)
+                            }
+                        } catch let error as NSError {
+                            NSLog("Cannot get attributes of %@: %@", fileUrl, error)
+                        }
+                    })
+                } catch  {
+                    // Objective-C exception
+                }
+                if title == nil {
                     title = fileUrl.lastPathComponent ?? "?"
                 }
                 cell.textLabel?.text = title
-                cell.detailTextLabel?.text = ""
+                cell.detailTextLabel?.text = detail
             }
         default:
             break
@@ -102,16 +120,24 @@ class ReplayViewController: UITableViewController {
         case  0:
             if replayFiles != nil && indexPath.row < replayFiles!.count {
                 let fileUrl = replayFiles![indexPath.row]
+                
                 do {
-                    let file = try NSFileHandle(forReadingFromURL: fileUrl)
-                    _ = ReplayComm(datalog: file, msp: msp)
-                } catch let error as NSError {
-                    NSLog("Cannot open %@: %@", fileUrl, error)
-                    SVProgressHUD.showErrorWithStatus("File open failed")
+                    try TryCatch.tryBlock({
+                        do {
+                            let (file, _) = try FlightLogFile.openForReading(fileUrl)
+                            _ = ReplayComm(datalog: file, msp: self.msp)
+                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        } catch  {
+                            // Swift error
+                            SVProgressHUD.showErrorWithStatus("Invalid flight session", maskType: .Black)
+                        }
+                    })
+                } catch  {
+                    // Objective-C exception
+                    SVProgressHUD.showErrorWithStatus("Invalid flight session", maskType: .Black)
                 }
             }
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
             
         default:
             break

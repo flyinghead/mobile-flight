@@ -25,7 +25,7 @@ class DataflashController: UIViewController {
         downloadAddress(0)
     }
     
-    func downloadAddress(address: UInt32) {
+    func downloadAddress(address: Int) {
         NSLog("Reading address %d", address)
         msp.sendDataflashRead(address, callback: { data in
             if data == nil {
@@ -34,7 +34,7 @@ class DataflashController: UIViewController {
                 NSLog("Done. Success!")
             } else {
                 NSLog("Received address %d size %d", readUInt32(data!, index: 0), data!.count - 4)
-                let nextAddress = address + UInt32(data!.count - 4)
+                let nextAddress = address + data!.count - 4
                 if (nextAddress > Dataflash.theDataflash.usedSize) {
                     NSLog("Done (> usedSize). Success!")
                 } else {

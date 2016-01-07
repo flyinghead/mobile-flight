@@ -24,7 +24,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
         self.msp = msp
         self.btQueue = btManager.btQueue
         super.init()
-        msp.commChannel = self
+        msp.openCommChannel(self)
     }
     
     func flushOut() {
@@ -43,8 +43,6 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
         _connected = false
         _closed = true
         btManager.disconnect(peripheral)
-        msp.cancelRetries()
-        msp.commChannel = nil
     }
     
     // MARK: BluetoothDelegate
@@ -82,7 +80,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func userCancelledReconnection(notification: NSNotification) {
-        close()
+        msp.closeCommChannel()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
         SVProgressHUD.dismiss()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

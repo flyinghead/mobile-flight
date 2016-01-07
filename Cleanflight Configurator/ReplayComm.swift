@@ -24,7 +24,7 @@ class ReplayComm : NSObject, CommChannel {
         self.msp = msp
         self.datalogStart = NSDate()
         super.init()
-        msp.commChannel = self
+        msp.openCommChannel(self)
         read()
     }
     
@@ -38,7 +38,12 @@ class ReplayComm : NSObject, CommChannel {
     func close() {
         datalog.closeFile()
         closed = true
-        msp.commChannel = nil
+    }
+    
+    private func closeAndDismissViewController() {
+        msp.closeCommChannel()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func read() {
@@ -47,17 +52,21 @@ class ReplayComm : NSObject, CommChannel {
         }
         var data = datalog.readDataOfLength(6)
         if data.length < 6 {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+            closeAndDismissViewController()
             return
         }
         var array = [UInt8](count: 6, repeatedValue: 0)
         data.getBytes(&array, length:array.count)
         let timestamp = readUInt32(array, index: 0)
         let size = readUInt16(array, index: 4)
+        
         data = datalog.readDataOfLength(size)
+        if data.length < size {
+            closeAndDismissViewController()
+            return
+        }
         self.array = [UInt8](count: size, repeatedValue: 0)
-        data.getBytes(&self.array!, length:self.array!.count)
+        data.getBytes(&self.array!, length:size)
         
         let delay = Double(timestamp)/1000 + datalogStart.timeIntervalSinceNow
         

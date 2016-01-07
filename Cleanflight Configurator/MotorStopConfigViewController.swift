@@ -23,9 +23,9 @@ class MotorStopConfigViewController: ConfigChildViewController {
     @IBAction func motorSwitchChanged(sender: AnyObject) {
         tableView.reloadData()
         if (stopMotorSwitch.on) {
-            settings!.features!.insert(BaseFlightFeature.MotorStop)
+            settings!.features.insert(BaseFlightFeature.MotorStop)
         } else {
-            settings!.features!.remove(BaseFlightFeature.MotorStop)
+            settings!.features.remove(BaseFlightFeature.MotorStop)
         }
     }
 
@@ -58,7 +58,7 @@ class MotorStopConfigViewController: ConfigChildViewController {
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        stopMotorSwitch.on = settings!.features?.contains(BaseFlightFeature.MotorStop) ?? false
+        stopMotorSwitch.on = settings!.features.contains(BaseFlightFeature.MotorStop) ?? false
         disarmDelayStepper.value = Double(settings!.autoDisarmDelay ?? 5)
         disarmDelayStep(disarmDelayStepper)
     }

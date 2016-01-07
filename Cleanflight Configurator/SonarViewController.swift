@@ -15,7 +15,7 @@ class SonarViewController: BarometerViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis
-        leftAxis.customAxisMax = 100.0
+        leftAxis.customAxisMax = useImperialUnits() ? 50.0 : 100.0
         leftAxis.customAxisMin =  0.0
 
         let nf = NSNumberFormatter()
@@ -30,14 +30,15 @@ class SonarViewController: BarometerViewController {
 
     override func updateSensorData() {
         let sonar = Double(SensorData.theSensorData.sonar)
+        let value = useImperialUnits() ? sonar / 2.54 : sonar
         
-        samples.append(sonar)
+        samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if sonar > leftAxis.customAxisMax {
+        if value > leftAxis.customAxisMax {
             leftAxis.resetCustomAxisMax()
         }
-        if sonar < leftAxis.customAxisMin {
+        if value < leftAxis.customAxisMin {
             leftAxis.resetCustomAxisMin()
         }
     }
@@ -46,4 +47,7 @@ class SonarViewController: BarometerViewController {
         msp.sendMessage(.MSP_SONAR, data: nil)
     }
 
+    override func userDefaultsDidChange(sender: AnyObject) {
+        titleLabel.text = useImperialUnits() ? "Sonar - inches" : "Sonar - cm"
+    }
 }

@@ -80,6 +80,9 @@
 		AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */; };
 		AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */; };
+		AEF190371C3DB54C0066C75A /* FlightLogFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190361C3DB54C0066C75A /* FlightLogFile.swift */; };
+		AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
+		AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEF1903E1C3F062D0066C75A /* TryCatch.m */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
 /* End PBXBuildFile section */
@@ -194,6 +197,10 @@
 		AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCode.swift; sourceTree = "<group>"; };
 		AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlinkingLabel.swift; sourceTree = "<group>"; };
 		AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayComm.swift; sourceTree = "<group>"; };
+		AEF190361C3DB54C0066C75A /* FlightLogFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightLogFile.swift; sourceTree = "<group>"; };
+		AEF190381C3E8E440066C75A /* AutoCoded.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCoded.swift; sourceTree = "<group>"; };
+		AEF1903A1C3F05D10066C75A /* TryCatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TryCatch.h; sourceTree = "<group>"; };
+		AEF1903E1C3F062D0066C75A /* TryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TryCatch.m; sourceTree = "<group>"; };
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
@@ -311,11 +318,13 @@
 				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
 				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
+				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
 				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
 				AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
+				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
 				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
 				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
@@ -345,6 +354,8 @@
 				AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */,
 				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
 				AEBA64191C332B3100783ECE /* Settings.bundle */,
+				AEF1903A1C3F05D10066C75A /* TryCatch.h */,
+				AEF1903E1C3F062D0066C75A /* TryCatch.m */,
 			);
 			path = "Cleanflight Configurator";
 			sourceTree = "<group>";
@@ -601,6 +612,7 @@
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
+				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
@@ -633,6 +645,7 @@
 				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,
 				AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */,
 				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
+				AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */,
@@ -654,6 +667,7 @@
 				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
 				AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */,
+				AEF190371C3DB54C0066C75A /* FlightLogFile.swift in Sources */,
 				AEBA64141C3125B000783ECE /* InitiateHandshakeExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

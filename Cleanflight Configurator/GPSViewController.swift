@@ -87,7 +87,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 }
             case 1:
                 cell.textLabel!.text = "Altitude"
-                cell.detailTextLabel!.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.altitude)
+                cell.detailTextLabel!.text = formatAltitude(Double(gpsData.altitude))
             case 2:
                 cell.textLabel!.text = "Latitude"
                 cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.latitude)
@@ -96,7 +96,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.longitude)
             case 4:
                 cell.textLabel!.text = "Speed"
-                cell.detailTextLabel!.text = formatWithUnit(gpsData.speed, unit: "km/h")
+                cell.detailTextLabel!.text = formatSpeed(gpsData.speed)
             case 5:
                 cell.textLabel!.text = "Heading"
                 cell.detailTextLabel!.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
@@ -105,7 +105,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 cell.detailTextLabel!.text = String(format: "%d", locale: NSLocale.currentLocale(), gpsData.numSat)
             case 7:
                 cell.textLabel!.text = "Distance to Home"
-                cell.detailTextLabel!.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
+                cell.detailTextLabel!.text = formatDistance(Double(gpsData.distanceToHome))
             case 8:
                 cell.textLabel!.text = "Direction to Home"
                 cell.detailTextLabel!.text = String(format: "%d°", locale: NSLocale.currentLocale(), gpsData.directionToHome)

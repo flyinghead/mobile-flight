@@ -39,9 +39,9 @@ class FailsafeConfigViewController: ConfigChildViewController {
         super.viewWillDisappear(animated)
         
         if failsafeSwitch.on {
-            settings!.features!.insert(.Failsafe)
+            settings!.features.insert(.Failsafe)
         } else {
-            settings!.features!.remove(.Failsafe)
+            settings!.features.remove(.Failsafe)
         }
         misc!.failsafeThrottle = Int(throttleField.value)
         configViewController?.refreshUI()
@@ -50,7 +50,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        failsafeSwitch.on = settings!.features!.contains(.Failsafe)
+        failsafeSwitch.on = settings!.features.contains(.Failsafe)
         throttleField.value = Double(misc!.failsafeThrottle)
         tableView.reloadData()
     }

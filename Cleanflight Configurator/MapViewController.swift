@@ -20,6 +20,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var batteryLabel: BlinkingLabel!
     @IBOutlet weak var rssiLabel: BlinkingLabel!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
+    @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var altitudeLabel: UILabel!
     @IBOutlet weak var headingLabel: UILabel!
@@ -35,9 +36,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         batteryLabel.text = "?"
         rssiLabel.text = "?"
         gpsLabel.text = "?"
+        timeLabel.text = "00:00"
         speedLabel.text = "?"
         altitudeLabel.text = "?"
-        headingLabel.text = "?"
+        //headingLabel.text = "?"
     }
 
     override func didReceiveMemoryWarning() {
@@ -91,6 +93,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let armedTime = Int(round(appDelegate.armedTime))
+        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
     
     func slowTimerDidFire(sender: AnyObject) {
@@ -124,11 +129,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         let config = Configuration.theConfig
         
         if config.isBarometerActive() || config.isSonarActive() {
-            altitudeLabel.text = formatWithUnit(sensorData.altitude, unit: "m")
+            altitudeLabel.text = formatAltitude(sensorData.altitude)
         }
         
         if config.isMagnetometerActive() {
-            headingLabel.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), sensorData.heading)
+            //headingLabel.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), sensorData.heading)
         }
     }
     
@@ -145,11 +150,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 gpsLabel.textColor = UIColor.orangeColor()
             }
             if !config.isBarometerActive() && !config.isSonarActive() {
-                altitudeLabel.text = String(format:"%dm", locale: NSLocale.currentLocale(), gpsData.altitude)
+                altitudeLabel.text = formatAltitude(Double(gpsData.altitude))
             }
-            speedLabel.text = formatWithUnit(gpsData.speed, unit: "km/h")
+            speedLabel.text = formatSpeed(gpsData.speed)
             if !config.isMagnetometerActive() {
-                headingLabel.text = String(format:"%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
+                //headingLabel.text = String(format:"%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
             }
         } else {
             if config.isGPSActive() {
@@ -158,7 +163,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
             speedLabel.text = ""
             if !config.isMagnetometerActive() {
-                headingLabel.text = ""
+                //headingLabel.text = ""
             }
             if !config.isBarometerActive() && !config.isSonarActive() {
                 altitudeLabel.text = ""

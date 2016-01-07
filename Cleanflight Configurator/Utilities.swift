@@ -20,11 +20,11 @@ func readInt16(array: [UInt8], index: Int) -> Int {
     return Int(array[index]) + Int(Int8(bitPattern: array[index+1])) * 256;
 }
 
-func readUInt32(array: [UInt8], index: Int) -> UInt32 {
-    var res = UInt32(array[index+3])
-    res = res * 256 + UInt32(array[index+2])
-    res = res * 256 + UInt32(array[index+1])
-    res = res * 256 + UInt32(array[index])
+func readUInt32(array: [UInt8], index: Int) -> Int {
+    var res = Int(array[index+3])
+    res = res * 256 + Int(array[index+2])
+    res = res * 256 + Int(array[index+1])
+    res = res * 256 + Int(array[index])
     return res
 }
 
@@ -36,12 +36,12 @@ func readInt32(array: [UInt8], index: Int) -> Int {
     return res
 }
 
-func writeUInt32(i: UInt32) -> [UInt8] {
+func writeUInt32(i: Int) -> [UInt8] {
     return [UInt8(i % 256), UInt8((i >> 8) % 256), UInt8((i >> 16) % 256), UInt8(i >> 24)]
 }
 
 func writeInt32(i: Int) -> [UInt8] {
-    return writeUInt32(UInt32(bitPattern: Int32(i)))
+    return writeUInt32(i)
 }
 
 func writeUInt16(i: Int) -> [UInt8] {
@@ -64,4 +64,46 @@ func formatWithUnit(reading: Double, unit: String) -> String {
     } else {
         return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, unit)
     }
+}
+
+func formatDistance(meters: Double) -> String {
+    if useImperialUnits() {
+        // Use feet since distances are typically small. We should use nautical miles for large distances
+        return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+    } else {
+        // Meters
+        return formatWithUnit(meters, unit: "m")
+    }
+}
+
+func formatAltitude(meters: Double) -> String {
+    if useImperialUnits() {
+        // Feet
+        return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+    } else {
+        // Meters
+        return formatWithUnit(meters, unit: "m")
+    }
+}
+
+func formatSpeed(kmh: Double) -> String {
+    if useImperialUnits() {
+        // Knots
+        return formatWithUnit(kmh / 1.852, unit: "kn")
+    } else {
+        // Meters
+        return formatWithUnit(kmh, unit: "km/h")
+    }
+}
+
+func useImperialUnits() -> Bool {
+    switch userDefaultAsString(.UnitSystem) {
+    case "imperial":
+        return true
+    case "metric":
+        return false
+    default:
+        return !(NSLocale.currentLocale().objectForKey(NSLocaleUsesMetricSystem) as? Bool ?? true)
+    }
+    
 }

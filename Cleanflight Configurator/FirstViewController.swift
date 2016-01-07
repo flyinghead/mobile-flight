@@ -101,26 +101,14 @@ class FirstViewController: UIViewController, FlightDataListener, BluetoothDelega
         
         version.text = config.version;
         multiType.text = String(format: "%d", config.multiType)
-        if (config.mspVersion != nil) {
-            mspVersion.text = String(format: "%d", config.mspVersion!)
-        } else {
-            mspVersion.text = ""
-        }
+        mspVersion.text = String(format: "%d", config.mspVersion)
         apiVersion.text = config.apiVersion
         fcIdentifier.text = config.fcIdentifier
         fcVersion.text = config.fcVersion
-        if (config.msgProtocolVersion != nil) {
-            msgProtocol.text = String(format: "%d", config.msgProtocolVersion!)
-        } else {
-            msgProtocol.text = ""
-        }
+        msgProtocol.text = String(format: "%d", config.msgProtocolVersion)
         buildInfo.text = config.buildInfo
         boardInfo.text = config.boardInfo
-        if (config.boardVersion != nil) {
-            boardVersion.text = String(format: "%d", config.boardVersion!)
-        } else {
-            boardVersion.text = ""
-        }
+        boardVersion.text = String(format: "%d", config.boardVersion)
         UID.text = config.uid ?? ""
         
         self.view.setNeedsDisplay();

@@ -16,15 +16,15 @@ Finish Settings: detect pref changes, set default prefs, etc.
 - Map: Add pin for RTH location
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
-- Units: metrics / imperial
 - Record: move to Settings. "Log flight data" on/off will record flight data for every flight
 - Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
 - Follow Me: only works with Telemetry screen
+- Telemetry/Map: Time counter since arming
 - Telemetry (map?): Display active profile
 - Settings: Map type (sat, hybrid, map)
 - Backup / Restore
-- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO
-  "Almost nobody uses it..."
+(- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...")
+- Modes: "Plus" buttons don't work well because of frequent table updates
 
 - Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
     Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
@@ -38,3 +38,4 @@ DONE:
     + map, tuning, (new calibrate), battery, signal icons "designed by Freepik" mandatory in credits
     + compass: <div>Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 - MyUINavigationController "Back" button detector doesn't work if launched from "More..." VC
+- Units: metrics / imperial

@@ -36,7 +36,6 @@ class TelemetryView : UIView {
     @IBOutlet weak var sonarSensor: UIImageView!
     
     @IBOutlet weak var followMeSwitch: UISwitch!
-    @IBOutlet weak var recordSwitch: UISwitch!
 }
 
 class TelemetryViewController: UIViewController, FlightDataListener, CLLocationManagerDelegate {
@@ -71,6 +70,10 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     
     var isShowingLandscapeView = false
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
     func orientationChanged() {
         let orientation = UIDevice.currentDevice().orientation
         if orientation.isLandscape && !isShowingLandscapeView {
@@ -119,15 +122,8 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         theView.gpsSensor.image = gpsSensorOff
         theView.baroSensor.image = baroSensorOff
         theView.sonarSensor.image = sonarSensorOff
-        
-        theView.recordSwitch.on = userDefaultEnabled(.RecordFlightlog)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
     }
     
-    func userDefaultsDidChange(sender: AnyObject) {
-        theView.recordSwitch.on = userDefaultEnabled(.RecordFlightlog)
-    }
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -146,12 +142,10 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
         }
         
-        if msp.commChannel is ReplayComm {
+        if msp.replaying {
             theView.followMeSwitch.enabled = false
-            theView.recordSwitch.enabled = false
         } else {
             theView.followMeSwitch.enabled = true
-            theView.recordSwitch.enabled = true
         }
     }
     
@@ -198,7 +192,7 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
         let config = Configuration.theConfig
-        theView.altitudeLabel.text = formatWithUnit(config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude), unit: "m")
+        theView.altitudeLabel.text = formatAltitude(config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
     }
     
     private func setModeLabel(label: UILabel, on: Bool) {
@@ -242,8 +236,8 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         let gpsData = GPSData.theGPSData
         if gpsData.fix && gpsData.numSat >= 5 {
             theView.gpsFixImage.image = greenled
-            theView.distanceToHomeLabel.text = String(format: "%dm", locale: NSLocale.currentLocale(), gpsData.distanceToHome)
-            theView.speedLabel.text = formatWithUnit(gpsData.speed, unit: "km/h")
+            theView.distanceToHomeLabel.text = formatDistance(Double(gpsData.distanceToHome))
+            theView.speedLabel.text = formatSpeed(gpsData.speed)
         } else {
             theView.gpsFixImage.image = redled
             theView.distanceToHomeLabel.text = ""
@@ -253,48 +247,9 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     }
     
     @IBAction func disconnectAction(sender: AnyObject) {
-        if let comm = msp.commChannel {
-            comm.close()
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
-    func startRecording() {
-        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
-        let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
-        
-        do {
-            if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
-                let file = try NSFileHandle(forWritingToURL: fileURL)
-                file.seekToEndOfFile()
-                msp.datalog = file
-                msp.datalogStart = NSDate()
-            }
-        } catch let error as NSError {
-            NSLog("Cannot open %@: %@", fileURL, error)
-        }
-    }
-    
-    func stopRecording() {
-        if let file = msp.datalog {
-            msp.datalog = nil
-            msp.datalogStart = nil
-            file.closeFile()
-        }
-    }
-    
-    @IBAction func recordSwitchChanged(sender: UISwitch) {
-        if sender.on {
-            if msp.datalog == nil {
-                startRecording()
-                if msp.datalog == nil {
-                    sender.on = false
-                }
-            }
-        } else {
-            stopRecording()
-        }
+        msp.closeCommChannel()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func followMeSwitchChanged(sender: UISwitch) {

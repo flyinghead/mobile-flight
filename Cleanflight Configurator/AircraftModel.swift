@@ -8,8 +8,13 @@
 
 import Foundation
 
-struct BaseFlightFeature : OptionSetType {
-    let rawValue: UInt32
+protocol DictionaryCoding {
+    func toDict() -> NSDictionary
+    init?(fromDict: NSDictionary?)
+}
+
+struct BaseFlightFeature : OptionSetType, DictionaryCoding {
+    let rawValue: Int
     
     static let None         = BaseFlightFeature(rawValue: 0)
     static let RxPpm  = BaseFlightFeature(rawValue: 1 << 0)
@@ -33,6 +38,22 @@ struct BaseFlightFeature : OptionSetType {
     static let OneShot125  = BaseFlightFeature(rawValue: 1 << 18)
     static let Blackbox  = BaseFlightFeature(rawValue: 1 << 19)
     static let ChannelForwarding  = BaseFlightFeature(rawValue: 1 << 20)
+
+    init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": rawValue]
+    }
+
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.rawValue = rawValue
+    }
 }
 
 enum Mode : String {
@@ -65,14 +86,38 @@ enum Mode : String {
     case FAILSAFE = "FAILSAFE"
 }
 
-struct ModeRange {
+struct ModeRange : DictionaryCoding {
     var id = 0
     var auxChannelId = 0
     var start = 0
     var end = 0
+    
+    init(id: Int, auxChannelId: Int, start: Int, end: Int) {
+        self.id = id
+        self.auxChannelId = auxChannelId
+        self.start = start
+        self.end = end
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+        let id = dict["id"] as? Int,
+        let auxChannelId = dict["auxChannelId"] as? Int,
+        let start = dict["start"] as? Int,
+        let end = dict["end"] as? Int
+            else { return nil }
+        
+        self.init(id: id, auxChannelId: auxChannelId, start: start, end: end)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "id": id, "auxChannelId": auxChannelId, "start": start, "end": end ]
+    }
+
 }
 
-struct ServoConfig {
+struct ServoConfig : DictionaryCoding {
     var minimumRC = 0
     var middleRC = 0
     var maximumRC = 0
@@ -80,7 +125,42 @@ struct ServoConfig {
     var minimumAngle = 0
     var maximumAngle = 0
     var rcChannel: Int?
-    var reversedSources: UInt32 = 0
+    var reversedSources = 0
+
+    init(minimumRC: Int, middleRC: Int, maximumRC: Int, rate: Int, minimumAngle: Int, maximumAngle: Int, rcChannel: Int?, reversedSources: Int) {
+        self.minimumRC = minimumRC
+        self.middleRC = middleRC
+        self.maximumRC = maximumRC
+        self.rate = rate
+        self.minimumAngle = minimumAngle
+        self.maximumAngle = maximumAngle
+        self.rcChannel = rcChannel
+        self.reversedSources = reversedSources
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let minimumRC = dict["minimumRC"] as? Int,
+            let middleRC = dict["middleRC"] as? Int,
+            let maximumRC = dict["maximumRC"] as? Int,
+            let rate = dict["rate"] as? Int,
+            let minimumAngle = dict["minimumAngle"] as? Int,
+            let maximumAngle = dict["maximumAngle"] as? Int,
+            let reversedSources = dict["reversedSources"] as? Int
+            else { return nil }
+        
+        self.init(minimumRC: minimumRC, middleRC: middleRC, maximumRC: maximumRC, rate: rate, minimumAngle: minimumAngle, maximumAngle: maximumAngle, rcChannel: dict["rcChannel"] as? Int, reversedSources: reversedSources)
+    }
+    
+    func toDict() -> NSDictionary {
+        var dict = [ "minimumRC": minimumRC, "middleRC": middleRC, "maximumRC": maximumRC, "rate": rate, "minimumAngle": minimumAngle, "maximumAngle": maximumAngle, "reversedSources": reversedSources ]
+        if rcChannel != nil {
+            dict["rcChannel"] = rcChannel!
+        }
+        
+        return dict
+    }
 }
 
 enum PIDName : String {
@@ -96,22 +176,23 @@ enum PIDName : String {
     case Vel = "VEL"
 }
 
-class Settings {
+class Settings : AutoCoded {
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
-    var autoDisarmDelay: Int?       // sec
+    var autoDisarmDelay = 5       // sec
     var disarmKillSwitch = false
     
     // MSP_BF_CONFIG / MSP_SET_BF_CONFIG
-    var mixerConfiguration: Int?
-    var features: BaseFlightFeature?
-    var serialRxType: Int?
-    var boardAlignRoll: Int?
-    var boardAlignPitch: Int?
-    var boardAlignYaw: Int?
-    var currentScale: Int?
-    var currentOffset: Int?
+    var mixerConfiguration = 3              // Quad X by default
+    var features = BaseFlightFeature.None
+    var serialRxType = 0
+    var boardAlignRoll = 0
+    var boardAlignPitch = 0
+    var boardAlignYaw = 0
+    var currentScale = 400
+    var currentOffset = 0
 
     // MSP_BOXNAMES
     var boxNames: [String]?
@@ -146,9 +227,10 @@ class Settings {
     // MSP_SERVO_CONFIGURATIONS / MSP_SET_SERVO_CONFIGURATION
     var servoConfigs: [ServoConfig]?
     
-    private init() {
-        
+    private override init() {
+        super.init()
     }
+
     init(copyOf: Settings) {
         self.autoDisarmDelay = copyOf.autoDisarmDelay
         self.disarmKillSwitch = copyOf.disarmKillSwitch
@@ -183,15 +265,17 @@ class Settings {
         self.pidController = copyOf.pidController
         
         self.servoConfigs = copyOf.servoConfigs
+        
+        super.init()
     }
     
-    func isModeOn(mode: Mode, forStatus status: UInt32) -> Bool {
+    func isModeOn(mode: Mode, forStatus status: Int) -> Bool {
         if boxNames == nil {
             return false
         }
         for (i, m) in boxNames!.enumerate() {
             if (mode.rawValue == m) {
-                return status & (1 << UInt32(i)) != 0
+                return status & (1 << i) != 0
             }
         }
         return false
@@ -204,14 +288,60 @@ class Settings {
             return nil
         }
     }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        features = BaseFlightFeature(fromDict: aDecoder.decodeObjectForKey("features") as? NSDictionary)!
+        
+        if let modeRangesDicts = aDecoder.decodeObjectForKey("modeRanges") as? [NSDictionary] {
+            modeRanges = [ModeRange]()
+            for dict in modeRangesDicts {
+                modeRanges!.append(ModeRange(fromDict: dict)!)
+            }
+        }
+        
+        if let servoConfigsDicts = aDecoder.decodeObjectForKey("servoConfigs") as? [NSDictionary] {
+            servoConfigs = [ServoConfig]()
+            for dict in servoConfigsDicts {
+                servoConfigs!.append(ServoConfig(fromDict: dict)!)
+            }
+        }
+    }
+    
+    override func encodeWithCoder(aCoder: NSCoder) {
+        super.encodeWithCoder(aCoder)
+        
+        aCoder.encodeObject(features.toDict(), forKey: "features")
+        
+        var modeRangesDicts: [NSDictionary]?
+        if modeRanges != nil {
+            modeRangesDicts = [NSDictionary]()
+            for modeRange in modeRanges! {
+                modeRangesDicts?.append(modeRange.toDict())
+            }
+        }
+        aCoder.encodeObject(modeRangesDicts, forKey: "modeRanges")
+        
+        var servoConfigsDicts: [NSDictionary]?
+        if servoConfigs != nil {
+            servoConfigsDicts = [NSDictionary]()
+            for servoConfig in servoConfigs! {
+                servoConfigsDicts?.append(servoConfig.toDict())
+            }
+        }
+        aCoder.encodeObject(servoConfigsDicts, forKey: "servoConfigs")
+    }
 }
 
-class Misc {
+class Misc : AutoCoded {
+    var autoEncoding = [ "midRC", "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "rssiChannel", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage" ]
     static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
     var midRC = 1500            // rxConfig.midrc [1401 - 1599], also set by RX_CONFIG (but then no range is enforced...)
-    var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed is !MOTOR_STOP
+    var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed in !MOTOR_STOP
     var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
     var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
     var failsafeThrottle = 0
@@ -227,7 +357,8 @@ class Misc {
     var vbatMaxCellVoltage = 0.0     // V
     var vbatWarningCellVoltage = 0.0 // V
     
-    private init() {
+    private override init() {
+        super.init()
     }
     
     init(copyOf: Misc) {
@@ -247,20 +378,28 @@ class Misc {
         self.vbatMinCellVoltage = copyOf.vbatMinCellVoltage
         self.vbatMaxCellVoltage = copyOf.vbatMaxCellVoltage
         self.vbatWarningCellVoltage = copyOf.vbatWarningCellVoltage
+        
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
 
-class Configuration {
+class Configuration : AutoCoded {
+    var autoEncoding = [ "version", "multiType", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theConfig = Configuration()
     
     // MSP_IDENT
     var version: String?
-    var multiType: Int = 3      // Quad X by default
-    var mspVersion: Int?
-    var capability: UInt32?
+    var multiType = 3      // Quad X by default
+    var mspVersion = 0
+    var capability = 0
     
     // MSP_API_VERSION
-    var msgProtocolVersion: Int?
+    var msgProtocolVersion = 0
     var apiVersion: String?
     
     // MSP_BUILD_INFO
@@ -273,16 +412,16 @@ class Configuration {
     
     // MSP_BOARD_INFO
     var boardInfo: String?
-    var boardVersion: Int?
+    var boardVersion = 0
     
     // MSP_UID
     var uid: String?
 
     // MSP_STATUS
-    var cycleTime: Int?     // microsecond?
-    var i2cError: Int?
+    var cycleTime = 0     // microsecond?
+    var i2cError = 0
     var activeSensors = 0
-    var mode: UInt32 = 0
+    var mode = 0
     var profile = 0
     
     // MSP_ANALOG
@@ -293,12 +432,23 @@ class Configuration {
     
     // Local
     var batteryCells = 0
+    var maxAmperage = 0.0
     
     // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
     // FIXME Move this to Settings or elsewhere
     var accelerometerTrimPitch = 0
     var accelerometerTrimRoll = 0
 
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    // MARK:
+    
     func isGyroAndAccActive() -> Bool {
         return activeSensors & 1 > 0;
     }
@@ -348,8 +498,8 @@ class Configuration {
     }
 }
 
-struct GpsSatQuality : OptionSetType {
-    let rawValue: UInt8
+struct GpsSatQuality : OptionSetType, DictionaryCoding {
+    let rawValue: Int
     
     static let none = GpsSatQuality(rawValue: 0)
     static let svUsed = GpsSatQuality(rawValue: 1 << 0)         // Used for navigation
@@ -361,18 +511,58 @@ struct GpsSatQuality : OptionSetType {
     static let orbitAop = GpsSatQuality(rawValue: 1 << 6)       // Orbit information is AssistNow Autonomous
     static let smoothed = GpsSatQuality(rawValue: 1 << 7)       // Carrier smoothed pseudorange used (see PPP for details)
     
+    init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": rawValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.rawValue = rawValue
+    }
 }
 
-struct Satellite {
+struct Satellite : DictionaryCoding {
     var channel: Int    // Channel number
     var svid: Int       // Satellite ID
     var quality: GpsSatQuality    // Bitfield Quality
     var cno: Int        // Carrier to Noise Ratio (Signal Strength 0-99 dB)
+
+    init(channel: Int, svid: Int, quality: GpsSatQuality, cno: Int) {
+        self.channel = channel
+        self.svid = svid
+        self.quality = quality
+        self.cno = cno
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let channel = dict["channel"] as? Int,
+            let svid = dict["svid"] as? Int,
+            let quality = dict["quality"] as? NSDictionary,
+            let cno = dict["cno"] as? Int
+            else { return nil }
+        
+        self.init(channel: channel, svid: svid, quality: GpsSatQuality(fromDict: quality)!, cno: cno)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "channel": channel, "svid": svid, "quality": quality.toDict(), "cno": cno ]
+    }
 }
 
-class GPSData {
+class GPSData : AutoCoded {
+    var autoEncoding = [ "fix", "latitude", "longitude", "altitude", "speed", "headingOverGround", "numSat", "distanceToHome", "directionToHome", "update", "lastKnownGoodLatitude", "lastKnownGoodLongitude", "lastKnownGoodAltitude", "lastKnownGoodTimestamp" ]
     static var theGPSData = GPSData()
     
+    // MSP_RAW_GPS
     var fix = false
     var latitude = 0.0          // degree
     var longitude = 0.0         // degree
@@ -381,6 +571,7 @@ class GPSData {
     var headingOverGround = 0.0 // degree
     var numSat = 0
     
+    // MSP_COMP_GPS
     var distanceToHome = 0      // m
     var directionToHome = 0     // degree
     var update = 0
@@ -390,7 +581,11 @@ class GPSData {
     var lastKnownGoodLongitude = 0.0
     var lastKnownGoodAltitude = 0
     var lastKnownGoodTimestamp: NSDate?
+    var maxDistanceToHome = 0
+    var maxAltitude = 0
+    var maxSpeed = 0.0
     
+    // MSP_GPSSVINFO
     private var _satellites = [Satellite]()
     
     var satellites: [Satellite] {
@@ -401,18 +596,55 @@ class GPSData {
             _satellites = value
         }
     }
+    
+    private override init() {
+        super.init()
+    }
+
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        if let satellitesDicts = aDecoder.decodeObjectForKey("satellites") as? [NSDictionary] {
+            _satellites = [Satellite]()
+            for dict in satellitesDicts {
+                _satellites.append(Satellite(fromDict: dict)!)
+            }
+        }
+    }
+    
+    override func encodeWithCoder(aCoder: NSCoder) {
+        super.encodeWithCoder(aCoder)
+        
+        var satellitesDicts = [NSDictionary]()
+        for satellite in _satellites {
+            satellitesDicts.append(satellite.toDict())
+        }
+        aCoder.encodeObject(satellitesDicts, forKey: "satellites")
+    }
 }
 
-class Receiver {
+class Receiver : AutoCoded {
+    var autoEncoding = [ "activeChannels", "channels", "map" ]
     static var theReceiver = Receiver()
     
     var activeChannels = 0
     var channels = [Int](count: 18, repeatedValue: 0)   // Length must match MAX_SUPPORTED_RC_CHANNEL_COUNT in cleanflight
     
     var map = [Int](count: 8, repeatedValue: 0)         // Length must match MAX_MAPPABLE_RX_INPUTS in cleanflight
+
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
-class SensorData {
+class SensorData : AutoCoded {
+    var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "sonar", "rollAngle", "pitchAngle", "heading" ]
     static var theSensorData = SensorData()
     
     // MSP_RAW_IMU
@@ -427,9 +659,22 @@ class SensorData {
     var rollAngle = 0.0
     var pitchAngle = 0.0
     var heading = 0.0
+
+    // Local
+    var maxAltitude = 0.0
+    
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
-class MotorData {
+class MotorData : AutoCoded {
+    var autoEncoding = [ "nMotors", "throttle", "servoValue" ]
     static var theMotorData = MotorData()
     
     // MSP_MOTOR
@@ -437,15 +682,102 @@ class MotorData {
     var throttle = [Int](count: 8, repeatedValue: 0)
     // MSP_SERVO
     var servoValue = [Int](count: 8, repeatedValue: 0)
+
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
-class Dataflash {
+class Dataflash : AutoCoded {
+    var autoEncoding = [ "ready", "sectors", "usedSize", "totalSize" ]
     static var theDataflash = Dataflash()
     
     var ready = 0
-    var sectors: UInt32 = 0
-    var usedSize: UInt32 = 0
-    var totalSize: UInt32 = 0
+    var sectors = 0
+    var usedSize = 0
+    var totalSize = 0
+
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+class AllAircraftData : NSObject, NSCoding {
+    static var allAircraftData = AllAircraftData()
+    
+    var settings: Settings
+    var misc: Misc
+    var configuration: Configuration
+    var gpsData: GPSData
+    var receiver: Receiver
+    var sensorData: SensorData
+    var motorData: MotorData
+    var dataflash: Dataflash
+    
+    override init() {
+        settings = Settings.theSettings
+        misc = Misc.theMisc
+        configuration = Configuration.theConfig
+        gpsData = GPSData.theGPSData
+        receiver = Receiver.theReceiver
+        sensorData = SensorData.theSensorData
+        motorData = MotorData.theMotorData
+        dataflash = Dataflash.theDataflash
+    }
+    
+    // MARK: NSCoding
+    
+    required convenience init?(coder decoder: NSCoder) {
+        guard let settings = decoder.decodeObjectForKey("Settings") as? Settings,
+            let misc = decoder.decodeObjectForKey("Misc") as? Misc,
+            let configuration = decoder.decodeObjectForKey("Configuration") as? Configuration,
+            let gpsData = decoder.decodeObjectForKey("GPSData") as? GPSData,
+            let receiver = decoder.decodeObjectForKey("Receiver") as? Receiver,
+            let sensorData = decoder.decodeObjectForKey("SensorData") as? SensorData,
+            let motorData = decoder.decodeObjectForKey("MotorData") as? MotorData,
+            let dataflash = decoder.decodeObjectForKey("Dataflash") as? Dataflash
+            else { return nil }
+        
+        self.init()
+        self.settings = settings
+        Settings.theSettings = settings
+        self.misc = misc
+        Misc.theMisc = misc
+        self.configuration = configuration
+        Configuration.theConfig = configuration
+        self.gpsData = gpsData
+        GPSData.theGPSData = gpsData
+        self.receiver = receiver
+        Receiver.theReceiver = receiver
+        self.sensorData = sensorData
+        SensorData.theSensorData = sensorData
+        self.motorData = motorData
+        MotorData.theMotorData = motorData
+        self.dataflash = dataflash
+        Dataflash.theDataflash = dataflash
+    }
+    
+    func encodeWithCoder(coder: NSCoder) {
+        coder.encodeObject(settings, forKey: "Settings")
+        coder.encodeObject(misc, forKey: "Misc")
+        coder.encodeObject(configuration, forKey: "Configuration")
+        coder.encodeObject(gpsData, forKey: "GPSData")
+        coder.encodeObject(receiver, forKey: "Receiver")
+        coder.encodeObject(sensorData, forKey: "SensorData")
+        coder.encodeObject(motorData, forKey: "MotorData")
+        coder.encodeObject(dataflash, forKey: "Dataflash")
+    }
+
 }
 
 func resetAircraftModel() {
@@ -457,4 +789,6 @@ func resetAircraftModel() {
     SensorData.theSensorData = SensorData()
     MotorData.theMotorData = MotorData()
     Dataflash.theDataflash = Dataflash()
+    
+    AllAircraftData.allAircraftData = AllAircraftData()
 }

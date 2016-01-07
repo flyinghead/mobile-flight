@@ -199,7 +199,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
         let label = UILabel(frame: CGRect(x: 10, y: 5, width: tableView.frame.width, height: 25))
         label.text = Settings.theSettings.boxNames![section]
-        label.textColor = Configuration.theConfig.mode & (1 << UInt32(section)) != 0 ? UIColor.redColor() : UIColor.blackColor()
+        label.textColor = Configuration.theConfig.mode & (1 << section) != 0 ? UIColor.redColor() : UIColor.blackColor()
         label.font = UIFont.systemFontOfSize(16)
 
         view.addSubview(label)

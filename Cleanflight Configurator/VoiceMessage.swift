@@ -53,17 +53,14 @@ class VoiceAlarm {
 
 class CommunicationLostAlarm : VoiceAlarm {
     override var on: Bool {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) {
             return false
         }
-        if let comm = appDelegate.msp.commChannel {
-            return !comm.connected
-        } else {
-            return false
-        }
+        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        return msp.communicationEstablished && !msp.communicationHealthy
     }
+    
     override var enabled: Bool {
         return userDefaultEnabled(.ConnectionLostAlarm)
     }
@@ -113,19 +110,15 @@ class BatteryLowAlarm : VoiceAlarm {
     }
 
     func batteryStatus() -> Status {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        if let comm = appDelegate.msp.commChannel {
-            if !comm.connected {
-                return .Good        // Comm lost, no need for battery alarm
-            }
-        } else {
-            return .Good            // Not connected, same thing
+        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        if !msp.communicationEstablished || !msp.communicationHealthy {
+            return .Good        // Comm lost or not connected, no need for battery alarm
         }
         let settings = Settings.theSettings
         let config = Configuration.theConfig
         let misc = Misc.theMisc
         
-        if settings.features?.contains(.VBat) ?? false
+        if settings.features.contains(.VBat) ?? false
             && config.batteryCells > 0
             && config.voltage > 0 {
             let voltsPerCell = config.voltage / Double(config.batteryCells)

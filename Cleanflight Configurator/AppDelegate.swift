@@ -5,7 +5,7 @@
 //  Created by Raphael Jean-Leconte on 02/12/15.
 //  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.
 //
-
+import Foundation
 import UIKit
 
 @UIApplicationMain
@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     var statusTimer: NSTimer?
     var armed = false
+    var _armedTime = 0.0
+    var lastArming: NSDate?
     
     var completionHandler: ((UIBackgroundFetchResult) -> Void)?
 
@@ -31,6 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+
         return true
     }
 
@@ -51,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     }
     
     func startTimer() {
-        if msp.commChannel != nil {
+        if msp.communicationEstablished {
             //NSLog("AppDelegate starting statusTimer")
             statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
         }
@@ -75,6 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
     }
 
     func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -86,47 +91,66 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     }
     
     func receivedData() {
-        if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
-            armed = true
-            if userDefaultEnabled(.RecordFlightlog) {
-                startFlightlogRecording()
-            }
-        }
-        else if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && armed {
-            armed = false
-            stopFlightlogRecording()
-        }
+        checkArmedStatus()
+
         if completionHandler != nil {
             completionHandler!(.NewData)
             completionHandler = nil
         }
     }
     
+    func communicationStatus(status: Bool) {
+        if !status {
+            stopTimer()
+            armed = false
+            _armedTime = 0.0
+            lastArming = nil
+        }
+    }
+    
+    func checkArmedStatus() {
+        if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
+            armed = true
+            lastArming = NSDate()
+            if !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
+                startFlightlogRecording()
+            }
+        }
+        else if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && armed {
+            armed = false
+            _armedTime -= lastArming!.timeIntervalSinceNow
+            lastArming = nil
+            stopFlightlogRecording()
+        }
+    }
+    
+    var armedTime: Double {
+        return _armedTime - (lastArming?.timeIntervalSinceNow ?? 0.0)
+    }
+    
     func startFlightlogRecording() {
         let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
         let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
         
-        do {
-            if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
-                let file = try NSFileHandle(forWritingToURL: fileURL)
-                file.seekToEndOfFile()
-                msp.datalog = file
-                msp.datalogStart = NSDate()
-            }
-        } catch let error as NSError {
-            NSLog("Cannot open %@: %@", fileURL, error)
-        }
+        FlightLogFile.openForWriting(fileURL, msp: msp)
     }
 
     func stopFlightlogRecording() {
-        if let file = msp.datalog {
-            msp.datalog = nil
-            msp.datalogStart = nil
-            file.closeFile()
+        FlightLogFile.close(msp)
+    }
+
+    func userDefaultsDidChange(sender: AnyObject) {
+        // This will start or stop the flight log as needed if the user setting changed
+        if !msp.replaying && armed {
+            if userDefaultEnabled(.RecordFlightlog) && msp.datalog == nil {
+                startFlightlogRecording()
+            } else if !userDefaultEnabled(.RecordFlightlog) && msp.datalog != nil {
+                stopFlightlogRecording()
+            }
         }
     }
 
-    // FIXME Doesn't seem to be ever called
+    // FIXME Doesn't seem to be ever called. Actually being called very very very unfrequently (hours?)
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         if !userDefaultEnabled(.RecordFlightlog) {
             completionHandler(.NoData)

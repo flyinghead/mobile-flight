@@ -13,6 +13,7 @@ enum UserDefault : String {
     case ConnectionLostAlarm = "connection_lost_alarm"
     case GPSFixLostAlarm = "gps_fix_lost_alarm"
     case BatteryLowAlarm = "battery_low_alarm"
+    case UnitSystem = "unit_system"
 }
 
 func registerInitialUserDefaults() {
@@ -36,4 +37,8 @@ func registerInitialUserDefaults() {
 
 func userDefaultEnabled(userDefault: UserDefault) -> Bool {
     return NSUserDefaults.standardUserDefaults().boolForKey(userDefault.rawValue)
+}
+
+func userDefaultAsString(userDefault: UserDefault) -> String {
+    return NSUserDefaults.standardUserDefaults().stringForKey(userDefault.rawValue)!
 }

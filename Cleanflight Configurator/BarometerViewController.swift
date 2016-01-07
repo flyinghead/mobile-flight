@@ -10,9 +10,14 @@ import UIKit
 import Charts
 
 class BarometerViewController: BaseSensorViewController {
+    @IBOutlet weak var titleLabel: UILabel!
 
     var samples = [Double]()
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,13 +27,21 @@ class BarometerViewController: BaseSensorViewController {
         leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
 
-        leftAxis.customAxisMax = 2.0
-        leftAxis.customAxisMin = 0.0
+        if useImperialUnits() {
+            leftAxis.customAxisMax = 10.0
+            leftAxis.customAxisMin = 0.0
+        } else {
+            leftAxis.customAxisMax = 2.0
+            leftAxis.customAxisMin = 0.0
+        }
         
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()
         nf.maximumFractionDigits = 1
         chartView.leftAxis.valueFormatter = nf
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        userDefaultsDidChange(self)
     }
 
     func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {
@@ -78,14 +91,19 @@ class BarometerViewController: BaseSensorViewController {
     func updateSensorData() {
         let sensorData = SensorData.theSensorData
         
-        samples.append(sensorData.altitude)
+        let value = useImperialUnits() ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
+        samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if sensorData.altitude > leftAxis.customAxisMax {
+        if value > leftAxis.customAxisMax {
             leftAxis.resetCustomAxisMax()
         }
-        if sensorData.altitude < leftAxis.customAxisMin {
+        if value < leftAxis.customAxisMin {
             leftAxis.resetCustomAxisMin()
         }
+    }
+    
+    func userDefaultsDidChange(sender: AnyObject) {
+        titleLabel.text = useImperialUnits() ? "Barometer - feet" : "Barometer - meters"
     }
 }

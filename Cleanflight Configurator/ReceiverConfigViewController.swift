@@ -21,7 +21,7 @@ class ReceiverConfigViewController: ConfigChildViewController {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if !settings!.features!.contains(.RxSerial) {
+        if !settings!.features.contains(.RxSerial) {
             return 1
         }
         return super.numberOfSectionsInTableView(tableView)
@@ -34,13 +34,13 @@ class ReceiverConfigViewController: ConfigChildViewController {
             // Receiver type
             switch indexPath.row {
             case 0:     // PWM
-                selected = settings!.features!.contains(.RxParallel)
+                selected = settings!.features.contains(.RxParallel)
             case 1:     // PPM
-                selected = settings!.features!.contains(.RxPpm)
+                selected = settings!.features.contains(.RxPpm)
             case 2:     // Serial RX
-                selected = settings!.features!.contains(.RxSerial)
+                selected = settings!.features.contains(.RxSerial)
             case 3:     // MSP
-                selected = settings!.features!.contains(.RxMsp)
+                selected = settings!.features.contains(.RxMsp)
             default:
                 break
             }
@@ -56,19 +56,19 @@ class ReceiverConfigViewController: ConfigChildViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 0 {
             // Receiver type
-            settings?.features!.remove(.RxPpm)
-            settings?.features!.remove(.RxSerial)
-            settings?.features!.remove(.RxParallel)
-            settings?.features!.remove(.RxMsp)
+            settings?.features.remove(.RxPpm)
+            settings?.features.remove(.RxSerial)
+            settings?.features.remove(.RxParallel)
+            settings?.features.remove(.RxMsp)
             switch indexPath.row {
             case 0:     // PWM
-                settings?.features!.insert(.RxParallel)
+                settings?.features.insert(.RxParallel)
             case 1:     // PPM
-                settings?.features!.insert(.RxPpm)
+                settings?.features.insert(.RxPpm)
             case 2:     // Serial RX
-                settings?.features!.insert(.RxSerial)
+                settings?.features.insert(.RxSerial)
             case 3:     // MSP
-                settings?.features!.insert(.RxMsp)
+                settings?.features.insert(.RxMsp)
             default:
                 break
             }
@@ -92,13 +92,13 @@ class ReceiverConfigViewController: ConfigChildViewController {
     }
     
     class func receiverConfigLabel(settings: Settings) -> String {
-        if settings.features!.contains(.RxParallel) {
+        if settings.features.contains(.RxParallel) {
             return "PWM"
-        } else if settings.features!.contains(.RxPpm) {
+        } else if settings.features.contains(.RxPpm) {
             return "PPM"
-        } else if settings.features!.contains(.RxMsp) {
+        } else if settings.features.contains(.RxMsp) {
             return "MSP"
-        } else if settings.features!.contains(.RxSerial) {
+        } else if settings.features.contains(.RxSerial) {
             switch settings.serialRxType ?? 0 {
             case 0:
                 return "Spektrum 1024"
