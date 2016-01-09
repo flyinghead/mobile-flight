@@ -22,20 +22,17 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        msp.addDataListener(self)
-        
         chartView.rightAxis.enabled = false;
         
         chartView.xAxis.enabled = false
-        //chartView.xAxis.drawLabelsEnabled = false
-        
-        //chartView.leftAxis.drawTopYLabelEntryEnabled = true
         
         chartView.descriptionText = ""
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        msp.addDataListener(self)
         
         if (timer == nil) {
             // Cleanflight/chrome uses configurable interval (default 50ms)
@@ -43,8 +40,10 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        msp.removeDataListener(self)
         
         timer?.invalidate()
         timer = nil

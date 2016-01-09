@@ -47,9 +47,19 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         accTrimRollStepper.value = Double(config.accelerometerTrimRoll)
         accTrimRollChanged(accTrimRollStepper)
         
-        msp.addDataListener(self)
-        
         // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        msp.addDataListener(self)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        msp.removeDataListener(self)
     }
     
     func receivedData() {

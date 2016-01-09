@@ -14,6 +14,7 @@
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */; };
 		AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */; };
+		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
 		AE48F6DE1C1F25A6004E949F /* ModeTableViewFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */; };
 		AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */; };
 		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
@@ -22,7 +23,6 @@
 		AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */; };
 		AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71D8201C3596C800CC0AEB /* ServosViewController.swift */; };
 		AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */; };
-		AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */; };
 		AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */; };
 		AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */; };
 		AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB621C0F3D230020C4B0 /* Assets.xcassets */; };
@@ -125,6 +125,7 @@
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator.swift; sourceTree = "<group>"; };
 		AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingIndicator.swift; sourceTree = "<group>"; };
+		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
 		AE48F6DD1C1F25A6004E949F /* ModeTableViewFooter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModeTableViewFooter.xib; sourceTree = "<group>"; };
 		AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverTuningViewController.swift; sourceTree = "<group>"; };
 		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
@@ -134,7 +135,6 @@
 		AE71D8201C3596C800CC0AEB /* ServosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServosViewController.swift; sourceTree = "<group>"; };
 		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AE72AB601C0F3D230020C4B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE72AB621C0F3D230020C4B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -319,10 +319,10 @@
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
 				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
 				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
+				AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */,
 				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
-				AE72AB5B1C0F3D230020C4B0 /* FirstViewController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
@@ -621,6 +621,7 @@
 				AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */,
 				AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */,
 				AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */,
+				AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */,
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */,
@@ -648,7 +649,6 @@
 				AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
-				AE72AB5C1C0F3D230020C4B0 /* FirstViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,

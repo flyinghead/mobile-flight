@@ -56,10 +56,20 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         mixerTypePicker!.addTarget(self, action: "mixerTypeChanged:", forControlEvents: .ValueChanged)
         mixerTypePicker!.setPlaceholder("")
         
-        msp.addDataListener(self)
-
         // FIXME When should we refresh?
         fetchInformation()
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        msp.addDataListener(self)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        msp.removeDataListener(self)
     }
     
     func fetchInformation() {

@@ -96,7 +96,7 @@ class FlightLogFile {
             let stats = FlightLogStats()
             
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            stats.flightTime = appDelegate.armedTime
+            stats.flightTime = appDelegate.lastArmedTime
             
             let gpsData = GPSData.theGPSData
             let config = Configuration.theConfig

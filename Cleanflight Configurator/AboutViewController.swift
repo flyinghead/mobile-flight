@@ -10,8 +10,8 @@ import UIKit
 
 class AboutViewController: UITableViewController {
 
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 2, callback: { success in
             self.msp.sendMessage(.MSP_FC_VERSION, data: nil, retry: 2, callback: { success in
@@ -57,19 +57,19 @@ class AboutViewController: UITableViewController {
             switch indexPath.row {
             case 0:
                 cell.textLabel!.text = "Identifier"
-                cell.detailTextLabel!.text = config.fcIdentifier
+                cell.detailTextLabel!.text = config.fcIdentifier ?? " "         // Avoid nil text because of iOS8 bug
             case 1:
                 cell.textLabel!.text = "Version"
-                cell.detailTextLabel!.text = config.fcVersion
+                cell.detailTextLabel!.text = config.fcVersion ?? " "
             case 2:
                 cell.textLabel!.text = "Protocol Version"
                 cell.detailTextLabel!.text = String(format: "%d", config.msgProtocolVersion)
             case 3:
                 cell.textLabel!.text = "API Version"
-                cell.detailTextLabel!.text = config.apiVersion
+                cell.detailTextLabel!.text = config.apiVersion ?? " "
             case 4:
                 cell.textLabel!.text = "Build Date"
-                cell.detailTextLabel!.text = config.buildInfo
+                cell.detailTextLabel!.text = config.buildInfo ?? " "
             default:
                 break
             }
@@ -77,13 +77,13 @@ class AboutViewController: UITableViewController {
             switch indexPath.row {
             case 0:
                 cell.textLabel!.text = "Type"
-                cell.detailTextLabel!.text = config.boardInfo
+                cell.detailTextLabel!.text = config.boardInfo ?? " "
             case 1:
                 cell.textLabel!.text = "Version"
                 cell.detailTextLabel!.text = String(format: "%d", config.boardVersion)
             case 2:
                 cell.textLabel!.text = "UID"
-                cell.detailTextLabel!.text = config.uid ?? ""
+                cell.detailTextLabel!.text = config.uid ?? " "
             default:
                 break
             }

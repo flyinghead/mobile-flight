@@ -15,9 +15,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     var slowTimer: NSTimer?
     //var lat = 48.886212 // Debug
     var locationManager: CLLocationManager?
+    var gpsPositions = 0
     
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var batteryLabel: BlinkingLabel!
+    @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
     @IBOutlet weak var rssiLabel: BlinkingLabel!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
     @IBOutlet weak var timeLabel: UILabel!
@@ -30,8 +31,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
 
         mapView.delegate = self
         mapView.showsUserLocation = true
-        
-        msp.addDataListener(self)
         
         batteryLabel.text = "?"
         rssiLabel.text = "?"
@@ -50,13 +49,18 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        msp.addDataListener(self)
+        receivedData()
+        receivedSensorData()
+        receivedGpsData()
+        
         if (timer == nil) {
             timer = NSTimer.scheduledTimerWithTimeInterval(TimerPeriod, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
         }
         if (slowTimer == nil) {
             slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.333, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
         }
-        var coordinate = getAircraftCoordinates()
+        var coordinate = MapViewController.getAircraftCoordinates()
         if coordinate == nil {
             coordinate = mapView.userLocation.coordinate
             if coordinate?.latitude == 0 && coordinate?.longitude == 0 {
@@ -64,13 +68,22 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
         }
         if coordinate != nil {
-            let region = MKCoordinateRegionMakeWithDistance(coordinate!, 200, 200)
-            mapView.setRegion(region, animated: true)
+            // Zoom in if the map shows more than 2km x 2km. Otherwise just center
+            let currentSpan = mapView.region.span
+            var region = MKCoordinateRegionMakeWithDistance(coordinate!, 2000, 2000)
+            if currentSpan.latitudeDelta > region.span.latitudeDelta || currentSpan.longitudeDelta > region.span.longitudeDelta {
+                region = MKCoordinateRegionMakeWithDistance(coordinate!, 200, 200)
+                mapView.setRegion(region, animated: true)
+            } else {
+                mapView.setCenterCoordinate(coordinate!, animated: true)
+            }
         }
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        msp.removeDataListener(self)
         
         timer?.invalidate()
         timer = nil
@@ -94,7 +107,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.armedTime))
+        let armedTime = Int(round(appDelegate.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
     
@@ -102,7 +115,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         msp.sendMessage(.MSP_ANALOG, data: nil)
     }
     
-    func getAircraftCoordinates() -> CLLocationCoordinate2D? {
+    class func getAircraftCoordinates() -> CLLocationCoordinate2D? {
         let gpsData = GPSData.theGPSData
         if gpsData.lastKnownGoodLatitude == 0.0 && gpsData.lastKnownGoodLongitude == 0 {
             return nil
@@ -118,8 +131,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     func receivedData() {
         let config = Configuration.theConfig
         
-        batteryLabel.blinks = false
-        batteryLabel.text = String(format:"%.1fV", locale: NSLocale.currentLocale(), config.voltage)
+        batteryLabel.voltage = config.voltage
+
         rssiLabel.blinks = false
         rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.rssi)
     }
@@ -170,17 +183,26 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
         }
         if gpsData.lastKnownGoodLatitude != 0 || gpsData.lastKnownGoodLongitude != 0 {
-            if let annotation = mapView.annotations.filter({ annot in
-                return annot is MKPointAnnotation
-            }).first as? MKPointAnnotation {
-                UIView.animateWithDuration(TimerPeriod, animations: {
-                    annotation.coordinate = self.getAircraftCoordinates()!
-                })
-            } else {
-                let annotation = MKPointAnnotation()
-                annotation.title = "Aircraft"
-                annotation.coordinate = getAircraftCoordinates()!
-                mapView.addAnnotation(annotation)
+            if gpsData.positions.count != gpsPositions {
+                gpsPositions = gpsData.positions.count
+                
+                mapView.removeOverlays(mapView.overlays)
+                let polyline = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
+                mapView.addOverlay(polyline)
+                
+                if let annotation = mapView.annotations.filter({ annot in
+                    return annot is MKPointAnnotation
+                }).first as? MKPointAnnotation {
+                    UIView.animateWithDuration(TimerPeriod, animations: {
+                        annotation.coordinate = MapViewController.getAircraftCoordinates()!
+                    })
+                } else {
+                    let annotation = MKPointAnnotation()
+                    annotation.title = "Aircraft"
+                    annotation.coordinate = MapViewController.getAircraftCoordinates()!
+                    mapView.addAnnotation(annotation)
+                }
+                
             }
         }
     }
@@ -192,6 +214,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         }
         
         return nil
+    }
+    
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(overlay: overlay)
+        renderer.lineWidth = 3.0
+        renderer.strokeColor = UIColor.redColor()
+        return renderer
     }
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {

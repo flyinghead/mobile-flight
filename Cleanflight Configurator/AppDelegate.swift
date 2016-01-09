@@ -16,7 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     var statusTimer: NSTimer?
     var armed = false
-    var _armedTime = 0.0
+    var _totalArmedTime = 0.0
+    var _lastArmedTime = 0.0
     var lastArming: NSDate?
     
     var completionHandler: ((UIBackgroundFetchResult) -> Void)?
@@ -103,7 +104,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         if !status {
             stopTimer()
             armed = false
-            _armedTime = 0.0
+            _totalArmedTime = 0.0
+            _lastArmedTime = 0.0
             lastArming = nil
         }
     }
@@ -112,20 +114,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
             armed = true
             lastArming = NSDate()
-            if !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
+            if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
                 startFlightlogRecording()
             }
         }
         else if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && armed {
             armed = false
-            _armedTime -= lastArming!.timeIntervalSinceNow
+            _lastArmedTime = -lastArming!.timeIntervalSinceNow
+            _totalArmedTime += _lastArmedTime
             lastArming = nil
             stopFlightlogRecording()
         }
     }
     
-    var armedTime: Double {
-        return _armedTime - (lastArming?.timeIntervalSinceNow ?? 0.0)
+    var totalArmedTime: Double {
+        return _totalArmedTime - (lastArming?.timeIntervalSinceNow ?? 0.0)
+    }
+    
+    var lastArmedTime: Double {
+        return _lastArmedTime
     }
     
     func startFlightlogRecording() {
@@ -141,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
 
     func userDefaultsDidChange(sender: AnyObject) {
         // This will start or stop the flight log as needed if the user setting changed
-        if !msp.replaying && armed {
+        if msp.communicationEstablished && !msp.replaying && armed {
             if userDefaultEnabled(.RecordFlightlog) && msp.datalog == nil {
                 startFlightlogRecording()
             } else if !userDefaultEnabled(.RecordFlightlog) && msp.datalog != nil {

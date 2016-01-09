@@ -137,22 +137,23 @@ class MotorsViewController: UIViewController, FlightDataListener {
 
         modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType)
         
-        //enableMotorView.translatesAutoresizingMaskIntoConstraints = false
-        
-        msp.addDataListener(self)
         msp.sendMessage(.MSP_MISC, data: nil)
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        msp.addDataListener(self)
         
         if (timer == nil) {
             timer = NSTimer.scheduledTimerWithTimeInterval(timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        msp.removeDataListener(self)
         
         timer?.invalidate()
         timer = nil

@@ -12,7 +12,7 @@ import CoreLocation
 class TelemetryView : UIView {
     @IBOutlet weak var attitudeIndicator: AttitudeIndicator!
     @IBOutlet weak var headingIndicator: HeadingIndicator!
-    @IBOutlet weak var voltLabel: UILabel!
+    @IBOutlet weak var voltLabel: BatteryVoltageLabel!
     @IBOutlet weak var rssiLabel: UILabel!
     @IBOutlet weak var gpsFixImage: UIImageView!
     @IBOutlet weak var modeArmedLabel: UILabel!
@@ -98,8 +98,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIDeviceOrientationDidChangeNotification, object: nil)
         
-        msp.addDataListener(self)
-        
         theView.voltLabel.text = "?"
         theView.rssiLabel.text = "?"
         setModeLabel(theView.modeArmedLabel, on: false)
@@ -127,6 +125,11 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        msp.addDataListener(self)
+        receivedData()
+        receivedSensorData()
+        receivedGpsData()
+
         // For enabled features
         msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
             self.msp.sendMessage(.MSP_MISC, data: nil)
@@ -152,13 +155,15 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        msp.removeDataListener(self)
+        
         veryFastTimer?.invalidate()
         veryFastTimer = nil
         fastTimer?.invalidate()
         fastTimer = nil
         slowTimer?.invalidate()
         slowTimer = nil
-        VoiceMessage.theVoice.stopAlerts()
+        VoiceMessage.theVoice.stopAlerts()          // FIXME
     }
 
     func veryFastTimerDidFire(sender: AnyObject) {
@@ -219,7 +224,7 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         setModeLabel(theView.modeBeeperLabel, on: settings.isModeOn(Mode.BEEPER, forStatus: config.mode))
         setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode))
 
-        theView.voltLabel.text = String(format: "%.1fV", locale: NSLocale.currentLocale(), config.voltage)
+        theView.voltLabel.voltage = config.voltage
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         
         theView.rssiLabel.text = String(format: "%d%%", locale: NSLocale.currentLocale(), config.rssi)

@@ -1,23 +1,24 @@
-Finish Settings: detect pref changes, set default prefs, etc.
 
-- Access violation due to reachability callback being called after connection is closed
-- Connection timeout is triggered if disconnecting within 5 secs
-- Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
+- Need to be able to cancel connection (TCP/BT) b/c it sometimes spins forever
+
+- TCP: Access violation due to reachability callback being called after connection is closed
+- TCP: Connection timeout is triggered if disconnecting within 5 secs
+- TCP: Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
+
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
-- Replay:
-    - dump full AircraftModel at start of session.
-    - visual indication of replay (pause/play, FF, REW ?)
+
+- Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
 - Alarm settings
+- Alarms: GPS Fix and Battery Low only checked in Telemetry VC
+- Alarm: Need RSSI alarm, altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
 - App icon
 - Sexy launch screen and connection page
 - Map: Add pin for RTH location
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
-- Record: move to Settings. "Log flight data" on/off will record flight data for every flight
-- Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
 - Follow Me: only works with Telemetry screen
 - Telemetry/Map: Time counter since arming
 - Telemetry (map?): Display active profile
@@ -39,3 +40,8 @@ DONE:
     + compass: <div>Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 - MyUINavigationController "Back" button detector doesn't work if launched from "More..." VC
 - Units: metrics / imperial
+- Record: move to Settings. "Log flight data" on/off will record flight data for every flight
+- Replay: dump full AircraftModel at start of session.
+- Finish Settings: detect pref changes, set default prefs, etc.
+- Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
+

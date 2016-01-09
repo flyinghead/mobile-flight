@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MapKit
 
 enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
 
@@ -273,6 +274,8 @@ class MSPParser {
                 gpsData.lastKnownGoodLongitude = gpsData.longitude
                 gpsData.lastKnownGoodAltitude = gpsData.altitude
                 gpsData.lastKnownGoodTimestamp = NSDate()
+                
+                gpsData.positions.append(CLLocationCoordinate2D(latitude: gpsData.latitude, longitude: gpsData.longitude))
             }
             gpsData.maxAltitude = max(gpsData.maxAltitude, gpsData.altitude)
             gpsData.maxSpeed = max(gpsData.maxSpeed, gpsData.speed)

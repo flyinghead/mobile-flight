@@ -27,7 +27,6 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        msp.addDataListener(self)
         
         initialFetch()
     }
@@ -73,16 +72,20 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         }
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        msp.addDataListener(self)
         
         if (fastTimer == nil) {
             fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewWillDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        msp.removeDataListener(self)
         
         fastTimer?.invalidate()
         fastTimer = nil

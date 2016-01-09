@@ -16,18 +16,14 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         UIColor(hex6: 0xcf267d), UIColor(hex6: 0x7a1464), UIColor(hex6: 0x3a7a14), UIColor(hex6: 0x14407a)]
     var timer: NSTimer?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        msp.addDataListener(self)
-    }
-    
     func receivedReceiverData() {
         tableView.reloadData()
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        msp.addDataListener(self)
         
         if (timer == nil) {
             // Cleanflight/chrome uses configurable interval (default 50ms)
@@ -37,6 +33,8 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        msp.removeDataListener(self)
         
         timer?.invalidate()
         timer = nil

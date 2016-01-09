@@ -11,6 +11,7 @@ import SVProgressHUD
 
 class ReplayViewController: UITableViewController {
     var replayFiles: [NSURL]?
+    var detailedRow = -1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,7 @@ class ReplayViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        detailedRow = -1
         tableView.reloadData()
     }
     
@@ -70,13 +72,26 @@ class ReplayViewController: UITableViewController {
         }
     }
 
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.row == detailedRow {
+            return 94
+        } else {
+            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        }
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ReplayCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(indexPath.row == detailedRow ? "DetailedReplayCell" : "ReplayCell", forIndexPath: indexPath) as! DetailedReplayCell
+        
+        cell.maxAltitudeLabel?.text = ""
+        cell.maxSpeedLabel?.text = ""
+        cell.maxDistanceLabel?.text = ""
+        cell.maxAmpsLabel?.text = ""
         
         switch indexPath.section {
         case 0:
             var title: String?
-            var detail: String?
+            var detail = "?"
             if replayFiles != nil && replayFiles!.count > indexPath.row {
                 let fileUrl = replayFiles![indexPath.row]
                 do {
@@ -93,6 +108,13 @@ class ReplayViewController: UITableViewController {
                             file.closeFile()
                             if stats != nil {
                                 detail = String(format: "%02d:%02d", Int(stats!.flightTime) / 60, Int(round(stats!.flightTime)) % 60)
+                                
+                                if indexPath.row == self.detailedRow {
+                                    cell.maxAltitudeLabel.text = formatAltitude(stats!.maxAltitude)
+                                    cell.maxSpeedLabel.text = formatSpeed(stats!.maxSpeed)
+                                    cell.maxDistanceLabel.text = formatDistance(stats!.maxDistanceToHome)
+                                    cell.maxAmpsLabel.text = formatWithUnit(stats!.maxAmps, unit: "A")
+                                }
                             }
                         } catch let error as NSError {
                             NSLog("Cannot get attributes of %@: %@", fileUrl, error)
@@ -104,8 +126,8 @@ class ReplayViewController: UITableViewController {
                 if title == nil {
                     title = fileUrl.lastPathComponent ?? "?"
                 }
-                cell.textLabel?.text = title
-                cell.detailTextLabel?.text = detail
+                cell.flyDate.text = title
+                cell.flyTime.text = detail
             }
         default:
             break
@@ -143,6 +165,20 @@ class ReplayViewController: UITableViewController {
             break
         }
     }
+    
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        var indexPaths = [NSIndexPath]()
+        if detailedRow != -1 {
+            indexPaths.append(NSIndexPath(forRow: detailedRow, inSection: 0))
+        }
+        if detailedRow == indexPath.row {
+            detailedRow = -1
+        } else {
+            detailedRow = indexPath.row
+            indexPaths.append(NSIndexPath(forRow: detailedRow, inSection: 0))
+        }
+        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Middle)
+    }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
@@ -160,4 +196,14 @@ class ReplayViewController: UITableViewController {
             
         }
     }
+}
+
+class DetailedReplayCell : UITableViewCell {
+    @IBOutlet weak var flyDate: UILabel!
+    @IBOutlet weak var flyTime: UILabel!
+    @IBOutlet weak var maxAltitudeLabel: UILabel!
+    @IBOutlet weak var maxSpeedLabel: UILabel!
+    @IBOutlet weak var maxDistanceLabel: UILabel!
+    @IBOutlet weak var maxAmpsLabel: UILabel!
+    
 }

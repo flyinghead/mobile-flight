@@ -372,7 +372,7 @@ class ConnectionViewController: UITableViewController, BluetoothDelegate, UIActi
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let viewController = segue.destinationViewController as? MainNavigationController {
-            if msp.commChannel is ReplayComm {
+            if msp.replaying {
                 // Remove not available tabs
                 viewController.removeViewControllersForReplay()
             } else {

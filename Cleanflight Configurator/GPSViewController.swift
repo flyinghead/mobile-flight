@@ -12,18 +12,14 @@ class GPSViewController : UITableViewController, FlightDataListener {
     
     var fastTimer: NSTimer?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        msp.addDataListener(self)
-    }
-    
     func receivedGpsData() {
         tableView.reloadData()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        msp.addDataListener(self)
         
         if (fastTimer == nil) {
             // Cleanflight/chrome uses 75ms interval
@@ -34,6 +30,8 @@ class GPSViewController : UITableViewController, FlightDataListener {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        msp.removeDataListener(self)
+
         fastTimer?.invalidate()
         fastTimer = nil
     }

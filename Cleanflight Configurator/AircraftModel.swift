@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MapKit
 
 protocol DictionaryCoding {
     func toDict() -> NSDictionary
@@ -584,6 +585,7 @@ class GPSData : AutoCoded {
     var maxDistanceToHome = 0
     var maxAltitude = 0
     var maxSpeed = 0.0
+    var positions = [CLLocationCoordinate2D]()
     
     // MSP_GPSSVINFO
     private var _satellites = [Satellite]()
