@@ -22,6 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     var completionHandler: ((UIBackgroundFetchResult) -> Void)?
 
+    var logTimer: NSTimer?
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
@@ -57,23 +59,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     func startTimer() {
         if msp.communicationEstablished {
-            //NSLog("AppDelegate starting statusTimer")
-            statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
+            statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
         }
+        logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "logTimerDidFire:", userInfo: nil, repeats: true)
     }
     
     func stopTimer() {
         if statusTimer != nil {
-            //NSLog("AppDelegate stopping statusTimer")
             statusTimer!.invalidate()
             statusTimer = nil
         }
+        logTimer?.invalidate()
+        logTimer = nil
     }
     
     func statusTimerDidFire(timer: NSTimer) {
         msp.sendMessage(.MSP_STATUS, data: nil)
+        msp.sendMessage(.MSP_RAW_GPS, data: nil)
+        msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
+        msp.sendMessage(.MSP_ALTITUDE, data: nil)
+        msp.sendMessage(.MSP_ATTITUDE, data: nil)
+        msp.sendMessage(.MSP_ANALOG, data: nil)
     }
     
+    func logTimerDidFire(sender: AnyObject) {
+        NSLog("Bandwidth in: %.01f Kbps", Double(msp.incomingBytesPerSecond) * 8.0 / 1024.0)
+    }
+
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }

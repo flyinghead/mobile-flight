@@ -13,7 +13,7 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
 
     let MaxSampleCount = 300
     
-    var timerInterval = 0.05     // 50ms by default
+    var timerInterval = 0.1     // 100ms by default
     var timer: NSTimer?
     var sensorCount = 0
     

@@ -10,7 +10,7 @@ import UIKit
 
 class MotorsViewController: UIViewController, FlightDataListener {
 
-    var timerInterval = 0.05     // 50ms by default
+    var timerInterval = 0.1     // 100ms by default
     var timer: NSTimer?
     
     @IBOutlet weak var modelView: UIImageView!

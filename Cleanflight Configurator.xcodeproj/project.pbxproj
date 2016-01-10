@@ -282,6 +282,21 @@
 			name = Configuration;
 			sourceTree = "<group>";
 		};
+		AE26A1D41C41D308007498EF /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
+				AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */,
+				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
+				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
+				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
+				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
+				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
+				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
+			);
+			name = Controls;
+			sourceTree = "<group>";
+		};
 		AE72AB4D1C0F3D230020C4B0 = {
 			isa = PBXGroup;
 			children = (
@@ -311,23 +326,19 @@
 			children = (
 				AEA48A671C25CFDD006BC53E /* Communication */,
 				AE1F73E41C18C63F0029C330 /* Configuration */,
+				AE26A1D41C41D308007498EF /* Controls */,
 				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
 				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
-				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
 				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
-				AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */,
-				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
-				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
-				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
 				AECE8D831C1E187700FB183E /* ModesViewController.swift */,
@@ -335,10 +346,7 @@
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
-				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
-				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
 				AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */,
-				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
 				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
 				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
 				AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */,

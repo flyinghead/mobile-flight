@@ -61,6 +61,19 @@ class MSPParser {
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
+    var receiveStats = [(date: NSDate, size: Int)]()
+    
+    var incomingBytesPerSecond: Int {
+        var byteCount = 0
+        for (date, size) in receiveStats {
+            if -date.timeIntervalSinceNow >= 1 {
+                break
+            }
+            byteCount += size
+        }
+        return byteCount
+    }
+    
     func read(data: [UInt8]) {
         if datalog != nil {
             var logData = [UInt8]()
@@ -70,6 +83,12 @@ class MSPParser {
             datalog!.writeData(NSData(bytes: logData, length: logData.count))
             datalog!.writeData(NSData(bytes: data, length: data.count))
         }
+        
+        receiveStats.insert((NSDate(), data.count), atIndex: 0)
+        while receiveStats.count > 500 {
+            receiveStats.removeLast()
+        }
+            
         for b in data {
             switch state {
             case .Sync1:
@@ -110,7 +129,7 @@ class MSPParser {
             case .Checksum:
                 let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
                 if (checksum == b && mspCode != .MSP_UNKNOWN) {
-                    //NSLog("Received MSP %d", code.rawValue)
+                    //NSLog("Received MSP %d", mspCode.rawValue)
                     if processMessage(mspCode, message: messageBuffer!) {
                         callSuccessCallback(mspCode, data: messageBuffer!)
                     }

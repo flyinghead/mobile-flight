@@ -10,20 +10,8 @@ import UIKit
 
 class ServosViewController: UITableViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
-        //initialFetch()
-    }
-    
     private func initialFetch() {
-        msp.sendMessage(.MSP_SERVO_CONFIGURATIONS, data: nil, retry: 2, callback: { success in
+        msp.sendMessage(.MSP_SERVO_CONFIGURATIONS, data: nil, retry: 4, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 self.tableView.reloadData()
             })
@@ -35,11 +23,6 @@ class ServosViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         initialFetch()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source

@@ -60,11 +60,6 @@ class PIDViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
         profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
         profilePicker?.setPlaceholder("")           // To keep width down
@@ -81,11 +76,6 @@ class PIDViewController: UITableViewController {
         cancelAction(self)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func cancelAction(sender: AnyObject) {
         self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
             if success {

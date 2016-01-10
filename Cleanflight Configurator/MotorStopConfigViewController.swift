@@ -13,13 +13,6 @@ class MotorStopConfigViewController: ConfigChildViewController {
     @IBOutlet weak var disarmDelayLabel: UILabel!
     @IBOutlet weak var disarmDelayStepper: UIStepper!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-    }
-
     @IBAction func motorSwitchChanged(sender: AnyObject) {
         tableView.reloadData()
         if (stopMotorSwitch.on) {

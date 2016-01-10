@@ -11,7 +11,13 @@ import UIKit
 @IBDesignable
 class HeadingIndicator: UIView {
 
-    var heading = 0.0
+    var heading = 0.0 {
+        willSet(value) {
+            if value != heading {
+                setNeedsDisplay()
+            }
+        }
+    }
 
     var fi_circle: UIImage?
     var heading_yaw: UIImage?

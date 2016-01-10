@@ -20,6 +20,9 @@ class LinearGauge: UIView {
             return _value
         }
         set(value) {
+            if value != _value {
+                setNeedsDisplay()
+            }
             _value = value
         }
     }

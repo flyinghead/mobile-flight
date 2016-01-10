@@ -16,11 +16,6 @@ class DataflashController: UIViewController {
         msp.sendMessage(.MSP_DATAFLASH_SUMMARY, data: nil, retry: 2, callback: nil)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func downloadAction(sender: AnyObject) {
         downloadAddress(0)
     }

@@ -47,11 +47,6 @@ class ServoConfigViewController: UITableViewController {
         saveIfNeeded()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     func saveIfNeeded() {
         let settings = Settings.theSettings
         if settings.servoConfigs == nil || settings.servoConfigs!.count <= servoIdx {

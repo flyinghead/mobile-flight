@@ -10,9 +10,6 @@ import UIKit
 import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener, CLLocationManagerDelegate {
-    let TimerPeriod = 0.1
-    var timer: NSTimer?
-    var slowTimer: NSTimer?
     //var lat = 48.886212 // Debug
     var locationManager: CLLocationManager?
     var gpsPositions = 0
@@ -41,11 +38,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         //headingLabel.text = "?"
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -54,12 +46,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         receivedSensorData()
         receivedGpsData()
         
-        if (timer == nil) {
-            timer = NSTimer.scheduledTimerWithTimeInterval(TimerPeriod, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-        }
-        if (slowTimer == nil) {
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.333, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
-        }
         var coordinate = MapViewController.getAircraftCoordinates()
         if coordinate == nil {
             coordinate = mapView.userLocation.coordinate
@@ -84,11 +70,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        
-        timer?.invalidate()
-        timer = nil
-        slowTimer?.invalidate()
-        slowTimer = nil
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -99,20 +80,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             locationManager?.delegate = self
             locationManager?.requestWhenInUseAuthorization()
         }
-    }
-    
-    func timerDidFire(sender: AnyObject) {
-        msp.sendMessage(.MSP_RAW_GPS, data: nil)
-        msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
-        msp.sendMessage(.MSP_ALTITUDE, data: nil)
-        msp.sendMessage(.MSP_ATTITUDE, data: nil)
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.totalArmedTime))
-        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
-    }
-    
-    func slowTimerDidFire(sender: AnyObject) {
-        msp.sendMessage(.MSP_ANALOG, data: nil)
     }
     
     class func getAircraftCoordinates() -> CLLocationCoordinate2D? {
@@ -193,7 +160,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 if let annotation = mapView.annotations.filter({ annot in
                     return annot is MKPointAnnotation
                 }).first as? MKPointAnnotation {
-                    UIView.animateWithDuration(TimerPeriod, animations: {
+                    UIView.animateWithDuration(0.1, animations: {
                         annotation.coordinate = MapViewController.getAircraftCoordinates()!
                     })
                 } else {

@@ -27,7 +27,7 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         
         if (timer == nil) {
             // Cleanflight/chrome uses configurable interval (default 50ms)
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
         }
     }
     

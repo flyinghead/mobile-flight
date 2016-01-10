@@ -50,11 +50,6 @@ class MainConnectionViewController: UIViewController {
         containerView.addConstraint(bottom)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func connectionTypeChanged(sender: AnyObject) {
         let currentIdx = (sender as! UISegmentedControl).selectedSegmentIndex
 

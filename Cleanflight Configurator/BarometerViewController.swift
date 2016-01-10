@@ -21,8 +21,6 @@ class BarometerViewController: BaseSensorViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        timerInterval = 0.1     // 100ms
-        
         let leftAxis = chartView.leftAxis
         leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
@@ -77,7 +75,8 @@ class BarometerViewController: BaseSensorViewController {
     }
     
     func timerDidFire(sender: AnyObject) {
-        msp.sendMessage(.MSP_ALTITUDE, data: nil)
+        // Done by appDelegate
+        // msp.sendMessage(.MSP_ALTITUDE, data: nil)
     }
     
     

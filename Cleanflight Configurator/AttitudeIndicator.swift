@@ -12,9 +12,20 @@ import Darwin
 @IBDesignable
 class AttitudeIndicator: UIView {
     
-    var pitch = 0.0
-    var roll = 0.0
-    
+    var pitch = 0.0 {
+        willSet(value) {
+            if value != pitch {
+                setNeedsDisplay()
+            }
+        }
+    }
+    var roll = 0.0 {
+        willSet(value) {
+            if value != roll {
+                setNeedsDisplay()
+            }
+        }
+    }
     
     var fi_circle: UIImage?
     var horizon_back: UIImage?

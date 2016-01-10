@@ -59,11 +59,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
     @IBOutlet weak var portraitView: TelemetryView!
     var theView: TelemetryView!
     
-    let veryFastTimerInterval = 0.1     // 100ms by default. Latency for MSP_ATTITUDE is around 40-70 ms
-    var veryFastTimer: NSTimer?
-    var fastTimer: NSTimer?
-    var slowTimer: NSTimer?
-    
     var locationManager: CLLocationManager?
     var lastFollowMeUpdate: NSDate?
     let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
@@ -130,24 +125,13 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         receivedSensorData()
         receivedGpsData()
 
-        // For enabled features
-        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_MISC, data: nil)
-        })
-        
-        if (veryFastTimer == nil) {
-            veryFastTimer = NSTimer.scheduledTimerWithTimeInterval(veryFastTimerInterval, target: self, selector: "veryFastTimerDidFire:", userInfo: nil, repeats: true)
-        }
-        if (fastTimer == nil) {
-            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
-        }
-        if (slowTimer == nil) {
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.6, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
-        }
-        
         if msp.replaying {
             theView.followMeSwitch.enabled = false
         } else {
+            // For enabled features
+            msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.MSP_MISC, data: nil)
+            })
             theView.followMeSwitch.enabled = true
         }
     }
@@ -156,44 +140,15 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        
-        veryFastTimer?.invalidate()
-        veryFastTimer = nil
-        fastTimer?.invalidate()
-        fastTimer = nil
-        slowTimer?.invalidate()
-        slowTimer = nil
         VoiceMessage.theVoice.stopAlerts()          // FIXME
     }
 
-    func veryFastTimerDidFire(sender: AnyObject) {
-        if Settings.theSettings.boxNames != nil {
-            msp.sendMessage(.MSP_ATTITUDE, data: nil)
-        }
-    }
-    
-    func fastTimerDidFire(sender: AnyObject) {
-        if Settings.theSettings.boxNames != nil {
-            msp.sendMessage(.MSP_ALTITUDE, data: nil)
-        }
-    }
-    
-    func slowTimerDidFire(sender: AnyObject) {
-        if Settings.theSettings.boxNames != nil {
-            msp.sendMessage(.MSP_RAW_GPS, data: nil)
-            msp.sendMessage(.MSP_COMP_GPS, data: nil)
-            msp.sendMessage(.MSP_ANALOG, data: nil)
-        }
-    }
-    
     func receivedSensorData() {
         let sensorData = SensorData.theSensorData
         theView.attitudeIndicator.roll = sensorData.rollAngle
         theView.attitudeIndicator.pitch = sensorData.pitchAngle
-        theView.attitudeIndicator.setNeedsDisplay()
         
         theView.headingIndicator.heading = sensorData.heading
-        theView.headingIndicator.setNeedsDisplay()
         
         // Use baro/sonar altitude if present, otherwise use GPS altitude
         let config = Configuration.theConfig

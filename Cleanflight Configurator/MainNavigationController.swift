@@ -36,11 +36,6 @@ class MainNavigationController: UITabBarController {
         super.viewDidLoad()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     func removeViewControllersForReplay() {
         let filteredVC = viewControllers?.filter({
             var viewController = $0

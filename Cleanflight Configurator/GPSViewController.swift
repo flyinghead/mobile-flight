@@ -10,7 +10,7 @@ import UIKit
 
 class GPSViewController : UITableViewController, FlightDataListener {
     
-    var fastTimer: NSTimer?
+    var slowTimer: NSTimer?
     
     func receivedGpsData() {
         tableView.reloadData()
@@ -21,9 +21,9 @@ class GPSViewController : UITableViewController, FlightDataListener {
         
         msp.addDataListener(self)
         
-        if (fastTimer == nil) {
+        if (slowTimer == nil) {
             // Cleanflight/chrome uses 75ms interval
-            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
+            slowTimer = NSTimer.scheduledTimerWithTimeInterval(0.333, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
         }
     }
     
@@ -32,14 +32,12 @@ class GPSViewController : UITableViewController, FlightDataListener {
         
         msp.removeDataListener(self)
 
-        fastTimer?.invalidate()
-        fastTimer = nil
+        slowTimer?.invalidate()
+        slowTimer = nil
     }
     
-    func fastTimerDidFire(sender: AnyObject) {
+    func slowTimerDidFire(sender: AnyObject) {
         if Configuration.theConfig.isGPSActive() {
-            msp.sendMessage(.MSP_RAW_GPS, data: nil)
-            msp.sendMessage(.MSP_COMP_GPS, data: nil)
             msp.sendMessage(.MSP_GPSSVINFO, data: nil)
         }
     }
