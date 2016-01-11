@@ -36,9 +36,10 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         accTrimPitchStepper.minimumValue = -100
         accTrimRollStepper.minimumValue = -100
         
-        accTrimPitchStepper.value = Double(config.accelerometerTrimPitch)
+        let misc = Misc.theMisc
+        accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
         accTrimPitchChanged(accTrimPitchStepper)
-        accTrimRollStepper.value = Double(config.accelerometerTrimRoll)
+        accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
         accTrimRollChanged(accTrimRollStepper)
         
         // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
@@ -157,11 +158,11 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     }
     
     @IBAction func accTrimSaveAction(sender: AnyObject) {
-        let config = Configuration.theConfig
-        config.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
-        config.accelerometerTrimRoll = Int(accTrimRollStepper.value)
+        let misc = Misc.theMisc
+        misc.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
+        misc.accelerometerTrimRoll = Int(accTrimRollStepper.value)
         let msp = self.msp
-        msp.sendSetAccTrim(config, callback: { success in
+        msp.sendSetAccTrim(misc, callback: { success in
             if success {
                 msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: nil)
             } else {

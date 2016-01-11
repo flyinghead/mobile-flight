@@ -64,6 +64,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Battery Low</string>
+			<key>Key</key>
+			<string>battery_low_alarm</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Connection Lost</string>
 			<key>Key</key>
 			<string>connection_lost_alarm</string>
@@ -82,13 +92,11 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSChildPaneSpecifier</string>
 			<key>Title</key>
-			<string>Battery Low</string>
-			<key>Key</key>
-			<string>battery_low_alarm</string>
-			<key>DefaultValue</key>
-			<true/>
+			<string>RSSI Low</string>
+			<key>File</key>
+			<string>RSSIAlarm</string>
 		</dict>
 		<dict>
 			<key>Type</key>

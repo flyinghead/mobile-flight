@@ -12,7 +12,6 @@
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
 - Alarm settings
-- Alarms: GPS Fix and Battery Low only checked in Telemetry VC
 - Alarm: Need RSSI alarm, altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
 - App icon
 - Sexy launch screen and connection page
@@ -26,6 +25,7 @@
 - Backup / Restore
 (- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...")
 - Modes: "Plus" buttons don't work well because of frequent table updates
+- Pre-flight checks page
 
 - Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
     Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
@@ -44,4 +44,5 @@ DONE:
 - Replay: dump full AircraftModel at start of session.
 - Finish Settings: detect pref changes, set default prefs, etc.
 - Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
+- Alarms: GPS Fix and Battery Low only checked in Telemetry VC
 

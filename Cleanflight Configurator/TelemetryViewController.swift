@@ -140,7 +140,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        VoiceMessage.theVoice.stopAlerts()          // FIXME
     }
 
     func receivedSensorData() {
@@ -180,7 +179,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         setModeLabel(theView.modeOsdLabel, on: settings.isModeOn(Mode.OSDSW, forStatus: config.mode))
 
         theView.voltLabel.voltage = config.voltage
-        VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         
         theView.rssiLabel.text = String(format: "%d%%", locale: NSLocale.currentLocale(), config.rssi)
         
@@ -203,7 +201,6 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             theView.distanceToHomeLabel.text = ""
             theView.speedLabel.text = ""
         }
-        VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
     @IBAction func disconnectAction(sender: AnyObject) {

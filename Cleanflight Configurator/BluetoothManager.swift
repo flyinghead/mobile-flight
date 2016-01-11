@@ -171,19 +171,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             NSLog("Error updating value for characteristic: %@", error!)
         }
     }
-    /*
-    func peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor descriptor: CBDescriptor, error: NSError?) {
-        NSLog("didUpdateValueForDescriptor: %@", error ?? "?")
-    }
-    
-    func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
-        NSLog("didWriteValueForCharacteristic: %@", error ?? "?")
-    }
-    
-    func peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
-        NSLog("didUpdateNotificationStateForCharacteristic: %@", error ?? "?")
-    }
-    */
+
     // MARK:
     
     func connect(peripheral: BluetoothPeripheral) {
@@ -193,12 +181,17 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 return
             }
         }
+        delegate?.failedToConnectToPeripheral(peripheral, error: NSError(domain: "com.phtouz", code: 1, userInfo: [NSLocalizedDescriptionKey : "Device cannot be found"]))
     }
     
     func disconnect(peripheral: BluetoothPeripheral) {
-        if (peripheral.uuid == activePeripheral?.identifier.UUIDString && (activePeripheral!.state == .Connected || activePeripheral!.state == .Connecting)) {
-            manager.cancelPeripheralConnection(activePeripheral!)
+        for p in peripherals {
+            if (peripheral.uuid == p.identifier.UUIDString && (p.state == .Connected || p.state == .Connecting)) {
+                manager.cancelPeripheralConnection(p)
+                return
+            }
         }
+        delegate?.disconnectedPeripheral(peripheral)
     }
     
     func writeData(peripheral: BluetoothPeripheral, data: [UInt8]) {

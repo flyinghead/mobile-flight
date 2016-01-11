@@ -136,6 +136,25 @@ class BatteryLowAlarm : VoiceAlarm {
     }
 }
 
+class RSSILowAlarm : VoiceAlarm {
+    
+    override var on: Bool {
+        if CommunicationLostAlarm().on {
+            return false
+        }
+        let config = Configuration.theConfig
+        
+        return Settings.theSettings.isModeOn(.ARM, forStatus: config.mode) && config.rssi <= userDefaultAsInt(.RSSIAlarmLow)
+    }
+    override var enabled: Bool {
+        return userDefaultEnabled(.RSSIAlarm)
+    }
+    
+    override func voiceAlert() -> VoiceAlert! {
+        return VoiceAlert(speech: Configuration.theConfig.rssi <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.on })
+    }
+}
+
 class VoiceMessage: NSObject, FlightDataListener {
     static let theVoice = VoiceMessage()
     let synthesizer = AVSpeechSynthesizer()
@@ -162,7 +181,7 @@ class VoiceMessage: NSObject, FlightDataListener {
     }
     
     func checkAlarm(alarm: VoiceAlarm) {
-        if alarm.on {
+        if alarm.enabled && alarm.on {
             addAlert(NSStringFromClass(alarm.dynamicType), alert: alarm.voiceAlert())
         }
     }

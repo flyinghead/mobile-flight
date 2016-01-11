@@ -58,22 +58,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     }
     
     func startTimer() {
-        if msp.communicationEstablished {
+        if msp.communicationEstablished && statusTimer == nil {
             statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
         }
-        logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "logTimerDidFire:", userInfo: nil, repeats: true)
+        if logTimer == nil {
+            logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "logTimerDidFire:", userInfo: nil, repeats: true)
+        }
     }
     
     func stopTimer() {
-        if statusTimer != nil {
-            statusTimer!.invalidate()
-            statusTimer = nil
-        }
+        statusTimer?.invalidate()
+        statusTimer = nil
+        
         logTimer?.invalidate()
         logTimer = nil
     }
     
-    func statusTimerDidFire(timer: NSTimer) {
+    func statusTimerDidFire(timer: NSTimer?) {
         msp.sendMessage(.MSP_STATUS, data: nil)
         msp.sendMessage(.MSP_RAW_GPS, data: nil)
         msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
@@ -103,13 +104,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         return true
     }
     
+    // MARK: FlightDataListener
+    
     func receivedData() {
         checkArmedStatus()
-
+        
+        VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
+        VoiceMessage.theVoice.checkAlarm(RSSILowAlarm())
+        
         if completionHandler != nil {
             completionHandler!(.NewData)
             completionHandler = nil
         }
+    }
+    
+    func receivedGpsData() {
+        VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
     func communicationStatus(status: Bool) {
@@ -122,6 +132,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         }
     }
     
+    // MARK:
+
     func checkArmedStatus() {
         if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
             armed = true
@@ -171,12 +183,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
 
     // FIXME Doesn't seem to be ever called. Actually being called very very very unfrequently (hours?)
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        if !userDefaultEnabled(.RecordFlightlog) {
+        if !userDefaultEnabled(.RecordFlightlog) || !armed {
             completionHandler(.NoData)
             return
         }
         self.completionHandler = completionHandler
-        msp.sendMessage(.MSP_STATUS, data: nil)
+        statusTimerDidFire(statusTimer)
     }
 }
 

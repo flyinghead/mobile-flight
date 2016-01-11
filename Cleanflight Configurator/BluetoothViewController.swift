@@ -16,6 +16,8 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     var selectedPeripheral: BluetoothPeripheral?
     var refreshBluetoothButton: UIButton?
 
+    var timeOutTimer: NSTimer?
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         btManager.delegate = self
@@ -33,10 +35,20 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     private func cancelBtConnection(btComm: BluetoothComm) {
         btManager.delegate = self
         btComm.close()
-        if let peripheral = selectedPeripheral {
+        if selectedPeripheral != nil {
             selectedPeripheral = nil
-            failedToConnectToPeripheral(peripheral, error: nil)
+            dispatch_async(dispatch_get_main_queue(), {
+                SVProgressHUD.showErrorWithStatus("Handshake failed", maskType: .None)
+            })
         }
+    }
+    
+    func connectionTimedOut(timer: NSTimer) {
+        btManager.disconnect(selectedPeripheral!)
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus("Device is not responding", maskType: .None)
+        })
+
     }
 
     // MARK: BluetoothDelegate
@@ -54,6 +66,9 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func connectedPeripheral(peripheral: BluetoothPeripheral) {
+        timeOutTimer?.invalidate()
+        timeOutTimer = nil
+        
         NSLog("Connected to %@", peripheral.name)
         
         let msp = self.msp
@@ -63,7 +78,9 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         initiateHandShake({ success in
             if success {
                 self.selectedPeripheral = nil
-                (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                dispatch_async(dispatch_get_main_queue(), {
+                    (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                })
             } else {
                 self.cancelBtConnection(btComm)
             }
@@ -71,9 +88,12 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
+        timeOutTimer?.invalidate()
+        timeOutTimer = nil
+        
         dispatch_async(dispatch_get_main_queue(), {
             if error != nil {
-                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed: %@", peripheral.name, error!), maskType: .None)
+                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed: %@", peripheral.name, error!.localizedDescription), maskType: .None)
             } else {
                 SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed", peripheral.name), maskType: .None)
             }
@@ -128,13 +148,17 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         switch indexPath.section {
         case  0:
             selectedPeripheral = btPeripherals[indexPath.row]
-            btManager.connect(selectedPeripheral!)
             let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
             SVProgressHUD.showWithStatus(msg, maskType: .Black)
+            timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: nil, repeats: false)
+            btManager.connect(selectedPeripheral!)
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            
         default:
             break
         }
     }
+    
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
             return 44.0
@@ -142,6 +166,7 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
             return UITableViewAutomaticDimension
         }
     }
+    
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == 0 {
             let screenRect = UIScreen.mainScreen().applicationFrame;
@@ -166,15 +191,4 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
             return nil
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

@@ -19,18 +19,18 @@ class AutoCoded: NSObject, NSCoding {
     required init(coder aDecoder: NSCoder) {
         super.init()
         
-        let decodings = aDecoder.decodeObjectForKey(AutoCodingKey) as! NSArray
+        let decodings = aDecoder.decodeObjectForKey(AutoCodingKey) as! [String]
         setValue(decodings, forKey: AutoCodingKey)
         
         for decoding in decodings {
-            setValue(aDecoder.decodeObjectForKey(decoding as! String), forKey: decoding as! String)
+            setValue(aDecoder.decodeObjectForKey(decoding), forKey: decoding)
         }
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(valueForKey(AutoCodingKey), forKey: AutoCodingKey)
-        for encoding in valueForKey(AutoCodingKey) as! NSArray {
-            aCoder.encodeObject(valueForKey(encoding as! String), forKey: encoding as! String)
+        for encoding in valueForKey(AutoCodingKey) as! [String] {
+            aCoder.encodeObject(valueForKey(encoding), forKey: encoding)
         }
     }
     

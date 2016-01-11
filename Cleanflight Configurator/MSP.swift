@@ -260,8 +260,8 @@ class MSPParser {
             if message.count < 4 {
                 return false
             }
-            config.accelerometerTrimPitch = readInt16(message, index: 0)
-            config.accelerometerTrimRoll = readInt16(message, index: 2)
+            misc.accelerometerTrimPitch = readInt16(message, index: 0)
+            misc.accelerometerTrimRoll = readInt16(message, index: 2)
             pingDataListeners()
             
         case .MSP_RC:
@@ -812,10 +812,10 @@ class MSPParser {
         sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetAccTrim(config: Configuration, callback:((success:Bool) -> Void)?) {
+    func sendSetAccTrim(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeInt16(config.accelerometerTrimPitch))
-        data.appendContentsOf(writeInt16(config.accelerometerTrimRoll))
+        data.appendContentsOf(writeInt16(misc.accelerometerTrimPitch))
+        data.appendContentsOf(writeInt16(misc.accelerometerTrimRoll))
         
         sendMessage(.MSP_SET_ACC_TRIM, data: data, retry: 2, callback: callback)
     }

@@ -337,7 +337,7 @@ class Settings : AutoCoded {
 }
 
 class Misc : AutoCoded {
-    var autoEncoding = [ "midRC", "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "rssiChannel", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage" ]
+    var autoEncoding = [ "midRC", "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "rssiChannel", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
@@ -357,6 +357,10 @@ class Misc : AutoCoded {
     var vbatMinCellVoltage = 0.0     // V
     var vbatMaxCellVoltage = 0.0     // V
     var vbatWarningCellVoltage = 0.0 // V
+    
+    // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
+    var accelerometerTrimPitch = 0
+    var accelerometerTrimRoll = 0
     
     private override init() {
         super.init()
@@ -379,6 +383,8 @@ class Misc : AutoCoded {
         self.vbatMinCellVoltage = copyOf.vbatMinCellVoltage
         self.vbatMaxCellVoltage = copyOf.vbatMaxCellVoltage
         self.vbatWarningCellVoltage = copyOf.vbatWarningCellVoltage
+        self.accelerometerTrimPitch = copyOf.accelerometerTrimPitch
+        self.accelerometerTrimRoll = copyOf.accelerometerTrimRoll
         
         super.init()
     }
@@ -390,7 +396,7 @@ class Misc : AutoCoded {
 }
 
 class Configuration : AutoCoded {
-    var autoEncoding = [ "version", "multiType", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
+    var autoEncoding = [ "version", "multiType", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage" ]
     static var theConfig = Configuration()
     
     // MSP_IDENT
@@ -435,11 +441,6 @@ class Configuration : AutoCoded {
     var batteryCells = 0
     var maxAmperage = 0.0
     
-    // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
-    // FIXME Move this to Settings or elsewhere
-    var accelerometerTrimPitch = 0
-    var accelerometerTrimRoll = 0
-
     private override init() {
         super.init()
     }
@@ -496,6 +497,14 @@ class Configuration : AutoCoded {
                 return false
             }
         }
+    }
+    
+    override func setValue(value: AnyObject?, forUndefinedKey key: String) {
+        if key == "accelerometerTrimPitch" || key == "accelerometerTrimRoll" {
+            // These were moved to Misc. Ignore them.
+            return
+        }
+        super.setValue(value, forUndefinedKey: key)
     }
 }
 
