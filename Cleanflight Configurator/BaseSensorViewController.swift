@@ -15,7 +15,6 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
     
     var timerInterval = 0.1     // 100ms by default
     var timer: NSTimer?
-    var sensorCount = 0
     
     var chartView: LineChartView!
     
@@ -47,8 +46,6 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         
         timer?.invalidate()
         timer = nil
-        
-        sensorCount = 0
     }
     
     func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {

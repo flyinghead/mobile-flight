@@ -18,7 +18,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Record flight log data</string>
+			<string>Record Flight Log Data</string>
 			<key>Key</key>
 			<string>record_flightlog</string>
 			<key>DefaultValue</key>
@@ -28,7 +28,17 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Units</string>
+			<string>General</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Disable Screen Saver</string>
+			<key>Key</key>
+			<string>disable_idle_timer</string>
+			<key>DefaultValue</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -47,7 +57,7 @@
 			</array>
 			<key>Titles</key>
 			<array>
-				<string>Locale default</string>
+				<string>Locale Default</string>
 				<string>Metric</string>
 				<string>Imperial</string>
 			</array>

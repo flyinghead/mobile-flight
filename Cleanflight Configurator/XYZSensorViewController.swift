@@ -43,32 +43,31 @@ class XYZSensorViewController: BaseSensorViewController {
         view.setNeedsDisplay()
     }
     
-    func receivedSensorData() {
-        if (timer != nil) {
-            // Don't update the chart if we're not visible
-            sensorCount++;
-            updateSensorData()
-            if (xSensor.count > MaxSampleCount) {
-                xSensor.removeFirst()
-                ySensor.removeFirst()
-                zSensor.removeFirst()
-            }
-            updateChartData()
+    func receivedRawIMUData() {
+        updateSensorData()
+        while xSensor.count > MaxSampleCount {
+            xSensor.removeFirst()
+            ySensor.removeFirst()
+            zSensor.removeFirst()
         }
+        updateChartData()
     }
-    
+
     func timerDidFire(sender: AnyObject) {
         msp.sendMessage(.MSP_RAW_IMU, data: nil)
     }
 
-
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         
         xSensor.removeAll()
         ySensor.removeAll()
         zSensor.removeAll()
-        updateChartData()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        NSLog("Ciao")
     }
     
     func updateSensorData() {

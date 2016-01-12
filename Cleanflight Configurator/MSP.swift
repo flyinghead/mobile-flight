@@ -92,20 +92,25 @@ class MSPParser {
         for b in data {
             switch state {
             case .Sync1:
-                if (b == 36) { // $
+                if b == 36 { // $
                     state = .Sync2
                 }
             case .Sync2:
-                if (b == 77) { // M
+                if b == 77 { // M
                     state = .Direction
+                } else {
+                    state = .Sync1
                 }
             case .Direction:
-                if (b == 62) { // >
+                if b == 62 { // >
                     directionOut = false
-                } else {
+                    state = .Length
+                } else if b == 60 {
                     directionOut = true
+                    state = .Length
+                } else {
+                    state = .Sync1
                 }
-                state = .Length
             case .Length:
                 expectedMsgLength = Int(b);
                 checksum = b;
@@ -115,7 +120,7 @@ class MSPParser {
             case .Code:
                 code = b
                 checksum ^= b
-                if (expectedMsgLength > 0) {
+                if expectedMsgLength > 0 {
                     state = .Payload
                 } else {
                     state = .Checksum       // No payload
@@ -123,12 +128,12 @@ class MSPParser {
             case .Payload:
                 messageBuffer?.append(b);
                 checksum ^= b
-                if (messageBuffer?.count >= expectedMsgLength) {
+                if messageBuffer?.count >= expectedMsgLength {
                     state = .Checksum
                 }
             case .Checksum:
                 let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-                if (checksum == b && mspCode != .MSP_UNKNOWN) {
+                if checksum == b && mspCode != .MSP_UNKNOWN && !directionOut {
                     //NSLog("Received MSP %d", mspCode.rawValue)
                     if processMessage(mspCode, message: messageBuffer!) {
                         callSuccessCallback(mspCode, data: messageBuffer!)
@@ -137,6 +142,8 @@ class MSPParser {
                     let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
                     if checksum != b {
                         NSLog("MSP code %d - checksum failed: %@", code, datalog)
+                    } else if directionOut {
+                        NSLog("MSP code %d - received outgoing message", code)
                     } else {
                         NSLog("Unknown MSP code %d: %@", code, datalog)
                     }
@@ -198,7 +205,7 @@ class MSPParser {
             sensorData.magnetometerY = Double(readInt16(message, index: 14)) / 1090
             sensorData.magnetometerZ = Double(readInt16(message, index: 16)) / 1090
             
-            pingSensorListeners()
+            pingRawIMUListeners()
         
         case .MSP_SERVO:
             if message.count < 16 {
@@ -325,14 +332,14 @@ class MSPParser {
             }
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0 // correct scale factor
             sensorData.maxAltitude = max(sensorData.maxAltitude, sensorData.altitude)
-            pingSensorListeners()
+            pingAltitudeListeners()
             
         case .MSP_SONAR:
             if message.count < 4 {
                 return false
             }
             sensorData.sonar = readInt32(message,  index: 0);
-            pingSensorListeners()
+            pingSonarListeners()
 
         case .MSP_ANALOG:
             if message.count < 7 {
@@ -773,6 +780,21 @@ class MSPParser {
     func pingCommunicationStatusListeners(status: Bool) {
         pingListeners { (listener) -> Void in
             listener.communicationStatus?(status)
+        }
+    }
+    func pingRawIMUListeners() {
+        pingListeners { (listener) -> Void in
+            listener.receivedRawIMUData?()
+        }
+    }
+    func pingSonarListeners() {
+        pingListeners { (listener) -> Void in
+            listener.receivedSonarData?()
+        }
+    }
+    func pingAltitudeListeners() {
+        pingListeners { (listener) -> Void in
+            listener.receivedAltitudeData?()
         }
     }
     

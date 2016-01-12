@@ -50,4 +50,18 @@ class SonarViewController: BarometerViewController {
     override func userDefaultsDidChange(sender: AnyObject) {
         titleLabel.text = useImperialUnits() ? "Sonar - inches" : "Sonar - cm"
     }
+    
+    // MARK: FlightDataListener
+    
+    func receivedSonarData() {
+        updateSensorData()
+        while samples.count > MaxSampleCount {
+            samples.removeFirst()
+        }
+        updateChartData()
+    }
+
+    override func receivedAltitudeData() {
+        
+    }
 }

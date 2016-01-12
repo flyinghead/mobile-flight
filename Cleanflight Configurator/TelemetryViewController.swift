@@ -148,12 +148,17 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
         theView.attitudeIndicator.pitch = sensorData.pitchAngle
         
         theView.headingIndicator.heading = sensorData.heading
-        
-        // Use baro/sonar altitude if present, otherwise use GPS altitude
-        let config = Configuration.theConfig
-        theView.altitudeLabel.text = formatAltitude(config.isBarometerActive() || config.isSonarActive() ? sensorData.altitude : Double(GPSData.theGPSData.altitude))
     }
     
+    func receivedAltitudeData() {
+        let sensorData = SensorData.theSensorData
+        // Use baro/sonar altitude if present, otherwise use GPS altitude
+        let config = Configuration.theConfig
+        if config.isBarometerActive() || config.isSonarActive() {
+            theView.altitudeLabel.text = formatAltitude(sensorData.altitude)
+        }
+    }
+
     private func setModeLabel(label: UILabel, on: Bool) {
         if on {
             label.backgroundColor = UIColor.greenColor()
@@ -200,6 +205,10 @@ class TelemetryViewController: UIViewController, FlightDataListener, CLLocationM
             theView.gpsFixImage.image = redled
             theView.distanceToHomeLabel.text = ""
             theView.speedLabel.text = ""
+        }
+        let config = Configuration.theConfig
+        if !config.isBarometerActive() && !config.isSonarActive()  {
+            theView.altitudeLabel.text = formatAltitude(Double(GPSData.theGPSData.altitude))
         }
     }
     

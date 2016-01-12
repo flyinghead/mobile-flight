@@ -7,6 +7,7 @@
 //
 import Foundation
 import UIKit
+import SVProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
@@ -15,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     var msp = MSPParser()
     
     var statusTimer: NSTimer?
+    var lastDataReceived: NSDate?
     var armed = false
     var _totalArmedTime = 0.0
     var _lastArmedTime = 0.0
@@ -22,7 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     var completionHandler: ((UIBackgroundFetchResult) -> Void)?
 
-    var logTimer: NSTimer?
+    var stayAliveTimer: NSTimer!
+    
+    var logTimer: NSTimer?      // DEBUG
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let pageControl = UIPageControl.appearance()
@@ -38,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
 
+        stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: "stayAliveTimer:", userInfo: nil, repeats: true)
+        
         return true
     }
 
@@ -72,6 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         
         logTimer?.invalidate()
         logTimer = nil
+        
+        lastDataReceived = nil
     }
     
     func statusTimerDidFire(timer: NSTimer?) {
@@ -81,6 +89,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
         msp.sendMessage(.MSP_ANALOG, data: nil)
+        
+        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.5 && msp.communicationHealthy && !SVProgressHUD.isVisible() {
+            // Display warning if no data received for 0.5 sec
+            SVProgressHUD.showWithStatus("No data received")
+        }
     }
     
     func logTimerDidFire(sender: AnyObject) {
@@ -107,6 +120,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     // MARK: FlightDataListener
     
     func receivedData() {
+        lastDataReceived = NSDate()
+        SVProgressHUD.dismiss()
+        
         checkArmedStatus()
         
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
@@ -119,6 +135,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     }
     
     func receivedGpsData() {
+        lastDataReceived = NSDate()
+        SVProgressHUD.dismiss()
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
@@ -181,6 +199,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         }
     }
 
+    func stayAliveTimer(timer: NSTimer) {
+        // If connected to a live aircraft, disable screen saver
+        if msp.communicationEstablished && !msp.replaying {
+            UIApplication.sharedApplication().idleTimerDisabled = false
+            if userDefaultEnabled(.DisableIdleTimer) {
+                UIApplication.sharedApplication().idleTimerDisabled = true
+            }
+        }
+    }
+    
     // FIXME Doesn't seem to be ever called. Actually being called very very very unfrequently (hours?)
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         if !userDefaultEnabled(.RecordFlightlog) || !armed {

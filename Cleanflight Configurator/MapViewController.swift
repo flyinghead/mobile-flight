@@ -26,6 +26,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        mapView.layoutMargins = UIEdgeInsets(top: 85, left: 0, bottom: 0, right: 0)     // Display the compass below the right-handside instrument panel
         mapView.delegate = self
         mapView.showsUserLocation = true
         
@@ -43,7 +44,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         msp.addDataListener(self)
         receivedData()
-        receivedSensorData()
+        receivedAltitudeData()
         receivedGpsData()
         
         var coordinate = MapViewController.getAircraftCoordinates()
@@ -102,18 +103,18 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
 
         rssiLabel.blinks = false
         rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.rssi)
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let armedTime = Int(round(appDelegate.totalArmedTime))
+        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
     
-    func receivedSensorData() {
+    func receivedAltitudeData() {
         let sensorData = SensorData.theSensorData
         let config = Configuration.theConfig
         
         if config.isBarometerActive() || config.isSonarActive() {
             altitudeLabel.text = formatAltitude(sensorData.altitude)
-        }
-        
-        if config.isMagnetometerActive() {
-            //headingLabel.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), sensorData.heading)
         }
     }
     

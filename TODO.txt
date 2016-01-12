@@ -1,31 +1,32 @@
 
-- Need to be able to cancel connection (TCP/BT) b/c it sometimes spins forever
-
+- TCP: Need to be able to cancel connection b/c it sometimes spins forever
 - TCP: Access violation due to reachability callback being called after connection is closed
 - TCP: Connection timeout is triggered if disconnecting within 5 secs
 - TCP: Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
-
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
 
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
-- Alarm settings
-- Alarm: Need RSSI alarm, altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
+- Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
 - App icon
 - Sexy launch screen and connection page
 - Map: Add pin for RTH location
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
 - Follow Me: only works with Telemetry screen
-- Telemetry/Map: Time counter since arming
-- Telemetry (map?): Display active profile
+- Telemetry: Time counter since arming
+- Telemetry (map?): Display active profile, battery Amps, mAh consumed/remaining, vertical speed, communication speed
 - Settings: Map type (sat, hybrid, map)
 - Backup / Restore
 (- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...")
 - Modes: "Plus" buttons don't work well because of frequent table updates
 - Pre-flight checks page
+- Ability to name models: use cleanflight UID and BT uuid to identify it
+
+- Comm: Test 3DR Telemetry radio (= HKPilot tranceiver telemetry)
+- Comm: Use FPV audio channel to transmit data (ImmersionRC EzOSD)
 
 - Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
     Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
@@ -45,4 +46,6 @@ DONE:
 - Finish Settings: detect pref changes, set default prefs, etc.
 - Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
 - Alarms: GPS Fix and Battery Low only checked in Telemetry VC
+- Comm: Detect when no more data is coming in, display alert
+
 

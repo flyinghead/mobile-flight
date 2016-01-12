@@ -46,7 +46,7 @@ class BarometerViewController: BaseSensorViewController {
         return makeDataSet(yVals, label: "Altitude", color: UIColor.blueColor())
     }
     
-    private func updateChartData() {
+    func updateChartData() {
         var yVals = [ChartDataEntry]()
         let initialOffset = samples.count - MaxSampleCount
         
@@ -62,29 +62,24 @@ class BarometerViewController: BaseSensorViewController {
         view.setNeedsDisplay()
     }
     
-    func receivedSensorData() {
-        if (timer != nil) {
-            // Don't update the chart if we're not visible
-            sensorCount++
-            updateSensorData()
-            if (samples.count > MaxSampleCount) {
-                samples.removeFirst()
-            }
-            updateChartData()
+    func receivedAltitudeData() {
+        updateSensorData()
+        while samples.count > MaxSampleCount {
+            samples.removeFirst()
         }
+        updateChartData()
     }
-    
+
     func timerDidFire(sender: AnyObject) {
         // Done by appDelegate
         // msp.sendMessage(.MSP_ALTITUDE, data: nil)
     }
     
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         
         samples.removeAll()
-        updateChartData()
     }
     
     func updateSensorData() {
