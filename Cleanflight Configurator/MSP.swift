@@ -65,12 +65,14 @@ class MSPParser {
     
     var incomingBytesPerSecond: Int {
         var byteCount = 0
+        objc_sync_enter(self)
         for (date, size) in receiveStats {
             if -date.timeIntervalSinceNow >= 1 {
                 break
             }
             byteCount += size
         }
+        objc_sync_exit(self)
         return byteCount
     }
     
@@ -84,10 +86,12 @@ class MSPParser {
             datalog!.writeData(NSData(bytes: data, length: data.count))
         }
         
+        objc_sync_enter(self)
         receiveStats.insert((NSDate(), data.count), atIndex: 0)
         while receiveStats.count > 500 {
             receiveStats.removeLast()
         }
+        objc_sync_exit(self)
             
         for b in data {
             switch state {
@@ -105,7 +109,7 @@ class MSPParser {
                 if b == 62 { // >
                     directionOut = false
                     state = .Length
-                } else if b == 60 {
+                } else if b == 60 {     // <
                     directionOut = true
                     state = .Length
                 } else {
@@ -576,6 +580,18 @@ class MSPParser {
             settings.modeRangeSlots = nRanges
             pingSettingsListeners()
             
+        case .MSP_CF_SERIAL_CONFIG:
+            let nPorts = message.count / 7
+            if nPorts < 1 {
+                return false
+            }
+            settings.portConfigs = [PortConfig]()
+            for var i = 0; i < nPorts; i++ {
+                let offset = i * 7
+                settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(rawValue: Int(message[offset]))!, functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(rawValue: Int(message[offset+3]))!, gpsBaudRate: BaudRate(rawValue: Int(message[offset+4]))!, telemetryBaudRate: BaudRate(rawValue: Int(message[offset+5]))!, blackboxBaudRate: BaudRate(rawValue: Int(message[offset+6]))!))
+            }
+            pingSettingsListeners()
+            
         case .MSP_PID_CONTROLLER:
             if message.count < 1 {
                 return false
@@ -615,7 +631,8 @@ class MSPParser {
             .MSP_SET_MOTOR,
             .MSP_DATAFLASH_ERASE,
             .MSP_SET_WP,
-            .MSP_SET_SERVO_CONFIGURATION:
+            .MSP_SET_SERVO_CONFIGURATION,
+            .MSP_SET_CF_SERIAL_CONFIG:
             break
             
         default:
@@ -953,6 +970,20 @@ class MSPParser {
         data.appendContentsOf(writeUInt32(servoConfig.reversedSources))
         
         sendMessage(.MSP_SET_SERVO_CONFIGURATION, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSerialConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        for portConfig in settings.portConfigs! {
+            data.append(UInt8(portConfig.portIdentifier.rawValue))
+            data.appendContentsOf(writeUInt16(portConfig.functions.rawValue))
+            data.append(UInt8(portConfig.mspBaudRate.rawValue))
+            data.append(UInt8(portConfig.gpsBaudRate.rawValue))
+            data.append(UInt8(portConfig.telemetryBaudRate.rawValue))
+            data.append(UInt8(portConfig.blackboxBaudRate.rawValue))
+        }
+        
+        sendMessage(.MSP_SET_CF_SERIAL_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     func openCommChannel(commChannel: CommChannel) {

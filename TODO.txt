@@ -1,8 +1,5 @@
+- Comm: 0.5 sec receive timeout is too short. 0.75 -> 1 sec?
 
-- TCP: Need to be able to cancel connection b/c it sometimes spins forever
-- TCP: Access violation due to reachability callback being called after connection is closed
-- TCP: Connection timeout is triggered if disconnecting within 5 secs
-- TCP: Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
@@ -47,5 +44,21 @@ DONE:
 - Record: For each session, display location, distance, duration, max alt, ... (See DJI GO)
 - Alarms: GPS Fix and Battery Low only checked in Telemetry VC
 - Comm: Detect when no more data is coming in, display alert
+- Comm: AppDelegate timer should not be on main queue -> when UI is busy, timer is not firing. -> solution: Main run loop, yes, but not in default mode
+- TCP: Connection timeout is triggered if disconnecting within 5 secs
+- TCP: Need to be able to cancel connection b/c it sometimes spins forever
+- TCP: Connection timeout doesn't work if host is unreachable to start with (bogus dns name) -> Network lost in reachability
+- TCP: Access violation due to reachability callback being called after connection is closed
+Disconnected drone+dongle. Cannot dismiss "Connection lost. Reconnecting". Log:
+2016-01-13 00:25:16.649 Cleanflight Configurator[6171:1715806] Bandwidth in: 0.0 kbps (0%)
+2016-01-13 00:25:17.649 Cleanflight Configurator[6171:1715806] Bandwidth in: 0.0 kbps (0%)
+2016-01-13 00:25:18.650 Cleanflight Configurator[6171:1715806] Bandwidth in: 0.0 kbps (0%)
+2016-01-13 00:25:19.345 Cleanflight Configurator[6171:1724301] NSStreamEvent.ErrorOccurred: <__NSCFOutputStream: 0x1703022e0>
+2016-01-13 00:25:19.346 Cleanflight Configurator[6171:1724301] Connecting...
+2016-01-13 00:25:19.593 Cleanflight Configurator[6171:1724301] Communication closed
+2016-01-13 00:27:49.624 Cleanflight Configurator[6171:1715806] NSStreamEvent.ErrorOccurred: <__NSCFOutputStream: 0x1743044a0>
+2016-01-13 00:27:49.625 Cleanflight Configurator[6171:1715806] Communication error
+
+Then BAD_ACCESS_EXCEPTION in reachability callback
 
 

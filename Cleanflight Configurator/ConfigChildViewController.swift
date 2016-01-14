@@ -10,9 +10,9 @@ import UIKit
 
 class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
     
-    var configViewController: ConfigurationViewController?
-    var settings: Settings?
-    var misc: Misc?
+    var configViewController: ConfigurationViewController!
+    var settings: Settings!
+    var misc: Misc!
 
     var activeField: UITextField?
     

@@ -35,7 +35,8 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         
         if (timer == nil) {
             // Cleanflight/chrome uses configurable interval (default 50ms)
-            timer = NSTimer.scheduledTimerWithTimeInterval(timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+            timer = NSTimer(timeInterval: timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+            NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
         }
     }
     

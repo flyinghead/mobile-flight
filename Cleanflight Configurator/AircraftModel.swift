@@ -177,6 +177,95 @@ enum PIDName : String {
     case Vel = "VEL"
 }
 
+struct PortFunction : OptionSetType, DictionaryCoding {
+    let rawValue: Int
+    
+    static let None = PortFunction(rawValue: 0)
+    static let MSP  = PortFunction(rawValue: 1 << 0)
+    static let GPS = PortFunction(rawValue: 1 << 1)
+    static let TelemetryFrsky  = PortFunction(rawValue: 1 << 2)
+    static let TelemetryHott  = PortFunction(rawValue: 1 << 3)
+    static let TelemetryLTM  = PortFunction(rawValue: 1 << 4)
+    static let TelemetrySmartPort  = PortFunction(rawValue: 1 << 5)
+    static let RxSerial  = PortFunction(rawValue: 1 << 6)
+    static let Blackbox  = PortFunction(rawValue: 1 << 7)
+    
+    init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": rawValue]
+    }
+
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.rawValue = rawValue
+    }
+}
+
+enum PortIdentifier : Int {
+    case None = -1
+    case USART1 = 0
+    case USART2 = 1
+    case USART3 = 2
+    case USART4 = 3
+    case USB_VCP = 20
+    case SoftSerial1 = 30
+    case SoftSerial2 = 31
+}
+
+enum BaudRate : Int {
+    case Auto = 0
+    case Baud9600 = 1
+    case Baud19200 = 2
+    case Baud38400 = 3
+    case Baud57600 = 4
+    case Baud115200 = 5
+    case Baud230400 = 6
+    case Baud250000 = 7
+    
+}
+
+struct PortConfig : DictionaryCoding {
+    var portIdentifier = PortIdentifier.None
+    var functions = PortFunction.None
+    var mspBaudRate = BaudRate.Auto
+    var gpsBaudRate = BaudRate.Auto
+    var telemetryBaudRate = BaudRate.Auto
+    var blackboxBaudRate = BaudRate.Auto
+    
+    init(portIdentifier: PortIdentifier, functions: PortFunction, mspBaudRate: BaudRate, gpsBaudRate: BaudRate, telemetryBaudRate: BaudRate, blackboxBaudRate: BaudRate) {
+        self.portIdentifier = portIdentifier
+        self.functions = functions
+        self.mspBaudRate = mspBaudRate
+        self.gpsBaudRate = gpsBaudRate
+        self.telemetryBaudRate = telemetryBaudRate
+        self.blackboxBaudRate = blackboxBaudRate
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let portIdentifier = dict["portIdentifier"] as? Int,
+            let functions = dict["functions"] as? Int,
+            let mspBaudRate = dict["mspBaudRate"] as? Int,
+            let gpsBaudRate = dict["gpsBaudRate"] as? Int,
+            let telemetryBaudRate = dict["telemetryBaudRate"] as? Int,
+            let blackboxBaudRate = dict["blackboxBaudRate"] as? Int
+            else { return nil }
+        
+        self.init(portIdentifier: PortIdentifier(rawValue: portIdentifier)!, functions: PortFunction(rawValue: functions), mspBaudRate: BaudRate(rawValue: mspBaudRate)!, gpsBaudRate: BaudRate(rawValue: gpsBaudRate)!, telemetryBaudRate: BaudRate(rawValue: telemetryBaudRate)!, blackboxBaudRate: BaudRate(rawValue: blackboxBaudRate)!)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "portIdentifier": portIdentifier.rawValue, "functions": functions.rawValue, "mspBaudRate": mspBaudRate.rawValue, "gpsBaudRate": gpsBaudRate.rawValue, "telemetryBaudRate": telemetryBaudRate.rawValue, "blackboxBaudRate": blackboxBaudRate.rawValue ]
+    }
+}
+
 class Settings : AutoCoded {
     var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController" ]
     static var theSettings = Settings()
@@ -228,6 +317,9 @@ class Settings : AutoCoded {
     // MSP_SERVO_CONFIGURATIONS / MSP_SET_SERVO_CONFIGURATION
     var servoConfigs: [ServoConfig]?
     
+    // MSP_CF_SERIAL_CONFIG / MSP_SET_CF_SERIAL_CONFIG
+    var portConfigs: [PortConfig]?
+    
     private override init() {
         super.init()
     }
@@ -266,6 +358,7 @@ class Settings : AutoCoded {
         self.pidController = copyOf.pidController
         
         self.servoConfigs = copyOf.servoConfigs
+        self.portConfigs = copyOf.portConfigs
         
         super.init()
     }
@@ -309,6 +402,13 @@ class Settings : AutoCoded {
                 servoConfigs!.append(ServoConfig(fromDict: dict)!)
             }
         }
+        
+        if let portConfigsDicts = aDecoder.decodeObjectForKey("portConfigs") as? [NSDictionary] {
+            portConfigs = [PortConfig]()
+            for dict in portConfigsDicts {
+                portConfigs!.append(PortConfig(fromDict: dict)!)
+            }
+        }
     }
     
     override func encodeWithCoder(aCoder: NSCoder) {
@@ -333,6 +433,15 @@ class Settings : AutoCoded {
             }
         }
         aCoder.encodeObject(servoConfigsDicts, forKey: "servoConfigs")
+        
+        var portConfigsDicts: [NSDictionary]?
+        if portConfigs != nil {
+            portConfigsDicts = [NSDictionary]()
+            for portConfig in portConfigs! {
+                portConfigsDicts?.append(portConfig.toDict())
+            }
+        }
+        aCoder.encodeObject(portConfigsDicts, forKey: "portConfigs")
     }
 }
 

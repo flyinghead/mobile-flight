@@ -83,9 +83,15 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                     if success {
                         self.msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2, callback: { success in
                             if success {
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    self.tableView.userInteractionEnabled = true
-                                    self.hideWaitIndicator()
+                                self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
+                                    if success {
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            self.tableView.userInteractionEnabled = true
+                                            self.hideWaitIndicator()
+                                        })
+                                    } else {
+                                        self.fetchInformationFailed()
+                                    }
                                 })
                             } else {
                                 self.fetchInformationFailed()
@@ -197,25 +203,31 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         showWaitIndicator("Saving settings")
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
-        msp.sendSetMisc(newMisc!, callback: { success in
+        msp.sendSerialConfig(self.newSettings!, callback: { success in
             if success {
-                self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
+                self.msp.sendSetMisc(self.newMisc!, callback: { success in
                     if success {
-                        self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
+                        self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
                                     if success {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            SVProgressHUD.setStatus("Rebooting")
-                                        })
-                                        self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
+                                        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                                             if success {
-                                                // Wait 1500 ms
-                                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1500 * Double(NSEC_PER_MSEC))), dispatch_get_main_queue(), {
-                                                    self.saveButton.enabled = true
-                                                    appDelegate.startTimer()
-                                                    // Refetch information from FC
-                                                    self.fetchInformation()
+                                                dispatch_async(dispatch_get_main_queue(), {
+                                                    SVProgressHUD.setStatus("Rebooting")
+                                                })
+                                                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
+                                                    if success {
+                                                        // Wait 1500 ms
+                                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1500 * Double(NSEC_PER_MSEC))), dispatch_get_main_queue(), {
+                                                            self.saveButton.enabled = true
+                                                            appDelegate.startTimer()
+                                                            // Refetch information from FC
+                                                            self.fetchInformation()
+                                                        })
+                                                    } else {
+                                                        self.saveConfigFailed()
+                                                    }
                                                 })
                                             } else {
                                                 self.saveConfigFailed()

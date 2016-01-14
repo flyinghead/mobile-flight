@@ -14,22 +14,12 @@ class WifiViewController: UIViewController {
     @IBOutlet weak var ipPortField: UITextField!
     @IBOutlet weak var connectButton: UIButton!
 
-    //var restoredIpAddress = "192.168.4.1"
-    //var restoredIpPort = "23"
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         connectButton.layer.borderColor = connectButton.tintColor.CGColor
-        //ipAddressField.text = restoredIpAddress
-        //ipPortField.text = restoredIpPort
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func connectAction(sender: AnyObject) {
         let host = ipAddressField.text!
         if host.isEmpty {
@@ -59,13 +49,10 @@ class WifiViewController: UIViewController {
         let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(5) * NSEC_PER_SEC)), dispatch_get_main_queue() , {
-            if !tcpComm.connected && !tcpComm.networkLost {
-                SVProgressHUD.showErrorWithStatus("Connection time out")
-                tcpComm.close()
-            }
-        })
+        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: tcpComm, repeats: false)
+
         tcpComm.connect({ success in
+            timeOutTimer.invalidate()
             if success {
                 self.initiateHandShake({ success in
                     if success {
@@ -79,6 +66,14 @@ class WifiViewController: UIViewController {
                 SVProgressHUD.showErrorWithStatus("Connection failed")
             }
         })
+    }
+    
+    func connectionTimedOut(timer: NSTimer) {
+        let tcpComm = timer.userInfo as! TCPComm
+        if !tcpComm.connected {
+            SVProgressHUD.showErrorWithStatus("Connection timeout")
+            tcpComm.close()
+        }
     }
 
     override func encodeRestorableStateWithCoder(coder: NSCoder) {

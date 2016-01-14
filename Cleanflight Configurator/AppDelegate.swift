@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     var statusTimer: NSTimer?
     var lastDataReceived: NSDate?
+    var noDataReceived = false
     var armed = false
     var _totalArmedTime = 0.0
     var _lastArmedTime = 0.0
@@ -65,7 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     func startTimer() {
         if msp.communicationEstablished && statusTimer == nil {
-            statusTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
+            statusTimer = NSTimer(timeInterval:0.1, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
+            NSRunLoop.mainRunLoop().addTimer(statusTimer!, forMode: NSRunLoopCommonModes)
         }
         if logTimer == nil {
             logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "logTimerDidFire:", userInfo: nil, repeats: true)
@@ -93,11 +95,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.5 && msp.communicationHealthy && !SVProgressHUD.isVisible() {
             // Display warning if no data received for 0.5 sec
             SVProgressHUD.showWithStatus("No data received")
+            noDataReceived = true
         }
     }
     
     func logTimerDidFire(sender: AnyObject) {
-        NSLog("Bandwidth in: %.01f Kbps", Double(msp.incomingBytesPerSecond) * 8.0 / 1024.0)
+        NSLog("Bandwidth in: %.01f kbps (%.0f%%)", Double(msp.incomingBytesPerSecond) * 8.0 / 1000.0, Double(msp.incomingBytesPerSecond) * 10.0 * 100 / 115200)
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -121,7 +124,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     func receivedData() {
         lastDataReceived = NSDate()
-        SVProgressHUD.dismiss()
+        if noDataReceived {
+            SVProgressHUD.dismiss()
+            noDataReceived = false
+        }
         
         checkArmedStatus()
         
@@ -136,7 +142,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     func receivedGpsData() {
         lastDataReceived = NSDate()
-        SVProgressHUD.dismiss()
+        if noDataReceived {
+            SVProgressHUD.dismiss()
+            noDataReceived = false
+        }
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
@@ -201,11 +210,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
 
     func stayAliveTimer(timer: NSTimer) {
         // If connected to a live aircraft, disable screen saver
-        if msp.communicationEstablished && !msp.replaying {
-            UIApplication.sharedApplication().idleTimerDisabled = false
-            if userDefaultEnabled(.DisableIdleTimer) {
+        UIApplication.sharedApplication().idleTimerDisabled = false
+        if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.DisableIdleTimer) {
                 UIApplication.sharedApplication().idleTimerDisabled = true
-            }
         }
     }
     

@@ -33,6 +33,8 @@
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
 		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
+		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
+		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A681C26BE6F006BC53E /* TODO.txt */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
@@ -150,6 +152,8 @@
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
 		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
 		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
+		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
+		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
@@ -276,6 +280,8 @@
 				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
 				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
 				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
+				AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */,
+				AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */,
 				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
 				AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */,
 			);
@@ -630,6 +636,7 @@
 				AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */,
 				AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */,
 				AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */,
+				AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */,
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */,
@@ -660,6 +667,7 @@
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
+				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
