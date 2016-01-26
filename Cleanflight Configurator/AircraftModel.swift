@@ -78,6 +78,7 @@ enum Mode : String {
     case GOVERNOR = "GOVERNOR"
     case OSDSW = "OSD SW"
     case TELEMETRY = "TELEMETRY"
+    case AUTOTUNE = "AUTOTUNE"
     case GTUNE = "GTUNE"
     case SONAR = "SONAR"
     case SERVO1 = "SERVO1"
@@ -537,18 +538,63 @@ class Configuration : AutoCoded {
     var cycleTime = 0     // microsecond?
     var i2cError = 0
     var activeSensors = 0
-    var mode = 0
+    var mode = 0 {
+        willSet(value) {
+            let changedModes = value ^ mode
+            let settings = Settings.theSettings
+            
+            if settings.isModeOn(.BARO, forStatus: changedModes) || settings.isModeOn(.SONAR, forStatus: changedModes) {
+                let sensorData = SensorData.theSensorData
+                if settings.isModeOn(.BARO, forStatus: value) || settings.isModeOn(.SONAR, forStatus: value) {
+                    sensorData.altitudeHold = sensorData.altitude
+                }
+            }
+            if settings.isModeOn(.MAG, forStatus: changedModes) {
+                let sensorData = SensorData.theSensorData
+                if settings.isModeOn(.MAG, forStatus: value) {
+                    sensorData.headingHold = sensorData.heading
+                }
+            }
+        }
+    }
     var profile = 0
     
     // MSP_ANALOG
-    var voltage = 0.0       // V
+    var voltage = 0.0 {      // V
+        didSet {
+            if voltage > 0 && batteryCells == 0 && Settings.theSettings.features.contains(.VBat) ?? false {
+                let vbatMaxCellVoltage = Misc.theMisc.vbatMaxCellVoltage
+                if vbatMaxCellVoltage > 0 {
+                    batteryCells = Int(voltage / vbatMaxCellVoltage + 1)
+                }
+            }
+        }
+    }
     var mAhDrawn = 0
     var rssi = 0            // %
-    var amperage = 0.0      // A
+    var amperage = 0.0 {      // A
+        didSet {
+            maxAmperage = max(maxAmperage, amperage)
+        }
+    }
+    
+    // MSP_SIKRADIO
+    var rxerrors = 0
+    var fixedErrors = 0
+    var txBuffer = 0
+    var sikRssi = 0         // 0-255 0.5db per bit. 18 ~ -120db and 225 ~ 0db
+    var sikRemoteRssi = 0   // 0-255
+    var noise = 0           // 0-255
+    var remoteNoise = 0     // 0-255
     
     // Local
     var batteryCells = 0
     var maxAmperage = 0.0
+    
+    private var _localSNR = 0.0
+    private var _remoteSNR = 0.0
+    private var lastLocalSNRTime: NSDate?
+    private var lastRemoteSNRTime: NSDate?
     
     private override init() {
         super.init()
@@ -614,6 +660,28 @@ class Configuration : AutoCoded {
             return
         }
         super.setValue(value, forUndefinedKey: key)
+    }
+    
+    var localSNR: Double {
+        if lastLocalSNRTime == nil || -lastLocalSNRTime!.timeIntervalSinceNow >= 1 {
+            lastLocalSNRTime = NSDate()
+            _localSNR = (-120 + Double(sikRssi - noise) * 120 / 207) / 2 + _localSNR / 2
+        }
+        return _localSNR
+    }
+
+    var remoteSNR: Double {
+        if lastRemoteSNRTime == nil || -lastRemoteSNRTime!.timeIntervalSinceNow >= 1 {
+            lastRemoteSNRTime = NSDate()
+            _remoteSNR = (-120 + Double(sikRemoteRssi - remoteNoise) * 120 / 207) / 2 + _remoteSNR / 2
+        }
+        return _remoteSNR
+    }
+    
+    var sikQuality: Int {
+        let snr = min(localSNR, remoteSNR)
+        
+        return Int(round(constrain(120 + snr, min: 0, max: 100)))
     }
 }
 
@@ -683,15 +751,67 @@ class GPSData : AutoCoded {
     
     // MSP_RAW_GPS
     var fix = false
-    var latitude = 0.0          // degree
-    var longitude = 0.0         // degree
-    var altitude = 0            // m
-    var speed = 0.0             // km/h
+    var position: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+        didSet {
+            if fix {
+                // Hack to avoid bogus first position with lat or long at 0 when the object is decoded and uses the kat and long setters in sequence
+                if position.latitude != 0 && position.longitude != 0 {
+                    lastKnownGoodLatitude = position.latitude
+                    lastKnownGoodLongitude = position.longitude
+                    lastKnownGoodTimestamp = NSDate()
+                    
+                    positions.append(position)
+                }
+            }
+        }
+    }
+    var latitude: Double {          // degree
+        get {
+            return position.latitude
+        }
+        // FIXME we should serialize position instead
+        set(value) {
+            position.latitude = value
+        }
+    }
+    var longitude: Double {         // degree
+        get {
+            return position.longitude
+        }
+        set(value) {
+            position.longitude = value
+        }
+    }
+    var altitude = 0 {           // m
+        willSet(value) {
+            if fix {
+                lastKnownGoodAltitude = value
+                maxAltitude = max(maxAltitude, value)
+                if lastAltitudeTime != nil {
+                    variometer = Double(value - altitude) / -lastAltitudeTime!.timeIntervalSinceNow
+                }
+                lastAltitudeTime = NSDate()
+            }
+        }
+    }
+    var speed = 0.0 {             // km/h
+        didSet {
+            if fix {
+                maxSpeed = max(maxSpeed, speed)
+            }
+        }
+    }
     var headingOverGround = 0.0 // degree
     var numSat = 0
     
     // MSP_COMP_GPS
-    var distanceToHome = 0      // m
+    var distanceToHome = 0 {      // m
+        didSet {
+            if fix {
+                maxDistanceToHome = max(maxDistanceToHome, distanceToHome)
+            }
+        }
+    }
     var directionToHome = 0     // degree
     var update = 0
     
@@ -702,6 +822,8 @@ class GPSData : AutoCoded {
     var lastKnownGoodTimestamp: NSDate?
     var maxDistanceToHome = 0
     var maxAltitude = 0
+    var variometer = 0.0
+    var lastAltitudeTime: NSDate?
     var maxSpeed = 0.0
     var positions = [CLLocationCoordinate2D]()
     
@@ -764,7 +886,7 @@ class Receiver : AutoCoded {
 }
 
 class SensorData : AutoCoded {
-    var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "sonar", "rollAngle", "pitchAngle", "heading" ]
+    var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "variometer", "sonar", "rollAngle", "pitchAngle", "heading" ]
     static var theSensorData = SensorData()
     
     // MSP_RAW_IMU
@@ -772,16 +894,47 @@ class SensorData : AutoCoded {
     var gyroscopeX = 0.0, gyroscopeY = 0.0, gyroscopeZ = 0.0
     var magnetometerX = 0.0, magnetometerY = 0.0, magnetometerZ = 0.0
     // MSP_ALTITUDE
-    var altitude = 0.0          // m
+    var altitude = 0.0 {          // m
+        willSet(value) {
+            maxAltitude = max(maxAltitude, value)
+        }
+    }
+    var variometer = 0.0
     // MSP_SONAR
     var sonar = 0               // cm
     // MSP_ATTITUDE
     var rollAngle = 0.0
     var pitchAngle = 0.0
-    var heading = 0.0
+    var heading = 0.0 {
+        willSet(value) {
+            if lastAttitude != nil {
+                let deltaTime = -lastAttitude!.timeIntervalSinceNow
+                if deltaTime > 0.01 {
+                    var headingVariation = value - heading
+                    if headingVariation < -180 {
+                        headingVariation += 360
+                    } else if headingVariation > 180 {
+                        headingVariation -= 360
+                    }
+                    turnRate = headingVariation / deltaTime
+                    if abs(turnRate) > 360 {
+                        NSLog("Turn rate %.0f, (dt=%f)", turnRate, deltaTime)
+                    }
+                    lastAttitude = NSDate()
+                }
+            } else {
+                lastAttitude = NSDate()
+            }
+        }
+    }
 
     // Local
-    var maxAltitude = 0.0
+    var maxAltitude = 0.0       // m
+    var altitudeHold = 0.0
+    
+    var turnRate = 0.0          // deg / s
+    var lastAttitude: NSDate?
+    var headingHold = 0.0
     
     private override init() {
         super.init()

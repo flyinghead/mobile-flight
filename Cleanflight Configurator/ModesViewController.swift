@@ -27,24 +27,55 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     
     func initialFetch() {
         dontReloadTable = true
-        // FIXME Error cases
+
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
         msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_BOXIDS, data: nil, retry: 2, callback: { success in
-                self.msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2, callback: { success in
-                    self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
-                        dispatch_async(dispatch_get_main_queue(), {
-                            let settings = Settings.theSettings
-                            self.modeRanges = [ModeRange](settings.modeRanges!)
-                            self.modeRangeSlots = settings.modeRangeSlots
-                            self.dontReloadTable = false
-                            self.tableView.reloadData()
+            if success {
+                self.msp.sendMessage(.MSP_BOXIDS, data: nil, retry: 2, callback: { success in
+                    if success {
+                        self.msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2, callback: { success in
+                            if success {
+                                self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
+                                    if success {
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            appDelegate.startTimer()
+                                            let settings = Settings.theSettings
+                                            self.modeRanges = [ModeRange](settings.modeRanges!)
+                                            self.modeRangeSlots = settings.modeRangeSlots
+                                            self.dontReloadTable = false
+                                            self.tableView.reloadData()
+                                        })
+                                    } else {
+                                        self.refreshError()
+                                    }
+                                })
+                            } else {
+                                self.refreshError()
+                            }
                         })
-                    })
+                    } else {
+                        self.refreshError()
+                    }
                 })
-            })
+            } else {
+                self.refreshError()
+            }
         })
     }
 
+    private func refreshError() {
+        dispatch_async(dispatch_get_main_queue(), {
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.startTimer()
+            
+            SVProgressHUD.showErrorWithStatus("Communication error")
+            if !self.dontReloadTable {
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
     func receivedReceiverData() {
         let channelCount = Receiver.theReceiver.activeChannels - 3
         // If the receiver config has changed, remove extraneous channels
@@ -224,15 +255,6 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .BottomMargin, multiplier: 1, constant: 0))
         
         return view
-
-        /*
-        let view = NSBundle.mainBundle().loadNibNamed("ModeTableViewFooter", owner: self, options: nil)[0] as! UIView
-        let addButton = view.subviews[0] as! AddRangeButton
-        addButton.addTarget(self, action: "addRangeAction:", forControlEvents: .TouchDown)
-        addButton.modeId = Settings.theSettings.boxIds![section]
-        
-        return view
-        */
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -244,6 +266,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     @IBAction func saveAction(sender: AnyObject) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
         sendModeRange(0)
     }
     
@@ -257,6 +281,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                 if index >= self.modeRangeSlots - 1 {
                     self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                         dispatch_async(dispatch_get_main_queue(), {
+                            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                            appDelegate.startTimer()
                             if success {
                                 SVProgressHUD.showSuccessWithStatus("Settings saved")
                             } else {
@@ -269,6 +295,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
+                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.startTimer()
                     SVProgressHUD.showErrorWithStatus("Save failed")
                 })
             }

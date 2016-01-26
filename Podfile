@@ -7,7 +7,7 @@ post_install do | installer |
 end
 class ::Pod::Generator::Acknowledgements
   def footnote_text
-    "Icons designed by Freepik\nIcon made by Yannick from www.flaticon.com licensed under CC BY 3.0"
+    "Icons designed by Freepik\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0"
   end
 end
 

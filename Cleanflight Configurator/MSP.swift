@@ -85,6 +85,7 @@ class MSPParser {
             datalog!.writeData(NSData(bytes: logData, length: logData.count))
             datalog!.writeData(NSData(bytes: data, length: data.count))
         }
+        //NSLog("Received %d bytes", data.count)
         
         objc_sync_enter(self)
         receiveStats.insert((NSDate(), data.count), atIndex: 0)
@@ -94,15 +95,20 @@ class MSPParser {
         objc_sync_exit(self)
             
         for b in data {
+            var bbuf = b
+            let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: NSASCIIStringEncoding)! : NSString(format: "[%d]", b)
             switch state {
             case .Sync1:
                 if b == 36 { // $
                     state = .Sync2
+                } else {
+                    NSLog("MSP expected '$', got %@", bstr)
                 }
             case .Sync2:
                 if b == 77 { // M
                     state = .Direction
                 } else {
+                    NSLog("MSP expected 'M', got %@", bstr)
                     state = .Sync1
                 }
             case .Direction:
@@ -113,6 +119,7 @@ class MSPParser {
                     directionOut = true
                     state = .Length
                 } else {
+                    NSLog("MSP expected '>', got %@", bstr)
                     state = .Sync1
                 }
             case .Length:
@@ -152,6 +159,11 @@ class MSPParser {
                         NSLog("Unknown MSP code %d: %@", code, datalog)
                     }
                     errors++
+                    // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
+                    if checksum != b && b == 36 {     // $
+                        state = .Sync2
+                        break
+                    }
                 }
                 state = .Sync1
             }
@@ -291,24 +303,13 @@ class MSPParser {
             if message.count < 16 {
                 return false
             }
+
             gpsData.fix = message[0] != 0
             gpsData.numSat = Int(message[1])
-            gpsData.latitude = Double(readInt32(message, index: 2)) / 10000000
-            gpsData.longitude = Double(readInt32(message, index: 6)) / 10000000
+            gpsData.position = CLLocationCoordinate2D(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
-            
-            if gpsData.fix {
-                gpsData.lastKnownGoodLatitude = gpsData.latitude
-                gpsData.lastKnownGoodLongitude = gpsData.longitude
-                gpsData.lastKnownGoodAltitude = gpsData.altitude
-                gpsData.lastKnownGoodTimestamp = NSDate()
-                
-                gpsData.positions.append(CLLocationCoordinate2D(latitude: gpsData.latitude, longitude: gpsData.longitude))
-            }
-            gpsData.maxAltitude = max(gpsData.maxAltitude, gpsData.altitude)
-            gpsData.maxSpeed = max(gpsData.maxSpeed, gpsData.speed)
             pingGpsListeners()
             
         case .MSP_COMP_GPS:
@@ -318,7 +319,6 @@ class MSPParser {
             gpsData.distanceToHome = readUInt16(message, index: 0)
             gpsData.directionToHome = readUInt16(message, index: 2)
             gpsData.update = Int(message[4])
-            gpsData.maxDistanceToHome = max(gpsData.maxDistanceToHome, gpsData.distanceToHome)
             pingGpsListeners()
             
         case .MSP_ATTITUDE:
@@ -331,11 +331,11 @@ class MSPParser {
             pingSensorListeners()
             
         case .MSP_ALTITUDE:
-            if message.count < 4 {
+            if message.count < 6 {
                 return false
             }
-            sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0 // correct scale factor
-            sensorData.maxAltitude = max(sensorData.maxAltitude, sensorData.altitude)
+            sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0      // cm
+            sensorData.variometer = Double(readInt16(message, index: 4)) / 100.0    // cm/s
             pingAltitudeListeners()
             
         case .MSP_SONAR:
@@ -346,6 +346,7 @@ class MSPParser {
             pingSonarListeners()
 
         case .MSP_ANALOG:
+            //NSLog("ANALOG received")
             if message.count < 7 {
                 return false
             }
@@ -353,12 +354,6 @@ class MSPParser {
             config.mAhDrawn = readUInt16(message, index: 1)
             config.rssi = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
             config.amperage = Double(readInt16(message, index: 5)) / 100                // 1/100 A
-            if settings.features.contains(.VBat) ?? false {
-                if config.batteryCells == 0  && misc.vbatMaxCellVoltage > 0 {
-                    config.batteryCells = Int(config.voltage / misc.vbatMaxCellVoltage + 1)
-                }
-            }
-            config.maxAmperage = max(config.maxAmperage, config.amperage)
             pingDataListeners()
             
         case .MSP_RC_TUNING:
@@ -613,6 +608,19 @@ class MSPParser {
             // Nothing to do. Handled by the callback
             break
             
+        case .MSP_SIKRADIO:
+            if message.count < 9 {
+                return false
+            }
+            config.rxerrors = readUInt16(message, index: 0)
+            config.fixedErrors = readUInt16(message, index: 2)
+            config.sikRssi = Int(message[4])
+            config.sikRemoteRssi = Int(message[5])
+            config.txBuffer = Int(message[6])
+            config.noise = Int(message[7])
+            config.remoteNoise = Int(message[8])
+            ping3drRssiListeners()
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -632,7 +640,8 @@ class MSPParser {
             .MSP_DATAFLASH_ERASE,
             .MSP_SET_WP,
             .MSP_SET_SERVO_CONFIGURATION,
-            .MSP_SET_CF_SERIAL_CONFIG:
+            .MSP_SET_CF_SERIAL_CONFIG,
+            .MSP_SET_RAW_RC:
             break
             
         default:
@@ -814,6 +823,11 @@ class MSPParser {
             listener.receivedAltitudeData?()
         }
     }
+    func ping3drRssiListeners() {
+        pingListeners { (listener) -> Void in
+            listener.received3drRssiData?()
+        }
+    }
     
     func sendSetMisc(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
@@ -984,6 +998,14 @@ class MSPParser {
         }
         
         sendMessage(.MSP_SET_CF_SERIAL_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRawRc(values: [Int]) {
+        var data = [UInt8]()
+        for v in values {
+            data.appendContentsOf(writeUInt16(v))
+        }
+        sendMessage(.MSP_SET_RAW_RC, data: data)
     }
 
     func openCommChannel(commChannel: CommChannel) {

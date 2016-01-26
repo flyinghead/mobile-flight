@@ -97,5 +97,8 @@ enum MSP_code : Int {
     case MSP_SET_BF_CONFIG =         67 // baseflight-specific settings save
     case MSP_SET_REBOOT =         68 // reboot settings
     case MSP_BF_BUILD_INFO =          69  // build date as well as some space for future expansion
+    
+    // 3DR Radio RSSI (SIK-multiwii firmware)
+    case MSP_SIKRADIO =            199
 }
 

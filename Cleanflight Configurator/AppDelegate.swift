@@ -8,14 +8,16 @@
 import Foundation
 import UIKit
 import SVProgressHUD
+import CoreLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
+class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLocationManagerDelegate {
 
     var window: UIWindow?
     var msp = MSPParser()
     
     var statusTimer: NSTimer?
+    var statusSwitch = false        // Used to alternate between RAW_GPS and COMP_GPS during each status timer callback since GPS info is only updated at 5 Hz
     var lastDataReceived: NSDate?
     var noDataReceived = false
     var armed = false
@@ -26,6 +28,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     var completionHandler: ((UIBackgroundFetchResult) -> Void)?
 
     var stayAliveTimer: NSTimer!
+    
+    var rcCommands: [Int]?
+    var rcCommandsProvider: RcCommandsProvider?
+    
+    var locationManager: CLLocationManager?
+    var lastFollowMeUpdate: NSDate?
+    let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
     
     var logTimer: NSTimer?      // DEBUG
     
@@ -66,7 +75,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     
     func startTimer() {
         if msp.communicationEstablished && statusTimer == nil {
-            statusTimer = NSTimer(timeInterval:0.1, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
+            // FIXME In this configuration: Naze32 - RPi - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is a bit less then 200ms so 10Hz update is too much.
+            // We should design an adaptative algorithm to find the optimal update frequency.
+            // In this config: Naze32 - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is around 130-140ms
+            // With bluetooth, the latency is a bit less than 100ms (70-90). Sometimes two requests are sent before a response is received but this doesn't cause any problem.
+            statusTimer = NSTimer(timeInterval:0.15, target: self, selector: "statusTimerDidFire:", userInfo: nil, repeats: true)
             NSRunLoop.mainRunLoop().addTimer(statusTimer!, forMode: NSRunLoopCommonModes)
         }
         if logTimer == nil {
@@ -85,22 +98,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
     }
     
     func statusTimerDidFire(timer: NSTimer?) {
+        if rcCommandsProvider != nil {
+            rcCommands = rcCommandsProvider!.rcCommands()
+        }
+        if rcCommands != nil {
+            msp.sendRawRc(rcCommands!)
+        }
+
         msp.sendMessage(.MSP_STATUS, data: nil)
-        msp.sendMessage(.MSP_RAW_GPS, data: nil)
-        msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
+        statusSwitch = !statusSwitch
+        if statusSwitch {
+            msp.sendMessage(.MSP_RAW_GPS, data: nil)
+        } else {
+            msp.sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
+        }
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
         msp.sendMessage(.MSP_ANALOG, data: nil)
+        //NSLog("Status Requested")
         
-        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.5 && msp.communicationHealthy && !SVProgressHUD.isVisible() {
-            // Display warning if no data received for 0.5 sec
-            SVProgressHUD.showWithStatus("No data received")
+        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.75 && msp.communicationHealthy {
+            // Display warning if no data received for 0.75 sec
             noDataReceived = true
+            if !SVProgressHUD.isVisible() {
+                SVProgressHUD.showWithStatus("No data received")
+            }
         }
     }
     
     func logTimerDidFire(sender: AnyObject) {
-        NSLog("Bandwidth in: %.01f kbps (%.0f%%)", Double(msp.incomingBytesPerSecond) * 8.0 / 1000.0, Double(msp.incomingBytesPerSecond) * 10.0 * 100 / 115200)
+        let bytesPerSesond = msp.incomingBytesPerSecond
+        NSLog("Bandwidth in: %.01f kbps (%.0f%%)", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200)
+        let config = Configuration.theConfig
+        NSLog("SIK RSSI: errors/fixed %d/%d - RSSI %d/%d - Remote %d/%d - Buffer %d", config.rxerrors, config.fixedErrors, config.sikRssi, config.noise, config.sikRemoteRssi, config.remoteNoise, config.txBuffer)
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -156,6 +186,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
             _totalArmedTime = 0.0
             _lastArmedTime = 0.0
             lastArming = nil
+            
+            followMeActive = false
+            
+            SVProgressHUD.dismiss()
+            noDataReceived = false
         }
     }
     
@@ -225,6 +260,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener {
         self.completionHandler = completionHandler
         statusTimerDidFire(statusTimer)
     }
+    
+    var followMeActive = false {
+        didSet {
+            if followMeActive && !msp.replaying {
+                if locationManager == nil {
+                    locationManager = CLLocationManager()
+                }
+                locationManager!.delegate = self
+                locationManager!.desiredAccuracy = kCLLocationAccuracyBest      // kCLLocationAccuracyBestForNavigation?
+                locationManager!.requestAlwaysAuthorization()
+                locationManager!.startUpdatingLocation()
+                
+            } else {
+                locationManager?.stopUpdatingLocation()
+            }
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            if lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod {
+                self.lastFollowMeUpdate = NSDate()
+                let longitude = location.coordinate.longitude
+                let latitude = location.coordinate.latitude
+                NSLog("Sending follow me location %.4f / %.4f", latitude, longitude)
+                msp.sendWaypoint(16, latitude: latitude, longitude: longitude, altitude: 0, callback: { success in
+                    if !success {
+                        self.lastFollowMeUpdate = nil
+                    } else {
+                        
+                    }
+                })
+            }
+        }
+    }
 }
 
 extension UIViewController {
@@ -234,4 +304,8 @@ extension UIViewController {
             return appDelegate.msp
         }
     }
+}
+
+protocol RcCommandsProvider {
+    func rcCommands() -> [Int]
 }

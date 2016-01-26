@@ -107,3 +107,7 @@ func useImperialUnits() -> Bool {
     }
     
 }
+
+func constrain(n: Double, min minimum: Double, max maximum: Double) -> Double {
+    return min(maximum, max(minimum, n))
+}

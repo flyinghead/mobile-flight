@@ -1,5 +1,20 @@
-- Comm: 0.5 sec receive timeout is too short. 0.75 -> 1 sec?
+- When communication is interrupted, check that outgoing msgs do not accumulate in outgoing buffer
+- Initial handshake very unstable with 3dr. BOXNAMES message beginning is truncated/doesn't come through.
+Investigation shows that small packets (<=32 bytes) are reliable but success rate decreases starting with 64-byte packets:
+packet size         error rate
+16                  0
+32                  0
+64                  0.05 ?
+72                  1/[15-20]
+80                  1/12
+96                  worse
+128                 worst
 
+Implementing some post-1.8 fixes seem to help a lot: https://github.com/Dronecode/SiK/commit/546e1ab09595ea5cff9bfd7bb912a4ae4c0202e0#diff-a940a548ba41bc988f99d51fd02f21de
+- Show when vehicle armed/disarmed
+- Variometer
+- CF can issue $M! packets for error cases
+- Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
@@ -10,19 +25,17 @@
 - App icon
 - Sexy launch screen and connection page
 - Map: Add pin for RTH location
-- Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
+- Map: Draw heading of drone on map (Arrow, triangle, ?). Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
 - Follow Me: only works with Telemetry screen
-- Telemetry: Time counter since arming
 - Telemetry (map?): Display active profile, battery Amps, mAh consumed/remaining, vertical speed, communication speed
 - Settings: Map type (sat, hybrid, map)
 - Backup / Restore
-(- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...")
+(- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
 - Modes: "Plus" buttons don't work well because of frequent table updates
 - Pre-flight checks page
-- Ability to name models: use cleanflight UID and BT uuid to identify it
+- Ability to name models: use cleanflight UID and BT uuid to identify it. Alert levels settings (Alt, Amp, mAh, etc.) are specific to model
 
-- Comm: Test 3DR Telemetry radio (= HKPilot tranceiver telemetry)
 - Comm: Use FPV audio channel to transmit data (ImmersionRC EzOSD)
 
 - Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
@@ -60,5 +73,9 @@ Disconnected drone+dongle. Cannot dismiss "Connection lost. Reconnecting". Log:
 2016-01-13 00:27:49.625 Cleanflight Configurator[6171:1715806] Communication error
 
 Then BAD_ACCESS_EXCEPTION in reachability callback
-
+- Comm: 0.5 sec receive timeout is too short. 0.75 -> 1 sec?
+- Comm: Disconnecting with "no data received" dialog visible, doesn't hide it
+- Telemetry2: Need to retrieve Misc(?) for battery ranges
+- Telemetry: Time counter since arming
+- Comm: Test 3DR Telemetry radio (= HKPilot tranceiver telemetry)
 

@@ -42,7 +42,7 @@ class MainNavigationController: UITabBarController {
             if let navigationController = viewController as? UINavigationController {
                 viewController = navigationController.topViewController ?? viewController
             }
-            return viewController is TelemetryViewController
+            return viewController is Telemetry2ViewController
                 || viewController is MapViewController
                 || viewController is GPSViewController
                 || viewController is SensorPagesViewController

@@ -3150,6 +3150,37 @@
             </objects>
             <point key="canvasLocation" x="74" y="1448"/>
         </scene>
+        <!--Cockpit-->
+        <scene sceneID="Hfz-z4-1mx">
+            <objects>
+                <viewController title="Test MFD" id="Qry-vg-2KS" userLabel="Cockpit" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6Bz-ym-spM"/>
+                        <viewControllerLayoutGuide type="bottom" id="EhN-BS-sij"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="sC5-oE-ROo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M12-Ta-n5t" customClass="MFDTest" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="600" height="531"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="EhN-BS-sij" firstAttribute="top" secondItem="M12-Ta-n5t" secondAttribute="bottom" id="6RO-e8-ign"/>
+                            <constraint firstItem="M12-Ta-n5t" firstAttribute="leading" secondItem="sC5-oE-ROo" secondAttribute="leading" id="T0f-Ta-rSE"/>
+                            <constraint firstItem="M12-Ta-n5t" firstAttribute="top" secondItem="6Bz-ym-spM" secondAttribute="bottom" id="ZOd-xv-DuR"/>
+                            <constraint firstAttribute="trailing" secondItem="M12-Ta-n5t" secondAttribute="trailing" id="dVG-dX-mVz"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Test MFD" selectedImage="first" id="C7Z-dF-tOg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2Wh-yw-XjW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="13" y="2228"/>
+        </scene>
         <!--GPS-->
         <scene sceneID="y8t-J8-q5l">
             <objects>
@@ -3330,6 +3361,7 @@
         <image name="Motor" width="30" height="30"/>
         <image name="Receiver" width="30" height="30"/>
         <image name="calibrate" width="30" height="31"/>
+        <image name="first" width="30" height="30"/>
         <image name="second" width="30" height="30"/>
         <image name="sensor_acc_off" width="79" height="79"/>
         <image name="sensor_acc_on" width="79" height="79"/>

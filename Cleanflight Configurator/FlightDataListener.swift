@@ -19,4 +19,5 @@ import Foundation
     optional func receivedRawIMUData()
     optional func receivedAltitudeData()
     optional func receivedSonarData()
+    optional func received3drRssiData()                   // RSSI data from 3DR Radio
 }

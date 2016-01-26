@@ -176,9 +176,8 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             }
         
         case NSStreamEvent.HasSpaceAvailable:
-            if stream == outStream {
-                // FIXME Let's assume that all writes complete in sendIfAvailable()
-            }
+            // FIXME Let's assume that all writes complete in sendIfAvailable()
+            break
             
         case NSStreamEvent.ErrorOccurred,
              NSStreamEvent.EndEncountered:

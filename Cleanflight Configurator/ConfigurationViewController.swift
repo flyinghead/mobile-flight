@@ -10,10 +10,6 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-protocol ConfigChildViewControllerOld {
-    func setReference(viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc)
-}
-
 class ConfigurationViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
@@ -56,7 +52,6 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         mixerTypePicker!.addTarget(self, action: "mixerTypeChanged:", forControlEvents: .ValueChanged)
         mixerTypePicker!.setPlaceholder("")
         
-        // FIXME When should we refresh?
         fetchInformation()
     }
 
@@ -87,7 +82,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                     if success {
                                         dispatch_async(dispatch_get_main_queue(), {
                                             self.tableView.userInteractionEnabled = true
-                                            self.hideWaitIndicator()
+                                            SVProgressHUD.dismiss()
                                         })
                                     } else {
                                         self.fetchInformationFailed()
@@ -111,14 +106,6 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         dispatch_async(dispatch_get_main_queue(), {
             self.showError("Communication error")
         })
-    }
-    
-    func showWaitIndicator(message: String) {
-        SVProgressHUD.showWithStatus(message)
-    }
-    
-    func hideWaitIndicator() {
-        SVProgressHUD.dismiss()
     }
     
     func showError(message: String) {
@@ -200,7 +187,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         saveFeatureSwitchValue(blackboxSwitch, feature: .Blackbox)
         saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
         
-        showWaitIndicator("Saving settings")
+        SVProgressHUD.showWithStatus("Saving settings")
+        
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
         msp.sendSerialConfig(self.newSettings!, callback: { success in

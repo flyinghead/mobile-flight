@@ -18,9 +18,9 @@ extension UIViewController {
             SVProgressHUD.setStatus("Fetching information...")
             
             resetAircraftModel()
-            msp.sendMessage(.MSP_IDENT, data: nil, retry: 2, callback: { success in
+            msp.sendMessage(.MSP_IDENT, data: nil, retry: 4, callback: { success in
                 if success {
-                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 2, callback: { success in
+                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 4, callback: { success in
                         if success {
                             if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
                                 dispatch_async(dispatch_get_main_queue(), {
@@ -28,9 +28,9 @@ extension UIViewController {
                                     SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
                                 })
                             } else {
-                                msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
+                                msp.sendMessage(.MSP_UID, data: nil, retry: 4, callback: { success in
                                     if success {
-                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
+                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 4, callback: { success in
                                             if success {
                                                 dispatch_async(dispatch_get_main_queue(), {
                                                     SVProgressHUD.dismiss()
