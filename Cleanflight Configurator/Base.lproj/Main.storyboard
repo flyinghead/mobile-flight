@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -2810,7 +2810,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="89p-Xj-8oo" userLabel="CalAccView">
-                                <rect key="frame" x="16" y="36" width="172" height="46"/>
+                                <rect key="frame" x="16" y="36" width="168" height="46"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="reX-cg-oR5">
                                         <rect key="frame" x="0.0" y="3" width="40" height="40"/>
@@ -2825,7 +2825,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="rpu-I1-j8M">
-                                        <rect key="frame" x="40" y="16" width="132" height="30"/>
+                                        <rect key="frame" x="40" y="8" width="124" height="30"/>
                                         <state key="normal" title="Calibrate Accelerometer"/>
                                         <connections>
                                             <action selector="calibrateAccelerometer:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="IpT-wd-vuy"/>
@@ -2836,15 +2836,31 @@
                                 <constraints>
                                     <constraint firstItem="reX-cg-oR5" firstAttribute="centerY" secondItem="89p-Xj-8oo" secondAttribute="centerY" id="0cY-ts-D2T"/>
                                     <constraint firstItem="reX-cg-oR5" firstAttribute="leading" secondItem="89p-Xj-8oo" secondAttribute="leading" id="Bxf-hx-c2N"/>
-                                    <constraint firstItem="rpu-I1-j8M" firstAttribute="top" secondItem="89p-Xj-8oo" secondAttribute="top" constant="16" id="DLb-oc-89l"/>
+                                    <constraint firstItem="rpu-I1-j8M" firstAttribute="top" secondItem="89p-Xj-8oo" secondAttribute="top" constant="8" id="DLb-oc-89l"/>
                                     <constraint firstItem="rpu-I1-j8M" firstAttribute="leading" secondItem="reX-cg-oR5" secondAttribute="trailing" id="Ihj-J7-jaL"/>
-                                    <constraint firstAttribute="bottom" secondItem="rpu-I1-j8M" secondAttribute="bottom" id="PTv-jS-cI9"/>
-                                    <constraint firstAttribute="trailing" secondItem="rpu-I1-j8M" secondAttribute="trailing" id="WBd-kU-Yqt"/>
+                                    <constraint firstAttribute="bottom" secondItem="rpu-I1-j8M" secondAttribute="bottom" constant="8" id="PTv-jS-cI9"/>
+                                    <constraint firstAttribute="trailing" secondItem="rpu-I1-j8M" secondAttribute="trailing" constant="4" id="WBd-kU-Yqt"/>
+                                    <constraint firstItem="rpu-I1-j8M" firstAttribute="centerY" secondItem="reX-cg-oR5" secondAttribute="centerY" id="eSB-bu-AMR"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="18z-mV-MNv" userLabel="CalMagView">
-                                <rect key="frame" x="188" y="36" width="171" height="46"/>
+                                <rect key="frame" x="192" y="36" width="167" height="46"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="l7v-Uo-Oe9">
+                                        <rect key="frame" x="40" y="8" width="123" height="30"/>
+                                        <state key="normal" title="Calibrate Magnetometer"/>
+                                        <connections>
+                                            <action selector="calibrateMagnetometer:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="KbH-wx-75D"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ytf-on-TL7">
                                         <rect key="frame" x="0.0" y="3" width="40" height="40"/>
                                         <constraints>
@@ -2857,23 +2873,25 @@
                                             <action selector="calibrateMagnetometer:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="vTL-iY-hK8"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="l7v-Uo-Oe9">
-                                        <rect key="frame" x="40" y="16" width="131" height="30"/>
-                                        <state key="normal" title="Calibrate Magnetometer"/>
-                                        <connections>
-                                            <action selector="calibrateMagnetometer:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="KbH-wx-75D"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="l7v-Uo-Oe9" secondAttribute="bottom" id="EJ0-L2-mba"/>
-                                    <constraint firstAttribute="trailing" secondItem="l7v-Uo-Oe9" secondAttribute="trailing" id="G0v-Lb-INM"/>
-                                    <constraint firstItem="l7v-Uo-Oe9" firstAttribute="top" secondItem="18z-mV-MNv" secondAttribute="top" constant="16" id="KUC-Up-kL2"/>
+                                    <constraint firstItem="Ytf-on-TL7" firstAttribute="centerY" secondItem="l7v-Uo-Oe9" secondAttribute="centerY" id="5hT-gi-fT3"/>
+                                    <constraint firstAttribute="bottom" secondItem="l7v-Uo-Oe9" secondAttribute="bottom" constant="8" id="EJ0-L2-mba"/>
+                                    <constraint firstAttribute="trailing" secondItem="l7v-Uo-Oe9" secondAttribute="trailing" constant="4" id="G0v-Lb-INM"/>
+                                    <constraint firstItem="l7v-Uo-Oe9" firstAttribute="top" secondItem="18z-mV-MNv" secondAttribute="top" constant="8" id="KUC-Up-kL2"/>
                                     <constraint firstItem="l7v-Uo-Oe9" firstAttribute="leading" secondItem="Ytf-on-TL7" secondAttribute="trailing" id="Kji-Zf-TyV"/>
                                     <constraint firstItem="Ytf-on-TL7" firstAttribute="leading" secondItem="18z-mV-MNv" secondAttribute="leading" id="e2b-wy-dXL"/>
                                     <constraint firstItem="Ytf-on-TL7" firstAttribute="centerY" secondItem="18z-mV-MNv" secondAttribute="centerY" id="pzB-Rq-GGn"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2wj-Up-zSW" userLabel="AccTrimView">
                                 <rect key="frame" x="16" y="132" width="343" height="114"/>
@@ -2919,8 +2937,17 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0ni-G2-ISG">
-                                        <rect key="frame" x="229" y="51" width="114" height="30"/>
+                                        <rect key="frame" x="237" y="51" width="50" height="34"/>
+                                        <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                                         <state key="normal" title="Save"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="accTrimSaveAction:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="yo9-O6-Elx"/>
                                         </connections>
@@ -2939,7 +2966,7 @@
                                     <constraint firstAttribute="bottom" secondItem="pVM-mt-4kT" secondAttribute="bottom" constant="8" id="7qJ-ny-Slb"/>
                                     <constraint firstItem="2r7-wi-Re9" firstAttribute="centerY" secondItem="lmI-yv-YXt" secondAttribute="centerY" id="BIr-iv-lPJ"/>
                                     <constraint firstItem="0ni-G2-ISG" firstAttribute="centerY" secondItem="vJy-xZ-x6m" secondAttribute="centerY" id="Efk-c9-axH"/>
-                                    <constraint firstAttribute="trailing" secondItem="0ni-G2-ISG" secondAttribute="trailing" priority="750" id="Izr-cG-UkT"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="0ni-G2-ISG" secondAttribute="trailing" priority="750" id="Izr-cG-UkT"/>
                                     <constraint firstItem="h69-tB-h9S" firstAttribute="leading" secondItem="2wj-Up-zSW" secondAttribute="leading" id="Mkh-lo-E4r"/>
                                     <constraint firstItem="i7A-3J-tni" firstAttribute="centerY" secondItem="vJy-xZ-x6m" secondAttribute="centerY" id="Nna-ek-LcG"/>
                                     <constraint firstItem="kdZ-8t-uLx" firstAttribute="leading" secondItem="vJy-xZ-x6m" secondAttribute="trailing" constant="26" id="NwQ-VL-IK8"/>
@@ -2949,7 +2976,7 @@
                                     <constraint firstItem="2r7-wi-Re9" firstAttribute="trailing" secondItem="i7A-3J-tni" secondAttribute="trailing" id="esd-ow-yRb"/>
                                     <constraint firstItem="kdZ-8t-uLx" firstAttribute="top" secondItem="h69-tB-h9S" secondAttribute="bottom" constant="16" id="guN-eR-AWU"/>
                                     <constraint firstItem="lmI-yv-YXt" firstAttribute="leading" secondItem="2wj-Up-zSW" secondAttribute="leading" id="ia7-Da-uDv"/>
-                                    <constraint firstItem="0ni-G2-ISG" firstAttribute="leading" secondItem="i7A-3J-tni" secondAttribute="trailing" priority="750" constant="8" id="jLJ-uW-yYq"/>
+                                    <constraint firstItem="0ni-G2-ISG" firstAttribute="leading" secondItem="i7A-3J-tni" secondAttribute="trailing" priority="750" constant="16" id="jLJ-uW-yYq"/>
                                     <constraint firstItem="pVM-mt-4kT" firstAttribute="top" secondItem="kdZ-8t-uLx" secondAttribute="bottom" constant="16" id="jzE-h0-2sQ"/>
                                     <constraint firstItem="i7A-3J-tni" firstAttribute="leading" secondItem="kdZ-8t-uLx" secondAttribute="trailing" constant="16" id="l5T-oW-p58"/>
                                     <constraint firstItem="vJy-xZ-x6m" firstAttribute="leading" secondItem="2wj-Up-zSW" secondAttribute="leading" id="lnP-dJ-Sdc"/>
@@ -2966,28 +2993,20 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bWK-a9-JG3">
-                                <rect key="frame" x="160" y="258" width="55" height="30"/>
-                                <state key="normal" title="Find Me"/>
-                                <connections>
-                                    <action selector="findMe:" destination="AQK-Sp-ZAX" eventType="touchUpInside" id="YHM-Tv-fbw"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="2wj-Up-zSW" firstAttribute="leading" secondItem="lIR-6v-qiQ" secondAttribute="leadingMargin" id="DaU-V8-iBo"/>
                             <constraint firstItem="18z-mV-MNv" firstAttribute="height" secondItem="89p-Xj-8oo" secondAttribute="height" id="I83-xa-4LU"/>
-                            <constraint firstItem="bWK-a9-JG3" firstAttribute="centerX" secondItem="lIR-6v-qiQ" secondAttribute="centerX" id="OLY-om-ULL"/>
-                            <constraint firstItem="89p-Xj-8oo" firstAttribute="top" secondItem="8KW-tb-0Eu" secondAttribute="bottom" constant="16" id="XLa-N5-GF6"/>
-                            <constraint firstItem="bWK-a9-JG3" firstAttribute="top" secondItem="2wj-Up-zSW" secondAttribute="bottom" constant="12" id="ePB-4w-jsX"/>
+                            <constraint firstItem="89p-Xj-8oo" firstAttribute="centerY" secondItem="18z-mV-MNv" secondAttribute="centerY" id="PZb-d3-aFk"/>
                             <constraint firstItem="89p-Xj-8oo" firstAttribute="leading" secondItem="lIR-6v-qiQ" secondAttribute="leadingMargin" id="fRD-OW-mI8"/>
                             <constraint firstItem="2wj-Up-zSW" firstAttribute="trailing" secondItem="lIR-6v-qiQ" secondAttribute="trailingMargin" id="g4d-EA-DtD"/>
+                            <constraint firstItem="Ztx-PM-dEp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="2wj-Up-zSW" secondAttribute="bottom" id="oPh-2A-4lC"/>
                             <constraint firstItem="2wj-Up-zSW" firstAttribute="top" secondItem="18z-mV-MNv" secondAttribute="bottom" constant="50" id="p3S-rq-vv7"/>
                             <constraint firstItem="18z-mV-MNv" firstAttribute="top" secondItem="8KW-tb-0Eu" secondAttribute="bottom" constant="16" id="vK9-yM-ep9"/>
                             <constraint firstItem="18z-mV-MNv" firstAttribute="width" secondItem="89p-Xj-8oo" secondAttribute="width" id="wJg-NA-8ah"/>
                             <constraint firstItem="18z-mV-MNv" firstAttribute="trailing" secondItem="lIR-6v-qiQ" secondAttribute="trailingMargin" id="yhp-9l-6O9"/>
-                            <constraint firstItem="18z-mV-MNv" firstAttribute="leading" secondItem="89p-Xj-8oo" secondAttribute="trailing" id="z9X-RA-9yc"/>
+                            <constraint firstItem="18z-mV-MNv" firstAttribute="leading" secondItem="89p-Xj-8oo" secondAttribute="trailing" constant="8" id="z9X-RA-9yc"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Calibrate" image="calibrate" selectedImage="calibrate" id="MVH-kq-s9b"/>
@@ -2997,10 +3016,13 @@
                         <outlet property="accTrimPitchStepper" destination="pVM-mt-4kT" id="Nuv-G3-KwK"/>
                         <outlet property="accTrimRollField" destination="i7A-3J-tni" id="dbd-Xc-jvt"/>
                         <outlet property="accTrimRollStepper" destination="kdZ-8t-uLx" id="JRp-t7-Avr"/>
+                        <outlet property="accTrimSaveButton" destination="0ni-G2-ISG" id="1dh-L9-gf2"/>
                         <outlet property="calAccButton" destination="rpu-I1-j8M" id="Ura-mI-Bpx"/>
                         <outlet property="calAccImgButton" destination="reX-cg-oR5" id="WJ7-Nm-ItW"/>
+                        <outlet property="calAccView" destination="89p-Xj-8oo" id="koA-T8-ufd"/>
                         <outlet property="calMagButton" destination="l7v-Uo-Oe9" id="t7Y-xY-i1m"/>
                         <outlet property="calMagImgButton" destination="Ytf-on-TL7" id="IQ2-l7-fm7"/>
+                        <outlet property="calMagView" destination="18z-mV-MNv" id="l0g-Ql-gEm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RmN-tX-Wxy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3162,7 +3184,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M12-Ta-n5t" customClass="MFDTest" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M12-Ta-n5t" customClass="MFDTest" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="20" width="600" height="531"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>

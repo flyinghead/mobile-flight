@@ -19,10 +19,26 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     
     var channelLabels = ["Delete Range"]
     
+    var previousModes = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //let tap = UIPanGestureRecognizer(target: self, action: "tableViewTapped:")
+        //self.tableView.addGestureRecognizer(tap)
+        
         initialFetch()
+    }
+    
+    func tableViewTapped(recognizer: UITapGestureRecognizer) {
+        if recognizer.state == .Began || recognizer.state == .Changed {
+            dontReloadTable = true
+            NSLog("Tap began")
+        } else {
+            dontReloadTable = false
+            NSLog("Tap ended")
+        }
+        recognizer.cancelsTouchesInView = false
     }
     
     func initialFetch() {
@@ -86,13 +102,20 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         for var i = channelLabels.count; i < channelCount; i++ {
             channelLabels.append(String(format: "AUX%d", i))
         }
-
-        if !dontReloadTable {
-            tableView.reloadData()
+        if let visibleRowIndices = tableView.indexPathsForVisibleRows {
+            let receiver = Receiver.theReceiver
+            for indexPath in visibleRowIndices {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? ModeRangeCell {
+                    let channel = modeRanges![cell.modeRangeIdx].auxChannelId
+                    cell.rangeSlider.referenceValue = Double(receiver.channels[channel + 4])
+                }
+            }
         }
     }
     func receivedData() {
-        if !dontReloadTable {
+        let config = Configuration.theConfig
+        if !dontReloadTable && config.mode != previousModes {
+            previousModes = config.mode
             tableView.reloadData()
         }
     }
@@ -103,7 +126,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         msp.addDataListener(self)
         
         if (fastTimer == nil) {
-            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
+            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
         }
     }
     
@@ -229,7 +252,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         label.text = Settings.theSettings.boxNames![section]
         label.textColor = Configuration.theConfig.mode & (1 << section) != 0 ? UIColor.redColor() : UIColor.blackColor()
         label.font = UIFont.systemFontOfSize(16)
-
+        
         view.addSubview(label)
         
         return view

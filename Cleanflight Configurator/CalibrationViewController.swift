@@ -20,6 +20,10 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     @IBOutlet weak var accTrimPitchField: UITextField!
     @IBOutlet weak var accTrimRollField: UITextField!
 
+    @IBOutlet weak var calAccView: UIView!
+    @IBOutlet weak var calMagView: UIView!
+    @IBOutlet weak var accTrimSaveButton: UIButton!
+    
     let AccelerationCalibDuration = 2.0
     let MagnetometerCalibDuration = 30.0
     
@@ -28,6 +32,10 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        calAccView.layer.borderColor = calAccView.tintColor.CGColor
+        calMagView.layer.borderColor = calMagView.tintColor.CGColor
+        accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
+        
         let config = Configuration.theConfig
         enableAccCalibration(config.isGyroAndAccActive())
         
@@ -173,6 +181,7 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         })
     }
     
+    /*
     @IBAction func findMe(sender: AnyObject) {
         let gpsData = GPSData.theGPSData
         if gpsData.lastKnownGoodTimestamp != nil {
@@ -187,4 +196,5 @@ class CalibrationViewController: UIViewController, FlightDataListener {
             SVProgressHUD.showErrorWithStatus("No known GPS location")
         }
     }
+    */
 }

@@ -1092,7 +1092,7 @@
                                         </constraints>
                                     </view>
                                     <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7CG-RW-afA" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="321" y="40" width="55" height="529"/>
+                                        <rect key="frame" x="298" y="40" width="55" height="529"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="55" id="ENZ-2x-ORJ"/>
@@ -1141,6 +1141,37 @@
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
                                                 <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="SimpleVerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                        <rect key="frame" x="352" y="40" width="24" height="529"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="24" id="mlK-cv-c8u"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                                <real key="value" value="80"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="mainTicksInterval">
+                                                <real key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="subTicksInterval">
+                                                <real key="value" value="0.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                <real key="value" value="11"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="subSubTicksInterval">
+                                                <real key="value" value="0.10000000000000001"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="positiveOnly" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="topValue">
+                                                <real key="value" value="3.0800000000000001"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="bottomValue">
+                                                <real key="value" value="-3.0800000000000001"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
@@ -1322,7 +1353,6 @@
                                             <constraint firstItem="KU3-Qm-2Go" firstAttribute="height" secondItem="vrA-Q3-v25" secondAttribute="height" id="Rjt-wX-eej"/>
                                             <constraint firstItem="wuh-Hv-O2R" firstAttribute="height" secondItem="vrA-Q3-v25" secondAttribute="height" id="So9-b9-Opf"/>
                                             <constraint firstAttribute="bottom" secondItem="vrA-Q3-v25" secondAttribute="bottom" constant="1" id="Upg-RD-nzw"/>
-                                            <constraint firstItem="vrA-Q3-v25" firstAttribute="centerY" secondItem="j13-Ao-QcT" secondAttribute="centerY" id="kn0-5a-SLn"/>
                                             <constraint firstItem="vrA-Q3-v25" firstAttribute="leading" secondItem="j13-Ao-QcT" secondAttribute="leading" constant="18" id="vNw-ei-03h"/>
                                             <constraint firstItem="KU3-Qm-2Go" firstAttribute="centerY" secondItem="j13-Ao-QcT" secondAttribute="centerY" id="xtV-N6-Ihv"/>
                                         </constraints>
@@ -1388,34 +1418,6 @@
                                             <constraint firstAttribute="trailing" secondItem="oqQ-0h-fJh" secondAttribute="trailing" constant="8" id="zta-ah-zSw"/>
                                         </constraints>
                                     </view>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="281" y="139" width="40" height="330"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="330" id="MkQ-pK-9ka"/>
-                                            <constraint firstAttribute="width" constant="40" id="mlK-cv-c8u"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="precision">
-                                                <integer key="value" value="0"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="scale">
-                                                <real key="value" value="80"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="mainTicksInterval">
-                                                <real key="value" value="1"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="subTicksInterval">
-                                                <real key="value" value="0.5"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
-                                                <real key="value" value="12"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="subSubTicksInterval">
-                                                <real key="value" value="0.10000000000000001"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </view>
                                     <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mtp-oQ-T8O" userLabel="LeftStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="12" y="364" width="155" height="155"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1444,24 +1446,25 @@
                                 <constraints>
                                     <constraint firstItem="RU2-NR-WVd" firstAttribute="centerX" secondItem="TE5-wJ-hyb" secondAttribute="centerX" id="6dI-lL-vg6"/>
                                     <constraint firstItem="GWn-1s-XVz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Mtp-oQ-T8O" secondAttribute="trailing" constant="16" id="9Qa-hG-lgF"/>
+                                    <constraint firstItem="6wj-AC-YrA" firstAttribute="leading" secondItem="7CG-RW-afA" secondAttribute="trailing" constant="-1" id="9z1-Jt-FRl"/>
                                     <constraint firstItem="oGU-zT-X9L" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="AVG-5g-fKS"/>
                                     <constraint firstItem="7CG-RW-afA" firstAttribute="centerY" secondItem="TE5-wJ-hyb" secondAttribute="centerY" id="FLU-cb-Pl2"/>
-                                    <constraint firstAttribute="trailing" secondItem="7CG-RW-afA" secondAttribute="trailing" constant="-1" id="Ggr-If-d2i"/>
                                     <constraint firstAttribute="trailing" secondItem="SRd-fW-yIn" secondAttribute="trailing" id="JqT-Z3-wrN"/>
                                     <constraint firstItem="7CG-RW-afA" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="KXB-II-lye"/>
                                     <constraint firstItem="oGU-zT-X9L" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" constant="-1" id="L30-Kq-9sJ"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="PFz-QE-B5i"/>
                                     <constraint firstAttribute="trailing" secondItem="GWn-1s-XVz" secondAttribute="trailing" constant="12" id="PRx-Tu-aVb"/>
                                     <constraint firstItem="oGU-zT-X9L" firstAttribute="centerY" secondItem="TE5-wJ-hyb" secondAttribute="centerY" id="PrH-m6-mnb"/>
+                                    <constraint firstItem="6wj-AC-YrA" firstAttribute="centerY" secondItem="TE5-wJ-hyb" secondAttribute="centerY" id="S3f-kP-rEX"/>
                                     <constraint firstItem="j13-Ao-QcT" firstAttribute="top" secondItem="GWn-1s-XVz" secondAttribute="bottom" constant="24" id="TIZ-kW-MZi"/>
                                     <constraint firstAttribute="trailing" secondItem="j13-Ao-QcT" secondAttribute="trailing" id="WkX-vK-ra2"/>
-                                    <constraint firstItem="6wj-AC-YrA" firstAttribute="centerY" secondItem="7CG-RW-afA" secondAttribute="centerY" id="YBl-CM-gWT"/>
-                                    <constraint firstItem="7CG-RW-afA" firstAttribute="leading" secondItem="6wj-AC-YrA" secondAttribute="trailing" id="YFr-ea-rbA"/>
+                                    <constraint firstItem="6wj-AC-YrA" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="XHm-Zk-DWC"/>
                                     <constraint firstItem="Mtp-oQ-T8O" firstAttribute="height" secondItem="GWn-1s-XVz" secondAttribute="height" id="bzW-de-0qi"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="centerX" secondItem="SRd-fW-yIn" secondAttribute="centerX" id="ci7-7l-WCX"/>
                                     <constraint firstItem="SRd-fW-yIn" firstAttribute="top" secondItem="TE5-wJ-hyb" secondAttribute="top" id="fYl-es-ma9"/>
                                     <constraint firstItem="Dc0-c2-I9K" firstAttribute="trailing" secondItem="cyG-w5-80j" secondAttribute="trailing" id="hgT-aO-Mh2"/>
                                     <constraint firstItem="j13-Ao-QcT" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" id="jV1-5I-Pan"/>
+                                    <constraint firstAttribute="trailing" secondItem="6wj-AC-YrA" secondAttribute="trailing" constant="-1" id="odZ-Lu-tiN"/>
                                     <constraint firstItem="Mtp-oQ-T8O" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" constant="12" id="q99-EW-tiz"/>
                                     <constraint firstItem="Dc0-c2-I9K" firstAttribute="top" secondItem="cyG-w5-80j" secondAttribute="bottom" id="r6G-dQ-vkc"/>
                                     <constraint firstItem="SRd-fW-yIn" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" id="vf8-6s-fmj"/>

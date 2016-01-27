@@ -23,6 +23,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var altitudeLabel: UILabel!
     @IBOutlet weak var headingLabel: UILabel!
     
+    var annotationView: MKAnnotationView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -164,6 +166,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                     UIView.animateWithDuration(0.1, animations: {
                         annotation.coordinate = MapViewController.getAircraftCoordinates()!
                     })
+                    annotationView?.setNeedsDisplay()
                 } else {
                     let annotation = MKPointAnnotation()
                     annotation.title = "Aircraft"
@@ -177,7 +180,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation.title ?? "" == "Aircraft" {
-            let annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: "Drone")
+            annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: nil)
             return annotationView
         }
         
@@ -199,7 +202,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
 }
 
 class MKAircraftView : MKAnnotationView {
-    let Size: CGFloat = 22.0
+    let Size: CGFloat = 26.0
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
@@ -221,11 +224,33 @@ class MKAircraftView : MKAnnotationView {
         self.opaque = false
     }
     
-    override func drawRect(var rect: CGRect) {
-        UIColor.whiteColor().setFill()
-        CGContextFillEllipseInRect(UIGraphicsGetCurrentContext(), rect)
-        rect.insetInPlace(dx: 3.5, dy: 3.5)
-        UIColor.redColor().setFill()
-        CGContextFillEllipseInRect(UIGraphicsGetCurrentContext(), rect)
+    override func drawRect(rect: CGRect) {
+        let ctx = UIGraphicsGetCurrentContext()
+        CGContextSaveGState(ctx)
+        
+        CGContextTranslateCTM(ctx, Size / 2, Size / 2)
+        var rotation = SensorData.theSensorData.heading
+        if rotation > 180 {
+            rotation -= 360
+        }
+        CGContextRotateCTM(ctx, CGFloat(rotation * M_PI / 180))
+  
+        let actualSize = Size - 4
+        UIColor.whiteColor().colorWithAlphaComponent(0.8).setFill()
+        let dx = actualSize * CGFloat(sin(M_PI_4 / 2))
+        CGContextMoveToPoint(ctx, 0, -actualSize / 2)
+        CGContextAddLineToPoint(ctx, -dx, actualSize / 2)
+        CGContextAddLineToPoint(ctx, 0, actualSize / 2 - 4)
+        CGContextAddLineToPoint(ctx, dx, actualSize / 2)
+        CGContextClosePath(ctx)
+        CGContextFillPath(ctx)
+        
+//        UIColor.whiteColor().setFill()
+//        CGContextFillEllipseInRect(ctx, bounds)
+//        let centerRect = bounds.insetBy(dx: 3.5, dy: 3.5)
+//        UIColor.redColor().setFill()
+//        CGContextFillEllipseInRect(ctx, centerRect)
+        
+        CGContextRestoreGState(ctx)
     }
 }

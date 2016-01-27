@@ -130,7 +130,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         let bytesPerSesond = msp.incomingBytesPerSecond
         NSLog("Bandwidth in: %.01f kbps (%.0f%%)", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200)
         let config = Configuration.theConfig
-        NSLog("SIK RSSI: errors/fixed %d/%d - RSSI %d/%d - Remote %d/%d - Buffer %d", config.rxerrors, config.fixedErrors, config.sikRssi, config.noise, config.sikRemoteRssi, config.remoteNoise, config.txBuffer)
+        if config.sikRssi != 0 {
+            NSLog("SIK RSSI: errors/fixed %d/%d - RSSI %d/%d - Remote %d/%d - Buffer %d", config.rxerrors, config.fixedErrors, config.sikRssi, config.noise, config.sikRemoteRssi, config.remoteNoise, config.txBuffer)
+        }
     }
 
     func applicationDidBecomeActive(application: UIApplication) {

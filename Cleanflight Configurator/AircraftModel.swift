@@ -916,7 +916,7 @@ class SensorData : AutoCoded {
                     } else if headingVariation > 180 {
                         headingVariation -= 360
                     }
-                    turnRate = headingVariation / deltaTime
+                    turnRate = headingVariation / deltaTime / 2 + turnRate / 2
                     if abs(turnRate) > 360 {
                         NSLog("Turn rate %.0f, (dt=%f)", turnRate, deltaTime)
                     }

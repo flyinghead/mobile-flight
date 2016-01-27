@@ -9,13 +9,7 @@
 import UIKit
 
 @IBDesignable
-class VerticalScale: UIView {
-
-    var currentValue: Double = 0.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+class VerticalScale: BaseVerticalScale {
 
     var bugs: [(value: Double, color: UIColor)] = [] {
         didSet {
@@ -23,116 +17,24 @@ class VerticalScale: UIView {
         }
     }
 
-    
-    @IBInspectable var rightAligned: Bool = false {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var scale: Double = 10.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var fontSize: CGFloat = 14.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var mainTicksInterval: Double = 10.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var subTicksInterval: Double = 5.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var subSubTicksInterval: Double = 1.0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
     @IBInspectable var precision: Int = 0 {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     override func drawRect(rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
         CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
 
-        drawVerticalScale(ctx)
+        drawVerticalScale(ctx, top: Double(bounds.height) / 2.0 / scale + currentValue)
         for (value, color) in bugs {
             drawBug(ctx, value: value, color: color)
         }
         drawRollingDigitCounter(ctx)
     }
 
-    private func drawVerticalScale(context: CGContext) {
-        var top = Double(bounds.height) / 2.0 / scale + currentValue
-        
-        if subSubTicksInterval != 0 {
-            top = ceil(top / subSubTicksInterval) * subSubTicksInterval
-        } else if subTicksInterval != 0 {
-            top = ceil(top / subTicksInterval) * subTicksInterval
-        } else {
-            top = ceil(top / mainTicksInterval) * mainTicksInterval
-        }
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = rightAligned ? .Right : .Left
-        
-        let font = UIFont(name: "Verdana", size: self.fontSize)!
-        let textAttributes: [String : AnyObject]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
-        
-        while true {
-            let y = CGFloat(Double(bounds.height) / 2.0 - (top - currentValue) * scale) + bounds.minY
-            let graduationTextTop = y - fontSize.height / 2 - 0.5
-            if graduationTextTop > bounds.maxY {
-                break
-            }
-            var width: CGFloat
-            var length: CGFloat
-            if top >= 0 {
-                if top == round(top / mainTicksInterval) * mainTicksInterval {
-                    width = 2
-                    length = fontSize.width
-                    
-                    let string = String(format:"%.0f", top)             // FIXME how many decimals??
-                    string.drawInRect(CGRect(x: rightAligned ? bounds.minX : bounds.minX + fontSize.width * 1.5, y: graduationTextTop, width: bounds.width - fontSize.width * 1.5, height: fontSize.height), withAttributes: textAttributes)
-                } else if subTicksInterval != 0 && top == round(top / subTicksInterval) * subTicksInterval {
-                    width = 2
-                    length = fontSize.width * 0.75
-                } else {
-                    width = 1
-                    length = fontSize.width * 0.5
-                }
-                
-                CGContextFillRect(context, CGRect(x: rightAligned ? bounds.maxX - length : bounds.minX, y: y - width / 2, width: length, height: width))
-            }
-            
-            if subSubTicksInterval != 0 {
-                let next = (top - subSubTicksInterval) / subSubTicksInterval
-                top = round(next) * subSubTicksInterval
-            } else if subTicksInterval != 0 {
-                top = round((top - subTicksInterval) / subTicksInterval) * subTicksInterval
-            } else {
-                top = round((top - mainTicksInterval) / mainTicksInterval) * mainTicksInterval
-            }
-        }
-    }
-    
     private func drawRollingDigitCounter(ctx: CGContext) {
         CGContextSaveGState(ctx)
         

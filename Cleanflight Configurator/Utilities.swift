@@ -111,3 +111,13 @@ func useImperialUnits() -> Bool {
 func constrain(n: Double, min minimum: Double, max maximum: Double) -> Double {
     return min(maximum, max(minimum, n))
 }
+
+func applyDeadband(value: Double, width: Double) -> Double {
+    if abs(value) < width {
+        return 0
+    } else if (value > 0) {
+        return value - width
+    } else {
+        return value + width
+    }
+}
