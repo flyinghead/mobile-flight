@@ -77,6 +77,7 @@ class MSPParser {
     }
     
     func read(data: [UInt8]) {
+        objc_sync_enter(self)
         if datalog != nil {
             var logData = [UInt8]()
             // Timestamp in milliseconds since start of logging
@@ -87,7 +88,6 @@ class MSPParser {
         }
         //NSLog("Received %d bytes", data.count)
         
-        objc_sync_enter(self)
         receiveStats.insert((NSDate(), data.count), atIndex: 0)
         while receiveStats.count > 500 {
             receiveStats.removeLast()

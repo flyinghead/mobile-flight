@@ -176,6 +176,9 @@ class ReplayViewController: UITableViewController {
                     try NSFileManager.defaultManager().removeItemAtURL(fileUrl)
                     // Delete the row from the data source
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                    if detailedRow == indexPath.row {
+                        detailedRow = -1
+                    }
                 } catch let error as NSError {
                     NSLog("Cannot delete %@: %@", fileUrl, error)
                     SVProgressHUD.showErrorWithStatus("Cannot delete file")

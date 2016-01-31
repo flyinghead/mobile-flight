@@ -1,3 +1,6 @@
+- Flight Recorder: add data/time of session in file
+- BEFORE RELEASE: Remove/hide Dataflash tab
+- Switching quickly (?) to Map -> Bottom nav bar is hidden. No way to navigate.
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Spurious network reachability callback, way after tcp/ip connection was closed
 - When communication is interrupted, check that outgoing msgs do not accumulate in outgoing buffer

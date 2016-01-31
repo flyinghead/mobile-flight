@@ -43,8 +43,10 @@ class FlightLogFile {
                 // Write state
                 file.writeData(aircraftData)
                 
+                objc_sync_enter(msp)
                 msp.datalog = file
                 msp.datalogStart = NSDate()
+                objc_sync_exit(msp)
             }
         } catch let error as NSError {
             NSLog("Cannot open %@: %@", fileURL, error)
@@ -87,10 +89,12 @@ class FlightLogFile {
     }
     
     class func close(msp: MSPParser) {
+        objc_sync_enter(msp)
         if let datalog = msp.datalog {
             msp.datalog = nil
             msp.datalogStart = nil
-            
+            objc_sync_exit(msp)
+
             datalog.seekToFileOffset(4);    // Right after header
             
             let stats = FlightLogStats()
@@ -114,6 +118,8 @@ class FlightLogFile {
             writeFlightStats(stats, toFile: datalog)
             
             datalog.closeFile()
+        } else {
+            objc_sync_exit(msp)
         }
         
     }

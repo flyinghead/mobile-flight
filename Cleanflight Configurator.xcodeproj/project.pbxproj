@@ -869,7 +869,7 @@
 				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileCleanflight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
@@ -888,7 +888,7 @@
 				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-Configurator";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileCleanflight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
