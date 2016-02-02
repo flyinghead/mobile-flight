@@ -459,7 +459,7 @@ class Misc : AutoCoded {
     var gpsType = 0
     var gpsBaudRate = 0
     var gpsUbxSbas = 0
-    var multiwiiCurrentOutput = 0
+    var multiwiiCurrentOutput = 0       // FIXME This should be a boolean instead
     var rssiChannel = 0
     var placeholder2 = 0
     var magDeclination = 0.0         // degree

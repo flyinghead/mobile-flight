@@ -52,7 +52,7 @@ class MSPParser {
     var messageBuffer: [UInt8]?
     var code: UInt8 = 0
     var errors: Int = 0
-    var outputQueue = [UInt8]()
+    var outputQueue = [[UInt8]]()
     
     var dataListeners = [FlightDataListener]()
     var dataListenersLock = NSObject()
@@ -97,6 +97,8 @@ class MSPParser {
         for b in data {
             var bbuf = b
             let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: NSASCIIStringEncoding)! : NSString(format: "[%d]", b)
+            //NSLog("%@", bstr)
+            
             switch state {
             case .Sync1:
                 if b == 36 { // $
@@ -689,10 +691,10 @@ class MSPParser {
             retriedMessages[code] = messageRetry
             objc_sync_exit(retriedMessageLock)
         }
-        let dataSize = data != nil ? data!.count : 0
+        let dataSize = data?.count ?? 0
         //                      $    M   <
         var buffer: [UInt8] = [36 , 77, 60, UInt8(dataSize), UInt8(code.rawValue)]
-        var checksum: UInt8 = UInt8(code.rawValue) ^ buffer[3];
+        var checksum: UInt8 = UInt8(code.rawValue) ^ buffer[3]
         
         if (data != nil) {
             buffer.appendContentsOf(data!)
@@ -700,11 +702,9 @@ class MSPParser {
                 checksum ^= b
             }
         }
-        buffer.append(checksum);
+        buffer.append(checksum)
         
-        objc_sync_enter(self)
-        outputQueue.appendContentsOf(buffer);
-        objc_sync_exit(self)
+        addOutputMessage(buffer)
         commChannel?.flushOut()
     }
     
@@ -1031,5 +1031,31 @@ class MSPParser {
     
     var replaying: Bool {
         return commChannel is ReplayComm
+    }
+    
+    func nextOutputMessage() -> [UInt8]? {
+        objc_sync_enter(self)
+        if outputQueue.isEmpty {
+            objc_sync_exit(self)
+            return nil
+        }
+        let msg = outputQueue.removeFirst()
+        objc_sync_exit(self)
+        return msg
+    }
+    
+    private func addOutputMessage(msg: [UInt8]) {
+        let msgCode = msg[4]
+        objc_sync_enter(self)
+        for var i = 0; i < outputQueue.count; i++ {
+            let curMsg = outputQueue[i]
+            if curMsg[4] == msgCode {
+                outputQueue[i] = msg
+                objc_sync_exit(self)
+                return
+            }
+        }
+        outputQueue.append(msg)
+        objc_sync_exit(self)
     }
 }

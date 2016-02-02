@@ -10,6 +10,7 @@
 		3707FF76AA548F860426D98C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36398CC8E2486DF5E7F3FAF /* Pods.framework */; };
 		AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE00734C1C24C2780000926F /* VoiceMessage.swift */; };
 		AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */; };
+		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */; };
@@ -132,6 +133,7 @@
 		9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
+		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator.swift; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 				AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */,
 				AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */,
 				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
+				AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */,
 				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
 				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
 				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
@@ -649,6 +652,7 @@
 				AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */,
 				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
+				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,

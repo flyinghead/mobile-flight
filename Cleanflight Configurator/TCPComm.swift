@@ -128,20 +128,18 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             // Probably a comm error
             return
         }
-        objc_sync_enter(msp)
-        if (msp.outputQueue.count == 0) {
-            objc_sync_exit(msp)
-        } else {
-            let len = outStream.write(msp.outputQueue, maxLength: msp.outputQueue.count);
-            if (len > 0) {
-                msp.outputQueue.removeFirst(len);
-                objc_sync_exit(msp)
-            } else {
-                objc_sync_exit(msp)
-                if (len < 0) {
-                    NSLog("Communication error")
-                }
+        while true {
+            let data = msp.nextOutputMessage()
+            if data == nil {
+                break
             }
+            let len = outStream.write(data!, maxLength: data!.count);
+            if (len < 0) {
+                NSLog("Communication error")
+            } else if (len < data!.count) {
+                NSLog("Truncated TCP/IP write!!!")
+            }
+
         }
     }
     

@@ -28,6 +28,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     @IBOutlet weak var gpsField: UILabel!
     @IBOutlet weak var receiverTypeField: UILabel!
     @IBOutlet weak var vbatField: UILabel!
+    @IBOutlet weak var currentMeterField: UILabel!
     @IBOutlet weak var failsafeField: UILabel!
     @IBOutlet weak var rssiSwitch: UISwitch!
     @IBOutlet weak var inFlightCalSwitch: UISwitch!
@@ -148,6 +149,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         
         gpsField.text = (newSettings!.features.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
         vbatField.text = (newSettings!.features.contains(BaseFlightFeature.VBat) ?? false) ? "On" : "Off"
+        currentMeterField.text = (newSettings!.features.contains(BaseFlightFeature.CurrentMeter) ?? false) ? "On" : "Off"
         failsafeField.text = (newSettings!.features.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
     }

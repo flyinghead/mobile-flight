@@ -1,16 +1,19 @@
+- Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
+- Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
+- Mark inactive panels/gauge with red cross
+- UAV Health page (sensors, etc.) / Pre-flight checks page
 - Flight Recorder: add data/time of session in file
 - BEFORE RELEASE: Remove/hide Dataflash tab
 - Switching quickly (?) to Map -> Bottom nav bar is hidden. No way to navigate.
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Spurious network reachability callback, way after tcp/ip connection was closed
-- When communication is interrupted, check that outgoing msgs do not accumulate in outgoing buffer
 - Show when vehicle armed/disarmed
 - CF can issue $M! packets for error cases
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
     + calibrate icon stolen on the web
-
+- CLI support
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
@@ -23,7 +26,6 @@
 - Settings: Map type (sat, hybrid, map)
 - Backup / Restore
 (- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
-- Pre-flight checks page
 - Ability to name models: use cleanflight UID and BT uuid to identify it. Alert levels settings (Alt, Amp, mAh, etc.) are specific to model
 
 - Comm: Use FPV audio channel to transmit data (ImmersionRC EzOSD)
@@ -86,3 +88,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Variometer
 - Map: Draw heading of drone on map. Using arrow shape instead of circle.
 - Modes: "Plus" buttons don't work well because of frequent table updates
+- When communication is interrupted, check that outgoing msgs do not accumulate in outgoing buffer

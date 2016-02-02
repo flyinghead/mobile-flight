@@ -28,14 +28,16 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func flushOut() {
-        objc_sync_enter(self.msp)
-        let data = [UInt8](msp.outputQueue)
-        msp.outputQueue.removeAll()
-        objc_sync_exit(self.msp)
-        
         dispatch_async(btQueue, {
-            //NSLog("BluetoothComm.flushOut %d", data[4])
-            self.btManager.writeData(self.peripheral, data: data)
+            while true {
+                let data = self.msp.nextOutputMessage()
+                if data == nil {
+                    break
+                }
+                
+                //NSLog("BluetoothComm.flushOut %d", data[4])
+                self.btManager.writeData(self.peripheral, data: data!)
+            }
         })
     }
     
