@@ -24,11 +24,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var headingLabel: UILabel!
     
     var annotationView: MKAnnotationView?
-    var timer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         mapView.layoutMargins = UIEdgeInsets(top: 85, left: 0, bottom: 0, right: 0)     // Display the compass below the right-handside instrument panel
         mapView.delegate = self
         mapView.showsUserLocation = true
@@ -41,7 +40,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         altitudeLabel.text = "?"
         //headingLabel.text = "?"
     }
-
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -63,20 +62,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             var region = MKCoordinateRegionMakeWithDistance(coordinate!, 2000, 2000)
             if currentSpan.latitudeDelta > region.span.latitudeDelta || currentSpan.longitudeDelta > region.span.longitudeDelta {
                 region = MKCoordinateRegionMakeWithDistance(coordinate!, 200, 200)
-//                mapView.setRegion(region, animated: true)
+                mapView.setRegion(region, animated: true)
             } else {
-//                mapView.setCenterCoordinate(coordinate!, animated: true)
+                mapView.setCenterCoordinate(coordinate!, animated: true)
             }
         }
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        timer?.invalidate()
-        timer = nil
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -102,53 +98,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         return coordinates
     }
     
-    func translateCoordinate(start: CLLocationCoordinate2D, bearing bearingDegrees: Double, distance distanceMeters: Double) -> CLLocationCoordinate2D {
-        let distance = distanceMeters / 1000 / 6371        // Earth radius 6371km
-        let bearing = bearingDegrees * M_PI / 180
-        let fromLat = start.latitude * M_PI / 180
-        let fromLong = start.longitude * M_PI / 180
-        
-        let toLat = asin(sin(fromLat) * cos(distance) + cos(fromLat) * sin(distance) * cos(bearing))
-        var toLong = fromLong + atan2(sin(bearing) * sin(distance) * cos(fromLat), cos(distance) - sin(fromLat) * sin(toLat))
-
-        // adjust toLon to be in the range -PI to +PI
-        toLong = fmod((toLong + 3 * M_PI), (2 * M_PI)) - M_PI;
-
-        return CLLocationCoordinate2D(latitude: toLat * 180 / M_PI, longitude: toLong * 180 / M_PI)
-    }
-    
-    func timerDidFire(timer: NSTimer) {
-        let camera = mapView.camera.copy() as! MKMapCamera
-        
-        let sensorData = SensorData.theSensorData
-        camera.heading = sensorData.heading
-        camera.pitch = CGFloat(constrain(sensorData.pitchAngle + 90, min: 0, max: 85))
-        
-        let config = Configuration.theConfig
-        let gpsData = GPSData.theGPSData
-        
-        if config.isBarometerActive() || config.isSonarActive() {
-            camera.altitude = max(sensorData.altitude, 1)
-        } else {
-            camera.altitude = 2     // Arbitrary altitude if baro not available
-        }
-        // Calculate the distance to the point on the ground the UAV is pointing at
-        let pitchRad = Double(camera.pitch) * M_PI / 180
-        let distanceToGroundPoint = camera.altitude / cos(pitchRad) * sin(pitchRad)
-        camera.centerCoordinate = translateCoordinate(gpsData.position, bearing: camera.heading, distance: distanceToGroundPoint)
-
-        let dist2 = CLLocation(latitude: camera.centerCoordinate.latitude, longitude: camera.centerCoordinate.longitude).distanceFromLocation(CLLocation(latitude: gpsData.position.latitude, longitude: gpsData.position.longitude))
-        let computedAlt = dist2 / sin(pitchRad) * cos(pitchRad)
-        NSLog("Alt: %.01f - Computed: %.01f", camera.altitude, computedAlt)
-        
-        mapView.setCamera(camera, animated: true)
-    }
-
     func receivedData() {
         let config = Configuration.theConfig
         
         batteryLabel.voltage = config.voltage
-
+        
         rssiLabel.blinks = false
         rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.rssi)
         
@@ -201,7 +155,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         if gpsData.lastKnownGoodLatitude != 0 || gpsData.lastKnownGoodLongitude != 0 {
             if gpsData.positions.count != gpsPositions {
                 gpsPositions = gpsData.positions.count
-/*
+                
                 mapView.removeOverlays(mapView.overlays)
                 let polyline = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
                 mapView.addOverlay(polyline)
@@ -219,7 +173,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                     annotation.coordinate = MapViewController.getAircraftCoordinates()!
                     mapView.addAnnotation(annotation)
                 }
-*/
+                
             }
         }
     }
@@ -261,7 +215,7 @@ class MKAircraftView : MKAnnotationView {
         
         self.opaque = false
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.frame.size.width = Size
@@ -280,7 +234,7 @@ class MKAircraftView : MKAnnotationView {
             rotation -= 360
         }
         CGContextRotateCTM(ctx, CGFloat(rotation * M_PI / 180))
-  
+        
         let actualSize = Size - 4
         UIColor.whiteColor().colorWithAlphaComponent(0.8).setFill()
         let dx = actualSize * CGFloat(sin(M_PI_4 / 2))
@@ -291,11 +245,11 @@ class MKAircraftView : MKAnnotationView {
         CGContextClosePath(ctx)
         CGContextFillPath(ctx)
         
-//        UIColor.whiteColor().setFill()
-//        CGContextFillEllipseInRect(ctx, bounds)
-//        let centerRect = bounds.insetBy(dx: 3.5, dy: 3.5)
-//        UIColor.redColor().setFill()
-//        CGContextFillEllipseInRect(ctx, centerRect)
+        //        UIColor.whiteColor().setFill()
+        //        CGContextFillEllipseInRect(ctx, bounds)
+        //        let centerRect = bounds.insetBy(dx: 3.5, dy: 3.5)
+        //        UIColor.redColor().setFill()
+        //        CGContextFillEllipseInRect(ctx, centerRect)
         
         CGContextRestoreGState(ctx)
     }
