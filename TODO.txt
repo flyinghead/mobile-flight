@@ -1,13 +1,11 @@
+- RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
 - Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
 - Mark inactive panels/gauge with red cross
 - UAV Health page (sensors, etc.) / Pre-flight checks page
 - Flight Recorder: add data/time of session in file
-- BEFORE RELEASE: Remove/hide Dataflash tab
-- Switching quickly (?) to Map -> Bottom nav bar is hidden. No way to navigate.
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Spurious network reachability callback, way after tcp/ip connection was closed
-- Show when vehicle armed/disarmed
 - CF can issue $M! packets for error cases
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
@@ -89,3 +87,8 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Map: Draw heading of drone on map. Using arrow shape instead of circle.
 - Modes: "Plus" buttons don't work well because of frequent table updates
 - When communication is interrupted, check that outgoing msgs do not accumulate in outgoing buffer
+- BEFORE RELEASE: Remove/hide Dataflash tab
+- Show when vehicle ARMED/DISARMED
+- Receiver: colors mismatched b/c of row re-use?
+- RC STicks: issue when view disappearing -> commands not provided back when visible.
+- Switching quickly (?) WHEN RC STICKS ARE ON to Map -> Bottom nav bar is hidden. No way to navigate.

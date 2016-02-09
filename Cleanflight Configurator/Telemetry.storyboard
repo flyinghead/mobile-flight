@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="A7r-Ac-rau">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -294,13 +295,13 @@
                                             <action selector="disconnectAction:" destination="a51-Vk-Ste" eventType="touchUpInside" id="Qzn-Uf-RjK"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Follow Me" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F6D-6T-0Sp">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Follow Me" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F6D-6T-0Sp">
                                         <rect key="frame" x="80" y="574" width="69" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="vrA-le-94T">
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="vrA-le-94T">
                                         <rect key="frame" x="157" y="568" width="51" height="31"/>
                                         <connections>
                                             <action selector="followMeSwitchChanged:" destination="a51-Vk-Ste" eventType="valueChanged" id="NDh-oM-qJl"/>
@@ -780,7 +781,7 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEz-Uy-RIY" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEz-Uy-RIY" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="39" y="30" width="32" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -948,7 +949,7 @@
                                             <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signalw" translatesAutoresizingMaskIntoConstraints="NO" id="Kcm-cx-xuh">
                                                 <rect key="frame" x="4" y="12" width="15" height="15"/>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VzE-Lg-npD" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VzE-Lg-npD" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="23" y="11" width="33" height="18"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1439,6 +1440,18 @@
                                             <constraint firstAttribute="height" constant="155" id="gC1-E7-zoK"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DISARMED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfk-J1-JAa" customClass="ArmedLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                        <rect key="frame" x="148" y="74" width="79" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="blinkingPeriod">
+                                                <real key="value" value="0.10000000000000001"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="blinks" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -1447,6 +1460,7 @@
                                     <constraint firstItem="GWn-1s-XVz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Mtp-oQ-T8O" secondAttribute="trailing" constant="16" id="9Qa-hG-lgF"/>
                                     <constraint firstItem="6wj-AC-YrA" firstAttribute="leading" secondItem="7CG-RW-afA" secondAttribute="trailing" constant="-1" id="9z1-Jt-FRl"/>
                                     <constraint firstItem="oGU-zT-X9L" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="AVG-5g-fKS"/>
+                                    <constraint firstItem="zfk-J1-JAa" firstAttribute="top" secondItem="cyG-w5-80j" secondAttribute="bottom" constant="8" id="Ajg-8o-vJr"/>
                                     <constraint firstItem="7CG-RW-afA" firstAttribute="centerY" secondItem="TE5-wJ-hyb" secondAttribute="centerY" id="FLU-cb-Pl2"/>
                                     <constraint firstAttribute="trailing" secondItem="SRd-fW-yIn" secondAttribute="trailing" id="JqT-Z3-wrN"/>
                                     <constraint firstItem="7CG-RW-afA" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="KXB-II-lye"/>
@@ -1464,6 +1478,7 @@
                                     <constraint firstItem="Dc0-c2-I9K" firstAttribute="trailing" secondItem="cyG-w5-80j" secondAttribute="trailing" id="hgT-aO-Mh2"/>
                                     <constraint firstItem="j13-Ao-QcT" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" id="jV1-5I-Pan"/>
                                     <constraint firstAttribute="trailing" secondItem="6wj-AC-YrA" secondAttribute="trailing" constant="-1" id="odZ-Lu-tiN"/>
+                                    <constraint firstItem="zfk-J1-JAa" firstAttribute="centerX" secondItem="TE5-wJ-hyb" secondAttribute="centerX" id="p1l-BT-Y5S"/>
                                     <constraint firstItem="Mtp-oQ-T8O" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" constant="12" id="q99-EW-tiz"/>
                                     <constraint firstItem="Dc0-c2-I9K" firstAttribute="top" secondItem="cyG-w5-80j" secondAttribute="bottom" id="r6G-dQ-vkc"/>
                                     <constraint firstItem="SRd-fW-yIn" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" id="vf8-6s-fmj"/>
@@ -1564,6 +1579,7 @@
                         <outlet property="altitudeScale" destination="7CG-RW-afA" id="0wa-qi-bf1"/>
                         <outlet property="ampsGauge" destination="KU3-Qm-2Go" id="vei-PA-bAj"/>
                         <outlet property="ampsValueLabel" destination="Cwm-EC-RXa" id="LIn-5N-LcQ"/>
+                        <outlet property="armedLabel" destination="zfk-J1-JAa" id="ae1-if-DU7"/>
                         <outlet property="attitudeIndicator" destination="TE5-wJ-hyb" id="rQ6-Iq-pRI"/>
                         <outlet property="autotuneMode" destination="oqQ-0h-fJh" id="foI-yh-UiU"/>
                         <outlet property="blackboxMode" destination="947-jM-r2J" id="mMz-6s-t0G"/>

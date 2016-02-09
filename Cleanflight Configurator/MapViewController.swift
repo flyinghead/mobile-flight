@@ -16,7 +16,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
-    @IBOutlet weak var rssiLabel: BlinkingLabel!
+    @IBOutlet weak var rssiLabel: RssiLabel!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var speedLabel: UILabel!
@@ -103,12 +103,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         batteryLabel.voltage = config.voltage
         
-        rssiLabel.blinks = false
-        rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.rssi)
+        rssiLabel.rssi = config.rssi
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let armedTime = Int(round(appDelegate.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
+    }
+    
+    func received3drRssiData() {
+        let config = Configuration.theConfig
+        
+        rssiLabel.sikRssi = config.sikQuality
     }
     
     func receivedAltitudeData() {

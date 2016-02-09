@@ -10,6 +10,7 @@
 		3707FF76AA548F860426D98C /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36398CC8E2486DF5E7F3FAF /* Pods.framework */; };
 		AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE00734C1C24C2780000926F /* VoiceMessage.swift */; };
 		AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */; };
+		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
@@ -97,6 +98,7 @@
 		AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEF1903E1C3F062D0066C75A /* TryCatch.m */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
+		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,6 +135,7 @@
 		9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
+		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
 		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
@@ -228,6 +231,7 @@
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
+		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -325,10 +329,12 @@
 				AE3E462D1C52C04300E33E9F /* RCStick.swift */,
 				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
 				AE3E45E21C50E96000E33E9F /* RoundGauge.swift */,
+				AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */,
 				AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */,
 				AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */,
 				AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */,
 				AE730C0B1C492E2900CDF2F3 /* MFDTest.swift */,
+				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -653,6 +659,7 @@
 				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
+				AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,
@@ -677,6 +684,7 @@
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
 				AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */,
+				AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */,
 				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,

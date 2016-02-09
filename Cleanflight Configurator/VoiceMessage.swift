@@ -139,7 +139,8 @@ class BatteryLowAlarm : VoiceAlarm {
 class RSSILowAlarm : VoiceAlarm {
     
     override var on: Bool {
-        if CommunicationLostAlarm().on {
+        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        if !msp.communicationEstablished || CommunicationLostAlarm().on {
             return false
         }
         let config = Configuration.theConfig

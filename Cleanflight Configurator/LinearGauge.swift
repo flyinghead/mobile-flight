@@ -31,6 +31,9 @@ class LinearGauge: UIView {
             return _minimumValue
         }
         set(value) {
+            if value != _minimumValue {
+                setNeedsDisplay()
+            }
             _minimumValue = value
         }
     }
@@ -39,6 +42,9 @@ class LinearGauge: UIView {
             return _maximumValue
         }
         set(value) {
+            if value != _maximumValue {
+                setNeedsDisplay()
+            }
             _maximumValue = value
         }
     }
@@ -47,6 +53,9 @@ class LinearGauge: UIView {
             return _color
         }
         set(value) {
+            if value != _color {
+                setNeedsDisplay()
+            }
             _color = value
         }
     }

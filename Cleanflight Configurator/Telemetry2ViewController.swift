@@ -16,7 +16,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var variometerScale: VerticalScale!
     @IBOutlet weak var turnRateIndicator: TurnRateIndicator!
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
-    @IBOutlet weak var rssiLabel: BlinkingLabel!
+    @IBOutlet weak var rssiLabel: RssiLabel!
     @IBOutlet weak var timeLabel: BlinkingLabel!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
     @IBOutlet weak var dthLabel: BlinkingLabel!
@@ -28,6 +28,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var headingModeLabel: UILabel!
     @IBOutlet weak var posModeLabel: UILabel!
     @IBOutlet weak var rxFailView: UIView!
+    @IBOutlet weak var armedLabel: ArmedLabel!
     @IBOutlet weak var voltsGauge: RoundGauge!
     @IBOutlet weak var voltsValueLabel: BatteryVoltageLabel!
     @IBOutlet weak var voltsLabel: BlinkingLabel!
@@ -47,7 +48,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var rightStick: RCStick!
     
     var hideNavBarTimer: NSTimer?
-    
+    var viewDisappeared = false
 //    var rcTimer: NSTimer?
     
     override func viewDidLoad() {
@@ -90,6 +91,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
+        if showRCSticksButton.selected {
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.rcCommandsProvider = self
+        }
+        viewDisappeared = false
     }
     
     private func startNavBarTimer() {
@@ -107,7 +113,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             UIView.animateWithDuration(0.3, animations: {
                     tabBarController.tabBar.frame.offsetInPlace(dx: 0, dy: offset)
                 }, completion: { status in
-                    tabBarController.tabBar.hidden = true
+                    if !self.viewDisappeared {
+                        tabBarController.tabBar.hidden = true
+                    }
                     tabBarController.tabBar.frame.offsetInPlace(dx: 0, dy: -offset)
                 })
         }
@@ -116,6 +124,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        viewDisappeared = true
         hideNavBarTimer?.invalidate()
         hideNavBarTimer = nil
         
@@ -170,15 +179,14 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", locale: NSLocale.currentLocale(), config.mAhDrawn)
         
-        if config.rssi != 0 || config.sikQuality == 0 {
-            rssiLabel.blinks = false
-            rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.rssi)
-        }
+        rssiLabel.rssi = config.rssi
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let armedTime = Int(round(appDelegate.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     
+        armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
+        
         if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
             accroModeLabel.text = "ANGLE"
             accroModeLabel.hidden = false
@@ -231,22 +239,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     func received3drRssiData() {
         let config = Configuration.theConfig
-        if config.rssi == 0 && config.sikQuality != 0 {
-            rssiLabel.text = String(format:"%d%%", locale: NSLocale.currentLocale(), config.sikQuality)
-            
-            // FIXME This should be done for RX RSSI as well
-            if config.sikQuality <= userDefaultAsInt(.RSSIAlarmCritical) {
-                rssiLabel.blinks = true
-
-                rssiLabel.textColor = UIColor.redColor()
-            } else if config.sikQuality <= userDefaultAsInt(.RSSIAlarmLow) {
-                rssiLabel.blinks = false
-                rssiLabel.textColor = UIColor.yellowColor()
-            } else {
-                rssiLabel.blinks = false
-                rssiLabel.textColor = UIColor.whiteColor()
-            }
-        }
+        rssiLabel.sikRssi = config.sikQuality
     }
     
     func receivedGpsData() {

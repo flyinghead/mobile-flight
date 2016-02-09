@@ -8,8 +8,10 @@
 
 import UIKit
 
+@IBDesignable
 class BlinkingLabel: UILabel {
-    var blinks = false {
+    @IBInspectable
+    var blinks: Bool = false {
         didSet {
             if !blinks && timer != nil {
                 timer!.invalidate()
@@ -20,7 +22,8 @@ class BlinkingLabel: UILabel {
             }
         }
     }
-    var blinkingPeriod = 0.5 {
+    @IBInspectable
+    var blinkingPeriod: Double = 0.5 {
         didSet {
             if timer != nil && blinks {
                 timer!.invalidate()

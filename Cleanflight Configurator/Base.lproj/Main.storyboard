@@ -470,7 +470,7 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="About" image="second" selectedImage="second" id="cPa-gy-q4n"/>
+                    <tabBarItem key="tabBarItem" title="About" image="about" selectedImage="about" id="cPa-gy-q4n"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
@@ -3152,21 +3152,110 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FnV-6e-GtS">
-                                <rect key="frame" x="232" y="28" width="138" height="30"/>
-                                <state key="normal" title="Download Dataflash"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FnV-6e-GtS">
+                                <rect key="frame" x="487" y="129" width="93" height="30"/>
+                                <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
+                                <state key="normal" title="Download"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="downloadAction:" destination="h5o-Xs-W7R" eventType="touchUpInside" id="tS7-P1-CEQ"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V0G-ar-bId" customClass="LinearGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                <rect key="frame" x="20" y="57" width="560" height="30"/>
+                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="xGj-MD-Qdo"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                        <real key="value" value="1000"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                        <real key="value" value="500"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                        <color key="value" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="printValue" value="NO"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dataflash Contents" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Oa-cl-ymJ">
+                                <rect key="frame" x="20" y="28" width="147" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Free: 2.8MB" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aBc-kO-QrH">
+                                <rect key="frame" x="497" y="95" width="83" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RAT-qu-3hH">
+                                <rect key="frame" x="20" y="129" width="93" height="30"/>
+                                <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
+                                <state key="normal" title="Erase"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="eraseAction:" destination="h5o-Xs-W7R" eventType="touchUpInside" id="W6i-Rf-xhU"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Used: 742kb" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cgc-1F-rhM">
+                                <rect key="frame" x="20" y="95" width="87" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="FnV-6e-GtS" firstAttribute="centerX" secondItem="qef-B5-Rwk" secondAttribute="centerX" id="QMV-uj-lx0"/>
-                            <constraint firstItem="FnV-6e-GtS" firstAttribute="top" secondItem="WOT-Dk-ALx" secondAttribute="bottom" constant="8" id="QaO-XE-kLg"/>
+                            <constraint firstItem="FnV-6e-GtS" firstAttribute="centerY" secondItem="RAT-qu-3hH" secondAttribute="centerY" id="0iZ-W1-lIo"/>
+                            <constraint firstItem="RAT-qu-3hH" firstAttribute="width" secondItem="FnV-6e-GtS" secondAttribute="width" id="2G3-Yk-58j"/>
+                            <constraint firstItem="cgc-1F-rhM" firstAttribute="leading" secondItem="qef-B5-Rwk" secondAttribute="leadingMargin" id="8hF-9Z-rCX"/>
+                            <constraint firstItem="9Oa-cl-ymJ" firstAttribute="leading" secondItem="qef-B5-Rwk" secondAttribute="leadingMargin" id="BLt-A0-Bsu"/>
+                            <constraint firstItem="RAT-qu-3hH" firstAttribute="top" secondItem="cgc-1F-rhM" secondAttribute="bottom" constant="16" id="FNx-NH-ZXf"/>
+                            <constraint firstItem="Sk6-di-xTC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="RAT-qu-3hH" secondAttribute="bottom" constant="8" id="IdG-as-xdH"/>
+                            <constraint firstItem="cgc-1F-rhM" firstAttribute="top" secondItem="V0G-ar-bId" secondAttribute="bottom" constant="8" id="OfZ-w9-vf3"/>
+                            <constraint firstItem="RAT-qu-3hH" firstAttribute="leading" secondItem="qef-B5-Rwk" secondAttribute="leadingMargin" id="QTc-SM-1B7"/>
+                            <constraint firstItem="V0G-ar-bId" firstAttribute="trailing" secondItem="qef-B5-Rwk" secondAttribute="trailingMargin" id="QV6-x2-Fj2"/>
+                            <constraint firstItem="aBc-kO-QrH" firstAttribute="trailing" secondItem="qef-B5-Rwk" secondAttribute="trailingMargin" id="UOr-2f-zS4"/>
+                            <constraint firstItem="V0G-ar-bId" firstAttribute="top" secondItem="9Oa-cl-ymJ" secondAttribute="bottom" constant="8" id="XfI-Uz-8RD"/>
+                            <constraint firstItem="V0G-ar-bId" firstAttribute="leading" secondItem="qef-B5-Rwk" secondAttribute="leadingMargin" id="Zwj-mf-VBu"/>
+                            <constraint firstItem="aBc-kO-QrH" firstAttribute="top" secondItem="V0G-ar-bId" secondAttribute="bottom" constant="8" id="b8U-vF-ltm"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="cgc-1F-rhM" secondAttribute="trailing" constant="8" id="joZ-yT-icq"/>
+                            <constraint firstItem="FnV-6e-GtS" firstAttribute="trailing" secondItem="qef-B5-Rwk" secondAttribute="trailingMargin" id="n7u-4f-qzv"/>
+                            <constraint firstItem="9Oa-cl-ymJ" firstAttribute="top" secondItem="WOT-Dk-ALx" secondAttribute="bottom" constant="8" id="wMf-hS-QjK"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Dataflash" image="second" selectedImage="second" id="mKh-pV-6MF"/>
+                    <tabBarItem key="tabBarItem" title="Dataflash" image="dataflash" selectedImage="dataflash" id="mKh-pV-6MF"/>
+                    <connections>
+                        <outlet property="downloadButton" destination="FnV-6e-GtS" id="rmk-qh-HRW"/>
+                        <outlet property="eraseButton" destination="RAT-qu-3hH" id="FB1-s0-53Q"/>
+                        <outlet property="freeLabel" destination="aBc-kO-QrH" id="NBP-X9-ZmV"/>
+                        <outlet property="gauge" destination="V0G-ar-bId" id="V1H-g8-jUJ"/>
+                        <outlet property="usedLabel" destination="cgc-1F-rhM" id="m03-6C-END"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S0d-uw-i52" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -3382,9 +3471,10 @@
         <image name="Modes" width="30" height="30"/>
         <image name="Motor" width="30" height="30"/>
         <image name="Receiver" width="30" height="30"/>
+        <image name="about" width="30" height="30"/>
         <image name="calibrate" width="30" height="31"/>
+        <image name="dataflash" width="30" height="30"/>
         <image name="first" width="30" height="30"/>
-        <image name="second" width="30" height="30"/>
         <image name="sensor_acc_off" width="79" height="79"/>
         <image name="sensor_acc_on" width="79" height="79"/>
         <image name="sensor_mag_off" width="79" height="79"/>
