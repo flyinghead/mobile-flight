@@ -15,8 +15,6 @@
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-- App icon
-- Sexy launch screen and connection page
 - Map: Add pin for RTH location
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button
@@ -92,3 +90,5 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Receiver: colors mismatched b/c of row re-use?
 - RC STicks: issue when view disappearing -> commands not provided back when visible.
 - Switching quickly (?) WHEN RC STICKS ARE ON to Map -> Bottom nav bar is hidden. No way to navigate.
+- App icon
+- Sexy launch screen and connection page
