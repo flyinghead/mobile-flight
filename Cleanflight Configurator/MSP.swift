@@ -47,6 +47,7 @@ class MSPParser {
     
     var state: ParserState = .Sync1
     var directionOut: Bool = false
+    var unknownMSPCode = false
     var expectedMsgLength: Int = 0
     var checksum: UInt8 = 0
     var messageBuffer: [UInt8]?
@@ -115,10 +116,15 @@ class MSPParser {
                 }
             case .Direction:
                 if b == 62 { // >
+                    unknownMSPCode = false
                     directionOut = false
                     state = .Length
                 } else if b == 60 {     // <
+                    unknownMSPCode = false
                     directionOut = true
+                    state = .Length
+                } else if b == 33 {     // !
+                    unknownMSPCode = true
                     state = .Length
                 } else {
                     NSLog("MSP expected '>', got %@", bstr)
@@ -146,25 +152,29 @@ class MSPParser {
                 }
             case .Checksum:
                 let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-                if checksum == b && mspCode != .MSP_UNKNOWN && !directionOut {
+                if checksum == b && mspCode != .MSP_UNKNOWN && !directionOut && !unknownMSPCode {
                     //NSLog("Received MSP %d", mspCode.rawValue)
                     if processMessage(mspCode, message: messageBuffer!) {
                         callSuccessCallback(mspCode, data: messageBuffer!)
                     }
                 } else {
-                    let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
-                    if checksum != b {
-                        NSLog("MSP code %d - checksum failed: %@", code, datalog)
-                    } else if directionOut {
-                        NSLog("MSP code %d - received outgoing message", code)
+                    if unknownMSPCode {
+                        callErrorCallback(mspCode)
                     } else {
-                        NSLog("Unknown MSP code %d: %@", code, datalog)
-                    }
-                    errors++
-                    // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
-                    if checksum != b && b == 36 {     // $
-                        state = .Sync2
-                        break
+                        let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
+                        if checksum != b {
+                            NSLog("MSP code %d - checksum failed: %@", code, datalog)
+                        } else if directionOut {
+                            NSLog("MSP code %d - received outgoing message", code)
+                        } else {
+                            NSLog("Unknown MSP code %d: %@", code, datalog)
+                        }
+                        errors++
+                        // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
+                        if checksum != b && b == 36 {     // $
+                            state = .Sync2
+                            break
+                        }
                     }
                 }
                 state = .Sync1
@@ -718,20 +728,25 @@ class MSPParser {
         if ++handler.tries > handler.maxTries {
             handler.cancelled = true
             NSLog("sendMessage %d failed", handler.code.rawValue)
-            objc_sync_enter(retriedMessageLock)
-            retriedMessages.removeValueForKey(handler.code)
-            objc_sync_exit(retriedMessageLock)
-            if handler is DataMessageRetryHandler {
-                (handler as! DataMessageRetryHandler).dataCallback(data: nil)
-            } else {
-                handler.callback?(success: false)
-            }
+            callErrorCallback(handler.code)
             return
         }
         NSLog("Retrying sendMessage %d", handler.code.rawValue)
         makeSendMessageTimer(handler)
 
         sendMessage(handler.code, data: handler.data, retry: 0, callback: nil)
+    }
+    
+    private func callErrorCallback(code: MSP_code) {
+        objc_sync_enter(retriedMessageLock)
+        let handler = retriedMessages.removeValueForKey(code)
+        objc_sync_exit(retriedMessageLock)
+        if handler is DataMessageRetryHandler {
+            (handler as! DataMessageRetryHandler).dataCallback(data: nil)
+        } else if handler != nil {
+            handler!.callback?(success: false)
+        }
+        return
     }
     
     func cancelRetries() {

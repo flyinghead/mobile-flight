@@ -6,7 +6,6 @@
 - Flight Recorder: add data/time of session in file
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Spurious network reachability callback, way after tcp/ip connection was closed
-- CF can issue $M! packets for error cases
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
     + flight instruments and many icons stolen from Cleanflight Configurator
@@ -92,3 +91,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Switching quickly (?) WHEN RC STICKS ARE ON to Map -> Bottom nav bar is hidden. No way to navigate.
 - App icon
 - Sexy launch screen and connection page
+- CF can issue $M! packets for error cases. Happens for unknown MSP codes (or not compiled-in such as GPS in betaflight)

@@ -174,9 +174,9 @@ class PIDViewController: UITableViewController {
 
         msp.sendSetRcTuning(settings!, callback: { success in
             if success {
-                self.msp.sendPidController(self.settings!.pidController, callback: { success in
+                self.msp.sendPid(self.settings!, callback: { success in
                     if success {
-                        self.msp.sendPid(self.settings!, callback: { success in
+                        self.msp.sendPidController(self.settings!.pidController, callback: { success in
                             if success {
                                 self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                                     if success {
