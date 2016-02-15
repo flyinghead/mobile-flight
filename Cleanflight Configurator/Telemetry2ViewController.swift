@@ -143,6 +143,19 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         headingStrip.heading = sensorData.heading
         turnRateIndicator.value = sensorData.turnRate
+        
+        let config = Configuration.theConfig
+        let settings = Settings.theSettings
+        altitudeScale.bugs.removeAll()
+        if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+            altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
+        }
+
+        headingStrip.bugs.removeAll()
+        if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+            headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
+        }
+
     }
     
     func receivedAltitudeData() {
@@ -158,7 +171,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     func receivedData() {
         let config = Configuration.theConfig
         let settings = Settings.theSettings
-        let sensorData = SensorData.theSensorData
 
         if voltsGauge.ranges.isEmpty && config.batteryCells != 0 {
             let misc = Misc.theMisc
@@ -198,25 +210,13 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         }
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
             altModeLabel.hidden = false
-            if altitudeScale.bugs.count == 0 {
-                altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
-            }
         } else {
             altModeLabel.hidden = true
-            if !altitudeScale.bugs.isEmpty {
-                altitudeScale.bugs.removeAll()
-            }
         }
         if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
             headingModeLabel.hidden = false
-            if headingStrip.bugs.count == 0 {
-                headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
-            }
         } else {
             headingModeLabel.hidden = true
-            if !headingStrip.bugs.isEmpty {
-                headingStrip.bugs.removeAll()
-            }
         }
         if settings.isModeOn(Mode.GPSHOME, forStatus: config.mode) {
             posModeLabel.text = "RTH"

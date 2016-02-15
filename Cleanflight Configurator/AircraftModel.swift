@@ -538,25 +538,7 @@ class Configuration : AutoCoded {
     var cycleTime = 0     // microsecond?
     var i2cError = 0
     var activeSensors = 0
-    var mode = 0 {
-        willSet(value) {
-            let changedModes = value ^ mode
-            let settings = Settings.theSettings
-            
-            if settings.isModeOn(.BARO, forStatus: changedModes) || settings.isModeOn(.SONAR, forStatus: changedModes) {
-                let sensorData = SensorData.theSensorData
-                if settings.isModeOn(.BARO, forStatus: value) || settings.isModeOn(.SONAR, forStatus: value) {
-                    sensorData.altitudeHold = sensorData.altitude
-                }
-            }
-            if settings.isModeOn(.MAG, forStatus: changedModes) {
-                let sensorData = SensorData.theSensorData
-                if settings.isModeOn(.MAG, forStatus: value) {
-                    sensorData.headingHold = sensorData.heading
-                }
-            }
-        }
-    }
+    var mode = 0
     var profile = 0
     
     // MSP_ANALOG
@@ -886,7 +868,7 @@ class Receiver : AutoCoded {
 }
 
 class SensorData : AutoCoded {
-    var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "variometer", "sonar", "rollAngle", "pitchAngle", "heading" ]
+    var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "variometer", "sonar", "rollAngle", "pitchAngle", "heading", "altitudeHold", "headingHold" ]
     static var theSensorData = SensorData()
     
     // MSP_RAW_IMU
@@ -927,14 +909,15 @@ class SensorData : AutoCoded {
             }
         }
     }
+    // MSP_WP
+    var altitudeHold = 0.0
+    var headingHold = 0.0
 
     // Local
     var maxAltitude = 0.0       // m
-    var altitudeHold = 0.0
     
     var turnRate = 0.0          // deg / s
     var lastAttitude: NSDate?
-    var headingHold = 0.0
     
     private override init() {
         super.init()

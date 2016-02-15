@@ -484,6 +484,17 @@ class MSPParser {
             }
             pingSettingsListeners()
             
+        case .MSP_WP:
+            if message.count < 18 {
+                return false
+            }
+            // int8: WP number (0: home, 16: position hold)
+            // int32: latitude
+            // int32: longitude
+            sensorData.altitudeHold = Double(readInt32(message, index: 9)) / 100    // cm
+            sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
+            pingSensorListeners()
+            
         case .MSP_BOXIDS:
             settings.boxIds = [Int]()
             for (var i = 0; i < message.count; i++) {
