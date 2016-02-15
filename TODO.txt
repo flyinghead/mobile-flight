@@ -1,3 +1,4 @@
+- Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
 - Replay: NSKeyedArchiver throws NPE on invalid (truncated) archive
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
