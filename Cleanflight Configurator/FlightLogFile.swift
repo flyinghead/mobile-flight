@@ -80,7 +80,8 @@ class FlightLogFile {
             dataLengthArray = [UInt8](count: 4, repeatedValue: 0)
             data.getBytes(&dataLengthArray, length: dataLengthArray.count)
             let aircraftDataSize = readInt32(dataLengthArray, index: 0)
-            AllAircraftData.allAircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(file.readDataOfLength(aircraftDataSize)) as! AllAircraftData
+            let bytes = file.readDataOfLength(aircraftDataSize)
+            AllAircraftData.allAircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(bytes) as! AllAircraftData
         } else {
             file.seekToFileOffset(0)
         }

@@ -261,7 +261,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
                 gpsLabel.blinks = true
                 gpsLabel.textColor = UIColor.redColor()
             }
-            //theView.gpsFixImage.image = redled
             dthLabel.text = ""
             speedScale.currentValue = 0
         }

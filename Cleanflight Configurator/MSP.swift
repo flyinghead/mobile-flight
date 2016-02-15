@@ -62,6 +62,8 @@ class MSPParser {
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
+    var cliViewController: CLIViewController?
+    
     var receiveStats = [(date: NSDate, size: Int)]()
     
     var incomingBytesPerSecond: Int {
@@ -78,6 +80,11 @@ class MSPParser {
     }
     
     func read(data: [UInt8]) {
+        if cliViewController != nil {
+            cliViewController!.receive(data)
+            return
+        }
+        
         objc_sync_enter(self)
         if datalog != nil {
             var logData = [UInt8]()
@@ -553,10 +560,12 @@ class MSPParser {
             }
             let date = NSString(bytes: message, length: 11, encoding: NSUTF8StringEncoding)
             let time = NSString(bytes: Array<UInt8>(message[11..<19]), length: 8, encoding: NSUTF8StringEncoding)
+            /*
             if message.count >= 26 {
                 let revision  = NSString(bytes: Array<UInt8>(message[19..<26]), length: 7, encoding: NSUTF8StringEncoding)
                 NSLog("revision %@", revision!)
             }
+            */
             config.buildInfo = String(format: "%@ %@", date!, time!)
             pingDataListeners()
             
@@ -715,7 +724,6 @@ class MSPParser {
         buffer.append(checksum)
         
         addOutputMessage(buffer)
-        commChannel?.flushOut()
     }
     
     func sendMessage(code: MSP_code, data: [UInt8]?) {
@@ -1059,18 +1067,23 @@ class MSPParser {
         return msg
     }
     
-    private func addOutputMessage(msg: [UInt8]) {
-        let msgCode = msg[4]
+    func addOutputMessage(msg: [UInt8]) {
         objc_sync_enter(self)
-        for var i = 0; i < outputQueue.count; i++ {
-            let curMsg = outputQueue[i]
-            if curMsg[4] == msgCode {
-                outputQueue[i] = msg
-                objc_sync_exit(self)
-                return
+        if msg[0] == 36 {   // $
+            let msgCode = msg[4]
+            for var i = 0; i < outputQueue.count; i++ {
+                let curMsg = outputQueue[i]
+                if curMsg.count >= 5 && curMsg[4] == msgCode {
+                    outputQueue[i] = msg
+                    objc_sync_exit(self)
+                    commChannel?.flushOut()
+                    return
+                }
             }
         }
         outputQueue.append(msg)
         objc_sync_exit(self)
+        
+        commChannel?.flushOut()
     }
 }

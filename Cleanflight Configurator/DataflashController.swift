@@ -52,12 +52,15 @@ class DataflashController: UIViewController {
     }
     
     @IBAction func downloadAction(sender: AnyObject) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
         downloadAddress(0)
     }
     
     func downloadAddress(address: Int) {
         NSLog("Reading address %d", address)
         msp.sendDataflashRead(address, callback: { data in
+            var done = true
             if data == nil {
                 NSLog("Error!")
             } else if data!.count == 0 {
@@ -68,8 +71,13 @@ class DataflashController: UIViewController {
                 if (nextAddress > Dataflash.theDataflash.usedSize) {
                     NSLog("Done (> usedSize). Success!")
                 } else {
+                    done = false
                     self.downloadAddress(nextAddress)
                 }
+            }
+            if done {
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.startTimer()
             }
         })
     }

@@ -10,12 +10,6 @@ import UIKit
 
 class PortsConfigViewController: ConfigChildViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return settings.portConfigs?.count ?? 0
     }

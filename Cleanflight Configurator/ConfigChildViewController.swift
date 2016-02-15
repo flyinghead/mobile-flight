@@ -41,7 +41,7 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
     
     func keyboardDidShow(notification: NSNotification?) {
         let info = notification?.userInfo
-        let kbSize = info![UIKeyboardFrameBeginUserInfoKey]?.CGRectValue.size
+        let kbSize = info![UIKeyboardFrameEndUserInfoKey]?.CGRectValue.size
         let contentInsets = UIEdgeInsetsMake(0, 0, kbSize!.height, 0)
         
         if savedContentInset == nil {

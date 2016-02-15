@@ -13,9 +13,9 @@
 		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
+		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
+		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
-		AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */; };
-		AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */; };
 		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
 		AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E45E21C50E96000E33E9F /* RoundGauge.swift */; };
 		AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E462D1C52C04300E33E9F /* RCStick.swift */; };
@@ -45,7 +45,6 @@
 		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
-		AE730C0C1C492E2900CDF2F3 /* MFDTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C0B1C492E2900CDF2F3 /* MFDTest.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A681C26BE6F006BC53E /* TODO.txt */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
@@ -78,7 +77,6 @@
 		AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */; };
 		AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */; };
 		AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */; };
-		AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2701C158648004232AA /* TelemetryViewController.swift */; };
 		AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2721C159B9A004232AA /* MotorsViewController.swift */; };
 		AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2741C15EBBF004232AA /* MultiTypes.swift */; };
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
@@ -138,9 +136,9 @@
 		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
 		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
+		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
+		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
-		AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator.swift; sourceTree = "<group>"; };
-		AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingIndicator.swift; sourceTree = "<group>"; };
 		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
 		AE3E45E21C50E96000E33E9F /* RoundGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundGauge.swift; sourceTree = "<group>"; };
 		AE3E462D1C52C04300E33E9F /* RCStick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RCStick.swift; sourceTree = "<group>"; };
@@ -176,7 +174,6 @@
 		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
-		AE730C0B1C492E2900CDF2F3 /* MFDTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MFDTest.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
@@ -209,7 +206,6 @@
 		AEDDD26A1C12E07C004232AA /* MagnetometerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MagnetometerViewController.swift; sourceTree = "<group>"; };
 		AEDDD26C1C12EE9B004232AA /* BarometerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarometerViewController.swift; sourceTree = "<group>"; };
 		AEDDD26E1C14D2DD004232AA /* SonarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SonarViewController.swift; sourceTree = "<group>"; };
-		AEDDD2701C158648004232AA /* TelemetryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryViewController.swift; sourceTree = "<group>"; };
 		AEDDD2721C159B9A004232AA /* MotorsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorsViewController.swift; sourceTree = "<group>"; };
 		AEDDD2741C15EBBF004232AA /* MultiTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiTypes.swift; sourceTree = "<group>"; };
 		AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationViewController.swift; sourceTree = "<group>"; };
@@ -316,13 +312,13 @@
 		AE26A1D41C41D308007498EF /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				AE1F73E51C18D92C0029C330 /* AttitudeIndicator.swift */,
+				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
 				AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */,
 				AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */,
 				AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */,
-				AE1F73E71C199ACF0029C330 /* HeadingIndicator.swift */,
 				AE5BB66E1C4EA92A00CF2A7C /* HeadingStrip.swift */,
+				AE1CB4861C71187E003DB117 /* InsetTextField.swift */,
 				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
 				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
 				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
@@ -333,8 +329,6 @@
 				AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */,
 				AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */,
 				AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */,
-				AE730C0B1C492E2900CDF2F3 /* MFDTest.swift */,
-				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -377,6 +371,7 @@
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
 				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
+				AE1CB4821C70A71A003DB117 /* CLIViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
@@ -393,7 +388,6 @@
 				AEDDD2441C11AE0F004232AA /* ReceiverViewController.swift */,
 				AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */,
 				AE71D8201C3596C800CC0AEB /* ServosViewController.swift */,
-				AEDDD2701C158648004232AA /* TelemetryViewController.swift */,
 				AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */,
 				AEBA641B1C342BD900783ECE /* UserDefaults.swift */,
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
@@ -659,6 +653,7 @@
 				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
+				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
 				AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
@@ -692,7 +687,6 @@
 				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
-				AE1F73E81C199ACF0029C330 /* HeadingIndicator.swift in Sources */,
 				AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */,
 				AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */,
 				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
@@ -720,13 +714,11 @@
 				AECE8D881C1EBE3E00FB183E /* MyDownPicker.swift in Sources */,
 				AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */,
 				AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */,
+				AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */,
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
-				AE1F73E61C18D92C0029C330 /* AttitudeIndicator.swift in Sources */,
-				AE730C0C1C492E2900CDF2F3 /* MFDTest.swift in Sources */,
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
 				AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */,
 				AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */,
-				AEDDD2711C158648004232AA /* TelemetryViewController.swift in Sources */,
 				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
 				AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */,
