@@ -181,7 +181,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
              NSStreamEvent.EndEncountered:
             if stream is NSOutputStream {
                 NSLog("NSStreamEvent.ErrorOccurred: %@", stream)
-                closeStreams()
+                close()
                 if connectCallback != nil {
                     // Connection failed
                     dispatch_async(dispatch_get_main_queue(), {
@@ -223,7 +223,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     func close() {
         closeStreams()
         if _reachability != nil {
-            SCNetworkReachabilityUnscheduleFromRunLoop(_reachability!, CFRunLoopGetMain(), kCFRunLoopCommonModes)
+            SCNetworkReachabilityUnscheduleFromRunLoop(_reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes)
             _reachability = nil
             _reachabilityContext = nil
         }

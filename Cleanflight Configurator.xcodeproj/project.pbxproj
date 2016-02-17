@@ -46,7 +46,6 @@
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
-		AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A681C26BE6F006BC53E /* TODO.txt */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEBA640D1C3086CF00783ECE /* Connection.storyboard */; };
@@ -80,7 +79,6 @@
 		AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2721C159B9A004232AA /* MotorsViewController.swift */; };
 		AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2741C15EBBF004232AA /* MultiTypes.swift */; };
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
-		AEDDD2791C1615C8004232AA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = AEDDD2781C1615C8004232AA /* Podfile */; };
 		AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
@@ -571,9 +569,7 @@
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
-				AEA48A691C26BE6F006BC53E /* TODO.txt in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
-				AEDDD2791C1615C8004232AA /* Podfile in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
 			);
