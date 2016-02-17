@@ -12,8 +12,17 @@ import UIKit
 class RCStick: UIView {
 
     private var refX: CGFloat = 0, refY: CGFloat = 0
-    var horizontalValue = 0.0
-    var verticalValue = 0.0
+    var horizontalValue = 0.0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    var verticalValue = 0.0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
     private var verticalOrigin = 0.0
     
     @IBInspectable

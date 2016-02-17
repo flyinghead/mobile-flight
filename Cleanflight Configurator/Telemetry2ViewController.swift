@@ -46,10 +46,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     @IBOutlet weak var leftStick: RCStick!
     @IBOutlet weak var rightStick: RCStick!
+    var actingRC = false        // When using feature RXMSP and RC sticks are visible
     
     var hideNavBarTimer: NSTimer?
     var viewDisappeared = false
-//    var rcTimer: NSTimer?
+    var rcTimer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,12 +87,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         startNavBarTimer()
         
-        //rcTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "rcTimerDidFire:", userInfo: nil, repeats: true)
+        startRcTimerIfNeeded()
         
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
-        if showRCSticksButton.selected {
+        if showRCSticksButton.selected && actingRC {
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.rcCommandsProvider = self
         }
@@ -130,8 +131,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         msp.removeDataListener(self)
         
-//        rcTimer?.invalidate()
-//        rcTimer = nil
+        stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
     }
@@ -288,13 +288,24 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     @IBAction func showRCSticksAction(sender: AnyObject) {
         actionsView.hidden = true
-        if !msp.replaying {
-            leftStick.hidden = !leftStick.hidden
-            rightStick.hidden = !rightStick.hidden
-            showRCSticksButton.selected = !showRCSticksButton.selected
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.rcCommandsProvider = showRCSticksButton.selected ? self : nil
 
+        leftStick.hidden = !leftStick.hidden
+        rightStick.hidden = !rightStick.hidden
+        showRCSticksButton.selected = !showRCSticksButton.selected
+        if !msp.replaying && Settings.theSettings.features.contains(.RxMsp) {
+            actingRC = showRCSticksButton.selected
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.rcCommandsProvider = actingRC ? self : nil
+            leftStick.userInteractionEnabled = true
+            rightStick.userInteractionEnabled = true
+        } else {
+            if showRCSticksButton.selected {
+                startRcTimerIfNeeded()
+                leftStick.userInteractionEnabled = false
+                rightStick.userInteractionEnabled = false
+            } else {
+                stopRcTimer()
+            }
         }
     }
     
@@ -318,12 +329,28 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
         }
     }
-/*
-    func rcTimerDidFire(timer: NSTimer) {
-        let rcCommands = [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
-        msp.sendRawRc(rcCommands)
+    func receivedReceiverData() {
+        let receiver = Receiver.theReceiver
+        leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
+        leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
+        rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
+        rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
     }
-*/    
+    func startRcTimerIfNeeded() {
+        if showRCSticksButton.selected && !actingRC {
+            rcTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "rcTimerDidFire:", userInfo: nil, repeats: true)
+        }
+    }
+    
+    func stopRcTimer() {
+        rcTimer?.invalidate()
+        rcTimer = nil
+    }
+    
+    func rcTimerDidFire(timer: NSTimer) {
+        msp.sendMessage(.MSP_RC, data: nil)
+    }
+    
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
     }
