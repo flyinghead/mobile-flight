@@ -1,14 +1,10 @@
 - Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
-- Replay: NSKeyedArchiver throws NPE on invalid (truncated) archive
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
-- RC Sticks: confusing. Users expect them to show the current sticks position
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
-- Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
 - Mark inactive panels/gauge with red cross
 - UAV Health page (sensors, etc.) / Pre-flight checks page -> merge with Calibration
-- Flight Recorder: add data/time of session in file
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
@@ -17,7 +13,7 @@
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash, CLI
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-- Map: Add pin for RTH location
+- Map: Add pin for RTH location and current Pos Hold
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Map: Tapping on map shows "Go There" button -> Waypoint
 - Telemetry (map?): Display active profile, communication speed?
@@ -114,3 +110,7 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - CF can issue $M! packets for error cases. Happens for unknown MSP codes (or not compiled-in such as GPS in betaflight)
 - CLI support
 - Spurious network reachability callback, way after tcp/ip connection was closed
+- Replay: NSKeyedArchiver throws NPE on invalid (truncated) archive
+- RC Sticks: confusing. Users expect them to show the current sticks position
+- Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
+- Flight Recorder: add data/time of session in file
