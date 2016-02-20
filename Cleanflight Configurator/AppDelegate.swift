@@ -221,7 +221,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
     
     var lastArmedTime: Double {
-        return _lastArmedTime
+        if lastArming == nil {
+            // Disarmed
+            return _lastArmedTime
+        } else {
+            // Armed
+            return -(lastArming?.timeIntervalSinceNow ?? 0.0)
+        }
     }
     
     func startFlightlogRecording() {

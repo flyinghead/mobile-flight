@@ -1,3 +1,4 @@
+- Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
 - Replay: NSKeyedArchiver throws NPE on invalid (truncated) archive
@@ -29,6 +30,23 @@
 
 - Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
     Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
+
+- Hardware targets for iOS 8+ (http://iossupportmatrix.com/)
+    iPad2 (No BLE support)
+    iPhone 4S
+    new iPad
+    iPod Touch (5th gen)
+    iPad mini
+    iPhone 5
+    iPad (10/2012)
+    iPhone 5c
+    iPhone 5s
+    iPad Air
+    iPad mini 2
+    iPhone 6
+    iPhone 6+
+    iPad Air 2
+    iPad mini 3
 
 DONE:
 - Remove borders of text field in config and elsewhere. See Pages

@@ -103,6 +103,10 @@ class ReplayViewController: UITableViewController {
                                     cell.maxDistanceLabel.text = formatDistance(stats!.maxDistanceToHome)
                                     cell.maxAmpsLabel.text = formatWithUnit(stats!.maxAmps, unit: "A")
                                 }
+                                
+                                if stats!.armedDate.timeIntervalSinceReferenceDate > 0 {
+                                    title = df.stringFromDate(stats!.armedDate)
+                                }
                             }
                         } catch let error as NSError {
                             NSLog("Cannot get attributes of %@: %@", fileUrl, error)
@@ -178,6 +182,9 @@ class ReplayViewController: UITableViewController {
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
                     if detailedRow == indexPath.row {
                         detailedRow = -1
+                    } else if detailedRow > indexPath.row {
+                        detailedRow--
+                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: detailedRow, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Middle)
                     }
                 } catch let error as NSError {
                     NSLog("Cannot delete %@: %@", fileUrl, error)
