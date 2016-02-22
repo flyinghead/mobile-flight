@@ -44,7 +44,8 @@ class WifiViewController: UIViewController {
     }
     
     private func doConnectTcp(host: String, port: Int?) {
-        let tcpComm = TCPComm(msp: msp, host: host, port: port)
+        let mavlink = MAVLink()
+        let tcpComm = TCPComm(msp: mavlink, host: host, port: port)
         
         let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
@@ -54,7 +55,7 @@ class WifiViewController: UIViewController {
         tcpComm.connect({ success in
             timeOutTimer.invalidate()
             if success {
-                self.initiateHandShake({ success in
+                self.initiateMAVLinkHandShake(mavlink, callback: { success in
                     if success {
                         (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                     } else {

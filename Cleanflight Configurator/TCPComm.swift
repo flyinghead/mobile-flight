@@ -17,7 +17,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
     private var outStream: NSOutputStream!
     
-    var msp: MSPParser
+    var msp: ProtocolHandler
     var connectCallback: ((success: Bool) -> ())?
     var _connected = false
     var networkLost = false
@@ -25,7 +25,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     var _reachabilityContext: SCNetworkReachabilityContext?
     var thread: NSThread!
     
-    init(msp: MSPParser, host: String, port: Int?) {
+    init(msp: ProtocolHandler, host: String, port: Int?) {
         self.msp = msp
         self.host = host
         self.port = port ?? 23
