@@ -3,3 +3,5 @@
 //
 #import "StaticDataTableViewController.h"
 #import "TryCatch.h"
+#import "mavlink.h"
+#import "common/common.h"

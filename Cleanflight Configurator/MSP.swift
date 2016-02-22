@@ -37,7 +37,7 @@ class DataMessageRetryHandler : MessageRetryHandler {
     }
 }
 
-class MSPParser {
+class MSPParser : ProtocolHandler {
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
     
