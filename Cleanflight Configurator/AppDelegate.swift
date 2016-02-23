@@ -153,14 +153,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         return true
     }
     
-    // MARK: FlightDataListener
-    
-    func receivedData() {
+    private func dismissNoDataReceived() {
         lastDataReceived = NSDate()
         if noDataReceived {
             SVProgressHUD.dismiss()
             noDataReceived = false
         }
+    }
+    
+    // MARK: FlightDataListener
+    
+    func receivedData() {
+        dismissNoDataReceived()
         
         checkArmedStatus()
         
@@ -173,12 +177,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
     
+    func receivedSensorData() {
+        dismissNoDataReceived()
+    }
+    
+    func receivedAltitudeData() {
+        dismissNoDataReceived()
+    }
+    
     func receivedGpsData() {
-        lastDataReceived = NSDate()
-        if noDataReceived {
-            SVProgressHUD.dismiss()
-            noDataReceived = false
-        }
+        dismissNoDataReceived()
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     

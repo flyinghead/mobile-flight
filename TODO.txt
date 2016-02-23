@@ -1,3 +1,4 @@
+- Imperial units: knot for speed, mph would be better??? switch to mile for DTH when > 1 mile
 - Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth

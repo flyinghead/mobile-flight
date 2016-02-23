@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 import MapKit
 
-enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
-
 class MessageRetryHandler {
     let code: MSP_code
     let data: [UInt8]?
@@ -41,18 +39,11 @@ class DataMessageRetryHandler : MessageRetryHandler {
 
 class MSPParser {
     let CHANNEL_FORWARDING_DISABLED = 0xFF
+    let codec = MSPCodec()
     
     var datalog: NSFileHandle?
     var datalogStart: NSDate?
     
-    var state: ParserState = .Sync1
-    var directionOut: Bool = false
-    var unknownMSPCode = false
-    var expectedMsgLength: Int = 0
-    var checksum: UInt8 = 0
-    var messageBuffer: [UInt8]?
-    var code: UInt8 = 0
-    var errors: Int = 0
     var outputQueue = [[UInt8]]()
     
     var dataListeners = [FlightDataListener]()
@@ -101,90 +92,16 @@ class MSPParser {
             receiveStats.removeLast()
         }
         objc_sync_exit(self)
-            
+        
         for b in data {
-            var bbuf = b
-            let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: NSASCIIStringEncoding)! : NSString(format: "[%d]", b)
-            //NSLog("%@", bstr)
-            
-            switch state {
-            case .Sync1:
-                if b == 36 { // $
-                    state = .Sync2
-                } else {
-                    NSLog("MSP expected '$', got %@", bstr)
-                }
-            case .Sync2:
-                if b == 77 { // M
-                    state = .Direction
-                } else {
-                    NSLog("MSP expected 'M', got %@", bstr)
-                    state = .Sync1
-                }
-            case .Direction:
-                if b == 62 { // >
-                    unknownMSPCode = false
-                    directionOut = false
-                    state = .Length
-                } else if b == 60 {     // <
-                    unknownMSPCode = false
-                    directionOut = true
-                    state = .Length
-                } else if b == 33 {     // !
-                    unknownMSPCode = true
-                    state = .Length
-                } else {
-                    NSLog("MSP expected '>', got %@", bstr)
-                    state = .Sync1
-                }
-            case .Length:
-                expectedMsgLength = Int(b);
-                checksum = b;
-                
-                messageBuffer = [UInt8]()
-                state = .Code
-            case .Code:
-                code = b
-                checksum ^= b
-                if expectedMsgLength > 0 {
-                    state = .Payload
-                } else {
-                    state = .Checksum       // No payload
-                }
-            case .Payload:
-                messageBuffer?.append(b);
-                checksum ^= b
-                if messageBuffer?.count >= expectedMsgLength {
-                    state = .Checksum
-                }
-            case .Checksum:
-                let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-                if checksum == b && mspCode != .MSP_UNKNOWN && !directionOut && !unknownMSPCode {
-                    //NSLog("Received MSP %d", mspCode.rawValue)
-                    if processMessage(mspCode, message: messageBuffer!) {
-                        callSuccessCallback(mspCode, data: messageBuffer!)
+            if let (success, mspCode, message) = codec.decode(b) {
+                if success {
+                    if processMessage(mspCode, message: message) {
+                        callSuccessCallback(mspCode, data: message)
                     }
                 } else {
-                    if unknownMSPCode {
-                        callErrorCallback(mspCode)
-                    } else {
-                        let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
-                        if checksum != b {
-                            NSLog("MSP code %d - checksum failed: %@", code, datalog)
-                        } else if directionOut {
-                            NSLog("MSP code %d - received outgoing message", code)
-                        } else {
-                            NSLog("Unknown MSP code %d: %@", code, datalog)
-                        }
-                        errors++
-                        // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
-                        if checksum != b && b == 36 {     // $
-                            state = .Sync2
-                            break
-                        }
-                    }
+                    callErrorCallback(mspCode)
                 }
-                state = .Sync1
             }
         }
     }
@@ -721,20 +638,8 @@ class MSPParser {
             retriedMessages[code] = messageRetry
             objc_sync_exit(retriedMessageLock)
         }
-        let dataSize = data?.count ?? 0
-        //                      $    M   <
-        var buffer: [UInt8] = [36 , 77, 60, UInt8(dataSize), UInt8(code.rawValue)]
-        var checksum: UInt8 = UInt8(code.rawValue) ^ buffer[3]
         
-        if (data != nil) {
-            buffer.appendContentsOf(data!)
-            for b in data! {
-                checksum ^= b
-            }
-        }
-        buffer.append(checksum)
-        
-        addOutputMessage(buffer)
+        addOutputMessage(codec.encode(code, message: data))
     }
     
     func sendMessage(code: MSP_code, data: [UInt8]?) {

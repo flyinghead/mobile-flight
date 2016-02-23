@@ -56,6 +56,10 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
+		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
 		AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */; };
@@ -94,6 +98,16 @@
 		AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEF1903E1C3F062D0066C75A /* TryCatch.m */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
+		AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
+		AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+		AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
 /* End PBXBuildFile section */
 
@@ -225,6 +239,8 @@
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
+		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanflightSimulator.swift; sourceTree = "<group>"; };
+		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -380,6 +396,7 @@
 				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */,
 				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
@@ -416,6 +433,7 @@
 			children = (
 				AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */,
 				AE72AB7D1C0F3D230020C4B0 /* Info.plist */,
+				AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */,
 			);
 			path = "Cleanflight ConfiguratorUITests";
 			sourceTree = "<group>";
@@ -657,6 +675,7 @@
 				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
+				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
@@ -728,7 +747,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */,
+				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
 				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
+				AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */,
+				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
+				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
+				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,7 +761,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */,
+				AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */,
+				AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */,
+				AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */,
 				AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */,
+				AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */,
+				AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */,
+				AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

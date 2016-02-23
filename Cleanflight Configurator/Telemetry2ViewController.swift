@@ -200,7 +200,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
         
         if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
-            accroModeLabel.text = "ANGLE"
+            accroModeLabel.text = "ANGL"
             accroModeLabel.hidden = false
         } else if settings.isModeOn(Mode.HORIZON, forStatus: config.mode) {
             accroModeLabel.text = "HOZN"
