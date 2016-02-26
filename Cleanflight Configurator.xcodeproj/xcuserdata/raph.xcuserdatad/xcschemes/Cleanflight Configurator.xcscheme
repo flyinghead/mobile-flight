@@ -48,6 +48,16 @@
                ReferencedContainer = "container:Cleanflight Configurator.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AE1DD67C1C7E23F300861248"
+               BuildableName = "KIFTests.xctest"
+               BlueprintName = "KIFTests"
+               ReferencedContainer = "container:Cleanflight Configurator.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

@@ -158,4 +158,19 @@ class AttitudeIndicator2: UIView {
         
         CGContextFillEllipseInRect(ctx, CGRect(x: bounds.midX - cornerRadius, y: CGFloat(horizonY) - cornerRadius, width: cornerRadius * 2, height: cornerRadius * 2))
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let originY = self.horizonY * Double(bounds.height) + Double(bounds.minY)
+        for v in subviews {
+            if var view = v as? NeedsOrigin {
+                view.origin = originY - Double(v.frame.minY)
+            }
+        }
+
+    }
+}
+
+protocol NeedsOrigin {
+    var origin: Double { get set }
 }

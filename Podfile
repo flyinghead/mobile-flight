@@ -14,3 +14,8 @@ end
 pod "DownPicker"
 pod "Charts"
 pod "SVProgressHUD"
+
+target 'KIFTests', :exclusive => true do
+    pod 'KIF', '~> 3.0', :configurations => ['Debug']
+    pod 'KIF/IdentifierTests', :configurations => ['Debug']
+end

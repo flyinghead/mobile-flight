@@ -9,6 +9,10 @@
 import UIKit
 
 class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
+    let SpeedScale = 30.0       // points per km/h
+    let AltScale = 40.0         // points per m
+    let VarioScale = 82.0       // points per m/s
+    
     @IBOutlet weak var attitudeIndicator: AttitudeIndicator2!
     @IBOutlet weak var headingStrip: HeadingStrip!
     @IBOutlet weak var speedScale: VerticalScale!
@@ -36,6 +40,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var ampsValueLabel: BlinkingLabel!
     @IBOutlet weak var mAhGauge: RoundGauge!
     @IBOutlet weak var mAHValueLabel: BlinkingLabel!
+    @IBOutlet weak var speedUnitLabel: UILabel!
+    @IBOutlet weak var altitudeUnitLabel: UILabel!
 
     @IBOutlet weak var camStabMode: UIButton!
     @IBOutlet weak var calibrateMode: UIButton!
@@ -60,17 +66,57 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             speedScale.backgroundColor!.getWhite(nil, alpha: &alpha)
             speedScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
         }
+        if speedUnitLabel.backgroundColor != nil {
+            speedUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
+            speedUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+        }
+
         if altitudeScale.backgroundColor != nil {
             altitudeScale.backgroundColor!.getWhite(nil, alpha: &alpha)
             altitudeScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
         }
-        //batteryLabel.text = "?"
+        if altitudeUnitLabel.backgroundColor != nil {
+            altitudeUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
+            altitudeUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+        }
+        
         rssiLabel.text = "?"
         gpsLabel.text = "?"
         timeLabel.text = "00:00"
         dthLabel.text = ""
         
         voltsValueLabel.displayUnit = false
+        
+        setInstrumentsUnitSystem()
+    }
+    
+    func setInstrumentsUnitSystem() {
+        speedScale.scale = useImperialUnits() ? SpeedScale * 1.852 : SpeedScale
+        altitudeScale.scale = useImperialUnits() ? AltScale * 2.54 * 12 / 100 : AltScale
+        if useImperialUnits() {
+            altitudeScale.mainTicksInterval = 10
+            altitudeScale.subTicksInterval = 5
+            altitudeScale.subSubTicksInterval = 1
+            
+            variometerScale.mainTicksInterval = 1
+            variometerScale.subTicksInterval = 0
+            variometerScale.subSubTicksInterval = 0.2
+            
+            speedUnitLabel.text = "kn"
+            altitudeUnitLabel.text = "ft"
+        } else {
+            altitudeScale.mainTicksInterval = 1
+            altitudeScale.subTicksInterval = 0.5
+            altitudeScale.subSubTicksInterval = 0
+            
+            variometerScale.mainTicksInterval = 1
+            variometerScale.subTicksInterval = 0.5
+            variometerScale.subSubTicksInterval = 0.1
+            
+            speedUnitLabel.text = "km/h"
+            altitudeUnitLabel.text = "m"
+        }
+        variometerScale.scale = useImperialUnits() ? VarioScale * 2.54 * 12 / 100 : VarioScale
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -97,6 +143,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             appDelegate.rcCommandsProvider = self
         }
         viewDisappeared = false
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+    }
+    
+    func userDefaultsDidChange(sender: AnyObject) {
+        setInstrumentsUnitSystem()
     }
     
     private func startNavBarTimer() {
@@ -134,6 +186,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
     }
     
     func receivedSensorData() {

@@ -20,6 +20,14 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     var amps = 0.0
     var mAh = 0
     var rssi = 0
+    var roll = 0.0
+    var pitch = 0.0
+    var heading = 0
+    var altitude = 0.0
+    var variometer = 0.0
+    var numSats = 0
+    var speed = 0.0
+    var distanceToHome = 0
     
     private var boxnames: [Mode] = [ .ANGLE, .ARM, .AUTOTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPSHOLD, .GPSHOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSDSW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY ]
     
@@ -89,11 +97,23 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     func stop() {
         closeStreams()
         close(socketFD)
+        resetValues()
+    }
+    
+    func resetValues() {
         mode = 0
         voltage = 0.0
         amps = 0
         mAh = 0
         rssi = 0
+        roll = 0.0
+        pitch = 0.0
+        heading = 0
+        altitude = 0.0
+        variometer = 0.0
+        numSats = 0
+        speed = 0.0
+        distanceToHome = 0
     }
     
     func stream(stream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -160,16 +180,15 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
         case .MSP_API_VERSION:
             send(mspCode, NSNumber(char: 0), NSNumber(char: 1), NSNumber(char: 7))
         case .MSP_ATTITUDE:
-            send(mspCode, NSNumber(short: 0), NSNumber(short: 0), NSNumber(short: 0))
+            send(mspCode, NSNumber(short: Int16(roll * 10)), NSNumber(short: Int16(pitch * 10)), NSNumber(short: Int16(heading)))
+        case .MSP_ALTITUDE:
+            send(mspCode, NSNumber(int: Int32(altitude * 100)), NSNumber(short: Int16(variometer * 100)))
         case .MSP_UID:
             send(mspCode, NSNumber(unsignedInt: 0xBAADF00D), NSNumber(unsignedInt: 0xBAADF00D), NSNumber(unsignedInt: 0xBAADF00D))
         case .MSP_BOXNAMES:
             var boxnamesString = ""
             for name in boxnames {
-                if !boxnamesString.isEmpty {
-                    boxnamesString += ";"
-                }
-                boxnamesString += name.rawValue
+                boxnamesString += name.rawValue + ";"
             }
             send(mspCode, boxnamesString);
         case .MSP_BF_CONFIG:
@@ -178,6 +197,10 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
             send(mspCode, NSNumber(short: 3500), NSNumber(short: 0), NSNumber(short: 0x7FFF), NSNumber(unsignedInt: mode), NSNumber(char: 0))
         case .MSP_ANALOG:
             send(mspCode, NSNumber(char: Int8(voltage * 10.0)), NSNumber(short: Int16(mAh)), NSNumber(short: Int16(rssi)), NSNumber(short: Int16(amps * 100)))
+        case .MSP_RAW_GPS:
+            send(mspCode, NSNumber(char: 1), NSNumber(char: Int8(numSats)), NSNumber(int: 0), NSNumber(int: 0), NSNumber(short: 0), NSNumber(short: Int16(speed * 100000 / 3600)), NSNumber(short: Int16(heading * 10)))
+        case .MSP_COMP_GPS:
+            send(mspCode, NSNumber(short: Int16(distanceToHome)), NSNumber(short: 0), NSNumber(char: 1))
         default:
             NSLog("CleanflightSimulator: Unhandled operation %d", mspCode.rawValue)
         }
@@ -246,11 +269,15 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     func setMode(mode: Mode) {
         if let index = boxnames.indexOf(mode) {
             self.mode = self.mode | UInt32(1 << Int(index.value))
+        } else {
+            XCTFail("Unknown mode")
         }
     }
     func unsetMode(mode: Mode) {
         if let index = boxnames.indexOf(mode) {
             self.mode = self.mode & ~UInt32(1 << Int(index.value))
+        } else {
+            XCTFail("Unknown mode")
         }
     }
 }

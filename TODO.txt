@@ -1,3 +1,4 @@
+- iPhone 4 support?
 - Imperial units: knot for speed, mph would be better??? switch to mile for DTH when > 1 mile
 - Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
 - Move Settings into app
@@ -115,3 +116,5 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - RC Sticks: confusing. Users expect them to show the current sticks position
 - Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
 - Flight Recorder: add data/time of session in file
+- Speed, altitude indicator and variometer are in metric units, regardless of user settings
+
