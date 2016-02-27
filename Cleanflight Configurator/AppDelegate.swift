@@ -115,7 +115,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
         msp.sendMessage(.MSP_ANALOG, data: nil)
-        msp.sendMessage(.MSP_WP, data: [ 16  ])             // Altitude hold, mag hold
+        // WP #0 = home, WP #16 = poshold
+        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ])   // Altitude hold, mag hold
         //NSLog("Status Requested")
         
         if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.75 && msp.communicationHealthy {

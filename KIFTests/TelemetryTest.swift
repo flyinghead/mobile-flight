@@ -54,17 +54,43 @@ class TelemetryTest : XCTestCase {
         tester().waitForTappableViewWithAccessibilityLabel("Wi-Fi")
     }
     
+    private func colorsEqual(color1: UIColor, _ color2: UIColor) -> Bool {
+        var red1: CGFloat = 0, green1: CGFloat = 0, blue1: CGFloat = 0, alpha1: CGFloat = 0
+        color1.getRed(&red1, green: &green1, blue: &blue1, alpha: &alpha1)
+        var red2: CGFloat = 0, green2: CGFloat = 0, blue2: CGFloat = 0, alpha2: CGFloat = 0
+        color1.getRed(&red2, green: &green2, blue: &blue2, alpha: &alpha2)
+
+        return red1 == red2 && green1 == green2 && blue1 == blue2 && alpha1 == alpha2
+    }
+    
     func testRssi() {
         connect()
-        
+        NSUserDefaults().setBool(true, forKey: "rssialarm_enabled")
+        NSUserDefaults().setInteger(20, forKey: "rssialarm_low")
+        NSUserDefaults().setInteger(10, forKey: "rssialarm_critical")
+
+        let rssi = tester().waitForViewWithAccessibilityIdentifier("rssi") as! UILabel
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.redColor()))
+        // Check blink
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'rssi'"), tappable: false)
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
+
         CleanflightSimulator.instance.rssi = 676    // 676 / 1023 = 66%
         
         tester().waitForViewWithAccessibilityLabel("66%")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.whiteColor()))
+        
+        NSUserDefaults().setInteger(70, forKey: "rssialarm_low")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.yellowColor()))
+        
+        NSUserDefaults().setInteger(70, forKey: "rssialarm_critical")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.redColor()))
     }
 
     func testBatteryIndicators() {
         connect()
-        
+
         CleanflightSimulator.instance.voltage = 12.3
         tester().waitForViewWithAccessibilityLabel("12.3")
         
@@ -183,10 +209,29 @@ class TelemetryTest : XCTestCase {
     func testGPSSatsAndDTH() {
         connect()
         
+        CleanflightSimulator.instance.numSats = 4
+        
+        let gpsSats = tester().waitForViewWithAccessibilityIdentifier("gpsSats") as! UILabel
+        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.redColor()))
+        // Check blink
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+
+        tester().tapViewWithAccessibilityLabel("menuw 1")
+        let followMe = tester().waitForViewWithAccessibilityLabel("Follow Me") as! UIButton
+        XCTAssert(!followMe.enabled)
+
         CleanflightSimulator.instance.numSats = 17
         CleanflightSimulator.instance.distanceToHome = 88
         
         tester().waitForViewWithAccessibilityLabel("17")
         tester().waitForViewWithAccessibilityLabel("289ft") // = 88m
+        tester().tapViewWithAccessibilityLabel("menuw 1")
+        XCTAssert(followMe.enabled)
+        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.whiteColor()))
+        
+        CleanflightSimulator.instance.distanceToHome = Int(1852.0 * 1.5)
+        tester().waitForViewWithAccessibilityLabel("1.5NM")
     }
 }

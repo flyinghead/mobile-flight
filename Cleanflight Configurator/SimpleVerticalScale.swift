@@ -9,14 +9,20 @@
 import UIKit
 
 @IBDesignable
-class SimpleVerticalScale: BaseVerticalScale {
+class SimpleVerticalScale: BaseVerticalScale, NeedsOrigin {
 
+    @IBInspectable var origin: Double = 0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override func drawRect(rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
         CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
         
-        let topValue = Double(bounds.height) / 2.0 / scale
+        let topValue = (origin - Double(bounds.minY)) / scale
         drawVerticalScale(ctx, top: topValue)
         drawNeedle(ctx, topValue: topValue)
     }

@@ -42,6 +42,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var mAHValueLabel: BlinkingLabel!
     @IBOutlet weak var speedUnitLabel: UILabel!
     @IBOutlet weak var altitudeUnitLabel: UILabel!
+    @IBOutlet weak var altHoldIndicator: UILabel!
 
     @IBOutlet weak var camStabMode: UIButton!
     @IBOutlet weak var calibrateMode: UIButton!
@@ -78,6 +79,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         if altitudeUnitLabel.backgroundColor != nil {
             altitudeUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
             altitudeUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+        }
+        if let parent = altHoldIndicator.superview {
+            if parent.backgroundColor != nil {
+                parent.backgroundColor!.getWhite(nil, alpha: &alpha)
+                parent.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            }
         }
         
         rssiLabel.text = "?"
@@ -145,6 +152,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         viewDisappeared = false
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        
+        followMeButton.enabled = false
     }
     
     func userDefaultsDidChange(sender: AnyObject) {
@@ -203,6 +212,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         altitudeScale.bugs.removeAll()
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
             altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
+            altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
+        } else {
+            altHoldIndicator.text = ""
         }
 
         headingStrip.bugs.removeAll()
@@ -235,7 +247,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             voltsGauge.ranges.append((min: misc.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
         }
 
-        //batteryLabel.voltage = config.voltage
         voltsValueLabel.voltage = config.voltage
         voltsGauge.value = config.voltage
         
@@ -309,6 +320,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
             dthLabel.text = formatDistance(Double(gpsData.distanceToHome))
             speedScale.currentValue = gpsData.speed
+            
+            followMeButton.enabled = !msp.replaying
         } else {
             let config = Configuration.theConfig
             if config.isGPSActive() {
@@ -317,6 +330,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
             dthLabel.text = ""
             speedScale.currentValue = 0
+            
+            followMeButton.enabled = false
         }
         let config = Configuration.theConfig
         if !config.isBarometerActive() && !config.isSonarActive()  {

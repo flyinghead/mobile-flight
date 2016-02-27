@@ -1,6 +1,5 @@
-- iPhone 4 support?
-- Imperial units: knot for speed, mph would be better??? switch to mile for DTH when > 1 mile
-- Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
+- Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
+- Imperial units: Should be able to choose between NM / kn and mile / mph
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
@@ -15,11 +14,9 @@
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash, CLI
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-- Map: Add pin for RTH location and current Pos Hold
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
-- Map: Tapping on map shows "Go There" button -> Waypoint
 - Telemetry (map?): Display active profile, communication speed?
-- Settings: Map type (sat, hybrid, map)
+- Map: Map type (sat, hybrid, map)
 - Backup / Restore
 (- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
 - Ability to name models: use cleanflight UID and BT uuid to identify it. Alert levels settings (Alt, Amp, mAh, etc.) are specific to model
@@ -117,4 +114,10 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
 - Flight Recorder: add data/time of session in file
 - Speed, altitude indicator and variometer are in metric units, regardless of user settings
+- Replay: detailed row: the DTH icon is in blue in some cases
+- Switch to nautical mile for DTH when > 1 mile
+- iPhone 4 support: No because BLE not supported
+- Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off. Working as designed. iOS pops up an alert to enable Bluetooth.
+- Map: Add pin for RTH location and current Pos Hold
+- Map: Tapping on map shows "Go There" button -> Waypoint
 

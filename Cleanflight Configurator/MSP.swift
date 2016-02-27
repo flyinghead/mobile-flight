@@ -242,7 +242,7 @@ class MSPParser {
 
             gpsData.fix = message[0] != 0
             gpsData.numSat = Int(message[1])
-            gpsData.position = CLLocationCoordinate2D(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
+            gpsData.position = GPSLocation(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
@@ -405,9 +405,15 @@ class MSPParser {
             if message.count < 18 {
                 return false
             }
-            // int8: WP number (0: home, 16: position hold)
-            // int32: latitude
-            // int32: longitude
+            let wpNum = message[0]
+            let position = GPSLocation(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000)
+            if wpNum == 0 {
+                gpsData.homePosition = position
+                pingGpsListeners()
+            } else if wpNum == 16 {
+                gpsData.posHoldPosition = position
+                pingGpsListeners()
+            }
             sensorData.altitudeHold = Double(readInt32(message, index: 9)) / 100    // cm
             sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
             pingSensorListeners()

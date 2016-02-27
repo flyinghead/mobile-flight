@@ -68,21 +68,26 @@ func formatWithUnit(reading: Double, unit: String) -> String {
 
 func formatDistance(meters: Double) -> String {
     if useImperialUnits() {
-        // Use feet since distances are typically small. We should use nautical miles for large distances
-        return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+        if meters >= 1852 {
+            // Use nautical mile
+            return formatWithUnit(meters / 1852, unit: "NM")
+        } else {
+            // Use feet
+            return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+        }
     } else {
         // Meters
         return formatWithUnit(meters, unit: "m")
     }
 }
 
-func formatAltitude(meters: Double) -> String {
+func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
     if useImperialUnits() {
         // Feet
-        return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+        return formatWithUnit(meters * 100 / 2.54 / 12, unit: appendUnit ? "ft" : "")
     } else {
         // Meters
-        return formatWithUnit(meters, unit: "m")
+        return formatWithUnit(meters, unit: appendUnit ? "m" : "")
     }
 }
 

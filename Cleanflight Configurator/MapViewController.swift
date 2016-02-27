@@ -25,6 +25,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     
     var annotationView: MKAnnotationView?
     
+    var aircraftLocation: MKPointAnnotation?
+    var homeLocation: MKPointAnnotation?
+    var posHoldLocation: MKPointAnnotation?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -108,6 +112,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let armedTime = Int(round(appDelegate.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
+        
+        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
+            mapView.removeAnnotation(posHoldLocation!)
+            posHoldLocation = nil
+        }
     }
     
     func received3drRssiData() {
@@ -165,21 +174,55 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 let polyline = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
                 mapView.addOverlay(polyline)
                 
-                if let annotation = mapView.annotations.filter({ annot in
-                    return annot is MKPointAnnotation
-                }).first as? MKPointAnnotation {
-                    UIView.animateWithDuration(0.1, animations: {
-                        annotation.coordinate = MapViewController.getAircraftCoordinates()!
-                    })
-                    annotationView?.setNeedsDisplay()
+                let coordinate = MapViewController.getAircraftCoordinates()!
+                if aircraftLocation != nil {
+                    if (aircraftLocation!.coordinate.latitude != coordinate.latitude || aircraftLocation!.coordinate.longitude != coordinate.longitude) {
+                        UIView.animateWithDuration(0.1, animations: {
+                            self.aircraftLocation!.coordinate = coordinate
+                        })
+                        annotationView?.setNeedsDisplay()
+                    }
                 } else {
-                    let annotation = MKPointAnnotation()
-                    annotation.title = "Aircraft"
-                    annotation.coordinate = MapViewController.getAircraftCoordinates()!
-                    mapView.addAnnotation(annotation)
+                    aircraftLocation = MKPointAnnotation()
+                    aircraftLocation!.title = "Aircraft"
+                    aircraftLocation!.coordinate = coordinate
+                    mapView.addAnnotation(aircraftLocation!)
                 }
-                
             }
+        }
+        if gpsData.homePosition != nil {
+            var addAnnot = true
+            if homeLocation != nil {
+                if homeLocation!.coordinate.latitude == gpsData.homePosition!.latitude && homeLocation!.coordinate.longitude == gpsData.homePosition!.longitude {
+                    addAnnot = false
+                } else {
+                    mapView.removeAnnotation(homeLocation!)
+                }
+            }
+            if addAnnot {
+                homeLocation = MKPointAnnotation()
+                homeLocation!.coordinate = gpsData.homePosition!.toCLLocationCoordinate2D()
+                homeLocation!.title = "Home"
+                mapView.addAnnotation(homeLocation!)
+            }
+            
+        }
+        if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
+            var addAnnot = true
+            if posHoldLocation != nil {
+                if posHoldLocation!.coordinate.latitude == gpsData.posHoldPosition!.latitude && posHoldLocation!.coordinate.longitude == gpsData.posHoldPosition!.longitude {
+                    addAnnot = false
+                } else {
+                    mapView.removeAnnotation(posHoldLocation!)
+                }
+            }
+            if addAnnot {
+                posHoldLocation = MKPointAnnotation()
+                posHoldLocation!.coordinate = gpsData.posHoldPosition!.toCLLocationCoordinate2D()
+                posHoldLocation!.title = "Position Hold"
+                mapView.addAnnotation(posHoldLocation!)
+            }
+            
         }
     }
     
@@ -187,6 +230,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         if annotation.title ?? "" == "Aircraft" {
             annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: nil)
             return annotationView
+        } else if annotation === homeLocation {
+            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "homeAnnotationView")
+            view.canShowCallout = true
+            view.pinColor = MKPinAnnotationColor.Green
+            return view
+        } else if annotation === posHoldLocation {
+            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "posHoldAnnotationView")
+            view.canShowCallout = true
+            view.pinColor = MKPinAnnotationColor.Purple
+            return view
         }
         
         return nil
@@ -202,6 +255,35 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
             mapView.showsUserLocation = true
+        }
+    }
+    
+    @IBAction func longPressOnMap(sender: UILongPressGestureRecognizer) {
+        if msp.replaying {
+            return
+        }
+        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: Configuration.theConfig.mode) {
+            let alertController = UIAlertController(title: "Waypoint", message: "Enable GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            alertController.popoverPresentationController?.sourceView = mapView
+            presentViewController(alertController, animated: true, completion: nil)
+
+            return
+        }
+        let point = sender.locationInView(mapView)
+        if sender.state == .Began {
+            let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
+            
+            let message = String(format: "Navigate to location %@ %.04f, %@ %.04f ?", locale: NSLocale.currentLocale(), coordinates.latitude >= 0 ? "N" : "S", abs(coordinates.latitude), coordinates.longitude >= 0 ? "E" : "W", abs(coordinates.longitude))
+            let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in
+                // TODO allow to set altitude
+                self.msp.sendWaypoint(16, latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
+            }))
+            alertController.popoverPresentationController?.sourceView = mapView
+            presentViewController(alertController, animated: true, completion: nil)
+
         }
     }
 }

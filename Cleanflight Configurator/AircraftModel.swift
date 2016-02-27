@@ -727,22 +727,52 @@ struct Satellite : DictionaryCoding {
     }
 }
 
+struct GPSLocation : DictionaryCoding {
+    var latitude: Double
+    var longitude: Double
+    
+    init(latitude: Double, longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let latitude = dict["latitude"] as? Double,
+            let longitude = dict["longitude"] as? Double
+            else { return nil }
+        
+        self.init(latitude: latitude, longitude: longitude)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "latitude": latitude, "longitude": longitude ]
+    }
+    
+    // MARK:
+    
+    func toCLLocationCoordinate2D() -> CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
 class GPSData : AutoCoded {
     var autoEncoding = [ "fix", "latitude", "longitude", "altitude", "speed", "headingOverGround", "numSat", "distanceToHome", "directionToHome", "update", "lastKnownGoodLatitude", "lastKnownGoodLongitude", "lastKnownGoodAltitude", "lastKnownGoodTimestamp" ]
     static var theGPSData = GPSData()
     
     // MSP_RAW_GPS
     var fix = false
-    var position: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+    var position: GPSLocation = GPSLocation(latitude: 0, longitude: 0) {
         didSet {
             if fix {
-                // Hack to avoid bogus first position with lat or long at 0 when the object is decoded and uses the kat and long setters in sequence
+                // Hack to avoid bogus first position with lat or long at 0 when the object is decoded and uses the lat and long setters in sequence
                 if position.latitude != 0 && position.longitude != 0 {
                     lastKnownGoodLatitude = position.latitude
                     lastKnownGoodLongitude = position.longitude
                     lastKnownGoodTimestamp = NSDate()
                     
-                    positions.append(position)
+                    positions.append(position.toCLLocationCoordinate2D())
                 }
             }
         }
@@ -751,7 +781,7 @@ class GPSData : AutoCoded {
         get {
             return position.latitude
         }
-        // FIXME we should serialize position instead
+        // FIXME Only needed for backward compatibility of old flight log files
         set(value) {
             position.latitude = value
         }
@@ -760,6 +790,7 @@ class GPSData : AutoCoded {
         get {
             return position.longitude
         }
+        // FIXME Only needed for backward compatibility of old flight log files
         set(value) {
             position.longitude = value
         }
@@ -797,6 +828,10 @@ class GPSData : AutoCoded {
     var directionToHome = 0     // degree
     var update = 0
     
+    // MSP_WP
+    var homePosition: GPSLocation?
+    var posHoldPosition: GPSLocation?
+
     // Local
     var lastKnownGoodLatitude = 0.0
     var lastKnownGoodLongitude = 0.0
@@ -835,6 +870,15 @@ class GPSData : AutoCoded {
                 _satellites.append(Satellite(fromDict: dict)!)
             }
         }
+        if let positionDict = aDecoder.decodeObjectForKey("position") as? NSDictionary {
+            position = GPSLocation(fromDict: positionDict)!
+        }
+        if let positionDict = aDecoder.decodeObjectForKey("homePosition") as? NSDictionary {
+            homePosition = GPSLocation(fromDict: positionDict)!
+        }
+        if let positionDict = aDecoder.decodeObjectForKey("posHoldPosition") as? NSDictionary {
+            posHoldPosition = GPSLocation(fromDict: positionDict)!
+        }
     }
     
     override func encodeWithCoder(aCoder: NSCoder) {
@@ -845,6 +889,13 @@ class GPSData : AutoCoded {
             satellitesDicts.append(satellite.toDict())
         }
         aCoder.encodeObject(satellitesDicts, forKey: "satellites")
+        aCoder.encodeObject(position.toDict(), forKey: "position")
+        if homePosition != nil {
+            aCoder.encodeObject(homePosition!.toDict(), forKey: "homePosition")
+        }
+        if posHoldPosition != nil {
+            aCoder.encodeObject(posHoldPosition!.toDict(), forKey: "posHoldPosition")
+        }
     }
 }
 
