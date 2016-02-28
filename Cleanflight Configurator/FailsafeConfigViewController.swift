@@ -11,6 +11,7 @@ import UIKit
 class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet weak var failsafeSwitch: UISwitch!
     @IBOutlet weak var throttleField: ThrottleField!
+    @IBOutlet var pre112Config: [UITableViewCell]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,14 +20,8 @@ class FailsafeConfigViewController: ConfigChildViewController {
     }
     
     @IBAction func failsafeSwitchChanged(sender: AnyObject) {
-        tableView.reloadData()
-    }
-
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if !failsafeSwitch.on {
-            return 1
-        }
-        return super.numberOfSectionsInTableView(tableView)
+        cells(pre112Config, setHidden: !failsafeSwitch.on)
+        reloadDataAnimated(true)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -46,6 +41,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
         
         failsafeSwitch.on = settings!.features.contains(.Failsafe)
         throttleField.value = Double(misc!.failsafeThrottle)
-        tableView.reloadData()
+        cells(pre112Config, setHidden: !failsafeSwitch.on)
+        reloadDataAnimated(true)
     }
 }

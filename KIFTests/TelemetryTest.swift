@@ -157,6 +157,10 @@ class TelemetryTest : XCTestCase {
         // Failsafe
         CleanflightSimulator.instance.setMode(.FAILSAFE)
         tester().waitForViewWithAccessibilityLabel("RX FAIL")
+        
+        // Air Mode
+        CleanflightSimulator.instance.setMode(.AIR)
+        tester().waitForViewWithAccessibilityLabel("AIR")
     }
     
     func testSecondaryFlightModes() {

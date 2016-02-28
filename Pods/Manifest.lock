@@ -6,6 +6,7 @@ PODS:
   - KIF/Core (3.3.2)
   - KIF/IdentifierTests (3.3.2):
     - KIF/Core
+  - StaticDataTableViewController (2.0.5)
   - SVProgressHUD (1.1.3)
 
 DEPENDENCIES:
@@ -13,12 +14,14 @@ DEPENDENCIES:
   - DownPicker
   - KIF (~> 3.0)
   - KIF/IdentifierTests
+  - StaticDataTableViewController
   - SVProgressHUD
 
 SPEC CHECKSUMS:
   Charts: 5e1e5ac23898e5b09d226a2fc3e9d86bc281937e
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   KIF: 9de83fa627adaf65d28ace31e40f19d830bc255c
+  StaticDataTableViewController: 7ea8d7bc8c7f0a4e9255a320224462c7346c1d4a
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
 COCOAPODS: 0.39.0

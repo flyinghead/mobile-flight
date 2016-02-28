@@ -1,3 +1,5 @@
+- Support for cleanflight 1.12: failsafe config, ... MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_(SET_)RXFAIL_CONFIG, MSP_FAILSAFE_CONFIG?, MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
+- Replay: When switching to other app or springboard, time counter should be paused
 - Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
 - Imperial units: Should be able to choose between NM / kn and mile / mph
 - Move Settings into app
@@ -6,6 +8,19 @@
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
 - Mark inactive panels/gauge with red cross
 - UAV Health page (sensors, etc.) / Pre-flight checks page -> merge with Calibration
+  - Calibrate accelerometer
+  - Calibrate magnetometer
+  - Active sensors
+  - GPS Status: fix, num sats
+  - RC check
+  - Motors check
+  - RSSI ?
+  - FPV / video check
+  - Weather conditions (METAR see above)
+  - No-fly zone: DJI uses noflyzone.org. Not public. Seems to be only list of airports with radius plus some warning points/areas (stade de france, parc des princes, élysée, etc.) (See http://www.dji.com/flysafe/no-fly and http://www.dji.com/fly-safe/category-mc?www=v1)
+  - Battery check
+  - Failsafe check
+  - and Accelerometer trim (not really related but don't know where to put it...)
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
@@ -120,4 +135,5 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off. Working as designed. iOS pops up an alert to enable Bluetooth.
 - Map: Add pin for RTH location and current Pos Hold
 - Map: Tapping on map shows "Go There" button -> Waypoint
-
+- PID tuning: support for MSP_SET_RESET_CURR_PID (1.12+)
+- Telemetry: Air mode indicator

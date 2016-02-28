@@ -14,6 +14,7 @@ end
 pod "DownPicker"
 pod "Charts"
 pod "SVProgressHUD"
+pod "StaticDataTableViewController"
 
 target 'KIFTests', :exclusive => true do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']

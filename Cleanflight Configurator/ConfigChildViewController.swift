@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import StaticDataTableViewController
 
-class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
+class ConfigChildViewController: StaticDataTableViewController, UITextFieldDelegate {
     
     var configViewController: ConfigurationViewController!
     var settings: Settings!
@@ -19,6 +20,11 @@ class ConfigChildViewController: UITableViewController, UITextFieldDelegate {
     var savedContentInset: UIEdgeInsets?
     var savedScrollIndicatorInset: UIEdgeInsets?
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hideSectionsWithHiddenRows = true
+    }
+    
     func setReference(viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
         self.configViewController = viewController
         self.settings = newSettings

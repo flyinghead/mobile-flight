@@ -128,7 +128,7 @@ class MSPParser {
             config.capability = readUInt32(message, index: 3)
             pingDataListeners()
             
-        case .MSP_STATUS:
+        case .MSP_STATUS, .MSP_STATUS_EX:
             if message.count < 11 {
                 return false
             }

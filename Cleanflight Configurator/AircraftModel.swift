@@ -86,6 +86,7 @@ enum Mode : String {
     case SERVO3 = "SERVO3"
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
+    case AIR = "AIR MODE"
 }
 
 struct ModeRange : DictionaryCoding {

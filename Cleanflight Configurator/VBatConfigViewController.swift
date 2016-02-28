@@ -14,6 +14,7 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBOutlet weak var warningVoltage: NumberField!
     @IBOutlet weak var maxVoltage: NumberField!
     @IBOutlet weak var voltageScale: NumberField!
+    @IBOutlet var hideableCells: [UITableViewCell]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +28,12 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBAction func vbatSwitchChanged(sender: AnyObject) {
         if vbatSwitch.on {
             settings?.features.insert(.VBat)
+            cells(hideableCells, setHidden: false)
         } else {
             settings?.features.remove(.VBat)
+            cells(hideableCells, setHidden: true)
         }
-        tableView.reloadData()
+        reloadDataAnimated(true)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -41,6 +44,8 @@ class VBatConfigViewController: ConfigChildViewController {
         warningVoltage.value = misc!.vbatWarningCellVoltage
         maxVoltage.value = misc!.vbatMaxCellVoltage
         voltageScale.value = Double(misc!.vbatScale)
+        cells(hideableCells, setHidden: !vbatSwitch.on)
+        reloadDataAnimated(false)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -52,9 +57,4 @@ class VBatConfigViewController: ConfigChildViewController {
         misc?.vbatScale = Int(voltageScale.value)
         configViewController?.refreshUI()
     }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return vbatSwitch.on ? super.numberOfSectionsInTableView(tableView) : 1
-    }
-
 }

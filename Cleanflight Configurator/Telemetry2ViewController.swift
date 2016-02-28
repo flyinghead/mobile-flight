@@ -31,6 +31,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var altModeLabel: UILabel!
     @IBOutlet weak var headingModeLabel: UILabel!
     @IBOutlet weak var posModeLabel: UILabel!
+    @IBOutlet weak var airModeLabel: UILabel!
     @IBOutlet weak var rxFailView: UIView!
     @IBOutlet weak var armedLabel: ArmedLabel!
     @IBOutlet weak var voltsGauge: RoundGauge!
@@ -272,6 +273,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             accroModeLabel.hidden = false
         } else {
             accroModeLabel.hidden = true
+        }
+        if settings.isModeOn(Mode.AIR, forStatus: config.mode) {
+            airModeLabel.hidden = false
+        } else {
+            airModeLabel.hidden = true
         }
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
             altModeLabel.hidden = false

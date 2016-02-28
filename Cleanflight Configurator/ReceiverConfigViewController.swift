@@ -7,15 +7,10 @@
 //
 
 import UIKit
+import StaticDataTableViewController
 
 class ReceiverConfigViewController: ConfigChildViewController {
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if !settings!.features.contains(.RxSerial) {
-            return 1
-        }
-        return super.numberOfSectionsInTableView(tableView)
-    }
+    @IBOutlet var serialReceiverCells: [UITableViewCell]!
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
@@ -62,11 +57,12 @@ class ReceiverConfigViewController: ConfigChildViewController {
             default:
                 break
             }
+            cells(serialReceiverCells, setHidden: !settings!.features.contains(.RxSerial))
         } else {
             // Serial receiver type
             settings!.serialRxType = indexPath.row
         }
-        tableView.reloadData()
+        reloadDataAnimated(true)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -78,7 +74,8 @@ class ReceiverConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        tableView.reloadData()
+        cells(serialReceiverCells, setHidden: !settings!.features.contains(.RxSerial))
+        reloadDataAnimated(false)
     }
     
     class func receiverConfigLabel(settings: Settings) -> String {

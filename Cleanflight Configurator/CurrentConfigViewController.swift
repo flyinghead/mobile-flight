@@ -13,6 +13,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBOutlet weak var meterScaleField: NumberField!
     @IBOutlet weak var meterOffsetField: NumberField!
     @IBOutlet weak var legacyMultiwiiSwitch: UISwitch!
+    @IBOutlet var hideableCells: [UITableViewCell]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,10 +25,12 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBAction func currentMeterSwitchChanged(sender: AnyObject) {
         if currentMeterSwitch.on {
             settings?.features.insert(.CurrentMeter)
+            cells(hideableCells, setHidden: false)
         } else {
             settings?.features.remove(.CurrentMeter)
+            cells(hideableCells, setHidden: true)
         }
-        tableView.reloadData()
+        reloadDataAnimated(true)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -37,6 +40,8 @@ class CurrentConfigViewController: ConfigChildViewController {
         meterScaleField.value = Double(settings!.currentScale)
         meterOffsetField.value = Double(settings!.currentOffset)
         legacyMultiwiiSwitch.on = misc!.multiwiiCurrentOutput == 1
+        cells(hideableCells, setHidden: !currentMeterSwitch.on)
+        reloadDataAnimated(true)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -46,9 +51,5 @@ class CurrentConfigViewController: ConfigChildViewController {
         settings!.currentOffset = Int(meterOffsetField.value)
         misc!.multiwiiCurrentOutput = legacyMultiwiiSwitch.on ? 1 : 0
         configViewController?.refreshUI()
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return currentMeterSwitch.on ? super.numberOfSectionsInTableView(tableView) : 1
     }
 }
