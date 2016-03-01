@@ -7,14 +7,13 @@ post_install do | installer |
 end
 class ::Pod::Generator::Acknowledgements
   def footnote_text
-    "Icons designed by Freepik\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0"
+    "Icons designed by Freepik\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0\nStaticDataTableViewController Copyright 2015 Peter Paulis - min60 s.r.o. (min60.com)"
   end
 end
 
 pod "DownPicker"
 pod "Charts"
 pod "SVProgressHUD"
-pod "StaticDataTableViewController"
 
 target 'KIFTests', :exclusive => true do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']

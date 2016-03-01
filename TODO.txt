@@ -1,4 +1,6 @@
-- Support for cleanflight 1.12: failsafe config, ... MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_(SET_)RXFAIL_CONFIG, MSP_FAILSAFE_CONFIG?, MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
+- RC Sticks: Add switches AUX 1-4, display configured modes
+- Failsafe: allow to choose configured mode for Aux channels set value
+- Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
 - Replay: When switching to other app or springboard, time counter should be paused
 - Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
 - Imperial units: Should be able to choose between NM / kn and mile / mph
@@ -137,3 +139,5 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Map: Tapping on map shows "Go There" button -> Waypoint
 - PID tuning: support for MSP_SET_RESET_CURR_PID (1.12+)
 - Telemetry: Air mode indicator
+- StaticDataTableViewController: Section footers are not hidden (https://github.com/peterpaulis/StaticDataTableViewController/issues/18)
+- Support for cleanflight 1.12: failsafe config (MSP_(SET_)RXFAIL_CONFIG, MSP_(SET_)FAILSAFE_CONFIG, MSP_(SET_)RXFAIL_CONFIG

@@ -441,6 +441,47 @@ class MSPParser {
             
             pingGpsListeners()
             
+        case .MSP_RX_CONFIG:
+            if message.count < 8 {
+                return false
+            }
+            settings.serialRxType = Int(message[0])
+            settings.maxCheck = readUInt16(message, index: 1)
+            misc.midRC = readUInt16(message, index: 3)
+            settings.minCheck = readUInt16(message, index: 5)
+            settings.spektrumSatBind = Int(message[7])
+            if message.count >= 12 {
+                settings.rxMinUsec = readUInt16(message, index: 8)
+                settings.rxMaxUsec = readUInt16(message, index: 10)
+            }
+            pingDataListeners()         // FIXME
+            pingSettingsListeners()
+            
+        case .MSP_FAILSAFE_CONFIG:
+            if message.count < 8 {
+                return false
+            }
+            settings.failsafeDelay = Double(message[0]) / 10
+            settings.failsafeOffDelay = Double(message[1]) / 10
+            misc.failsafeThrottle = readInt16(message, index: 2) // 0-2000
+            settings.failsafeKillSwitch = message[4] != 0
+            settings.failsafeThrottleLowDelay = Double(readUInt16(message, index: 5)) / 10
+            settings.failsafeProcedure = Int(message[7])
+            pingDataListeners()         // FIXME
+            pingSettingsListeners()
+            
+        case .MSP_RXFAIL_CONFIG:
+            if message.count % 3 != 0 {
+                return false
+            }
+            settings.rxFailMode = [Int]()
+            settings.rxFailValue = [Int]()
+            for var i = 0; i < message.count / 3; i++ {
+                settings.rxFailMode!.append(Int(message[i*3]))
+                settings.rxFailValue!.append(readUInt16(message, index: i * 3 + 1))
+            }
+            pingSettingsListeners()
+            
         case .MSP_RX_MAP:
             for (i, b) in message.enumerate() {
                 if (i >= receiver.map.count) {
@@ -951,6 +992,47 @@ class MSPParser {
             data.appendContentsOf(writeUInt16(v))
         }
         sendMessage(.MSP_SET_RAW_RC, data: data)
+    }
+    
+    func sendRxConfig(settings: Settings, midRc: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.serialRxType))
+        data.appendContentsOf(writeUInt16(settings.maxCheck))
+        data.appendContentsOf(writeUInt16(midRc))
+        data.appendContentsOf(writeUInt16(settings.minCheck))
+        data.append(UInt8(settings.spektrumSatBind))
+        data.appendContentsOf(writeUInt16(settings.rxMinUsec))
+        data.appendContentsOf(writeUInt16(settings.rxMaxUsec))
+        sendMessage(.MSP_SET_RX_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendFailsafeConfig(settings: Settings, failsafeThrottle: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(Int(settings.failsafeDelay * 10)))
+        data.append(UInt8(Int(settings.failsafeOffDelay * 10)))
+        data.appendContentsOf(writeUInt16(failsafeThrottle))
+        data.append(UInt8(settings.failsafeKillSwitch ? 1 : 0))
+        data.appendContentsOf(writeUInt16(Int(settings.failsafeThrottleLowDelay * 10)))
+        data.append(UInt8(settings.failsafeProcedure))
+        sendMessage(.MSP_SET_FAILSAFE_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(index))
+        data.append(UInt8(settings.rxFailMode![index]))
+        data.appendContentsOf(writeUInt16(settings.rxFailValue![index]))
+        sendMessage(.MSP_SET_RXFAIL_CONFIG, data: data, retry: 2, callback: { success in
+            if success {
+                if index < settings.rxFailMode!.count - 1 {
+                    self.sendRxFailConfig(settings, index: index + 1, callback: callback)
+                } else {
+                    callback?(success: true)
+                }
+            } else {
+                callback?(success: false)
+            }
+        })
     }
 
     func openCommChannel(commChannel: CommChannel) {

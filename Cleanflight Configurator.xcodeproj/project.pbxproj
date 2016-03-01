@@ -13,6 +13,7 @@
 		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
+		AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
@@ -161,6 +162,8 @@
 		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
 		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
+		AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StaticDataTableViewController.h; sourceTree = "<group>"; };
+		AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticDataTableViewController.m; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,6 +320,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */,
+				AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */,
+			);
+			name = StaticDataTableViewController;
+			sourceTree = "<group>";
+		};
 		AE1DD67E1C7E23F300861248 /* KIFTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -365,6 +377,7 @@
 		AE26A1D41C41D308007498EF /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */,
 				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
 				AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */,
@@ -823,6 +836,7 @@
 				AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */,
 				AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */,
 				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
+				AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,

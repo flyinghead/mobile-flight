@@ -62,6 +62,8 @@ class NumberField: UITextField {
     let stepper = UIStepper()
     let toolbar = InputAccessoryToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
     
+    var savedTextColor: UIColor!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         customInit()
@@ -85,6 +87,8 @@ class NumberField: UITextField {
         ]
         toolbar.sizeToFit()
         self.inputAccessoryView = toolbar
+        
+        savedTextColor = textColor
     }
     
     private func updateFieldText() {
@@ -126,6 +130,12 @@ class NumberField: UITextField {
         UIDevice.currentDevice().playInputClick()
         value = stepper.value
         updateFieldText()
+    }
+    
+    override var enabled: Bool {
+        didSet {
+            textColor = enabled ? savedTextColor : UIColor.lightGrayColor()
+        }
     }
 }
 
