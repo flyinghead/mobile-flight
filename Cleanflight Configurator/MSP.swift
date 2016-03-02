@@ -637,7 +637,10 @@ class MSPParser {
             .MSP_SET_WP,
             .MSP_SET_SERVO_CONFIGURATION,
             .MSP_SET_CF_SERIAL_CONFIG,
-            .MSP_SET_RAW_RC:
+            .MSP_SET_RAW_RC,
+            .MSP_SET_RX_CONFIG,
+            .MSP_SET_FAILSAFE_CONFIG,
+            .MSP_SET_RXFAIL_CONFIG:
             break
             
         default:

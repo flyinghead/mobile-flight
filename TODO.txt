@@ -1,8 +1,9 @@
+- Bluetooth: Module sometimes appears twice
+- Crash when enabling Follow Me (v1.1)
 - RC Sticks: Add switches AUX 1-4, display configured modes
 - Failsafe: allow to choose configured mode for Aux channels set value
 - Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
 - Replay: When switching to other app or springboard, time counter should be paused
-- Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
 - Imperial units: Should be able to choose between NM / kn and mile / mph
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
@@ -20,6 +21,8 @@
   - FPV / video check
   - Weather conditions (METAR see above)
   - No-fly zone: DJI uses noflyzone.org. Not public. Seems to be only list of airports with radius plus some warning points/areas (stade de france, parc des princes, élysée, etc.) (See http://www.dji.com/flysafe/no-fly and http://www.dji.com/fly-safe/category-mc?www=v1)
+    http://overpass-api.de/query_form.html (node ["aeroway"="aerodrome"] (47.5,1.5,49.5,3.5); >;); out;
+    Works but size of airport missing.
   - Battery check
   - Failsafe check
   - and Accelerometer trim (not really related but don't know where to put it...)
@@ -141,3 +144,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Telemetry: Air mode indicator
 - StaticDataTableViewController: Section footers are not hidden (https://github.com/peterpaulis/StaticDataTableViewController/issues/18)
 - Support for cleanflight 1.12: failsafe config (MSP_(SET_)RXFAIL_CONFIG, MSP_(SET_)FAILSAFE_CONFIG, MSP_(SET_)RXFAIL_CONFIG
+- Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
