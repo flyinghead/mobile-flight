@@ -37,7 +37,7 @@ func readInt32(array: [UInt8], index: Int) -> Int {
 }
 
 func writeUInt32(i: Int) -> [UInt8] {
-    return [UInt8(i % 256), UInt8((i >> 8) % 256), UInt8((i >> 16) % 256), UInt8(i >> 24)]
+    return [UInt8(i & 0xFF), UInt8((i >> 8) & 0xFF), UInt8((i >> 16) & 0xFF), UInt8((i >> 24) & 0xFF)]
 }
 
 func writeInt32(i: Int) -> [UInt8] {
@@ -45,12 +45,11 @@ func writeInt32(i: Int) -> [UInt8] {
 }
 
 func writeUInt16(i: Int) -> [UInt8] {
-    return [UInt8(i % 256), UInt8((i >> 8) % 256)]
+    return [UInt8(i & 0xFF), UInt8((i >> 8) & 0xFF)]
 }
 
 func writeInt16(i: Int) -> [UInt8] {
-    let ui = UInt(bitPattern: i)
-    return [UInt8(ui & 0xFF), UInt8((ui >> 8) & 0xFF)]
+    return writeUInt16(i)
 }
 
 func writeInt8(i: Int) -> UInt8 {
