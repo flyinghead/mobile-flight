@@ -131,6 +131,60 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         super.viewWillAppear(animated)
         
         msp.addDataListener(self)
+        vehicle.pitchAngle.addObserver(self, listener: { newValue in
+            self.attitudeIndicator.pitch = newValue
+        })
+        vehicle.rollAngle.addObserver(self, listener: { newValue in
+            self.attitudeIndicator.roll = newValue
+        })
+
+        vehicle.heading.addObserver(self, listener: { newValue in
+            self.headingStrip.heading = newValue
+        })
+
+        vehicle.turnRate.addObserver(self, listener: { newValue in
+            self.turnRateIndicator.value = newValue
+        })
+        
+        vehicle.altitude.addObserver(self, listener: { newValue in
+            self.altitudeScale.currentValue = newValue
+        })
+
+        vehicle.verticalSpeed.addObserver(self, listener: { newValue in
+            self.variometerScale.currentValue = newValue
+        })
+        
+        vehicle.batteryVolts.addObserver(self, listener: { newValue in
+            self.voltsGauge.value = newValue
+            self.voltsValueLabel.voltage = newValue
+        })
+        
+        vehicle.batteryAmps.addObserver(self) { newValue in
+            self.ampsGauge.value = newValue
+            self.ampsValueLabel.text = formatWithUnit(newValue, unit: "")
+        }
+        
+        vehicle.gpsFix.addObserver(self, listener: { newValue in
+            if newValue {
+                self.gpsLabel.blinks = false
+            } else {
+                //let config = Configuration.theConfig  // FIXME
+                //if config.isGPSActive() {
+                    self.gpsLabel.blinks = true
+                    self.gpsLabel.textColor = UIColor.redColor()
+                //}
+            }
+        })
+        
+        vehicle.gpsNumSats.addObserver(self, listener: { newValue in
+            self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), newValue)
+            if newValue >= 5 {
+                self.gpsLabel.textColor = UIColor.whiteColor()
+            } else if self.vehicle.gpsFix.value {
+                self.gpsLabel.textColor = UIColor.yellowColor()
+            }
+        })
+
         // For enabled features
         msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
             self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: nil)
@@ -192,7 +246,17 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         hideNavBarTimer = nil
         
         msp.removeDataListener(self)
-        
+        vehicle.pitchAngle.removeObserver(self)
+        vehicle.rollAngle.removeObserver(self)
+        vehicle.heading.removeObserver(self)
+        vehicle.turnRate.removeObserver(self)
+        vehicle.altitude.removeObserver(self)
+        vehicle.verticalSpeed.removeObserver(self)
+        vehicle.batteryVolts.removeObserver(self)
+        vehicle.batteryAmps.removeObserver(self)
+        vehicle.gpsFix.removeObserver(self)
+        vehicle.gpsNumSats.removeObserver(self)
+
         stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
@@ -202,12 +266,13 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     func receivedSensorData() {
         let sensorData = SensorData.theSensorData
+        /*
         attitudeIndicator.roll = sensorData.rollAngle
         attitudeIndicator.pitch = sensorData.pitchAngle
         
         headingStrip.heading = sensorData.heading
         turnRateIndicator.value = sensorData.turnRate
-        
+        */
         let config = Configuration.theConfig
         let settings = Settings.theSettings
         altitudeScale.bugs.removeAll()
@@ -230,9 +295,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         // Use baro/sonar altitude if present, otherwise use GPS altitude
         let config = Configuration.theConfig
         if config.isBarometerActive() || config.isSonarActive() {
-            altitudeScale.currentValue = sensorData.altitude
+            //altitudeScale.currentValue = sensorData.altitude
         }
-        variometerScale.currentValue = sensorData.variometer
+        //variometerScale.currentValue = sensorData.variometer
     }
     
     func receivedData() {
@@ -248,11 +313,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             voltsGauge.ranges.append((min: misc.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
         }
 
-        voltsValueLabel.voltage = config.voltage
-        voltsGauge.value = config.voltage
+        //voltsValueLabel.voltage = config.voltage
+        //voltsGauge.value = config.voltage
         
-        ampsGauge.value = config.amperage
-        ampsValueLabel.text = formatWithUnit(config.amperage, unit: "")
+        //ampsGauge.value = config.amperage
+        //ampsValueLabel.text = formatWithUnit(config.amperage, unit: "")
         
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", locale: NSLocale.currentLocale(), config.mAhDrawn)
@@ -314,6 +379,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     }
     
     func receivedGpsData() {
+/*
         let gpsData = GPSData.theGPSData
 
         gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), gpsData.numSat)
@@ -343,6 +409,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         if !config.isBarometerActive() && !config.isSonarActive()  {
             altitudeScale.currentValue = Double(gpsData.altitude)
         }
+*/
     }
 
     @IBAction func menuAction(sender: AnyObject) {

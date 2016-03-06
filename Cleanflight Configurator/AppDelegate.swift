@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 
     var window: UIWindow?
     var msp = MSPParser()
+    var vehicle = Vehicle()
     
     var statusTimer: NSTimer?
     var statusSwitch = false        // Used to alternate between RAW_GPS and COMP_GPS during each status timer callback since GPS info is only updated at 5 Hz
@@ -317,10 +318,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 
 extension UIViewController {
     var msp: MSPParser {
-        get {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            return appDelegate.msp
-        }
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return appDelegate.msp
+    }
+    
+    var vehicle: Vehicle {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return appDelegate.vehicle
     }
 }
 
