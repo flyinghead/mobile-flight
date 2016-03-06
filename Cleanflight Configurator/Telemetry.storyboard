@@ -177,7 +177,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" image="map" selectedImage="map" id="Kle-Xr-kco"/>
+                    <tabBarItem key="tabBarItem" tag="1" title="Map" image="map" selectedImage="map" id="Kle-Xr-kco"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="altitudeLabel" destination="CIo-4b-ZbY" id="OU5-Hr-o2g"/>
@@ -213,14 +213,14 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xEV-c8-epc" userLabel="TopBar">
                                 <rect key="frame" x="0.0" y="20" width="375" height="39"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KMu-1b-BFg">
-                                        <rect key="frame" x="50" y="0.0" width="81.5" height="39"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KMu-1b-BFg">
+                                        <rect key="frame" x="50" y="0.0" width="82" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signalw" translatesAutoresizingMaskIntoConstraints="NO" id="Kcm-cx-xuh">
                                                 <rect key="frame" x="4" y="12" width="15" height="15"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VzE-Lg-npD" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="23" y="11" width="33" height="17.5"/>
+                                                <rect key="frame" x="23" y="11" width="33" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="rssi"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -235,14 +235,14 @@
                                             <constraint firstItem="Kcm-cx-xuh" firstAttribute="centerY" secondItem="KMu-1b-BFg" secondAttribute="centerY" id="rmg-5i-Jl2"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vPt-Fk-iKy">
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vPt-Fk-iKy">
                                         <rect key="frame" x="212" y="0.0" width="82" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="satellitew" translatesAutoresizingMaskIntoConstraints="NO" id="IYG-hy-uB7">
                                                 <rect key="frame" x="12" y="12" width="15" height="15"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nBA-JH-Mqf" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="31" y="11" width="18" height="17.5"/>
+                                                <rect key="frame" x="31" y="11" width="18" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="gpsSats"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -261,7 +261,7 @@
                                         <rect key="frame" x="294" y="0.0" width="81" height="39"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="74m" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H7F-1x-aIU" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="23" y="11" width="31.5" height="17.5"/>
+                                                <rect key="frame" x="23" y="11" width="32" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="dth"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -285,14 +285,14 @@
                                             <constraint firstItem="H7F-1x-aIU" firstAttribute="leading" secondItem="V9k-8a-xrv" secondAttribute="trailing" constant="4" id="koW-wy-p1Z"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pzb-Ho-2cr">
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pzb-Ho-2cr">
                                         <rect key="frame" x="131" y="0.0" width="81" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timew" translatesAutoresizingMaskIntoConstraints="NO" id="Fks-Mf-6Z3">
                                                 <rect key="frame" x="4" y="12" width="15" height="15"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09:05" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NZI-tx-Kht" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="23" y="11" width="42" height="17.5"/>
+                                                <rect key="frame" x="23" y="11" width="42" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="timer"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -369,7 +369,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="SimpleVerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="352" y="40" width="24" height="502.5"/>
+                                        <rect key="frame" x="352" y="40" width="24" height="503"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="variometerIndicator">
                                             <bool key="isElement" value="YES"/>
@@ -434,8 +434,8 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="positiveOnly" value="NO"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-zT-X9L" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="-1" y="40" width="55" height="486.5"/>
+                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-zT-X9L" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                        <rect key="frame" x="-1" y="40" width="55" height="487"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="speedIndicator">
                                             <bool key="isElement" value="YES"/>
@@ -466,10 +466,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dc0-c2-I9K" userLabel="Rx Fail View">
-                                        <rect key="frame" x="212" y="65" width="75.5" height="18"/>
+                                        <rect key="frame" x="212" y="65" width="76" height="18"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RX FAIL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5l5-9x-x4P">
-                                                <rect key="frame" x="10" y="0.0" width="55.5" height="18"/>
+                                                <rect key="frame" x="10" y="0.0" width="56" height="18"/>
                                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="failsafeMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
@@ -574,8 +574,8 @@
                                             <constraint firstAttribute="height" priority="750" constant="155" id="gC1-E7-zoK"/>
                                         </constraints>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DISARMED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfk-J1-JAa" customClass="ArmedLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="148.5" y="71" width="78.5" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="DISARMED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfk-J1-JAa" customClass="ArmedLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                        <rect key="frame" x="149" y="71" width="79" height="18"/>
                                         <accessibility key="accessibilityConfiguration" identifier="armedMode"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                         <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -588,7 +588,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="km/h" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="heO-K5-2mC">
-                                        <rect key="frame" x="-1" y="525" width="55" height="17.5"/>
+                                        <rect key="frame" x="-1" y="525" width="55" height="18"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -600,7 +600,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="m" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H83-Ai-eZf">
-                                        <rect key="frame" x="298" y="525" width="55" height="17.5"/>
+                                        <rect key="frame" x="298" y="525" width="55" height="18"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -612,13 +612,13 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ROZ-BS-nyT" userLabel="Alt Hold View">
-                                        <rect key="frame" x="298" y="40" width="55" height="21.5"/>
+                                        <rect key="frame" x="298" y="40" width="55" height="22"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" image="scalebug" translatesAutoresizingMaskIntoConstraints="NO" id="gEH-nk-qCW">
                                                 <rect key="frame" x="-3" y="2" width="18" height="18"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2.6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EMM-IT-9Jt">
-                                                <rect key="frame" x="15" y="2" width="35" height="17.5"/>
+                                                <rect key="frame" x="15" y="2" width="35" height="18"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -827,13 +827,13 @@
                                         <rect key="frame" x="18" y="4" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VOLTS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ZV-y8g" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="24" y="31" width="36" height="13.5"/>
+                                                <rect key="frame" x="24" y="31" width="36" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11.7" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nc4-kZ-EnL" customClass="BatteryVoltageLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="27" y="44" width="32.5" height="16"/>
+                                                <rect key="frame" x="27" y="44" width="33" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="batteryVolts"/>
                                                 <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="13"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -861,13 +861,13 @@
                                         <rect key="frame" x="159" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AMPS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfQ-z5-fZv" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="29" y="31" width="31" height="13.5"/>
+                                                <rect key="frame" x="29" y="31" width="31" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cwm-EC-RXa" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="41" y="44" width="18.5" height="16"/>
+                                                <rect key="frame" x="41" y="44" width="19" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="batteryAmps"/>
                                                 <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="13"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -895,7 +895,7 @@
                                         <rect key="frame" x="301" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mAh" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-7o-dtq" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="34" y="31" width="25.5" height="13.5"/>
+                                                <rect key="frame" x="34" y="31" width="26" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>

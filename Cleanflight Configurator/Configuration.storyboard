@@ -2328,7 +2328,7 @@
         <scene sceneID="hts-2L-5Ry">
             <objects>
                 <navigationController id="RwG-hd-ALP" userLabel="Config Navigation Controller" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Configuration" image="Config" selectedImage="Config" id="gqK-2r-aL9"/>
+                    <tabBarItem key="tabBarItem" tag="8" title="Configuration" image="Config" selectedImage="Config" id="gqK-2r-aL9"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RGQ-Kz-YeS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
