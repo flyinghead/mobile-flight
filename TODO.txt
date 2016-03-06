@@ -1,5 +1,5 @@
 - TCP/IP: Try UDP instead of TCP
-- CLI issue: buffer overrun?
+- BUG CLI issue: buffer overrun?
 - LED programming
 - RC Sticks: Add switches AUX 1-4, display configured modes
 - Failsafe: allow to choose configured mode for Aux channels set value
