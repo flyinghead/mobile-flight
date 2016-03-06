@@ -54,6 +54,12 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     // MARK: BluetoothDelegate
     func foundPeripheral(peripheral: BluetoothPeripheral) {
         dispatch_async(dispatch_get_main_queue(), {
+            for p in self.btPeripherals {
+                if peripheral.uuid == p.uuid {
+                    // Already there
+                    return
+                }
+            }
             self.btPeripherals.append(peripheral)
             self.tableView.reloadData()
         })

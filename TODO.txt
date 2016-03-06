@@ -1,7 +1,6 @@
 - TCP/IP: Try UDP instead of TCP
 - CLI issue: buffer overrun?
 - LED programming
-- Bluetooth: Module sometimes appears twice
 - RC Sticks: Add switches AUX 1-4, display configured modes
 - Failsafe: allow to choose configured mode for Aux channels set value
 - Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
@@ -149,3 +148,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
 - Crash when enabling Follow Me (v1.1): negative longitude raises an exception in writeInt32()
 - Tab bar navigation settings (icon order, More, ...) is not saved
+- Bluetooth: Module sometimes appears twice
