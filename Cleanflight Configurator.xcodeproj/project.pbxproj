@@ -13,6 +13,8 @@
 		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
+		AE1B9DC91C8CB5120065A62C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DC81C8CB5120065A62C /* Vehicle.swift */; };
+		AE1B9DCB1C8CD58B0065A62C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DCA1C8CD58B0065A62C /* Observable.swift */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
@@ -138,6 +140,8 @@
 		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
 		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
+		AE1B9DC81C8CB5120065A62C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		AE1B9DCA1C8CD58B0065A62C /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
@@ -391,6 +395,7 @@
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
+				AE1B9DCA1C8CD58B0065A62C /* Observable.swift */,
 				AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */,
 				AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */,
 				AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */,
@@ -400,6 +405,7 @@
 				AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */,
 				AEBA641B1C342BD900783ECE /* UserDefaults.swift */,
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
+				AE1B9DC81C8CB5120065A62C /* Vehicle.swift */,
 				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
 				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
 				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
@@ -667,6 +673,7 @@
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,
+				AE1B9DC91C8CB5120065A62C /* Vehicle.swift in Sources */,
 				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
@@ -708,6 +715,7 @@
 				AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */,
 				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
 				AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */,
+				AE1B9DCB1C8CD58B0065A62C /* Observable.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
