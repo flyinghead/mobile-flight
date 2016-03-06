@@ -22,6 +22,8 @@ enum MSP_code : Int {
     case MSP_SET_CHANNEL_FORWARDING = 33
     case MSP_MODE_RANGES =            34
     case MSP_SET_MODE_RANGE =         35
+    case MSP_RX_CONFIG =              44
+    case MSP_SET_RX_CONFIG =          45
     case MSP_LED_STRIP_CONFIG =       48
     case MSP_SET_LED_STRIP_CONFIG =   49
     case MSP_ADJUSTMENT_RANGES =      52
@@ -38,6 +40,15 @@ enum MSP_code : Int {
     case MSP_DATAFLASH_ERASE =        72
     case MSP_LOOP_TIME =              73
     case MSP_SET_LOOP_TIME =          74
+    case MSP_FAILSAFE_CONFIG =        75
+    case MSP_SET_FAILSAFE_CONFIG =    76
+    case MSP_RXFAIL_CONFIG =          77
+    case MSP_SET_RXFAIL_CONFIG =      78
+    case MSP_SDCARD_SUMMARY =         79
+    case MSP_BLACKBOX_CONFIG =        80
+    case MSP_SET_BLACKBOX_CONFIG =    81
+    case MSP_TRANSPONDER_CONFIG =     82
+    case MSP_SET_TRANSPONDER_CONFIG = 83
     
     // Multiwii MSP commands
     case MSP_IDENT =              100
@@ -76,7 +87,7 @@ enum MSP_code : Int {
     case MSP_SET_HEAD =           211
     case MSP_SET_SERVO_CONFIGURATION = 212
     case MSP_SET_MOTOR =          214
-    
+    case MSP_SET_RESET_CURR_PID = 219
     // case MSP_BIND =               240
     
     case MSP_EEPROM_WRITE =       250
@@ -85,6 +96,7 @@ enum MSP_code : Int {
     case MSP_DEBUG =              254
     
     // Additional baseflight commands that are not compatible with MultiWii
+    case MSP_STATUS_EX =          150 // same as STATUS plus CPU load
     case MSP_UID =                160 // Unique device ID
     case MSP_ACC_TRIM =           240 // get acc angle trim values
     case MSP_SET_ACC_TRIM =       239 // set acc angle trim values

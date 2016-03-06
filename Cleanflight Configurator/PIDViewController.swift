@@ -9,12 +9,14 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import StaticDataTableViewController
 
-class PIDViewController: UITableViewController {
+class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var profileField: UITextField!
     @IBOutlet weak var pidControllerField: UITextField!
     var profilePicker: MyDownPicker?
     var pidControllerPicker: MyDownPicker?
+    @IBOutlet weak var resetPIDValuesCell: UITableViewCell!
     
     // BASIC
     @IBOutlet weak var rollP: NumberField!
@@ -65,7 +67,7 @@ class PIDViewController: UITableViewController {
         profilePicker?.setPlaceholder("")           // To keep width down
         
         let pidControllers: [String]
-        if Configuration.theConfig.isApiVersionAtLeast("1.14") {
+        if Configuration.theConfig.isApiVersionAtLeast("1.14") {    // 1.10
             pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
         } else {
             pidControllers = [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ]
@@ -73,6 +75,9 @@ class PIDViewController: UITableViewController {
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
         pidControllerPicker?.setPlaceholder("")     // To keep width down
         
+        if !Configuration.theConfig.isApiVersionAtLeast("1.16") {   // 1.12
+            cell(resetPIDValuesCell, setHidden: true)
+        }
         cancelAction(self)
     }
 
@@ -218,5 +223,16 @@ class PIDViewController: UITableViewController {
                 }
             })
         })
+    }
+    @IBAction func resetPIDParams(sender: AnyObject) {
+        let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
+            self.msp.sendMessage(.MSP_SET_RESET_CURR_PID, data: nil, retry: 3, callback: { success in
+                self.cancelAction(self)
+            })
+        }))
+        alertController.popoverPresentationController?.sourceView = (sender as! UIView)
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }

@@ -15,8 +15,12 @@
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
 		AE1B9DC91C8CB5120065A62C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DC81C8CB5120065A62C /* Vehicle.swift */; };
 		AE1B9DCB1C8CD58B0065A62C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DCA1C8CD58B0065A62C /* Observable.swift */; };
+		AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
+		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
+		AE1DD68D1C7E2F9100861248 /* TelemetryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */; };
+		AE1DD68E1C7E43D500861248 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
 		AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E45E21C50E96000E33E9F /* RoundGauge.swift */; };
@@ -62,6 +66,10 @@
 		AEC2A0D61C790F7E00EDF1D4 /* mavlink in Resources */ = {isa = PBXBuildFile; fileRef = AEC2A0D51C790F7E00EDF1D4 /* mavlink */; };
 		AEC2A0D81C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */; };
 		AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */; };
+		AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
+		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
 		AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */; };
@@ -88,7 +96,6 @@
 		AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
-		AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2801C188701004232AA /* ConnectionViewController.swift */; };
 		AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */; };
 		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
 		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
@@ -100,10 +107,28 @@
 		AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEF1903E1C3F062D0066C75A /* TryCatch.m */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
+		AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
+		AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
+		AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+		AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
+		BE579EDCBDCFF05EE8CB459F /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BB80BD9C9A3AFFEC7B50A1A /* Pods_KIFTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AE1DD6821C7E23F300861248 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE72AB551C0F3D230020C4B0;
+			remoteInfo = "Cleanflight Configurator";
+		};
 		AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
@@ -134,6 +159,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1177D394FBE963D5A31D6264 /* Pods-KIFTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.release.xcconfig"; sourceTree = "<group>"; };
+		2A93B4168FD030547414695E /* Pods-KIFTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2BB80BD9C9A3AFFEC7B50A1A /* Pods_KIFTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KIFTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
@@ -142,8 +170,15 @@
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
 		AE1B9DC81C8CB5120065A62C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
 		AE1B9DCA1C8CD58B0065A62C /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StaticDataTableViewController.h; sourceTree = "<group>"; };
+		AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticDataTableViewController.m; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
+		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE1DD6811C7E23F300861248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KIFTests_bridgingheader.h; sourceTree = "<group>"; };
+		AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCaseKIFExtension.swift; sourceTree = "<group>"; };
+		AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryTest.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
 		AE3E45E21C50E96000E33E9F /* RoundGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundGauge.swift; sourceTree = "<group>"; };
@@ -223,7 +258,6 @@
 		AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorStopConfigViewController.swift; sourceTree = "<group>"; };
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
-		AEDDD2801C188701004232AA /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearGauge.swift; sourceTree = "<group>"; };
 		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
@@ -237,12 +271,22 @@
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
+		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanflightSimulator.swift; sourceTree = "<group>"; };
+		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AE1DD67A1C7E23F300861248 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE579EDCBDCFF05EE8CB459F /* Pods_KIFTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE72AB531C0F3D230020C4B0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,6 +316,7 @@
 			isa = PBXGroup;
 			children = (
 				E36398CC8E2486DF5E7F3FAF /* Pods.framework */,
+				2BB80BD9C9A3AFFEC7B50A1A /* Pods_KIFTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -281,8 +326,30 @@
 			children = (
 				9EA6E96288303C4A29CC7542 /* Pods.debug.xcconfig */,
 				B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */,
+				2A93B4168FD030547414695E /* Pods-KIFTests.debug.xcconfig */,
+				1177D394FBE963D5A31D6264 /* Pods-KIFTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */,
+				AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */,
+			);
+			name = StaticDataTableViewController;
+			sourceTree = "<group>";
+		};
+		AE1DD67E1C7E23F300861248 /* KIFTests */ = {
+			isa = PBXGroup;
+			children = (
+				AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */,
+				AE1DD6811C7E23F300861248 /* Info.plist */,
+				AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */,
+				AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */,
+			);
+			path = KIFTests;
 			sourceTree = "<group>";
 		};
 		AE1F73E31C18C5AB0029C330 /* Sensors */ = {
@@ -322,6 +389,7 @@
 		AE26A1D41C41D308007498EF /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */,
 				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
 				AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */,
@@ -352,6 +420,7 @@
 				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
 				AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
+				AE1DD67E1C7E23F300861248 /* KIFTests */,
 				AE72AB571C0F3D230020C4B0 /* Products */,
 				5044F1400993D624422523C3 /* Pods */,
 				1423726195B99A7BD0668A20 /* Frameworks */,
@@ -364,6 +433,7 @@
 				AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */,
 				AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */,
 				AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */,
+				AE1DD67D1C7E23F300861248 /* KIFTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -394,6 +464,7 @@
 				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AE1B9DCA1C8CD58B0065A62C /* Observable.swift */,
 				AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */,
@@ -433,6 +504,7 @@
 			children = (
 				AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */,
 				AE72AB7D1C0F3D230020C4B0 /* Info.plist */,
+				AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */,
 			);
 			path = "Cleanflight ConfiguratorUITests";
 			sourceTree = "<group>";
@@ -444,7 +516,6 @@
 				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
 				AEBA64151C312B7800783ECE /* BluetoothViewController.swift */,
 				AEDDD2401C10C852004232AA /* CommChannel.swift */,
-				AEDDD2801C188701004232AA /* ConnectionViewController.swift */,
 				AEBA64131C3125B000783ECE /* InitiateHandshakeExtension.swift */,
 				AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */,
 				AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */,
@@ -471,6 +542,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AE1DD67C1C7E23F300861248 /* KIFTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE1DD6861C7E23F300861248 /* Build configuration list for PBXNativeTarget "KIFTests" */;
+			buildPhases = (
+				F4E13DDA8C1F8F82EF045E20 /* Check Pods Manifest.lock */,
+				AE1DD6791C7E23F300861248 /* Sources */,
+				AE1DD67A1C7E23F300861248 /* Frameworks */,
+				AE1DD67B1C7E23F300861248 /* Resources */,
+				F03DAE3FFAFDF4E75BAF5AEA /* Embed Pods Frameworks */,
+				0E86F229E565C95E359FF444 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE1DD6831C7E23F300861248 /* PBXTargetDependency */,
+			);
+			name = KIFTests;
+			productName = KIFTests;
+			productReference = AE1DD67D1C7E23F300861248 /* KIFTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight Configurator" */;
@@ -534,10 +626,14 @@
 		AE72AB4E1C0F3D230020C4B0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0710;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Raphael Jean-Leconte";
 				TargetAttributes = {
+					AE1DD67C1C7E23F300861248 = {
+						CreatedOnToolsVersion = 7.2;
+						TestTargetID = AE72AB551C0F3D230020C4B0;
+					};
 					AE72AB551C0F3D230020C4B0 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = C6JHP2HS9Q;
@@ -573,11 +669,19 @@
 				AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
 				AE72AB761C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
+				AE1DD67C1C7E23F300861248 /* KIFTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AE1DD67B1C7E23F300861248 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE72AB541C0F3D230020C4B0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -626,6 +730,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		0E86F229E565C95E359FF444 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		25A8B7FA1D9E3CCB2C705456 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -656,9 +775,49 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		F03DAE3FFAFDF4E75BAF5AEA /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F4E13DDA8C1F8F82EF045E20 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AE1DD6791C7E23F300861248 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE1DD68D1C7E2F9100861248 /* TelemetryTest.swift in Sources */,
+				AE1DD68E1C7E43D500861248 /* CleanflightSimulator.swift in Sources */,
+				AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE72AB521C0F3D230020C4B0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -677,6 +836,7 @@
 				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
+				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
@@ -689,7 +849,6 @@
 				AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */,
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
-				AEDDD2811C188701004232AA /* ConnectionViewController.swift in Sources */,
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
@@ -698,6 +857,7 @@
 				AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */,
 				AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */,
 				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
+				AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
@@ -752,7 +912,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */,
+				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
 				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
+				AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */,
+				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
+				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
+				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,13 +926,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */,
+				AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */,
+				AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */,
+				AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */,
 				AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */,
+				AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */,
+				AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */,
+				AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AE1DD6831C7E23F300861248 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
+			targetProxy = AE1DD6821C7E23F300861248 /* PBXContainerItemProxy */;
+		};
 		AE72AB6E1C0F3D230020C4B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
@@ -799,6 +977,36 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AE1DD6841C7E23F300861248 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A93B4168FD030547414695E /* Pods-KIFTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = KIFTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.flyinghead.KIFTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+			};
+			name = Debug;
+		};
+		AE1DD6851C7E23F300861248 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1177D394FBE963D5A31D6264 /* Pods-KIFTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = KIFTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.flyinghead.KIFTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+			};
+			name = Release;
+		};
 		AE72AB7E1C0F3D230020C4B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -978,6 +1186,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE1DD6861C7E23F300861248 /* Build configuration list for PBXNativeTarget "KIFTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE1DD6841C7E23F300861248 /* Debug */,
+				AE1DD6851C7E23F300861248 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "Cleanflight Configurator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -8,10 +8,12 @@
 
 import UIKit
 
-class MainNavigationController: UITabBarController {
+class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
     var myallViewControllers: [UIViewController]?       // allViewControllers conflicts silently with a var of the superclass !!
+    var allViewControllersEnabled = true
     
     override func awakeFromNib() {
+        self.delegate = self
         
         var storyboard = UIStoryboard(name: "Configuration", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
@@ -29,14 +31,30 @@ class MainNavigationController: UITabBarController {
         let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
         viewControllers!.insert(controller, atIndex: 1)
         
+        customizableViewControllers = viewControllers!.filter({
+            return !($0 is Telemetry2ViewController)
+        })
+        
+        // Restore the user-customized order of tabs if any
+        if let tabOrder = NSUserDefaults.standardUserDefaults().objectForKey("MainTabBarOrder") as? [Int] {
+            if tabOrder.count == viewControllers?.count {
+                var tagIndexes = [Int : Int]()
+                for var i = 0; i < viewControllers!.count; i++ {
+                    tagIndexes[viewControllers![i].tabBarItem.tag] = i
+                }
+                var newOrder = [UIViewController]()
+                for tag in tabOrder {
+                    newOrder.append(viewControllers![tagIndexes[tag]!])
+                }
+                viewControllers = newOrder
+            }
+        }
+
         myallViewControllers = viewControllers
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     func removeViewControllersForReplay() {
+        allViewControllersEnabled = false
         let filteredVC = viewControllers?.filter({
             var viewController = $0
             if let navigationController = viewController as? UINavigationController {
@@ -51,17 +69,18 @@ class MainNavigationController: UITabBarController {
     }
     
     func enableAllViewControllers() {
+        allViewControllersEnabled = true
         setViewControllers(myallViewControllers, animated: false)
     }
+    
+    func tabBarController(tabBarController: UITabBarController, didEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
+        if allViewControllersEnabled {
+            var tabOrder = [Int]()
+            for vc in self.viewControllers! {
+                tabOrder.append(vc.tabBarItem.tag)
+            }
+            NSUserDefaults.standardUserDefaults().setObject(tabOrder, forKey: "MainTabBarOrder")
+        }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
-    */
-
 }

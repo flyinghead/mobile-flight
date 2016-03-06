@@ -116,7 +116,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         msp.sendMessage(.MSP_ALTITUDE, data: nil)
         msp.sendMessage(.MSP_ATTITUDE, data: nil)
         msp.sendMessage(.MSP_ANALOG, data: nil)
-        msp.sendMessage(.MSP_WP, data: [ 16  ])             // Altitude hold, mag hold
+        // WP #0 = home, WP #16 = poshold
+        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ])   // Altitude hold, mag hold
         //NSLog("Status Requested")
         
         if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.75 && msp.communicationHealthy {
@@ -154,14 +155,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         return true
     }
     
-    // MARK: FlightDataListener
-    
-    func receivedData() {
+    private func dismissNoDataReceived() {
         lastDataReceived = NSDate()
         if noDataReceived {
             SVProgressHUD.dismiss()
             noDataReceived = false
         }
+    }
+    
+    // MARK: FlightDataListener
+    
+    func receivedData() {
+        dismissNoDataReceived()
         
         checkArmedStatus()
         
@@ -174,12 +179,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
     
+    func receivedSensorData() {
+        dismissNoDataReceived()
+    }
+    
+    func receivedAltitudeData() {
+        dismissNoDataReceived()
+    }
+    
     func receivedGpsData() {
-        lastDataReceived = NSDate()
-        if noDataReceived {
-            SVProgressHUD.dismiss()
-            noDataReceived = false
-        }
+        dismissNoDataReceived()
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     

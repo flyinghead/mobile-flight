@@ -9,6 +9,10 @@
 import UIKit
 
 class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
+    let SpeedScale = 30.0       // points per km/h
+    let AltScale = 40.0         // points per m
+    let VarioScale = 82.0       // points per m/s
+    
     @IBOutlet weak var attitudeIndicator: AttitudeIndicator2!
     @IBOutlet weak var headingStrip: HeadingStrip!
     @IBOutlet weak var speedScale: VerticalScale!
@@ -27,6 +31,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var altModeLabel: UILabel!
     @IBOutlet weak var headingModeLabel: UILabel!
     @IBOutlet weak var posModeLabel: UILabel!
+    @IBOutlet weak var airModeLabel: UILabel!
     @IBOutlet weak var rxFailView: UIView!
     @IBOutlet weak var armedLabel: ArmedLabel!
     @IBOutlet weak var voltsGauge: RoundGauge!
@@ -36,6 +41,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var ampsValueLabel: BlinkingLabel!
     @IBOutlet weak var mAhGauge: RoundGauge!
     @IBOutlet weak var mAHValueLabel: BlinkingLabel!
+    @IBOutlet weak var speedUnitLabel: UILabel!
+    @IBOutlet weak var altitudeUnitLabel: UILabel!
+    @IBOutlet weak var altHoldIndicator: UILabel!
 
     @IBOutlet weak var camStabMode: UIButton!
     @IBOutlet weak var calibrateMode: UIButton!
@@ -60,17 +68,63 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             speedScale.backgroundColor!.getWhite(nil, alpha: &alpha)
             speedScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
         }
+        if speedUnitLabel.backgroundColor != nil {
+            speedUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
+            speedUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+        }
+
         if altitudeScale.backgroundColor != nil {
             altitudeScale.backgroundColor!.getWhite(nil, alpha: &alpha)
             altitudeScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
         }
-        //batteryLabel.text = "?"
+        if altitudeUnitLabel.backgroundColor != nil {
+            altitudeUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
+            altitudeUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+        }
+        if let parent = altHoldIndicator.superview {
+            if parent.backgroundColor != nil {
+                parent.backgroundColor!.getWhite(nil, alpha: &alpha)
+                parent.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            }
+        }
+        
         rssiLabel.text = "?"
         gpsLabel.text = "?"
         timeLabel.text = "00:00"
         dthLabel.text = ""
         
         voltsValueLabel.displayUnit = false
+        
+        setInstrumentsUnitSystem()
+    }
+    
+    func setInstrumentsUnitSystem() {
+        speedScale.scale = useImperialUnits() ? SpeedScale * 1.852 : SpeedScale
+        altitudeScale.scale = useImperialUnits() ? AltScale * 2.54 * 12 / 100 : AltScale
+        if useImperialUnits() {
+            altitudeScale.mainTicksInterval = 10
+            altitudeScale.subTicksInterval = 5
+            altitudeScale.subSubTicksInterval = 1
+            
+            variometerScale.mainTicksInterval = 1
+            variometerScale.subTicksInterval = 0
+            variometerScale.subSubTicksInterval = 0.2
+            
+            speedUnitLabel.text = "kn"
+            altitudeUnitLabel.text = "ft"
+        } else {
+            altitudeScale.mainTicksInterval = 1
+            altitudeScale.subTicksInterval = 0.5
+            altitudeScale.subSubTicksInterval = 0
+            
+            variometerScale.mainTicksInterval = 1
+            variometerScale.subTicksInterval = 0.5
+            variometerScale.subSubTicksInterval = 0.1
+            
+            speedUnitLabel.text = "km/h"
+            altitudeUnitLabel.text = "m"
+        }
+        variometerScale.scale = useImperialUnits() ? VarioScale * 2.54 * 12 / 100 : VarioScale
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -151,6 +205,14 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             appDelegate.rcCommandsProvider = self
         }
         viewDisappeared = false
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        
+        followMeButton.enabled = false
+    }
+    
+    func userDefaultsDidChange(sender: AnyObject) {
+        setInstrumentsUnitSystem()
     }
     
     private func startNavBarTimer() {
@@ -198,6 +260,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
     }
     
     func receivedSensorData() {
@@ -214,6 +278,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         altitudeScale.bugs.removeAll()
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
             altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
+            altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
+        } else {
+            altHoldIndicator.text = ""
         }
 
         headingStrip.bugs.removeAll()
@@ -246,7 +313,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             voltsGauge.ranges.append((min: misc.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
         }
 
-        //batteryLabel.voltage = config.voltage
         //voltsValueLabel.voltage = config.voltage
         //voltsGauge.value = config.voltage
         
@@ -265,13 +331,18 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
         
         if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
-            accroModeLabel.text = "ANGLE"
+            accroModeLabel.text = "ANGL"
             accroModeLabel.hidden = false
         } else if settings.isModeOn(Mode.HORIZON, forStatus: config.mode) {
             accroModeLabel.text = "HOZN"
             accroModeLabel.hidden = false
         } else {
             accroModeLabel.hidden = true
+        }
+        if settings.isModeOn(Mode.AIR, forStatus: config.mode) {
+            airModeLabel.hidden = false
+        } else {
+            airModeLabel.hidden = true
         }
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
             altModeLabel.hidden = false
@@ -321,6 +392,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
             dthLabel.text = formatDistance(Double(gpsData.distanceToHome))
             speedScale.currentValue = gpsData.speed
+            
+            followMeButton.enabled = !msp.replaying
         } else {
             let config = Configuration.theConfig
             if config.isGPSActive() {
@@ -329,6 +402,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
             dthLabel.text = ""
             speedScale.currentValue = 0
+            
+            followMeButton.enabled = false
         }
         let config = Configuration.theConfig
         if !config.isBarometerActive() && !config.isSonarActive()  {

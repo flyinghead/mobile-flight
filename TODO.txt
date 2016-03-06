@@ -1,10 +1,32 @@
-- Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off
+- TCP/IP: Try UDP instead of TCP
+- BUG CLI issue: buffer overrun?
+- LED programming
+- RC Sticks: Add switches AUX 1-4, display configured modes
+- Failsafe: allow to choose configured mode for Aux channels set value
+- Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
+- Replay: When switching to other app or springboard, time counter should be paused
+- Imperial units: Should be able to choose between NM / kn and mile / mph
 - Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
 - Mark inactive panels/gauge with red cross
 - UAV Health page (sensors, etc.) / Pre-flight checks page -> merge with Calibration
+  - Calibrate accelerometer
+  - Calibrate magnetometer
+  - Active sensors
+  - GPS Status: fix, num sats
+  - RC check
+  - Motors check
+  - RSSI ?
+  - FPV / video check
+  - Weather conditions (METAR see above)
+  - No-fly zone: DJI uses noflyzone.org. Not public. Seems to be only list of airports with radius plus some warning points/areas (stade de france, parc des princes, élysée, etc.) (See http://www.dji.com/flysafe/no-fly and http://www.dji.com/fly-safe/category-mc?www=v1)
+    http://overpass-api.de/query_form.html (node ["aeroway"="aerodrome"] (47.5,1.5,49.5,3.5); >;); out;
+    Works but size of airport missing.
+  - Battery check
+  - Failsafe check
+  - and Accelerometer trim (not really related but don't know where to put it...)
 - ESP8266: May be better to create ad-hoc network on iPhone (Personal Hotspot) and have ESP8266 connect to it. Or better yet, use portable access point (DJI Phantom Range Extender).
 - Replay: When an internal error happens, not related to the log file; it is trapped and the message says "invalid flight file"
 - Licensing: Also add our own version number
@@ -13,11 +35,9 @@
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash, CLI
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-- Map: Add pin for RTH location and current Pos Hold
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
-- Map: Tapping on map shows "Go There" button -> Waypoint
 - Telemetry (map?): Display active profile, communication speed?
-- Settings: Map type (sat, hybrid, map)
+- Map: Map type (sat, hybrid, map)
 - Backup / Restore
 (- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
 - Ability to name models: use cleanflight UID and BT uuid to identify it. Alert levels settings (Alt, Amp, mAh, etc.) are specific to model
@@ -114,3 +134,18 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - RC Sticks: confusing. Users expect them to show the current sticks position
 - Alt Hold and Mag Hold bugs are not refreshed when updated by the FC (using sticks or GPS NAV)
 - Flight Recorder: add data/time of session in file
+- Speed, altitude indicator and variometer are in metric units, regardless of user settings
+- Replay: detailed row: the DTH icon is in blue in some cases
+- Switch to nautical mile for DTH when > 1 mile
+- iPhone 4 support: No because BLE not supported
+- Started app: switched to bluetooth tab, cannot refresh b/c "Refreshing..." disabled -> Bluetooth was turned off. Working as designed. iOS pops up an alert to enable Bluetooth.
+- Map: Add pin for RTH location and current Pos Hold
+- Map: Tapping on map shows "Go There" button -> Waypoint
+- PID tuning: support for MSP_SET_RESET_CURR_PID (1.12+)
+- Telemetry: Air mode indicator
+- StaticDataTableViewController: Section footers are not hidden (https://github.com/peterpaulis/StaticDataTableViewController/issues/18)
+- Support for cleanflight 1.12: failsafe config (MSP_(SET_)RXFAIL_CONFIG, MSP_(SET_)FAILSAFE_CONFIG, MSP_(SET_)RXFAIL_CONFIG
+- Spektrum RSSI (firmware): low value even when signal should be ok (Down to 14 on 17/02/16 at 15:47)
+- Crash when enabling Follow Me (v1.1): negative longitude raises an exception in writeInt32()
+- Tab bar navigation settings (icon order, More, ...) is not saved
+- Bluetooth: Module sometimes appears twice

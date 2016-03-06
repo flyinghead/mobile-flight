@@ -81,10 +81,41 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                             if success {
                                 self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            self.tableView.userInteractionEnabled = true
-                                            SVProgressHUD.dismiss()
-                                        })
+                                        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
+                                            self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
+                                                if success {
+                                                    self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
+                                                        if success {
+                                                            self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
+                                                                if success {
+                                                                    self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
+                                                                        if success {
+                                                                            dispatch_async(dispatch_get_main_queue(), {
+                                                                                self.tableView.userInteractionEnabled = true
+                                                                                SVProgressHUD.dismiss()
+                                                                            })
+                                                                        } else {
+                                                                            self.fetchInformationFailed()
+                                                                        }
+                                                                    })
+                                                                } else {
+                                                                    self.fetchInformationFailed()
+                                                                }
+                                                            })
+                                                        } else {
+                                                            self.fetchInformationFailed()
+                                                        }
+                                                    })
+                                                } else {
+                                                    self.fetchInformationFailed()
+                                                }
+                                            })
+                                        } else {
+                                            dispatch_async(dispatch_get_main_queue(), {
+                                                self.tableView.userInteractionEnabled = true
+                                                SVProgressHUD.dismiss()
+                                            })
+                                        }
                                     } else {
                                         self.fetchInformationFailed()
                                     }
@@ -201,28 +232,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                             if success {
                                 self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
                                     if success {
-                                        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-                                            if success {
-                                                dispatch_async(dispatch_get_main_queue(), {
-                                                    SVProgressHUD.setStatus("Rebooting")
-                                                })
-                                                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
-                                                    if success {
-                                                        // Wait 1500 ms
-                                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-                                                            self.saveButton.enabled = true
-                                                            appDelegate.startTimer()
-                                                            // Refetch information from FC
-                                                            self.fetchInformation()
-                                                        })
-                                                    } else {
-                                                        self.saveConfigFailed()
-                                                    }
-                                                })
-                                            } else {
-                                                self.saveConfigFailed()
-                                            }
-                                        })
+                                        self.saveNewFailsafeSettings()
                                     } else {
                                         self.saveConfigFailed()
                                     }
@@ -230,6 +240,58 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                             } else {
                                 self.saveConfigFailed()
                             }
+                        })
+                    } else {
+                        self.saveConfigFailed()
+                    }
+                })
+            } else {
+                self.saveConfigFailed()
+            }
+        })
+    }
+    
+    private func saveNewFailsafeSettings() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.16") {
+            self.msp.sendRxConfig(self.newSettings!, midRc: self.newMisc!.midRC, callback: { success in
+                if success {
+                    self.msp.sendFailsafeConfig(self.newSettings!, failsafeThrottle: self.newMisc!.failsafeThrottle, callback: { success in
+                        if success {
+                            self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
+                                if success {
+                                    self.writeToEepromAndReboot()
+                                } else {
+                                    self.saveConfigFailed()
+                                }
+                            })
+                        } else {
+                            self.saveConfigFailed()
+                        }
+                    })
+                } else {
+                    self.saveConfigFailed()
+                }
+            })
+        } else {
+            self.writeToEepromAndReboot()
+        }
+    }
+    
+    private func writeToEepromAndReboot() {
+        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+            if success {
+                dispatch_async(dispatch_get_main_queue(), {
+                    SVProgressHUD.setStatus("Rebooting")
+                })
+                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
+                    if success {
+                        // Wait 1500 ms
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                            self.saveButton.enabled = true
+                            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                            appDelegate.startTimer()
+                            // Refetch information from FC
+                            self.fetchInformation()
                         })
                     } else {
                         self.saveConfigFailed()

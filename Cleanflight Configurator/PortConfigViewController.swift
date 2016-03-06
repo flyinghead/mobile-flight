@@ -35,7 +35,7 @@ class PortConfigViewController: ConfigChildViewController {
         mspBaudratePicker.setPlaceholder("")
         blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: [ "19200", "38400", "57600", "115200", "230400", "250000" ])
         blackboxBaudratePicker.setPlaceholder("")
-        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "MSP", "SmartPort" ])
+        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", Configuration.theConfig.isApiVersionAtLeast("1.15") ? "LTM" : "MSP", "SmartPort" ])
         telemetryTypePicker.setPlaceholder("")
         telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: [ "Auto", "9600", "19200", "38400", "57600", "115200" ])
         telemetryBaudratePicker.setPlaceholder("")

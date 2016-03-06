@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 import MapKit
 
-enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
-
 class MessageRetryHandler {
     let code: MSP_code
     let data: [UInt8]?
@@ -41,18 +39,11 @@ class DataMessageRetryHandler : MessageRetryHandler {
 
 class MSPParser : ProtocolHandler {
     let CHANNEL_FORWARDING_DISABLED = 0xFF
+    let codec = MSPCodec()
     
     var datalog: NSFileHandle?
     var datalogStart: NSDate?
     
-    var state: ParserState = .Sync1
-    var directionOut: Bool = false
-    var unknownMSPCode = false
-    var expectedMsgLength: Int = 0
-    var checksum: UInt8 = 0
-    var messageBuffer: [UInt8]?
-    var code: UInt8 = 0
-    var errors: Int = 0
     var outputQueue = [[UInt8]]()
     
     var dataListeners = [FlightDataListener]()
@@ -101,90 +92,16 @@ class MSPParser : ProtocolHandler {
             receiveStats.removeLast()
         }
         objc_sync_exit(self)
-            
+        
         for b in data {
-            var bbuf = b
-            let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: NSASCIIStringEncoding)! : NSString(format: "[%d]", b)
-            //NSLog("%@", bstr)
-            
-            switch state {
-            case .Sync1:
-                if b == 36 { // $
-                    state = .Sync2
-                } else {
-                    NSLog("MSP expected '$', got %@", bstr)
-                }
-            case .Sync2:
-                if b == 77 { // M
-                    state = .Direction
-                } else {
-                    NSLog("MSP expected 'M', got %@", bstr)
-                    state = .Sync1
-                }
-            case .Direction:
-                if b == 62 { // >
-                    unknownMSPCode = false
-                    directionOut = false
-                    state = .Length
-                } else if b == 60 {     // <
-                    unknownMSPCode = false
-                    directionOut = true
-                    state = .Length
-                } else if b == 33 {     // !
-                    unknownMSPCode = true
-                    state = .Length
-                } else {
-                    NSLog("MSP expected '>', got %@", bstr)
-                    state = .Sync1
-                }
-            case .Length:
-                expectedMsgLength = Int(b);
-                checksum = b;
-                
-                messageBuffer = [UInt8]()
-                state = .Code
-            case .Code:
-                code = b
-                checksum ^= b
-                if expectedMsgLength > 0 {
-                    state = .Payload
-                } else {
-                    state = .Checksum       // No payload
-                }
-            case .Payload:
-                messageBuffer?.append(b);
-                checksum ^= b
-                if messageBuffer?.count >= expectedMsgLength {
-                    state = .Checksum
-                }
-            case .Checksum:
-                let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-                if checksum == b && mspCode != .MSP_UNKNOWN && !directionOut && !unknownMSPCode {
-                    //NSLog("Received MSP %d", mspCode.rawValue)
-                    if processMessage(mspCode, message: messageBuffer!) {
-                        callSuccessCallback(mspCode, data: messageBuffer!)
+            if let (success, mspCode, message) = codec.decode(b) {
+                if success {
+                    if processMessage(mspCode, message: message) {
+                        callSuccessCallback(mspCode, data: message)
                     }
                 } else {
-                    if unknownMSPCode {
-                        callErrorCallback(mspCode)
-                    } else {
-                        let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
-                        if checksum != b {
-                            NSLog("MSP code %d - checksum failed: %@", code, datalog)
-                        } else if directionOut {
-                            NSLog("MSP code %d - received outgoing message", code)
-                        } else {
-                            NSLog("Unknown MSP code %d: %@", code, datalog)
-                        }
-                        errors++
-                        // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
-                        if checksum != b && b == 36 {     // $
-                            state = .Sync2
-                            break
-                        }
-                    }
+                    callErrorCallback(mspCode)
                 }
-                state = .Sync1
             }
         }
     }
@@ -211,7 +128,7 @@ class MSPParser : ProtocolHandler {
             config.capability = readUInt32(message, index: 3)
             pingDataListeners()
             
-        case .MSP_STATUS:
+        case .MSP_STATUS, .MSP_STATUS_EX:
             if message.count < 11 {
                 return false
             }
@@ -325,7 +242,7 @@ class MSPParser : ProtocolHandler {
 
             gpsData.fix = message[0] != 0
             gpsData.numSat = Int(message[1])
-            gpsData.position = CLLocationCoordinate2D(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
+            gpsData.position = GPSLocation(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
@@ -488,9 +405,15 @@ class MSPParser : ProtocolHandler {
             if message.count < 18 {
                 return false
             }
-            // int8: WP number (0: home, 16: position hold)
-            // int32: latitude
-            // int32: longitude
+            let wpNum = message[0]
+            let position = GPSLocation(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000)
+            if wpNum == 0 {
+                gpsData.homePosition = position
+                pingGpsListeners()
+            } else if wpNum == 16 {
+                gpsData.posHoldPosition = position
+                pingGpsListeners()
+            }
             sensorData.altitudeHold = Double(readInt32(message, index: 9)) / 100    // cm
             sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
             pingSensorListeners()
@@ -517,6 +440,47 @@ class MSPParser : ProtocolHandler {
             gpsData.satellites = sats
             
             pingGpsListeners()
+            
+        case .MSP_RX_CONFIG:
+            if message.count < 8 {
+                return false
+            }
+            settings.serialRxType = Int(message[0])
+            settings.maxCheck = readUInt16(message, index: 1)
+            misc.midRC = readUInt16(message, index: 3)
+            settings.minCheck = readUInt16(message, index: 5)
+            settings.spektrumSatBind = Int(message[7])
+            if message.count >= 12 {
+                settings.rxMinUsec = readUInt16(message, index: 8)
+                settings.rxMaxUsec = readUInt16(message, index: 10)
+            }
+            pingDataListeners()         // FIXME
+            pingSettingsListeners()
+            
+        case .MSP_FAILSAFE_CONFIG:
+            if message.count < 8 {
+                return false
+            }
+            settings.failsafeDelay = Double(message[0]) / 10
+            settings.failsafeOffDelay = Double(message[1]) / 10
+            misc.failsafeThrottle = readInt16(message, index: 2) // 0-2000
+            settings.failsafeKillSwitch = message[4] != 0
+            settings.failsafeThrottleLowDelay = Double(readUInt16(message, index: 5)) / 10
+            settings.failsafeProcedure = Int(message[7])
+            pingDataListeners()         // FIXME
+            pingSettingsListeners()
+            
+        case .MSP_RXFAIL_CONFIG:
+            if message.count % 3 != 0 {
+                return false
+            }
+            settings.rxFailMode = [Int]()
+            settings.rxFailValue = [Int]()
+            for var i = 0; i < message.count / 3; i++ {
+                settings.rxFailMode!.append(Int(message[i*3]))
+                settings.rxFailValue!.append(readUInt16(message, index: i * 3 + 1))
+            }
+            pingSettingsListeners()
             
         case .MSP_RX_MAP:
             for (i, b) in message.enumerate() {
@@ -673,7 +637,10 @@ class MSPParser : ProtocolHandler {
             .MSP_SET_WP,
             .MSP_SET_SERVO_CONFIGURATION,
             .MSP_SET_CF_SERIAL_CONFIG,
-            .MSP_SET_RAW_RC:
+            .MSP_SET_RAW_RC,
+            .MSP_SET_RX_CONFIG,
+            .MSP_SET_FAILSAFE_CONFIG,
+            .MSP_SET_RXFAIL_CONFIG:
             break
             
         default:
@@ -721,20 +688,8 @@ class MSPParser : ProtocolHandler {
             retriedMessages[code] = messageRetry
             objc_sync_exit(retriedMessageLock)
         }
-        let dataSize = data?.count ?? 0
-        //                      $    M   <
-        var buffer: [UInt8] = [36 , 77, 60, UInt8(dataSize), UInt8(code.rawValue)]
-        var checksum: UInt8 = UInt8(code.rawValue) ^ buffer[3]
         
-        if (data != nil) {
-            buffer.appendContentsOf(data!)
-            for b in data! {
-                checksum ^= b
-            }
-        }
-        buffer.append(checksum)
-        
-        addOutputMessage(buffer)
+        addOutputMessage(codec.encode(code, message: data))
     }
     
     func sendMessage(code: MSP_code, data: [UInt8]?) {
@@ -1040,6 +995,47 @@ class MSPParser : ProtocolHandler {
             data.appendContentsOf(writeUInt16(v))
         }
         sendMessage(.MSP_SET_RAW_RC, data: data)
+    }
+    
+    func sendRxConfig(settings: Settings, midRc: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.serialRxType))
+        data.appendContentsOf(writeUInt16(settings.maxCheck))
+        data.appendContentsOf(writeUInt16(midRc))
+        data.appendContentsOf(writeUInt16(settings.minCheck))
+        data.append(UInt8(settings.spektrumSatBind))
+        data.appendContentsOf(writeUInt16(settings.rxMinUsec))
+        data.appendContentsOf(writeUInt16(settings.rxMaxUsec))
+        sendMessage(.MSP_SET_RX_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendFailsafeConfig(settings: Settings, failsafeThrottle: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(Int(settings.failsafeDelay * 10)))
+        data.append(UInt8(Int(settings.failsafeOffDelay * 10)))
+        data.appendContentsOf(writeUInt16(failsafeThrottle))
+        data.append(UInt8(settings.failsafeKillSwitch ? 1 : 0))
+        data.appendContentsOf(writeUInt16(Int(settings.failsafeThrottleLowDelay * 10)))
+        data.append(UInt8(settings.failsafeProcedure))
+        sendMessage(.MSP_SET_FAILSAFE_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(index))
+        data.append(UInt8(settings.rxFailMode![index]))
+        data.appendContentsOf(writeUInt16(settings.rxFailValue![index]))
+        sendMessage(.MSP_SET_RXFAIL_CONFIG, data: data, retry: 2, callback: { success in
+            if success {
+                if index < settings.rxFailMode!.count - 1 {
+                    self.sendRxFailConfig(settings, index: index + 1, callback: callback)
+                } else {
+                    callback?(success: true)
+                }
+            } else {
+                callback?(success: false)
+            }
+        })
     }
 
     func openCommChannel(commChannel: CommChannel) {

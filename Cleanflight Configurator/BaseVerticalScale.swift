@@ -59,6 +59,7 @@ class BaseVerticalScale: UIView {
     }
     
     func drawVerticalScale(context: CGContext, top: Double) {
+        CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
         var value = top
         
         if subSubTicksInterval != 0 {

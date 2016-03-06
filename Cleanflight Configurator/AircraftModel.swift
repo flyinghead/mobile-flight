@@ -86,6 +86,7 @@ enum Mode : String {
     case SERVO3 = "SERVO3"
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
+    case AIR = "AIR MODE"
 }
 
 struct ModeRange : DictionaryCoding {
@@ -186,7 +187,7 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     static let GPS = PortFunction(rawValue: 1 << 1)
     static let TelemetryFrsky  = PortFunction(rawValue: 1 << 2)
     static let TelemetryHott  = PortFunction(rawValue: 1 << 3)
-    static let TelemetryLTM  = PortFunction(rawValue: 1 << 4)
+    static let TelemetryLTM  = PortFunction(rawValue: 1 << 4)           // MSP telemetry for CF < 1.11, LTM telemetry for CF >= 1.11
     static let TelemetrySmartPort  = PortFunction(rawValue: 1 << 5)
     static let RxSerial  = PortFunction(rawValue: 1 << 6)
     static let Blackbox  = PortFunction(rawValue: 1 << 7)
@@ -268,7 +269,8 @@ struct PortConfig : DictionaryCoding {
 }
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController" ]
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "minCheck", "spektrumSatBind", "rxMinUsec",
+        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -321,6 +323,27 @@ class Settings : AutoCoded {
     // MSP_CF_SERIAL_CONFIG / MSP_SET_CF_SERIAL_CONFIG
     var portConfigs: [PortConfig]?
     
+    // MSP_RX_CONFIG / MSP_SET_RX_CONFIG
+    // serialRxType
+    var maxCheck = 1100
+    // misc.midRC
+    var minCheck = 1900
+    var spektrumSatBind = 0
+    var rxMinUsec = 885
+    var rxMaxUsec = 2115
+    
+    // MSP_FAILSAFE_CONFIG / MSP_SET_FAILSAFE_CONFIG
+    var failsafeDelay = 0.0         // Guard time for failsafe activation after signal loss (0 - 20 secs)
+    var failsafeOffDelay = 0.0      // Time for landing before motor stop (0 - 20 secs)
+    var failsafeThrottleLowDelay = 0.0  // If throtlle has been below minCheck for that much time, just disarm (0 - 30 secs)
+    // misc.failsafeThrottle
+    var failsafeKillSwitch = false  // If true, failsafe switch will disarm aircraft instantly instead of doing the failsafe procedure
+    var failsafeProcedure = 0       // 0: land, 1: drop
+    
+    // MSP_RX_FAIL_CONFIG / MSP_SET_RX_FAIL_CONFIG
+    var rxFailMode: [Int]?          // 0: Auto, 1: Hold, 2: Set
+    var rxFailValue: [Int]?         // For mode 2 (Set)
+    
     private override init() {
         super.init()
     }
@@ -360,6 +383,21 @@ class Settings : AutoCoded {
         
         self.servoConfigs = copyOf.servoConfigs
         self.portConfigs = copyOf.portConfigs
+        
+        self.maxCheck = copyOf.maxCheck
+        self.minCheck = copyOf.minCheck
+        self.spektrumSatBind = copyOf.spektrumSatBind
+        self.rxMinUsec = copyOf.rxMinUsec
+        self.rxMaxUsec = copyOf.rxMaxUsec
+        
+        self.failsafeDelay = copyOf.failsafeDelay
+        self.failsafeOffDelay = copyOf.failsafeOffDelay
+        self.failsafeThrottleLowDelay = copyOf.failsafeThrottleLowDelay
+        self.failsafeKillSwitch = copyOf.failsafeKillSwitch
+        self.failsafeProcedure = copyOf.failsafeProcedure
+        
+        self.rxFailMode = copyOf.rxFailMode
+        self.rxFailValue = copyOf.rxFailValue
         
         super.init()
     }
@@ -727,22 +765,52 @@ struct Satellite : DictionaryCoding {
     }
 }
 
+struct GPSLocation : DictionaryCoding {
+    var latitude: Double
+    var longitude: Double
+    
+    init(latitude: Double, longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let latitude = dict["latitude"] as? Double,
+            let longitude = dict["longitude"] as? Double
+            else { return nil }
+        
+        self.init(latitude: latitude, longitude: longitude)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "latitude": latitude, "longitude": longitude ]
+    }
+    
+    // MARK:
+    
+    func toCLLocationCoordinate2D() -> CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
 class GPSData : AutoCoded {
     var autoEncoding = [ "fix", "latitude", "longitude", "altitude", "speed", "headingOverGround", "numSat", "distanceToHome", "directionToHome", "update", "lastKnownGoodLatitude", "lastKnownGoodLongitude", "lastKnownGoodAltitude", "lastKnownGoodTimestamp" ]
     static var theGPSData = GPSData()
     
     // MSP_RAW_GPS
     var fix = false
-    var position: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+    var position: GPSLocation = GPSLocation(latitude: 0, longitude: 0) {
         didSet {
             if fix {
-                // Hack to avoid bogus first position with lat or long at 0 when the object is decoded and uses the kat and long setters in sequence
+                // Hack to avoid bogus first position with lat or long at 0 when the object is decoded and uses the lat and long setters in sequence
                 if position.latitude != 0 && position.longitude != 0 {
                     lastKnownGoodLatitude = position.latitude
                     lastKnownGoodLongitude = position.longitude
                     lastKnownGoodTimestamp = NSDate()
                     
-                    positions.append(position)
+                    positions.append(position.toCLLocationCoordinate2D())
                 }
             }
         }
@@ -751,7 +819,7 @@ class GPSData : AutoCoded {
         get {
             return position.latitude
         }
-        // FIXME we should serialize position instead
+        // FIXME Only needed for backward compatibility of old flight log files
         set(value) {
             position.latitude = value
         }
@@ -760,6 +828,7 @@ class GPSData : AutoCoded {
         get {
             return position.longitude
         }
+        // FIXME Only needed for backward compatibility of old flight log files
         set(value) {
             position.longitude = value
         }
@@ -797,6 +866,10 @@ class GPSData : AutoCoded {
     var directionToHome = 0     // degree
     var update = 0
     
+    // MSP_WP
+    var homePosition: GPSLocation?
+    var posHoldPosition: GPSLocation?
+
     // Local
     var lastKnownGoodLatitude = 0.0
     var lastKnownGoodLongitude = 0.0
@@ -835,6 +908,15 @@ class GPSData : AutoCoded {
                 _satellites.append(Satellite(fromDict: dict)!)
             }
         }
+        if let positionDict = aDecoder.decodeObjectForKey("position") as? NSDictionary {
+            position = GPSLocation(fromDict: positionDict)!
+        }
+        if let positionDict = aDecoder.decodeObjectForKey("homePosition") as? NSDictionary {
+            homePosition = GPSLocation(fromDict: positionDict)!
+        }
+        if let positionDict = aDecoder.decodeObjectForKey("posHoldPosition") as? NSDictionary {
+            posHoldPosition = GPSLocation(fromDict: positionDict)!
+        }
     }
     
     override func encodeWithCoder(aCoder: NSCoder) {
@@ -845,6 +927,13 @@ class GPSData : AutoCoded {
             satellitesDicts.append(satellite.toDict())
         }
         aCoder.encodeObject(satellitesDicts, forKey: "satellites")
+        aCoder.encodeObject(position.toDict(), forKey: "position")
+        if homePosition != nil {
+            aCoder.encodeObject(homePosition!.toDict(), forKey: "homePosition")
+        }
+        if posHoldPosition != nil {
+            aCoder.encodeObject(posHoldPosition!.toDict(), forKey: "posHoldPosition")
+        }
     }
 }
 

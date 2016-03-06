@@ -9,8 +9,14 @@
 import UIKit
 
 @IBDesignable
-class VerticalScale: BaseVerticalScale {
+class VerticalScale: BaseVerticalScale, NeedsOrigin {
 
+    @IBInspectable var origin: Double = 0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     var bugs: [(value: Double, color: UIColor)] = [] {
         didSet {
             setNeedsDisplay()
@@ -28,7 +34,7 @@ class VerticalScale: BaseVerticalScale {
         
         CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
 
-        drawVerticalScale(ctx, top: Double(bounds.height) / 2.0 / scale + currentValue)
+        drawVerticalScale(ctx, top: (origin - Double(bounds.minY)) / scale + currentValue)
         for (value, color) in bugs {
             drawBug(ctx, value: value, color: color)
         }
@@ -50,44 +56,45 @@ class VerticalScale: BaseVerticalScale {
         let cornerRadius: CGFloat = fontSize.width / 3
         let markWidth = fontSize.height / 2 * 0.8660        // sin(60°)
         
+        let fOrigin = CGFloat(origin)
         let minX = !rightAligned ? bounds.minX + markWidth + 4 : bounds.minX + 1
         let maxX = !rightAligned ? bounds.maxX - 1 : bounds.maxX - markWidth - 4
-        let minY = bounds.midY - fontSize.height
-        let maxY = bounds.midY + fontSize.height
+        let minY = fOrigin - fontSize.height
+        let maxY = fOrigin + fontSize.height
         
         let rollerWidth = fontSize.width * CGFloat(self.precision + 1) + 8
         
         let path = CGPathCreateMutable()
         let commonHalfHeight = fontSize.height / 2
-        CGPathMoveToPoint(path, nil, minX + cornerRadius, bounds.midY - commonHalfHeight)
+        CGPathMoveToPoint(path, nil, minX + cornerRadius, fOrigin - commonHalfHeight)
         // Top
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, bounds.midY - commonHalfHeight)
+        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, fOrigin - commonHalfHeight)
         CGPathAddLineToPoint(path, nil, maxX - rollerWidth, minY + cornerRadius)
         CGPathAddArcToPoint(path, nil, maxX - rollerWidth, minY, maxX - rollerWidth + cornerRadius, minY, cornerRadius)
         CGPathAddLineToPoint(path, nil, maxX - cornerRadius, minY)
         CGPathAddArcToPoint(path, nil, maxX, minY, maxX, minY + cornerRadius, cornerRadius)
         // Right
         if rightAligned {
-            CGPathAddLineToPoint(path, nil, maxX, bounds.midY - commonHalfHeight / 2)
-            CGPathAddLineToPoint(path, nil, bounds.maxX - 4, bounds.midY)
-            CGPathAddLineToPoint(path, nil, maxX, bounds.midY + commonHalfHeight / 2)
+            CGPathAddLineToPoint(path, nil, maxX, fOrigin - commonHalfHeight / 2)
+            CGPathAddLineToPoint(path, nil, bounds.maxX - 4, fOrigin)
+            CGPathAddLineToPoint(path, nil, maxX, fOrigin + commonHalfHeight / 2)
         }
         CGPathAddLineToPoint(path, nil, maxX, maxY - cornerRadius)
         CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - cornerRadius, maxY, cornerRadius)
         // Bottom
         CGPathAddLineToPoint(path, nil, maxX - rollerWidth + cornerRadius, maxY)
         CGPathAddArcToPoint(path, nil, maxX - rollerWidth, maxY, maxX - rollerWidth, maxY - cornerRadius, cornerRadius)
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, bounds.midY + commonHalfHeight)
-        CGPathAddLineToPoint(path, nil, minX + cornerRadius, bounds.midY + commonHalfHeight)
-        CGPathAddArcToPoint(path, nil, minX, bounds.midY + commonHalfHeight, minX, bounds.midY + commonHalfHeight - cornerRadius, cornerRadius)
+        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, fOrigin + commonHalfHeight)
+        CGPathAddLineToPoint(path, nil, minX + cornerRadius, fOrigin + commonHalfHeight)
+        CGPathAddArcToPoint(path, nil, minX, fOrigin + commonHalfHeight, minX, fOrigin + commonHalfHeight - cornerRadius, cornerRadius)
         // Left
         if !rightAligned {
-            CGPathAddLineToPoint(path, nil, minX, bounds.midY + commonHalfHeight / 2)
-            CGPathAddLineToPoint(path, nil, bounds.minX + 4, bounds.midY)
-            CGPathAddLineToPoint(path, nil, minX, bounds.midY - commonHalfHeight / 2)
+            CGPathAddLineToPoint(path, nil, minX, fOrigin + commonHalfHeight / 2)
+            CGPathAddLineToPoint(path, nil, bounds.minX + 4, fOrigin)
+            CGPathAddLineToPoint(path, nil, minX, fOrigin - commonHalfHeight / 2)
         }
-        CGPathAddLineToPoint(path, nil, minX, bounds.midY - commonHalfHeight + cornerRadius)
-        CGPathAddArcToPoint(path, nil, minX, bounds.midY - commonHalfHeight, minX + cornerRadius, bounds.midY - commonHalfHeight, cornerRadius)
+        CGPathAddLineToPoint(path, nil, minX, fOrigin - commonHalfHeight + cornerRadius)
+        CGPathAddArcToPoint(path, nil, minX, fOrigin - commonHalfHeight, minX + cornerRadius, fOrigin - commonHalfHeight, cornerRadius)
         
         // Draw fill and stroke
         CGContextAddPath(ctx, path)
@@ -117,7 +124,7 @@ class VerticalScale: BaseVerticalScale {
         var suffix = uniqueSuffix(stringValues[0], refString: stringValues[1]) as NSString
         
         // FIXME: Not sure why we need the -2.5 offset to have the text perfectly centered in the control
-        var textRect = CGRect(x: minX, y: bounds.midY - 2.5 + textLeading * CGFloat(-1.5 + delta), width: maxX - minX - 4, height: fontSize.height)
+        var textRect = CGRect(x: minX, y: fOrigin - 2.5 + textLeading * CGFloat(-1.5 + delta), width: maxX - minX - 4, height: fontSize.height)
         suffix.drawInRect(textRect, withAttributes: textAttributes)
         
         textRect = textRect.offsetBy(dx: 0, dy: textLeading)
@@ -125,7 +132,7 @@ class VerticalScale: BaseVerticalScale {
         
         let suffixWidth = suffix.sizeWithAttributes(textAttributes).width
         suffix.drawInRect(textRect, withAttributes: textAttributes)
-        commonPrefixString.drawInRect(CGRect(x: textRect.minX, y: bounds.midY - 2.5 - textLeading / 2, width: textRect.width - suffixWidth, height: fontSize.height), withAttributes: textAttributes)
+        commonPrefixString.drawInRect(CGRect(x: textRect.minX, y: fOrigin - 2.5 - textLeading / 2, width: textRect.width - suffixWidth, height: fontSize.height), withAttributes: textAttributes)
         
         textRect = textRect.offsetBy(dx: 0, dy: textLeading)
         suffix = uniqueSuffix(stringValues[2], refString: stringValues[1]) as NSString
@@ -200,7 +207,7 @@ class VerticalScale: BaseVerticalScale {
         
         let markerHeight = fontSize.height * 2
         
-        let top = bounds.midY - CGFloat((value - currentValue) * scale) - markerHeight / 2
+        let top = CGFloat(origin - (value - currentValue) * scale) - markerHeight / 2
         if top > bounds.maxY {
             return
         }

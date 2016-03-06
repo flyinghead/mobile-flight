@@ -9,15 +9,9 @@
 import UIKit
 
 @IBDesignable
-class SimpleVerticalScale: BaseVerticalScale {
+class SimpleVerticalScale: BaseVerticalScale, NeedsOrigin {
 
-    @IBInspectable var topValue: Double = 10 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    @IBInspectable var bottomValue: Double = 0 {
+    @IBInspectable var origin: Double = 0 {
         didSet {
             setNeedsDisplay()
         }
@@ -28,14 +22,12 @@ class SimpleVerticalScale: BaseVerticalScale {
         
         CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
         
-        if topValue != bottomValue {
-            scale = Double(bounds.height) / (topValue - bottomValue)
-        }
+        let topValue = (origin - Double(bounds.minY)) / scale
         drawVerticalScale(ctx, top: topValue)
-        drawNeedle(ctx)
+        drawNeedle(ctx, topValue: topValue)
     }
 
-    func drawNeedle(ctx: CGContext) {
+    func drawNeedle(ctx: CGContext, topValue: Double) {
         let font = UIFont(name: "Verdana", size: self.fontSize)!
         let textAttributes: [String : AnyObject] = [ NSFontAttributeName : font ]
         let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
@@ -75,7 +67,6 @@ class SimpleVerticalScale: BaseVerticalScale {
         CGContextClosePath(ctx)
         
         CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        //CGContextSetStrokeColorWithColor(ctx, UIColor.darkGrayColor().CGColor)
         CGContextDrawPath(ctx, .FillStroke)
     }
 }

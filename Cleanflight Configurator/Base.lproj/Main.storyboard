@@ -470,7 +470,7 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="About" image="about" selectedImage="about" id="cPa-gy-q4n"/>
+                    <tabBarItem key="tabBarItem" tag="11" title="About" image="about" selectedImage="about" id="cPa-gy-q4n"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
@@ -543,12 +543,33 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="j7a-F4-Vga">
+                                        <rect key="frame" x="0.0" y="187" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="j7a-F4-Vga" id="G5P-Cl-Pac">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LFp-Ek-rRS">
+                                                    <rect key="frame" x="204" y="7" width="192" height="30"/>
+                                                    <state key="normal" title="Reset Parameters to Default"/>
+                                                    <connections>
+                                                        <action selector="resetPIDParams:" destination="Exb-KD-o8b" eventType="touchUpInside" id="LH0-Ex-bpl"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="LFp-Ek-rRS" firstAttribute="centerX" secondItem="G5P-Cl-Pac" secondAttribute="centerX" id="9e4-IB-WXF"/>
+                                                <constraint firstItem="LFp-Ek-rRS" firstAttribute="centerY" secondItem="G5P-Cl-Pac" secondAttribute="centerY" id="h9b-wn-o4n"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Basic" footerTitle="These settings are used by all modes, including Acro" id="L1p-wo-tzz">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="3Wi-b1-Wt6">
-                                        <rect key="frame" x="0.0" y="238" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="282" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3Wi-b1-Wt6" id="wR0-BQ-ead">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -674,7 +695,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="SEC-n0-45W">
-                                        <rect key="frame" x="0.0" y="282" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="326" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SEC-n0-45W" id="Wnk-FH-lDG">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -800,7 +821,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="fXk-hV-H9C">
-                                        <rect key="frame" x="0.0" y="326" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="370" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fXk-hV-H9C" id="gzW-LX-glM">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -930,7 +951,7 @@
                             <tableViewSection headerTitle="Altitude Hold" footerTitle="Sonar &amp; Barometer altitude hold modes" id="YD5-bE-0SA">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="rJN-rg-TQL">
-                                        <rect key="frame" x="0.0" y="437" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="481" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rJN-rg-TQL" id="Xv1-2c-afW">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -986,7 +1007,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="xHb-o3-Q7N">
-                                        <rect key="frame" x="0.0" y="481" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="525" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xHb-o3-Q7N" id="95V-Ta-eCP">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1116,7 +1137,7 @@
                             <tableViewSection headerTitle="Mag Heading" id="lbV-8h-7AA">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="H5X-Gh-pag">
-                                        <rect key="frame" x="0.0" y="592" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="636" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H5X-Gh-pag" id="hQE-qv-2mr">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1176,7 +1197,7 @@
                             <tableViewSection headerTitle="GPS Navigation" id="oFj-W4-HMt">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="A3p-6Z-SbB">
-                                        <rect key="frame" x="0.0" y="687" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="731" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="A3p-6Z-SbB" id="1Ra-l5-9dx">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1267,7 +1288,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="xDn-nP-MzV">
-                                        <rect key="frame" x="0.0" y="731" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="775" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xDn-nP-MzV" id="RIB-Oe-ZkW">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1393,7 +1414,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="qph-QI-wSm">
-                                        <rect key="frame" x="0.0" y="775" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="819" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qph-QI-wSm" id="Yb7-wr-gvE">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1523,7 +1544,7 @@
                             <tableViewSection headerTitle="Angle &amp; Horizon" footerTitle="These settings are used by Angle and Horizon modes" id="evq-Yv-6EA">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="b7a-gS-c7M">
-                                        <rect key="frame" x="0.0" y="870" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="914" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="b7a-gS-c7M" id="4Cq-YN-0xE">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1571,7 +1592,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="b1g-fc-z7K">
-                                        <rect key="frame" x="0.0" y="914" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="958" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="b1g-fc-z7K" id="owv-wI-O9q">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1619,7 +1640,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="rzP-gJ-I9J">
-                                        <rect key="frame" x="0.0" y="958" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1002" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rzP-gJ-I9J" id="2So-4w-nE0">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1671,7 +1692,7 @@
                             <tableViewSection headerTitle="RC Rates" id="Wc4-u6-tbw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="sq2-Ka-hRY">
-                                        <rect key="frame" x="0.0" y="1069" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1113" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sq2-Ka-hRY" id="S6r-51-Wc7">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1719,7 +1740,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="pkT-Wq-r69">
-                                        <rect key="frame" x="0.0" y="1113" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1157" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pkT-Wq-r69" id="jbI-sZ-kRG">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1767,7 +1788,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="WZu-mP-hpD">
-                                        <rect key="frame" x="0.0" y="1157" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1201" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WZu-mP-hpD" id="Ua6-d5-4dr">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1819,7 +1840,7 @@
                             <tableViewSection headerTitle="Throttle PID Attenuation" id="h9E-9l-Rf2">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="B3g-pW-eGh">
-                                        <rect key="frame" x="0.0" y="1252" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1296" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B3g-pW-eGh" id="Jh0-3V-WEI">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1867,7 +1888,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="1eE-Tn-8p0">
-                                        <rect key="frame" x="0.0" y="1296" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1340" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1eE-Tn-8p0" id="z7s-LQ-Rcn">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1966,6 +1987,7 @@
                         <outlet property="posRI" destination="g27-yJ-LgN" id="Gmm-xC-hXv"/>
                         <outlet property="posRP" destination="lbx-iN-BRr" id="OXF-WV-OX6"/>
                         <outlet property="profileField" destination="ePn-4G-Y6p" id="dYs-VO-hTM"/>
+                        <outlet property="resetPIDValuesCell" destination="j7a-F4-Vga" id="Iws-np-KTO"/>
                         <outlet property="rollD" destination="hka-3T-Gom" id="A8g-WR-1dh"/>
                         <outlet property="rollI" destination="leP-6e-nIN" id="ZC7-1j-XqV"/>
                         <outlet property="rollP" destination="eRt-Ip-wdp" id="qDc-ND-ZSZ"/>
@@ -1983,7 +2005,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eZK-65-OEZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1549" y="1188"/>
+            <point key="canvasLocation" x="1641" y="1952"/>
         </scene>
         <!--Receiver-->
         <scene sceneID="o7N-YC-0ZO">
@@ -2740,7 +2762,7 @@
                             <constraint firstItem="bLf-Di-nqE" firstAttribute="width" secondItem="YBB-7p-jTG" secondAttribute="width" id="rlg-BW-zFD"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Motors" image="Motor" selectedImage="Motor" id="9DK-5a-a5P"/>
+                    <tabBarItem key="tabBarItem" tag="7" title="Motors" image="Motor" selectedImage="Motor" id="9DK-5a-a5P"/>
                     <navigationItem key="navigationItem" title="Motors" id="Mhw-nG-86B"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="650"/>
@@ -3010,7 +3032,7 @@
                             <constraint firstItem="18z-mV-MNv" firstAttribute="leading" secondItem="89p-Xj-8oo" secondAttribute="trailing" constant="8" id="z9X-RA-9yc"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Calibrate" image="calibrate" selectedImage="calibrate" id="MVH-kq-s9b"/>
+                    <tabBarItem key="tabBarItem" tag="2" title="Calibrate" image="calibrate" selectedImage="calibrate" id="MVH-kq-s9b"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="accTrimPitchField" destination="2r7-wi-Re9" id="2nB-O8-fi2"/>
@@ -3047,7 +3069,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3LN-OG-GnP" customClass="RangeSlider" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                            <rect key="frame" x="114" y="12" width="478" height="24"/>
+                                            <rect key="frame" x="109" y="12" width="483" height="30"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
@@ -3067,20 +3089,20 @@
                                                 <action selector="rangeChanged:" destination="etX-9N-9Rk" eventType="valueChanged" id="WC4-gg-tcJ"/>
                                             </connections>
                                         </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1750" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S4a-Gq-nb6">
-                                            <rect key="frame" x="114" y="40" width="32" height="17"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1750" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S4a-Gq-nb6">
+                                            <rect key="frame" x="109" y="45" width="32" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddE-Ht-SDl">
-                                            <rect key="frame" x="557" y="41" width="35" height="17"/>
+                                            <rect key="frame" x="558" y="46" width="35" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AUX 8" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OI3-WZ-QkQ">
-                                            <rect key="frame" x="8" y="18" width="90" height="30"/>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AUX 8" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OI3-WZ-QkQ">
+                                            <rect key="frame" x="8" y="20" width="85" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="85" id="eW4-hU-3H9"/>
                                             </constraints>
@@ -3249,7 +3271,7 @@
                             <constraint firstItem="9Oa-cl-ymJ" firstAttribute="top" secondItem="WOT-Dk-ALx" secondAttribute="bottom" constant="8" id="wMf-hS-QjK"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Dataflash" image="dataflash" selectedImage="dataflash" id="mKh-pV-6MF"/>
+                    <tabBarItem key="tabBarItem" tag="12" title="Dataflash" image="dataflash" selectedImage="dataflash" id="mKh-pV-6MF"/>
                     <connections>
                         <outlet property="downloadButton" destination="FnV-6e-GtS" id="rmk-qh-HRW"/>
                         <outlet property="eraseButton" destination="RAT-qu-3hH" id="FB1-s0-53Q"/>
@@ -3491,7 +3513,7 @@
                             <outlet property="delegate" destination="Epx-xP-oGk" id="oUd-2L-fhX"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="GPS" image="GPS" selectedImage="GPS" id="DrN-Cb-NrB"/>
+                    <tabBarItem key="tabBarItem" tag="6" title="GPS" image="GPS" selectedImage="GPS" id="DrN-Cb-NrB"/>
                     <navigationItem key="navigationItem" title="GPS" id="28Y-cy-8KO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ihN-iY-uhg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3502,7 +3524,7 @@
         <scene sceneID="54e-0Y-XIm">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HT2-NX-7rM" userLabel="Modes Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Modes" image="Modes" selectedImage="Modes" id="YHQ-tI-FPp"/>
+                    <tabBarItem key="tabBarItem" tag="4" title="Modes" image="Modes" selectedImage="Modes" id="YHQ-tI-FPp"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="qXv-xA-LXY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -3521,7 +3543,7 @@
         <scene sceneID="04Z-kY-pep">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mR7-6Y-Ezv" userLabel="Receiver Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Receiver" image="Receiver" selectedImage="Receiver" id="Omz-2G-Yxe"/>
+                    <tabBarItem key="tabBarItem" tag="3" title="Receiver" image="Receiver" selectedImage="Receiver" id="Omz-2G-Yxe"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="9gW-fE-Eh4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -3540,7 +3562,7 @@
         <scene sceneID="FoW-17-eP6">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="IIX-q7-tdf" userLabel="PIDs Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="PID Tuning" image="tuning" selectedImage="tuning" id="yQy-uc-avL"/>
+                    <tabBarItem key="tabBarItem" tag="5" title="PID Tuning" image="tuning" selectedImage="tuning" id="yQy-uc-avL"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Uct-hX-MO1">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -3553,13 +3575,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XLU-FL-vb0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-23" y="772"/>
+            <point key="canvasLocation" x="891" y="1493"/>
         </scene>
         <!--Servos Navigation-->
         <scene sceneID="MGQ-1e-im8">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9f6-ZM-2iM" userLabel="Servos Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Servos" image="servos" selectedImage="servos" id="5rZ-3w-IKu"/>
+                    <tabBarItem key="tabBarItem" tag="9" title="Servos" image="servos" selectedImage="servos" id="5rZ-3w-IKu"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="BVD-E9-vwB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -3578,7 +3600,7 @@
         <scene sceneID="VUl-6G-uxN">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LEP-hN-6U2" userLabel="CLI Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="CLI" image="cli" selectedImage="cli" id="3f8-kx-7ts"/>
+                    <tabBarItem key="tabBarItem" tag="13" title="CLI" image="cli" selectedImage="cli" id="3f8-kx-7ts"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mmI-Yl-7iS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
