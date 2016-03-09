@@ -9,7 +9,6 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
-import StaticDataTableViewController
 
 class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var profileField: UITextField!

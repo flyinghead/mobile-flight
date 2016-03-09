@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import StaticDataTableViewController
 
 class ReceiverConfigViewController: ConfigChildViewController {
     @IBOutlet var serialReceiverCells: [UITableViewCell]!

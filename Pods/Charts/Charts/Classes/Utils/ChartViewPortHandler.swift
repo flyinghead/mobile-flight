@@ -151,18 +151,33 @@ public class ChartViewPortHandler: NSObject
         return _contentRect.size.height
     }
     
-    public var contentRect: CGRect { return _contentRect; }
+    public var contentRect: CGRect
+    {
+        return _contentRect
+    }
     
     public var contentCenter: CGPoint
     {
         return CGPoint(x: _contentRect.origin.x + _contentRect.size.width / 2.0, y: _contentRect.origin.y + _contentRect.size.height / 2.0)
     }
     
-    public var chartHeight: CGFloat { return _chartHeight; }
+    public var chartHeight: CGFloat
+    { 
+        return _chartHeight
+    }
     
-    public var chartWidth: CGFloat { return _chartWidth; }
+    public var chartWidth: CGFloat
+    { 
+        return _chartWidth
+    }
 
     // MARK: - Scaling/Panning etc.
+    
+    /// Zooms by the specified zoom factors.
+    public func zoom(scaleX scaleX: CGFloat, scaleY: CGFloat) -> CGAffineTransform
+    {
+        return CGAffineTransformScale(_touchMatrix, scaleX, scaleY)
+    }
     
     /// Zooms around the specified center
     public func zoom(scaleX scaleX: CGFloat, scaleY: CGFloat, x: CGFloat, y: CGFloat) -> CGAffineTransform
@@ -185,6 +200,27 @@ public class ChartViewPortHandler: NSObject
         return zoom(scaleX: 0.7, scaleY: 0.7, x: x, y: y)
     }
     
+    /// Sets the scale factor to the specified values.
+    public func setZoom(scaleX scaleX: CGFloat, scaleY: CGFloat) -> CGAffineTransform
+    {
+        var matrix = _touchMatrix
+        matrix.a = scaleX
+        matrix.d = scaleY
+        return matrix
+    }
+    
+    /// Sets the scale factor to the specified values. x and y is pivot.
+    public func setZoom(scaleX scaleX: CGFloat, scaleY: CGFloat, x: CGFloat, y: CGFloat) -> CGAffineTransform
+    {
+        var matrix = _touchMatrix
+        matrix.a = 1.0
+        matrix.d = 1.0
+        matrix = CGAffineTransformTranslate(matrix, x, y)
+        matrix = CGAffineTransformScale(matrix, scaleX, scaleY)
+        matrix = CGAffineTransformTranslate(matrix, -x, -y)
+        return matrix
+    }
+    
     /// Resets all zooming and dragging and makes the chart fit exactly it's bounds.
     public func fitScreen() -> CGAffineTransform
     {
@@ -194,7 +230,20 @@ public class ChartViewPortHandler: NSObject
         return CGAffineTransformIdentity
     }
     
+    /// Translates to the specified point.
+    public func translate(pt pt: CGPoint) -> CGAffineTransform
+    {
+        let translateX = pt.x - offsetLeft
+        let translateY = pt.y - offsetTop
+        
+        let matrix = CGAffineTransformConcat(_touchMatrix, CGAffineTransformMakeTranslation(-translateX, -translateY))
+        
+        return matrix
+    }
+    
     /// Centers the viewport around the specified position (x-index and y-value) in the chart.
+    /// Centering the viewport outside the bounds of the chart is not possible.
+    /// Makes most sense in combination with the setScaleMinima(...) method.
     public func centerViewPort(pt pt: CGPoint, chart: ChartViewBase)
     {
         let translateX = pt.x - offsetLeft
@@ -239,11 +288,11 @@ public class ChartViewPortHandler: NSObject
         
         let maxTransX = -width * (_scaleX - 1.0)
         let newTransX = min(max(matrix.tx, maxTransX - _transOffsetX), _transOffsetX)
-        _transX = newTransX;
+        _transX = newTransX
         
         let maxTransY = height * (_scaleY - 1.0)
         let newTransY = max(min(matrix.ty, maxTransY + _transOffsetY), -_transOffsetY)
-        _transY = newTransY;
+        _transY = newTransY
         
         matrix.tx = _transX
         matrix.a = _scaleX
@@ -308,7 +357,7 @@ public class ChartViewPortHandler: NSObject
     /// Sets the maximum scale factor for the y-axis
     public func setMaximumScaleY(yScale: CGFloat)
     {
-        _maxScaleY = yScale;
+        _maxScaleY = yScale
         
         limitTransAndScale(matrix: &_touchMatrix, content: _contentRect)
     }
