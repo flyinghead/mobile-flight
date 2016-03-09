@@ -46,6 +46,10 @@ class VoiceAlarm {
     var on: Bool { return false }
     var enabled: Bool { return true }
     
+    private var vehicle: Vehicle {
+        return (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle
+    }
+    
     func voiceAlert() -> VoiceAlert! {
         return nil
     }
@@ -54,11 +58,10 @@ class VoiceAlarm {
 class CommunicationLostAlarm : VoiceAlarm {
     override var on: Bool {
         
-        if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) {
+        if !vehicle.armed.value {
             return false
         }
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
-        return msp.communicationEstablished && !msp.communicationHealthy
+        return vehicle.connected.value && !(UIApplication.sharedApplication().delegate as! AppDelegate).protocolHandler.communicationHealthy
     }
     
     override var enabled: Bool {
@@ -75,18 +78,13 @@ class GPSFixLostAlarm : VoiceAlarm {
         if CommunicationLostAlarm().on {
             return false
         }
-        // TODO Add a condition on whether we have a home fix and we had a GPS fix when arming
-        let settings = Settings.theSettings
-        let mode = Configuration.theConfig.mode
         
-        // Only alert if armed and in GPS Hold or Home mode
-        if !settings.isModeOn(.ARM, forStatus: mode)
-            || (!settings.isModeOn(.GPSHOLD, forStatus: mode) && !settings.isModeOn(.GPSHOME, forStatus: mode)) {
+        // Only alert if armed and GPS installed
+        if !vehicle.armed.value || vehicle.gpsFix.value == nil {
                 return false
         }
         
-        let gpsData = GPSData.theGPSData
-        return !gpsData.fix || gpsData.numSat < 5
+        return !(vehicle.gpsFix.value!)
     }
     override var enabled: Bool {
         return userDefaultEnabled(.GPSFixLostAlarm)
@@ -110,21 +108,17 @@ class BatteryLowAlarm : VoiceAlarm {
     }
 
     func batteryStatus() -> Status {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
-        if !msp.communicationEstablished || !msp.communicationHealthy {
+        let protocolHandler = (UIApplication.sharedApplication().delegate as! AppDelegate).protocolHandler
+        if !vehicle.connected.value || !protocolHandler.communicationHealthy {
             return .Good        // Comm lost or not connected, no need for battery alarm
         }
-        let settings = Settings.theSettings
-        let config = Configuration.theConfig
-        let misc = Misc.theMisc
-        
-        if settings.features.contains(.VBat) ?? false
-            && config.batteryCells > 0
-            && config.voltage > 0 {
-            let voltsPerCell = config.voltage / Double(config.batteryCells)
-            if voltsPerCell <= misc.vbatMinCellVoltage {
+        if let criticalLevel = vehicle.batteryVoltsCritical.value {
+            if vehicle.batteryVolts.value <= criticalLevel {
                 return .Critical
-            } else if voltsPerCell <= misc.vbatWarningCellVoltage {
+            }
+        }
+        if let warningLevel = vehicle.batteryVoltsWarning.value {
+            if vehicle.batteryVolts.value <= warningLevel {
                 return .Warning
             }
         }
@@ -139,20 +133,18 @@ class BatteryLowAlarm : VoiceAlarm {
 class RSSILowAlarm : VoiceAlarm {
     
     override var on: Bool {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
-        if !msp.communicationEstablished || CommunicationLostAlarm().on {
+        if !vehicle.connected.value || CommunicationLostAlarm().on {
             return false
         }
-        let config = Configuration.theConfig
         
-        return Settings.theSettings.isModeOn(.ARM, forStatus: config.mode) && config.rssi <= userDefaultAsInt(.RSSIAlarmLow)
+        return vehicle.armed.value && vehicle.rssi.value <= userDefaultAsInt(.RSSIAlarmLow)
     }
     override var enabled: Bool {
         return userDefaultEnabled(.RSSIAlarm)
     }
     
     override func voiceAlert() -> VoiceAlert! {
-        return VoiceAlert(speech: Configuration.theConfig.rssi <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.on })
+        return VoiceAlert(speech: vehicle.rssi.value <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.on })
     }
 }
 

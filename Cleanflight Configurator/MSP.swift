@@ -41,34 +41,33 @@ class MSPParser : ProtocolHandler {
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
     
-    var datalog: NSFileHandle?
-    var datalogStart: NSDate?
+    var datalog: NSFileHandle? {
+        didSet {
+            if datalog != nil {
+                datalogStart = NSDate()
+            } else {
+                datalogStart = nil
+            }
+        }
+    }
+    private var datalogStart: NSDate?
     
     var outputQueue = [[UInt8]]()
     
     var dataListeners = [FlightDataListener]()
     var dataListenersLock = NSObject()
     private var commChannel: CommChannel?
+    private var timer: NSTimer?
+    private var timerSwitch = false
+    private var lastDataReceived: NSDate?
     
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
     var cliViewController: CLIViewController?
     
-    var receiveStats = [(date: NSDate, size: Int)]()
-    
-    var incomingBytesPerSecond: Int {
-        var byteCount = 0
-        objc_sync_enter(self)
-        for (date, size) in receiveStats {
-            if -date.timeIntervalSinceNow >= 1 {
-                break
-            }
-            byteCount += size
-        }
-        objc_sync_exit(self)
-        return byteCount
-    }
+    var _vehicle = MSPVehicle()
+    private(set) var protocolRecognized = false
     
     func read(data: [UInt8]) {
         if cliViewController != nil {
@@ -85,17 +84,17 @@ class MSPParser : ProtocolHandler {
             datalog!.writeData(NSData(bytes: logData, length: logData.count))
             datalog!.writeData(NSData(bytes: data, length: data.count))
         }
-        //NSLog("Received %d bytes", data.count)
-        
-        receiveStats.insert((NSDate(), data.count), atIndex: 0)
-        while receiveStats.count > 500 {
-            receiveStats.removeLast()
-        }
         objc_sync_exit(self)
+
+        lastDataReceived = NSDate()
+        _vehicle.noDataReceived.value = false
+
+        //NSLog("Received %d bytes", data.count)
         
         for b in data {
             if let (success, mspCode, message) = codec.decode(b) {
                 if success {
+                    protocolRecognized = true
                     if processMessage(mspCode, message: message) {
                         callSuccessCallback(mspCode, data: message)
                     }
@@ -138,6 +137,27 @@ class MSPParser : ProtocolHandler {
             config.mode = readUInt32(message, index: 6)
             config.profile = Int(message[10])
             pingDataListeners()
+            
+            _vehicle.armed.value = settings.isModeOn(.ARM, forStatus: config.mode)
+            if !settings.isModeOn(Mode.BARO, forStatus: config.mode) && !settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+                _vehicle.altitudeHold.value = nil
+            }
+            if !settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+                _vehicle.navigationHeading.value = nil
+            }
+            _vehicle.angleMode.value = settings.isModeOn(.ANGLE, forStatus: config.mode)
+            _vehicle.horizonMode.value = settings.isModeOn(.HORIZON, forStatus: config.mode)
+            _vehicle.baroMode.value = settings.isModeOn(.BARO, forStatus: config.mode)
+            _vehicle.magMode.value = settings.isModeOn(.MAG, forStatus: config.mode)
+            _vehicle.gpsHoldMode.value = settings.isModeOn(.GPSHOLD, forStatus: config.mode)
+            _vehicle.gpsHomeMode.value = settings.isModeOn(.GPSHOME, forStatus: config.mode)
+            _vehicle.failsafeMode.value = settings.isModeOn(.FAILSAFE, forStatus: config.mode)
+            _vehicle.sonarMode.value = settings.isModeOn(.SONAR, forStatus: config.mode)
+            _vehicle.calibrateMode.value = settings.isModeOn(.CALIB, forStatus: config.mode)
+            _vehicle.camStabMode.value = settings.isModeOn(.CAMSTAB, forStatus: config.mode)
+            _vehicle.telemetryMode.value = settings.isModeOn(.TELEMETRY, forStatus: config.mode)
+            _vehicle.blackboxMode.value = settings.isModeOn(.BLACKBOX, forStatus: config.mode)
+            _vehicle.autotuneMode.value = settings.isModeOn(.AUTOTUNE, forStatus: config.mode) || settings.isModeOn(Mode.GTUNE, forStatus: config.mode)
             
         case .MSP_RAW_IMU:
             if message.count < 18 {
@@ -231,9 +251,15 @@ class MSPParser : ProtocolHandler {
             }
             receiver.activeChannels = channelCount
             for (var i = 0; i < channelCount; i++) {
-                receiver.channels[i] = Int(readUInt16(message, index: (i * 2)));
+                receiver.channels[i] = Int(readUInt16(message, index: (i * 2)))
             }
             pingReceiverListeners()
+            
+            var channels = [Int]()
+            for (var i = 0; i < channelCount; i++) {
+                channels.append(Int(readUInt16(message, index: (i * 2))))
+            }
+            _vehicle.rcChannels.value = channels
             
         case .MSP_RAW_GPS:
             if message.count < 16 {
@@ -248,6 +274,18 @@ class MSPParser : ProtocolHandler {
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
             pingGpsListeners()
             
+            if !config.isGPSActive() {
+                _vehicle.gpsFix.value = nil
+            } else {
+                _vehicle.gpsFix.value = message[0] != 0 && message[1] >= 5      // Cleanflight firmware won't allow GPS hold or RTH with less than 5 sats
+            }
+            _vehicle.gpsNumSats.value = Int(message[1])
+            _vehicle.position.value = Position(latitude: Double(readInt32(message, index: 2)) / 10000000, longitude: Double(readInt32(message, index: 6)) / 10000000)
+            if !config.isBarometerActive() && !config.isSonarActive() {
+                _vehicle.altitude.value = Double(readUInt16(message, index: 10))
+            }
+            _vehicle.speed.value = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
+            
         case .MSP_COMP_GPS:
             if message.count < 5 {
                 return false
@@ -256,6 +294,8 @@ class MSPParser : ProtocolHandler {
             gpsData.directionToHome = readUInt16(message, index: 2)
             gpsData.update = Int(message[4])
             pingGpsListeners()
+            
+            _vehicle.distanceToHome.value = Double(readUInt16(message, index: 0))
             
         case .MSP_ATTITUDE:
             if message.count < 6 {
@@ -266,6 +306,11 @@ class MSPParser : ProtocolHandler {
             sensorData.heading = Double(readInt16(message, index: 4))          // z
             pingSensorListeners()
             
+            _vehicle.rollAngle.value = Double(readInt16(message, index: 0)) / 10.0   // x
+            _vehicle.pitchAngle.value = Double(readInt16(message, index: 2)) / 10.0   // y
+            _vehicle.heading.value = Double(readInt16(message, index: 4))          // z
+            _vehicle.turnRate.value = sensorData.turnRate
+            
         case .MSP_ALTITUDE:
             if message.count < 6 {
                 return false
@@ -273,6 +318,11 @@ class MSPParser : ProtocolHandler {
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0      // cm
             sensorData.variometer = Double(readInt16(message, index: 4)) / 100.0    // cm/s
             pingAltitudeListeners()
+            
+            if config.isBarometerActive() || config.isSonarActive() {
+                _vehicle.altitude.value = Double(readInt32(message, index: 0)) / 100.0      // cm
+            }
+            _vehicle.verticalSpeed.value = Double(readInt16(message, index: 4)) / 100.0    // cm/s
             
         case .MSP_SONAR:
             if message.count < 4 {
@@ -291,6 +341,11 @@ class MSPParser : ProtocolHandler {
             config.rssi = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
             config.amperage = Double(readInt16(message, index: 5)) / 100                // 1/100 A
             pingDataListeners()
+            
+            _vehicle.batteryVolts.value = Double(message[0]) / 10                                    // 1/10 V
+            _vehicle.batteryAmps.value = Double(readInt16(message, index: 5)) / 100                // 1/100 A
+            _vehicle.batteryConsumedMAh.value = readUInt16(message, index: 1)
+            _vehicle.rssi.value = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
             
         case .MSP_RC_TUNING:
             if message.count < 10 {
@@ -368,6 +423,11 @@ class MSPParser : ProtocolHandler {
             misc.vbatWarningCellVoltage = Double(message[offset++]) / 10; // 10-50
             pingDataListeners()
             
+            if settings.features.contains(.VBat) && config.batteryCells != 0 {
+                _vehicle.batteryVoltsWarning.value = misc.vbatWarningCellVoltage * Double(config.batteryCells)
+                _vehicle.batteryVoltsCritical.value = misc.vbatMinCellVoltage * Double(config.batteryCells)
+            }
+            
         case .MSP_MOTOR_PINS:
             // Unused
             if message.count < 8 {
@@ -417,6 +477,18 @@ class MSPParser : ProtocolHandler {
             sensorData.altitudeHold = Double(readInt32(message, index: 9)) / 100    // cm
             sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
             pingSensorListeners()
+            
+            if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+                _vehicle.altitudeHold.value = Double(readInt32(message, index: 9)) / 100    // cm
+            }
+            if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+                _vehicle.navigationHeading.value = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
+            }
+            if wpNum == 0 {
+                _vehicle.homePosition.value = Position3D(position2d: Position(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000), altitude: 0)
+            } else {
+                _vehicle.waypointPosition.value = Position3D(position2d: Position(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000), altitude: Double(readInt32(message, index: 9)) / 100)
+            }
             
         case .MSP_BOXIDS:
             settings.boxIds = [Int]()
@@ -505,6 +577,8 @@ class MSPParser : ProtocolHandler {
             settings.currentScale = Int(readInt16(message, index: 12))
             settings.currentOffset = Int(readInt16(message, index: 14))
             pingSettingsListeners()
+            
+            _vehicle.rcOutEnabled.value = settings.features.contains(.RxMsp)
 
         // Cleanflight-specific
         case .MSP_API_VERSION:
@@ -1037,13 +1111,30 @@ class MSPParser : ProtocolHandler {
             }
         })
     }
+    
+    func recognizeProtocol(commChannel: CommChannel) {
+        self.commChannel = commChannel
+        sendMessage(.MSP_STATUS, data: nil, retry: 5, callback: nil)
+    }
+    
+    func detachCommChannel() {
+        cancelRetries()
+        self.commChannel = nil
+    }
 
     func openCommChannel(commChannel: CommChannel) {
         self.commChannel = commChannel
         pingCommunicationStatusListeners(true)
+        if !replaying {
+            startTimer()
+        }
+        _vehicle.replaying.value = commChannel is ReplayComm
+        _vehicle.connected.value = true
     }
     
     func closeCommChannel() {
+        _vehicle.connected.value = false
+        stopTimer()
         cancelRetries()
         commChannel?.close()
         commChannel = nil
@@ -1056,7 +1147,7 @@ class MSPParser : ProtocolHandler {
     }
     
     var communicationHealthy: Bool {
-        return communicationEstablished && commChannel!.connected
+        return communicationEstablished && (commChannel?.connected ?? false)
     }
     
     var replaying: Bool {
@@ -1092,5 +1183,58 @@ class MSPParser : ProtocolHandler {
         objc_sync_exit(self)
         
         commChannel?.flushOut()
+    }
+    
+    var vehicle: Vehicle {
+        return _vehicle
+    }
+    
+    private func startTimer() {
+        if communicationEstablished && timer == nil {
+            // FIXME In this configuration: Naze32 - RPi - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is a bit less then 200ms so 10Hz update is too much.
+            // We should design an adaptative algorithm to find the optimal update frequency.
+            // In this config: Naze32 - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is around 130-140ms
+            // With bluetooth, the latency is a bit less than 100ms (70-90). Sometimes two requests are sent before a response is received but this doesn't cause any problem.
+            timer = NSTimer(timeInterval:0.15, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+            NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    @objc
+    private func timerDidFire(timer: NSTimer) {
+        // FIXME
+        //if rcCommandsProvider != nil {
+        //    rcCommands = rcCommandsProvider!.rcCommands()
+        //}
+        //if rcCommands != nil {
+        //    msp.sendRawRc(rcCommands!)
+        //}
+        
+        sendMessage(.MSP_STATUS, data: nil)
+        timerSwitch = !timerSwitch
+        if timerSwitch {
+            sendMessage(.MSP_RAW_GPS, data: nil)
+        } else {
+            sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
+        }
+        sendMessage(.MSP_ALTITUDE, data: nil)
+        sendMessage(.MSP_ATTITUDE, data: nil)
+        sendMessage(.MSP_ANALOG, data: nil)
+        // WP #0 = home, WP #16 = poshold
+        sendMessage(.MSP_WP, data: [ timerSwitch ? 0 : 16  ])   // Altitude hold, mag hold
+        if _vehicle.rcChannels.hasObservers() {
+            sendMessage(.MSP_RC, data: nil)
+        }
+        //NSLog("Status Requested")
+        
+        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.75 && communicationHealthy {
+            // Set warning if no data received for 0.75 sec
+            _vehicle.noDataReceived.value = true
+        }
     }
 }

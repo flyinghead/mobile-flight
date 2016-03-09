@@ -10,14 +10,9 @@ import Foundation
 import SVProgressHUD
 
 extension UIViewController {
-    func initiateMAVLinkHandShake(mavlink: MAVLink, callback: (success: Bool) -> Void) {
-        //let msp = self.msp
-        
+    func initiateMAVLinkHandShake(callback: (success: Bool) -> Void) {
         dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.setStatus("Fetching information...")
-            
             resetAircraftModel()
-            mavlink.requestMAVLinkRates()
             callback(success: true)
             SVProgressHUD.dismiss()
         })

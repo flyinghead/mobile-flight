@@ -17,20 +17,19 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
     private var outStream: NSOutputStream!
     
-    var msp: ProtocolHandler
+    var protocolHandler: ProtocolHandler?
     var connectCallback: ((success: Bool) -> ())?
     var _connected = false
     var networkLost = false
     var _reachability: SCNetworkReachability!
     var _reachabilityContext: SCNetworkReachabilityContext?
     var thread: NSThread!
+    var commSpeedMeter = CommSpeedMeter.instance
     
-    init(msp: ProtocolHandler, host: String, port: Int?) {
-        self.msp = msp
+    init(host: String, port: Int?) {
         self.host = host
         self.port = port ?? 23
         super.init()
-        msp.openCommChannel(self)
     }
     
     func connect(callback: ((success: Bool) -> ())?) {
@@ -129,7 +128,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             return
         }
         while true {
-            let data = msp.nextOutputMessage()
+            let data = protocolHandler?.nextOutputMessage()
             if data == nil {
                 break
             }
@@ -165,7 +164,8 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             var buffer = [UInt8](count: 4096, repeatedValue: 0)
             let len = (stream as! NSInputStream).read(&buffer, maxLength: buffer.count)
             if (len > 0) {
-                msp.read(Array<UInt8>(buffer[0..<len]))
+                commSpeedMeter.received(len)
+                protocolHandler?.read(Array<UInt8>(buffer[0..<len]))
             }
             else if (len <= 0) {
                 if (len < 0) {
@@ -213,7 +213,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     }
     
     func userCancelledReconnection(notification: NSNotification) {
-        msp.closeCommChannel()
+        protocolHandler?.closeCommChannel()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
         SVProgressHUD.dismiss()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -232,7 +232,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     private func closeStreams() {
         _connected = false
         self.outStream = nil
-        thread.cancel()
+        thread?.cancel()
     }
 
     func flushOut() {

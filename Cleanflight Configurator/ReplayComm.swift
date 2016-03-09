@@ -11,27 +11,29 @@ import SVProgressHUD
 
 class ReplayComm : NSObject, CommChannel {
     let datalog: NSFileHandle
-    let msp: MSPParser
     let datalogStart: NSDate
 
+    var protocolHandler: ProtocolHandler?
     var closed = false
     var array: [UInt8]?
     
     var connected: Bool { return !closed }
     
-    init(datalog: NSFileHandle, msp: MSPParser) {
+    init(datalog: NSFileHandle, protocolHandler: ProtocolHandler) {
         self.datalog = datalog
-        self.msp = msp
+        self.protocolHandler = protocolHandler
         self.datalogStart = NSDate()
         super.init()
-        msp.openCommChannel(self)
+        protocolHandler.openCommChannel(self)
         read()
     }
     
     func flushOut() {
-        let array = [UInt8]()
-        for code in msp.retriedMessages.keys {
-            msp.callSuccessCallback(code, data: array)
+        if let msp = protocolHandler as? MSPParser {
+            let array = [UInt8]()
+            for code in msp.retriedMessages.keys {
+                msp.callSuccessCallback(code, data: array)
+            }
         }
     }
     
@@ -41,7 +43,7 @@ class ReplayComm : NSObject, CommChannel {
     }
     
     private func closeAndDismissViewController() {
-        msp.closeCommChannel()
+        protocolHandler!.closeCommChannel()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -80,7 +82,7 @@ class ReplayComm : NSObject, CommChannel {
     }
     
     func processData(timer: NSTimer?) {
-        msp.read(array!)
+        protocolHandler!.read(array!)
         
         read()
     }

@@ -10,7 +10,6 @@ import UIKit
 import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener, CLLocationManagerDelegate {
-    //var lat = 48.886212 // Debug
     var locationManager: CLLocationManager?
     var gpsPositions = 0
     
@@ -28,6 +27,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     var aircraftLocation: MKPointAnnotation?
     var homeLocation: MKPointAnnotation?
     var posHoldLocation: MKPointAnnotation?
+    
+    private var stopwatchTimer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,11 +51,92 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         msp.addDataListener(self)
         receivedData()
-        receivedAltitudeData()
+        //receivedAltitudeData()
         receivedGpsData()
         
-        var coordinate = MapViewController.getAircraftCoordinates()
-        if coordinate == nil {
+        vehicle.batteryVolts.addObserver(self, listener: { newValue in
+            self.batteryLabel.voltage = newValue
+        })
+        
+        vehicle.rssi.addObserver(self, listener: { newValue in
+            self.rssiLabel.rssi = newValue!
+        })
+        
+        vehicle.altitude.addObserver(self, listener: { newValue in
+            self.altitudeLabel.text = formatAltitude(newValue)
+        })
+        
+        vehicle.gpsNumSats.addObserver(self, listener: { newValue in
+            if self.vehicle.gpsFix.value != nil {
+                self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), newValue)
+            }
+        })
+        
+        vehicle.gpsFix.addObserver(self, listener: { newValue in
+            if newValue == nil {
+                // No GPS present
+                self.gpsLabel.blinks = false
+                self.gpsLabel.text = ""
+            } else {
+                self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), self.vehicle.gpsNumSats.value)
+                if newValue! {
+                    self.gpsLabel.blinks = false
+                    if self.vehicle.gpsNumSats.value >= 5 {               // FIXME
+                        self.gpsLabel.textColor = UIColor.blackColor()
+                    } else {
+                        self.gpsLabel.textColor = UIColor.orangeColor()
+                    }
+                } else {
+                    self.gpsLabel.blinks = true
+                    self.gpsLabel.textColor = UIColor.redColor()
+                }
+            }
+        })
+        
+        vehicle.speed.addObserver(self, listener: { newValue in
+            self.speedLabel.text = formatSpeed(newValue)
+        })
+        
+        vehicle.lastKnownGoodPosition.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                if self.aircraftLocation != nil {
+                    UIView.animateWithDuration(0.1, animations: {
+                        self.aircraftLocation!.coordinate = newValue!.toCLLocationCoordinate2D()
+                    })
+                    self.annotationView?.setNeedsDisplay()
+                } else {
+                    self.aircraftLocation = MKPointAnnotation()
+                    self.aircraftLocation!.title = "Aircraft"
+                    self.aircraftLocation!.coordinate = newValue!.toCLLocationCoordinate2D()
+                    self.mapView.addAnnotation(self.aircraftLocation!)
+                }
+            }
+        })
+        
+        vehicle.homePosition.addObserver(self, listener: { newValue in
+            if self.homeLocation != nil {
+                self.mapView.removeAnnotation(self.homeLocation!)
+                self.homeLocation = nil
+            }
+            if newValue != nil {
+                self.homeLocation = MKPointAnnotation()
+                self.homeLocation!.coordinate = newValue!.position2d.toCLLocationCoordinate2D()
+                self.homeLocation!.title = "Home"
+                self.mapView.addAnnotation(self.homeLocation!)
+            }
+        })
+        
+        vehicle.armed.addObserver(self, listener: { newValue in
+            if newValue {
+                self.stopwatchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "stopwatchTimer:", userInfo: nil, repeats: true)
+            } else {
+                self.stopwatchTimer?.invalidate()
+                self.stopwatchTimer = nil
+            }
+        })
+
+        var coordinate = vehicle.position.value?.toCLLocationCoordinate2D()
+        if coordinate == nil || (coordinate?.latitude == 0 && coordinate?.longitude == 0) {
             coordinate = mapView.userLocation.coordinate
             if coordinate?.latitude == 0 && coordinate?.longitude == 0 {
                 coordinate = nil
@@ -77,6 +159,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
+        vehicle.batteryVolts.removeObserver(self)
+        vehicle.rssi.removeObserver(self)
+        vehicle.altitude.removeObserver(self)
+        vehicle.gpsNumSats.removeObserver(self)
+        vehicle.gpsFix.removeObserver(self)
+        vehicle.speed.removeObserver(self)
+        vehicle.lastKnownGoodPosition.removeObserver(self)
+        vehicle.homePosition.removeObserver(self)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -89,29 +179,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         }
     }
     
-    class func getAircraftCoordinates() -> CLLocationCoordinate2D? {
-        let gpsData = GPSData.theGPSData
-        if gpsData.lastKnownGoodLatitude == 0.0 && gpsData.lastKnownGoodLongitude == 0 {
-            return nil
-        }
-        // 48.886212, 2.305796
-        //let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: 2.305796)
-        //lat += 0.000002
-        let coordinates = CLLocationCoordinate2D(latitude: gpsData.lastKnownGoodLatitude, longitude: gpsData.lastKnownGoodLongitude)
-        
-        return coordinates
+    @objc
+    private func stopwatchTimer(timer: NSTimer) {
+        let armedTime = Int(round(vehicle.totalArmedTime))
+        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
     
     func receivedData() {
         let config = Configuration.theConfig
-        
-        batteryLabel.voltage = config.voltage
-        
-        rssiLabel.rssi = config.rssi
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.totalArmedTime))
-        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
         
         if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
             mapView.removeAnnotation(posHoldLocation!)
@@ -124,48 +199,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         rssiLabel.sikRssi = config.sikQuality
     }
-    
-    func receivedAltitudeData() {
-        let sensorData = SensorData.theSensorData
-        let config = Configuration.theConfig
-        
-        if config.isBarometerActive() || config.isSonarActive() {
-            altitudeLabel.text = formatAltitude(sensorData.altitude)
-        }
-    }
-    
+
     func receivedGpsData() {
         let gpsData = GPSData.theGPSData
         let config = Configuration.theConfig
-        
-        gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), gpsData.numSat)
-        if gpsData.fix {
-            gpsLabel.blinks = false
-            if gpsData.numSat >= 5 {
-                gpsLabel.textColor = UIColor.blackColor()
-            } else {
-                gpsLabel.textColor = UIColor.orangeColor()
-            }
-            if !config.isBarometerActive() && !config.isSonarActive() {
-                altitudeLabel.text = formatAltitude(Double(gpsData.altitude))
-            }
-            speedLabel.text = formatSpeed(gpsData.speed)
-            if !config.isMagnetometerActive() {
-                //headingLabel.text = String(format:"%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
-            }
-        } else {
-            if config.isGPSActive() {
-                gpsLabel.blinks = true
-                gpsLabel.textColor = UIColor.redColor()
-            }
-            speedLabel.text = ""
-            if !config.isMagnetometerActive() {
-                //headingLabel.text = ""
-            }
-            if !config.isBarometerActive() && !config.isSonarActive() {
-                altitudeLabel.text = ""
-            }
-        }
+
         if gpsData.lastKnownGoodLatitude != 0 || gpsData.lastKnownGoodLongitude != 0 {
             if gpsData.positions.count != gpsPositions {
                 gpsPositions = gpsData.positions.count
@@ -173,40 +211,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 mapView.removeOverlays(mapView.overlays)
                 let polyline = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
                 mapView.addOverlay(polyline)
-                
-                let coordinate = MapViewController.getAircraftCoordinates()!
-                if aircraftLocation != nil {
-                    if (aircraftLocation!.coordinate.latitude != coordinate.latitude || aircraftLocation!.coordinate.longitude != coordinate.longitude) {
-                        UIView.animateWithDuration(0.1, animations: {
-                            self.aircraftLocation!.coordinate = coordinate
-                        })
-                        annotationView?.setNeedsDisplay()
-                    }
-                } else {
-                    aircraftLocation = MKPointAnnotation()
-                    aircraftLocation!.title = "Aircraft"
-                    aircraftLocation!.coordinate = coordinate
-                    mapView.addAnnotation(aircraftLocation!)
-                }
             }
         }
-        if gpsData.homePosition != nil {
-            var addAnnot = true
-            if homeLocation != nil {
-                if homeLocation!.coordinate.latitude == gpsData.homePosition!.latitude && homeLocation!.coordinate.longitude == gpsData.homePosition!.longitude {
-                    addAnnot = false
-                } else {
-                    mapView.removeAnnotation(homeLocation!)
-                }
-            }
-            if addAnnot {
-                homeLocation = MKPointAnnotation()
-                homeLocation!.coordinate = gpsData.homePosition!.toCLLocationCoordinate2D()
-                homeLocation!.title = "Home"
-                mapView.addAnnotation(homeLocation!)
-            }
-            
-        }
+
         if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
             var addAnnot = true
             if posHoldLocation != nil {
@@ -259,7 +266,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     }
     
     @IBAction func longPressOnMap(sender: UILongPressGestureRecognizer) {
-        if msp.replaying {
+        if vehicle.replaying.value {
             return
         }
         if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: Configuration.theConfig.mode) {
@@ -331,12 +338,6 @@ class MKAircraftView : MKAnnotationView {
         CGContextAddLineToPoint(ctx, dx, actualSize / 2)
         CGContextClosePath(ctx)
         CGContextFillPath(ctx)
-        
-        //        UIColor.whiteColor().setFill()
-        //        CGContextFillEllipseInRect(ctx, bounds)
-        //        let centerRect = bounds.insetBy(dx: 3.5, dy: 3.5)
-        //        UIColor.redColor().setFill()
-        //        CGContextFillEllipseInRect(ctx, centerRect)
         
         CGContextRestoreGState(ctx)
     }

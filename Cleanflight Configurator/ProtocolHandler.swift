@@ -9,6 +9,8 @@
 import Foundation
 
 protocol ProtocolHandler  : class {
+    var datalog: NSFileHandle? { get set }
+
     func read(data: [UInt8])
     
     func addDataListener(listener: FlightDataListener)
@@ -24,4 +26,9 @@ protocol ProtocolHandler  : class {
     var replaying: Bool { get }
     func nextOutputMessage() -> [UInt8]?
 
+    var vehicle: Vehicle { get }
+    
+    func recognizeProtocol(commChannel: CommChannel)
+    func detachCommChannel()
+    var protocolRecognized: Bool { get }
 }

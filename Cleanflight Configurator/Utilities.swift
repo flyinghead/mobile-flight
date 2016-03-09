@@ -125,3 +125,23 @@ func applyDeadband(value: Double, width: Double) -> Double {
         return value + width
     }
 }
+
+/// Returns the distance in meters between two 2D positions
+func getDistance(p1: Position, _ p2: Position) -> Double {
+    // Earth radius in meters
+    return 6378137.0 * getArcInRadians(p1, p2)
+}
+
+private func getArcInRadians(p1: Position, _ p2: Position) -> Double {
+    let latitudeArc = (p1.latitude - p2.latitude) * M_PI / 180
+    let longitudeArc = (p1.longitude - p2.longitude) * M_PI / 180
+    
+    var latitudeH = sin(latitudeArc / 2)
+    latitudeH *= latitudeH
+    var longitudeH = sin(longitudeArc / 2)
+    longitudeH *= longitudeH
+    
+    let tmp = cos(p1.latitude * M_PI / 180) * cos(p2.latitude * M_PI / 180)
+    
+    return 2 * asin(sqrt(latitudeH + tmp * longitudeH))
+}
