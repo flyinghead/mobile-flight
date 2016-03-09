@@ -129,6 +129,7 @@ class ReplayViewController: UITableViewController {
     }
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         resetAircraftModel()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         switch indexPath.section {
         case  0:
@@ -139,7 +140,10 @@ class ReplayViewController: UITableViewController {
                     try TryCatch.tryBlock({
                         do {
                             let (file, _) = try FlightLogFile.openForReading(fileUrl)
-                            _ = ReplayComm(datalog: file, msp: self.msp)
+                            let msp = MSPParser()
+                            _ = ReplayComm(datalog: file, protocolHandler: msp)
+                            appDelegate.protocolHandler = msp
+                            appDelegate.vehicle = msp.vehicle
                             (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                         } catch  {
                             // Swift error

@@ -17,6 +17,7 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     var refreshBluetoothButton: UIButton?
 
     var timeOutTimer: NSTimer?
+    var btCommBeingOpened: BluetoothComm?
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -44,11 +45,13 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func connectionTimedOut(timer: NSTimer) {
-        btManager.disconnect(selectedPeripheral!)
-        dispatch_async(dispatch_get_main_queue(), {
+        if btCommBeingOpened != nil {
+            cancelBtConnection(btCommBeingOpened!)
+            btCommBeingOpened = nil
+        } else {
+            btManager.disconnect(selectedPeripheral!)
             SVProgressHUD.showErrorWithStatus("Device is not responding", maskType: .None)
-        })
-
+        }
     }
 
     // MARK: BluetoothDelegate
@@ -72,25 +75,50 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func connectedPeripheral(peripheral: BluetoothPeripheral) {
-        timeOutTimer?.invalidate()
-        timeOutTimer = nil
-        
         NSLog("Connected to %@", peripheral.name)
         
-        let msp = self.msp
-        let btComm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral, andMSP: msp)
-        btManager.delegate = btComm
         
-        initiateHandShake({ success in
-            if success {
-                self.selectedPeripheral = nil
-                dispatch_async(dispatch_get_main_queue(), {
-                    (self.parentViewController as! MainConnectionViewController).presentNextViewController()
-                })
-            } else {
-                self.cancelBtConnection(btComm)
-            }
-        })
+        let btComm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral)
+        btManager.delegate = btComm
+        btCommBeingOpened = btComm
+        
+        let protocolFinder = ProtocolFinder()
+        protocolFinder.callback = { protocolHandler in
+            dispatch_async(dispatch_get_main_queue(), {
+                self.timeOutTimer?.invalidate()
+                self.timeOutTimer = nil
+                SVProgressHUD.setStatus(protocolHandler is MAVLink ? "MAVLink detected" : "MSP detected")
+                
+                if protocolHandler is MSPParser {
+                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.msp = protocolHandler as! MSPParser
+                    self.initiateHandShake({ success in
+                        if success {
+                            self.selectedPeripheral = nil
+                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        } else {
+                            protocolHandler.closeCommChannel()
+                            self.cancelBtConnection(btComm)
+                            SVProgressHUD.showErrorWithStatus("Handshake failed")
+                        }
+                    })
+                } else {
+                    self.initiateMAVLinkHandShake({ success in
+                        if success {
+                            self.selectedPeripheral = nil
+                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        } else {
+                            protocolHandler.closeCommChannel()
+                            self.cancelBtConnection(btComm)
+                            SVProgressHUD.showErrorWithStatus("Handshake failed")
+                        }
+                    })
+                }
+            })
+        }
+        SVProgressHUD.setStatus("Connected...")
+        btComm.protocolHandler = protocolFinder
+        protocolFinder.recognizeProtocol(btComm)
     }
     
     func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {

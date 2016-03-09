@@ -26,12 +26,12 @@ class WifiViewController: UIViewController {
             return
         }
         let port = Int(ipPortField.text!)
-        let tcpComm = TCPComm(msp: msp, host: host, port: port)
+        let tcpComm = TCPComm(host: host, port: port)
         if !tcpComm.reachable {
             let alertController = UIAlertController(title: nil, message: "You don't seem to be connected to the right Wi-Fi network", preferredStyle: UIAlertControllerStyle.ActionSheet)
             alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
             alertController.addAction(UIAlertAction(title: "Try Anyway", style: UIAlertActionStyle.Default, handler: { alertController in
-                self.doConnectTcp(host, port: port)
+                self.doConnectTcp(tcpComm)
             }))
             alertController.addAction(UIAlertAction(title: "Open Settings", style: UIAlertActionStyle.Default, handler: { alertController in
                 UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
@@ -39,30 +39,51 @@ class WifiViewController: UIViewController {
             alertController.popoverPresentationController?.sourceView = (sender as! UIView)
             presentViewController(alertController, animated: true, completion: nil)
         } else {
-            doConnectTcp(host, port: port)
+            doConnectTcp(tcpComm)
         }
     }
     
-    private func doConnectTcp(host: String, port: Int?) {
-        let mavlink = MAVLink()
-        let tcpComm = TCPComm(msp: mavlink, host: host, port: port)
+    private func doConnectTcp(tcpComm: TCPComm) {
+        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: tcpComm, repeats: false)
         
-        let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
+        let protocolFinder = ProtocolFinder()
+        protocolFinder.callback = { protocolHandler in
+            dispatch_async(dispatch_get_main_queue(), {
+                timeOutTimer.invalidate()
+                SVProgressHUD.setStatus(protocolHandler is MAVLink ? "MAVLink detected" : "MSP detected")
+
+                if protocolHandler is MSPParser {
+                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.msp = protocolHandler as! MSPParser
+                    self.initiateHandShake({ success in
+                        if success {
+                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        } else {
+                            protocolHandler.closeCommChannel()
+                            SVProgressHUD.showErrorWithStatus("Handshake failed")
+                        }
+                    })
+                } else {
+                    self.initiateMAVLinkHandShake({ success in
+                        if success {
+                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        } else {
+                            protocolHandler.closeCommChannel()
+                            SVProgressHUD.showErrorWithStatus("Handshake failed")
+                        }
+                    })
+                }
+            })
+        }
+
+        let msg = String(format: "Connecting to %@:%d...", tcpComm.host, tcpComm.port)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
         
-        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: tcpComm, repeats: false)
-
         tcpComm.connect({ success in
-            timeOutTimer.invalidate()
             if success {
-                self.initiateMAVLinkHandShake(mavlink, callback: { success in
-                    if success {
-                        (self.parentViewController as! MainConnectionViewController).presentNextViewController()
-                    } else {
-                        tcpComm.close()
-                        SVProgressHUD.showErrorWithStatus("Handshake failed")
-                    }
-                })
+                SVProgressHUD.setStatus("Connected...")
+                tcpComm.protocolHandler = protocolFinder
+                protocolFinder.recognizeProtocol(tcpComm)
             } else {
                 SVProgressHUD.showErrorWithStatus("Connection failed")
             }
@@ -71,10 +92,8 @@ class WifiViewController: UIViewController {
     
     func connectionTimedOut(timer: NSTimer) {
         let tcpComm = timer.userInfo as! TCPComm
-        if !tcpComm.connected {
-            SVProgressHUD.showErrorWithStatus("Connection timeout")
-            tcpComm.close()
-        }
+        SVProgressHUD.showErrorWithStatus(!tcpComm.connected ? "Connection timeout" : "No data received")
+        tcpComm.close()
     }
 
     override func encodeRestorableStateWithCoder(coder: NSCoder) {

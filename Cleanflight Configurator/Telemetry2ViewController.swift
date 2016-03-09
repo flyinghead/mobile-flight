@@ -54,11 +54,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     @IBOutlet weak var leftStick: RCStick!
     @IBOutlet weak var rightStick: RCStick!
-    var actingRC = false        // When using feature RXMSP and RC sticks are visible
+    var actingRC = false        // When RC sticks are visible and used to control the aircraft
     
     var hideNavBarTimer: NSTimer?
     var viewDisappeared = false
     var rcTimer: NSTimer?
+    var stopwatchTimer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,9 +132,21 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         super.viewWillAppear(animated)
         
         msp.addDataListener(self)
+        
+        vehicle.armed.addObserver(self, listener: { newValue in
+            self.armedLabel.armed = newValue
+            if newValue {
+                self.stopwatchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "stopwatchTimer:", userInfo: nil, repeats: true)
+            } else {
+                self.stopwatchTimer?.invalidate()
+                self.stopwatchTimer = nil
+            }
+        })
+        
         vehicle.pitchAngle.addObserver(self, listener: { newValue in
             self.attitudeIndicator.pitch = newValue
         })
+        
         vehicle.rollAngle.addObserver(self, listener: { newValue in
             self.attitudeIndicator.roll = newValue
         })
@@ -164,45 +177,159 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             self.ampsValueLabel.text = formatWithUnit(newValue, unit: "")
         }
         
+        vehicle.batteryConsumedMAh.addObserver(self, listener: { newValue in
+            self.mAhGauge.value = Double(newValue)
+            self.mAHValueLabel.text = String(format: "%d", locale: NSLocale.currentLocale(), newValue)
+
+        })
+        
         vehicle.gpsFix.addObserver(self, listener: { newValue in
-            if newValue {
+            if newValue == nil {
+                // No GPS present
                 self.gpsLabel.blinks = false
+                self.gpsLabel.text = ""
+                self.followMeButton.enabled = false
             } else {
-                //let config = Configuration.theConfig  // FIXME
-                //if config.isGPSActive() {
+                self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), self.vehicle.gpsNumSats.value)
+                if newValue! {
+                    // GPS Fix
+                    self.gpsLabel.blinks = false
+                    self.gpsLabel.textColor = UIColor.whiteColor()
+                    self.followMeButton.enabled = !self.vehicle.replaying.value
+                } else {
                     self.gpsLabel.blinks = true
                     self.gpsLabel.textColor = UIColor.redColor()
-                //}
+                    self.followMeButton.enabled = false
+                }
             }
         })
         
         vehicle.gpsNumSats.addObserver(self, listener: { newValue in
-            self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), newValue)
-            if newValue >= 5 {
-                self.gpsLabel.textColor = UIColor.whiteColor()
-            } else if self.vehicle.gpsFix.value {
-                self.gpsLabel.textColor = UIColor.yellowColor()
+            let gpsFix = self.vehicle.gpsFix.value
+            if gpsFix != nil {
+                self.gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), newValue)
+                if newValue >= 5 {      // FIXME This is an arbitrary value and this should be done at the same time as gpsFix
+                    self.gpsLabel.textColor = UIColor.whiteColor()
+                } else if gpsFix! {
+                    self.gpsLabel.textColor = UIColor.yellowColor()
+                }
             }
         })
-
-        // For enabled features
-        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: nil)
-        })
-        receivedData()
-        receivedSensorData()
-        receivedGpsData()
         
+        vehicle.distanceToHome.addObserver(self, listener: { newValue in
+            if self.vehicle.gpsFix.value != nil {
+                self.dthLabel.text = formatDistance(newValue)
+            }
+        })
+        
+        vehicle.altitudeHold.addObserver(self, listener: { newValue in
+            self.altitudeScale.bugs.removeAll()
+            if newValue != nil {
+                self.altitudeScale.bugs.append((value: newValue!, color: UIColor.cyanColor()))
+                self.altHoldIndicator.text = formatAltitude(newValue!, appendUnit: false)
+            } else {
+                self.altHoldIndicator.text = ""
+            }
+        })
+        
+        vehicle.navigationHeading.addObserver(self, listener: { newValue in
+            self.headingStrip.bugs.removeAll()
+            if newValue != nil {
+                self.headingStrip.bugs.append((value: newValue!, UIColor.cyanColor()))
+            }
+        })
+        
+        vehicle.batteryVoltsCritical.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                self.voltsGauge.minimum = newValue! * 0.9
+                self.voltsGauge.maximum = newValue! * 1.29
+                self.voltsGauge.ranges.append((min: self.voltsGauge.minimum, max: newValue!, UIColor.redColor()))
+                let warningLevel = self.vehicle.batteryVoltsWarning.value ?? newValue! * 1.03
+                self.voltsGauge.ranges.append((min: newValue!, max: warningLevel, UIColor.yellowColor()))
+                self.voltsGauge.ranges.append((min: warningLevel, max: self.voltsGauge.maximum, UIColor.greenColor()))
+            } else {
+                self.voltsGauge.ranges.removeAll()
+            }
+        })
+        
+        vehicle.rssi.addObserver(self, listener: { newValue in
+            if newValue == nil {
+                self.rssiLabel.text = "?"
+            } else {
+                self.rssiLabel.rssi = newValue!
+            }
+        })
+        
+        if let mspVehicle = vehicle as? MSPVehicle {
+            mspVehicle.angleMode.addObserver(self, listener: { newValue in
+                self.setMspAccroMode()
+            })
+            mspVehicle.horizonMode.addObserver(self, listener: { newValue in
+                self.setMspAccroMode()
+            })
+            mspVehicle.baroMode.addObserver(self, listener: { newValue in
+                if newValue {
+                    self.altModeLabel.hidden = false
+                } else if !mspVehicle.sonarMode.value {
+                    self.altModeLabel.hidden = true
+                }
+            })
+            mspVehicle.sonarMode.addObserver(self, listener: { newValue in
+                self.sonarMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+                if newValue {
+                    self.altModeLabel.hidden = false
+                } else if !mspVehicle.baroMode.value {
+                    self.altModeLabel.hidden = true
+                }
+            })
+            mspVehicle.magMode.addObserver(self, listener: { newValue in
+                self.headingModeLabel.hidden = !newValue
+            })
+            mspVehicle.airMode.addObserver(self, listener: { newValue in
+                self.airModeLabel.hidden = !newValue
+            })
+            mspVehicle.failsafeMode.addObserver(self, listener: { newValue in
+                self.rxFailView.hidden = !newValue
+            })
+            mspVehicle.gpsHomeMode.addObserver(self, listener: { newValue in
+                self.setMspGpsMode()
+            })
+            mspVehicle.gpsHoldMode.addObserver(self, listener: { newValue in
+                self.setMspGpsMode()
+            })
+            
+            mspVehicle.camStabMode.addObserver(self, listener: { newValue in
+                self.camStabMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+            })
+            mspVehicle.calibrateMode.addObserver(self, listener: { newValue in
+                self.calibrateMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+            })
+            mspVehicle.telemetryMode.addObserver(self, listener: { newValue in
+                self.telemetryMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+            })
+            mspVehicle.blackboxMode.addObserver(self, listener: { newValue in
+                self.blackboxMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+            })
+            mspVehicle.autotuneMode.addObserver(self, listener: { newValue in
+                self.autotuneMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
+            })
+
+        }
+
         startNavBarTimer()
         
-        startRcTimerIfNeeded()
+        //startRcTimerIfNeeded()
         
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
-        if showRCSticksButton.selected && actingRC {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.rcCommandsProvider = self
+        if showRCSticksButton.selected {
+            if actingRC {
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.rcCommandsProvider = self
+            } else {
+                listenToRcChannels()
+            }
         }
         viewDisappeared = false
         
@@ -246,6 +373,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         hideNavBarTimer = nil
         
         msp.removeDataListener(self)
+        vehicle.armed.removeObserver(self)
         vehicle.pitchAngle.removeObserver(self)
         vehicle.rollAngle.removeObserver(self)
         vehicle.heading.removeObserver(self)
@@ -254,164 +382,78 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         vehicle.verticalSpeed.removeObserver(self)
         vehicle.batteryVolts.removeObserver(self)
         vehicle.batteryAmps.removeObserver(self)
+        vehicle.batteryConsumedMAh.removeObserver(self)
         vehicle.gpsFix.removeObserver(self)
         vehicle.gpsNumSats.removeObserver(self)
-
-        stopRcTimer()
+        vehicle.distanceToHome.removeObserver(self)
+        vehicle.altitudeHold.removeObserver(self)
+        vehicle.navigationHeading.removeObserver(self)
+        vehicle.batteryVoltsCritical.removeObserver(self)
+        vehicle.rssi.removeObserver(self)
+        vehicle.rcChannels.removeObserver(self)
+        if let mspVehicle = vehicle as? MSPVehicle {
+            mspVehicle.angleMode.removeObserver(self)
+            mspVehicle.baroMode.removeObserver(self)
+            mspVehicle.sonarMode.removeObserver(self)
+            mspVehicle.magMode.removeObserver(self)
+            mspVehicle.airMode.removeObserver(self)
+            mspVehicle.failsafeMode.removeObserver(self)
+            mspVehicle.gpsHomeMode.removeObserver(self)
+            mspVehicle.gpsHoldMode.removeObserver(self)
+            
+            mspVehicle.camStabMode.removeObserver(self)
+            mspVehicle.calibrateMode.removeObserver(self)
+            mspVehicle.telemetryMode.removeObserver(self)
+            mspVehicle.blackboxMode.removeObserver(self)
+            mspVehicle.autotuneMode.removeObserver(self)
+        }
+        
+        //stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
     }
     
-    func receivedSensorData() {
-        let sensorData = SensorData.theSensorData
-        /*
-        attitudeIndicator.roll = sensorData.rollAngle
-        attitudeIndicator.pitch = sensorData.pitchAngle
-        
-        headingStrip.heading = sensorData.heading
-        turnRateIndicator.value = sensorData.turnRate
-        */
-        let config = Configuration.theConfig
-        let settings = Settings.theSettings
-        altitudeScale.bugs.removeAll()
-        if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
-            altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
-            altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
-        } else {
-            altHoldIndicator.text = ""
-        }
-
-        headingStrip.bugs.removeAll()
-        if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
-            headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
-        }
-
-    }
-    
-    func receivedAltitudeData() {
-        let sensorData = SensorData.theSensorData
-        // Use baro/sonar altitude if present, otherwise use GPS altitude
-        let config = Configuration.theConfig
-        if config.isBarometerActive() || config.isSonarActive() {
-            //altitudeScale.currentValue = sensorData.altitude
-        }
-        //variometerScale.currentValue = sensorData.variometer
-    }
-    
-    func receivedData() {
-        let config = Configuration.theConfig
-        let settings = Settings.theSettings
-
-        if voltsGauge.ranges.isEmpty && config.batteryCells != 0 {
-            let misc = Misc.theMisc
-            voltsGauge.minimum = misc.vbatMinCellVoltage * Double(config.batteryCells) * 0.9
-            voltsGauge.maximum = misc.vbatMaxCellVoltage * Double(config.batteryCells)
-            voltsGauge.ranges.append((min: voltsGauge.minimum, max: misc.vbatMinCellVoltage * Double(config.batteryCells), UIColor.redColor()))
-            voltsGauge.ranges.append((min: misc.vbatMinCellVoltage * Double(config.batteryCells), max: misc.vbatWarningCellVoltage * Double(config.batteryCells), UIColor.yellowColor()))
-            voltsGauge.ranges.append((min: misc.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
-        }
-
-        //voltsValueLabel.voltage = config.voltage
-        //voltsGauge.value = config.voltage
-        
-        //ampsGauge.value = config.amperage
-        //ampsValueLabel.text = formatWithUnit(config.amperage, unit: "")
-        
-        mAhGauge.value = Double(config.mAhDrawn)
-        mAHValueLabel.text = String(format: "%d", locale: NSLocale.currentLocale(), config.mAhDrawn)
-        
-        rssiLabel.rssi = config.rssi
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.totalArmedTime))
+    @objc
+    private func stopwatchTimer(timer: NSTimer) {
+        let armedTime = Int(round(vehicle.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
-    
-        armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
-        
-        if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
-            accroModeLabel.text = "ANGL"
-            accroModeLabel.hidden = false
-        } else if settings.isModeOn(Mode.HORIZON, forStatus: config.mode) {
-            accroModeLabel.text = "HOZN"
-            accroModeLabel.hidden = false
-        } else {
-            accroModeLabel.hidden = true
-        }
-        if settings.isModeOn(Mode.AIR, forStatus: config.mode) {
-            airModeLabel.hidden = false
-        } else {
-            airModeLabel.hidden = true
-        }
-        if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
-            altModeLabel.hidden = false
-        } else {
-            altModeLabel.hidden = true
-        }
-        if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
-            headingModeLabel.hidden = false
-        } else {
-            headingModeLabel.hidden = true
-        }
-        if settings.isModeOn(Mode.GPSHOME, forStatus: config.mode) {
-            posModeLabel.text = "RTH"
-            posModeLabel.hidden = false
-        } else if settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode) {
-            posModeLabel.text = "POS"
-            posModeLabel.hidden = false
-        } else {
-            posModeLabel.hidden = true
-        }
-        rxFailView.hidden = !settings.isModeOn(Mode.FAILSAFE, forStatus: config.mode)
-        
-        camStabMode.tintColor = settings.isModeOn(Mode.CAMSTAB, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        calibrateMode.tintColor = settings.isModeOn(Mode.CALIB, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        telemetryMode.tintColor = settings.isModeOn(Mode.TELEMETRY, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) || settings.isModeOn(Mode.AUTOTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
     }
     
+    private func setMspAccroMode() {
+        if let mspVehicle = vehicle as? MSPVehicle {
+            if mspVehicle.angleMode.value {
+                accroModeLabel.text = "ANGL"
+                accroModeLabel.hidden = false
+            } else if mspVehicle.horizonMode.value {
+                accroModeLabel.text = "HOZN"
+                accroModeLabel.hidden = false
+            } else {
+                accroModeLabel.hidden = true
+            }
+        }
+    }
+    
+    private func setMspGpsMode() {
+        if let mspVehicle = vehicle as? MSPVehicle {
+            if mspVehicle.gpsHomeMode.value {
+                posModeLabel.text = "RTH"
+                posModeLabel.hidden = false
+            } else if mspVehicle.gpsHoldMode.value {
+                posModeLabel.text = "POS"
+                posModeLabel.hidden = false
+            } else {
+                posModeLabel.hidden = true
+            }
+        }
+    }
+
     func received3drRssiData() {
         let config = Configuration.theConfig
         rssiLabel.sikRssi = config.sikQuality
     }
     
-    func receivedGpsData() {
-/*
-        let gpsData = GPSData.theGPSData
-
-        gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), gpsData.numSat)
-        if gpsData.fix && gpsData.numSat >= 5 {
-            gpsLabel.blinks = false
-            if gpsData.numSat >= 5 {
-                gpsLabel.textColor = UIColor.whiteColor()
-            } else {
-                gpsLabel.textColor = UIColor.yellowColor()
-            }
-            dthLabel.text = formatDistance(Double(gpsData.distanceToHome))
-            speedScale.currentValue = gpsData.speed
-            
-            followMeButton.enabled = !msp.replaying
-        } else {
-            let config = Configuration.theConfig
-            if config.isGPSActive() {
-                gpsLabel.blinks = true
-                gpsLabel.textColor = UIColor.redColor()
-            }
-            dthLabel.text = ""
-            speedScale.currentValue = 0
-            
-            followMeButton.enabled = false
-        }
-        let config = Configuration.theConfig
-        if !config.isBarometerActive() && !config.isSonarActive()  {
-            altitudeScale.currentValue = Double(gpsData.altitude)
-        }
-*/
-    }
-
     @IBAction func menuAction(sender: AnyObject) {
         actionsView.hidden = !actionsView.hidden
         if !actionsView.hidden {
@@ -422,7 +464,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     @IBAction func followMeAction(sender: AnyObject) {
         actionsView.hidden = true
-        if !msp.replaying {
+        if !vehicle.replaying.value {
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.followMeActive = !appDelegate.followMeActive
         }
@@ -434,7 +476,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         leftStick.hidden = !leftStick.hidden
         rightStick.hidden = !rightStick.hidden
         showRCSticksButton.selected = !showRCSticksButton.selected
-        if !msp.replaying && Settings.theSettings.features.contains(.RxMsp) {
+        if !vehicle.replaying.value && Settings.theSettings.features.contains(.RxMsp) {
             actingRC = showRCSticksButton.selected
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.rcCommandsProvider = actingRC ? self : nil
@@ -442,18 +484,29 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             rightStick.userInteractionEnabled = true
         } else {
             if showRCSticksButton.selected {
-                startRcTimerIfNeeded()
                 leftStick.userInteractionEnabled = false
                 rightStick.userInteractionEnabled = false
+                listenToRcChannels()
             } else {
-                stopRcTimer()
+                vehicle.rcChannels.removeObserver(self)
             }
         }
     }
     
+    private func listenToRcChannels() {
+        vehicle.rcChannels.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                self.leftStick.verticalValue = (Double(newValue![2]) - 1500) / 500
+                self.leftStick.horizontalValue = (Double(newValue![3]) - 1500) / 500
+                self.rightStick.verticalValue = (Double(newValue![1]) - 1500) / 500
+                self.rightStick.horizontalValue = (Double(newValue![0]) - 1500) / 500
+            }
+        })
+    }
+    
     @IBAction func disconnectAction(sender: AnyObject) {
         actionsView.hidden = true
-        msp.closeCommChannel()
+        protocolHandler.closeCommChannel()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -471,28 +524,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
         }
     }
-    func receivedReceiverData() {
-        let receiver = Receiver.theReceiver
-        leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
-        leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
-        rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
-        rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
-    }
-    func startRcTimerIfNeeded() {
-        if showRCSticksButton.selected && !actingRC {
-            rcTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "rcTimerDidFire:", userInfo: nil, repeats: true)
-        }
-    }
-    
-    func stopRcTimer() {
-        rcTimer?.invalidate()
-        rcTimer = nil
-    }
-    
-    func rcTimerDidFire(timer: NSTimer) {
-        msp.sendMessage(.MSP_RC, data: nil)
-    }
-    
+
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
     }

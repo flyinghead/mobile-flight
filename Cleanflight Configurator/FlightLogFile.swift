@@ -28,7 +28,7 @@ class FlightLogFile {
     static let Header1: [UInt8] = [ 77, 70, 76, 0 ]     // V1: flight stats use NSKeyedArchiver. Until 1.0.2
     static let Header2: [UInt8] = [ 77, 70, 76, 1 ]     // V2: flight stats loaded/saved "manually". Introduced in 1.1
     
-    class func openForWriting(fileURL: NSURL, msp: MSPParser) {
+    class func openForWriting(fileURL: NSURL, protocolHandler: ProtocolHandler) {
         do {
             if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
                 let file = try NSFileHandle(forUpdatingURL: fileURL)
@@ -43,10 +43,9 @@ class FlightLogFile {
                 // Write state
                 file.writeData(aircraftData)
                 
-                objc_sync_enter(msp)
-                msp.datalog = file
-                msp.datalogStart = NSDate()
-                objc_sync_exit(msp)
+                objc_sync_enter(protocolHandler)
+                protocolHandler.datalog = file
+                objc_sync_exit(protocolHandler)
             }
         } catch let error as NSError {
             NSLog("Cannot open %@: %@", fileURL, error)
@@ -128,20 +127,19 @@ class FlightLogFile {
         return (file, flightStats)
     }
     
-    class func close(msp: MSPParser) {
-        objc_sync_enter(msp)
-        if let datalog = msp.datalog {
-            msp.datalog = nil
-            msp.datalogStart = nil
-            objc_sync_exit(msp)
+    class func close(protocolHandler: ProtocolHandler) {
+        objc_sync_enter(protocolHandler)
+        if let datalog = protocolHandler.datalog {
+            protocolHandler.datalog = nil
+            objc_sync_exit(protocolHandler)
 
             datalog.seekToFileOffset(4);    // Right after header
             
             let stats = readFlightStats2(datalog)
             datalog.seekToFileOffset(4);
             
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            stats.flightTime = appDelegate.lastArmedTime
+            let vehicle = (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle
+            stats.flightTime = vehicle.lastArmedTime
             
             let gpsData = GPSData.theGPSData
             let config = Configuration.theConfig
@@ -160,7 +158,7 @@ class FlightLogFile {
             
             datalog.closeFile()
         } else {
-            objc_sync_exit(msp)
+            objc_sync_exit(protocolHandler)
         }
         
     }

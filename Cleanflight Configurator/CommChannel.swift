@@ -9,6 +9,7 @@
 import Foundation
 
 protocol CommChannel {
+    var protocolHandler: ProtocolHandler? { get set }
     func flushOut()
     func close()
     var connected: Bool { get }

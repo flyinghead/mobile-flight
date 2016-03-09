@@ -12,25 +12,23 @@ import SVProgressHUD
 class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     let btManager : BluetoothManager
     var peripheral: BluetoothPeripheral
-    let msp: MSPParser
+    var protocolHandler: ProtocolHandler?
     let btQueue: dispatch_queue_t
+    var commSpeedMeter = CommSpeedMeter.instance
     
     private var _closed = false
     private var _connected = true
     
-    init(withBluetoothManager btManager: BluetoothManager, andPeripheral peripheral: BluetoothPeripheral, andMSP msp: MSPParser) {
+    init(withBluetoothManager btManager: BluetoothManager, andPeripheral peripheral: BluetoothPeripheral) {
         self.btManager = btManager
         self.peripheral = peripheral
-        self.msp = msp
         self.btQueue = btManager.btQueue
-        super.init()
-        msp.openCommChannel(self)
     }
     
     func flushOut() {
         dispatch_async(btQueue, {
             while true {
-                let data = self.msp.nextOutputMessage()
+                let data = self.protocolHandler?.nextOutputMessage()
                 if data == nil {
                     break
                 }
@@ -80,7 +78,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func userCancelledReconnection(notification: NSNotification) {
-        msp.closeCommChannel()
+        protocolHandler?.closeCommChannel()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
         SVProgressHUD.dismiss()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -88,7 +86,8 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
-        msp.read(data)
+        commSpeedMeter.received(data.count)
+        protocolHandler?.read(data)
     }
     
     var connected: Bool { return _connected }

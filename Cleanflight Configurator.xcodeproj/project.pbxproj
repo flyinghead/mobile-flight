@@ -13,9 +13,9 @@
 		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
+		AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */; };
 		AE1B9DC91C8CB5120065A62C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DC81C8CB5120065A62C /* Vehicle.swift */; };
 		AE1B9DCB1C8CD58B0065A62C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DCA1C8CD58B0065A62C /* Observable.swift */; };
-		AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
@@ -52,6 +52,8 @@
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
+		AE957D111C8F506600FA44BA /* CommSpeedMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE957D101C8F506600FA44BA /* CommSpeedMeter.swift */; };
+		AE957D131C8F5B1B00FA44BA /* ProtocolFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE957D121C8F5B1B00FA44BA /* ProtocolFinder.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEBA640D1C3086CF00783ECE /* Connection.storyboard */; };
@@ -62,20 +64,21 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
-		AEC2A0D41C78F2E100EDF1D4 /* MAVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */; };
-		AEC2A0D61C790F7E00EDF1D4 /* mavlink in Resources */ = {isa = PBXBuildFile; fileRef = AEC2A0D51C790F7E00EDF1D4 /* mavlink */; };
-		AEC2A0D81C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */; };
-		AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */; };
 		AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
+		AEC2A0D41C78F2E100EDF1D4 /* MAVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */; };
+		AEC2A0D61C790F7E00EDF1D4 /* mavlink in Resources */ = {isa = PBXBuildFile; fileRef = AEC2A0D51C790F7E00EDF1D4 /* mavlink */; };
+		AEC2A0D81C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */; };
+		AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
 		AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */; };
 		AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D831C1E187700FB183E /* ModesViewController.swift */; };
 		AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */; };
 		AECE8D881C1EBE3E00FB183E /* MyDownPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */; };
+		AED52FD31C8F31ED0027EE1E /* MSPVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */; };
 		AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */; };
 		AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
 		AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */; };
@@ -168,10 +171,10 @@
 		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
 		AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentConfigViewController.swift; sourceTree = "<group>"; };
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
-		AE1B9DC81C8CB5120065A62C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
-		AE1B9DCA1C8CD58B0065A62C /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StaticDataTableViewController.h; sourceTree = "<group>"; };
 		AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticDataTableViewController.m; sourceTree = "<group>"; };
+		AE1B9DC81C8CB5120065A62C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		AE1B9DCA1C8CD58B0065A62C /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -216,6 +219,8 @@
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
+		AE957D101C8F506600FA44BA /* CommSpeedMeter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommSpeedMeter.swift; sourceTree = "<group>"; };
+		AE957D121C8F5B1B00FA44BA /* ProtocolFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolFinder.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -237,6 +242,7 @@
 		AECE8D831C1E187700FB183E /* ModesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModesViewController.swift; sourceTree = "<group>"; };
 		AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderReferenceThumbLayer.swift; sourceTree = "<group>"; };
 		AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyDownPicker.swift; sourceTree = "<group>"; };
+		AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPVehicle.swift; sourceTree = "<group>"; };
 		AEDA78AF1C2072A800AD4845 /* PIDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIDViewController.swift; sourceTree = "<group>"; };
 		AEDA78B11C20A52C00AD4845 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSViewController.swift; sourceTree = "<group>"; };
@@ -465,6 +471,7 @@
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
 				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
+				AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AE1B9DCA1C8CD58B0065A62C /* Observable.swift */,
 				AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */,
@@ -516,9 +523,11 @@
 				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
 				AEBA64151C312B7800783ECE /* BluetoothViewController.swift */,
 				AEDDD2401C10C852004232AA /* CommChannel.swift */,
+				AE957D101C8F506600FA44BA /* CommSpeedMeter.swift */,
 				AEBA64131C3125B000783ECE /* InitiateHandshakeExtension.swift */,
 				AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */,
 				AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */,
+				AE957D121C8F5B1B00FA44BA /* ProtocolFinder.swift */,
 				AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */,
 				AEBA64171C31538F00783ECE /* ReplayViewController.swift */,
 				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
@@ -837,6 +846,7 @@
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
+				AE957D131C8F5B1B00FA44BA /* ProtocolFinder.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
@@ -850,6 +860,7 @@
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
+				AE957D111C8F506600FA44BA /* CommSpeedMeter.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
@@ -897,6 +908,7 @@
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
 				AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */,
+				AED52FD31C8F31ED0027EE1E /* MSPVehicle.swift in Sources */,
 				AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */,
 				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
