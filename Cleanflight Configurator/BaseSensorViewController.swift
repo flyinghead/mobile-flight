@@ -50,8 +50,7 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
     }
     
     func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
-        let dataSet = LineChartDataSet(yVals: data)
-        dataSet.label = label
+        let dataSet = LineChartDataSet(yVals: data, label: label)
         if (color != nil) {
             dataSet.setColor(color!)
         }

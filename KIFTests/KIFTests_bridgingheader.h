@@ -11,5 +11,6 @@
 
 #import <KIF/KIF.h>
 #import <KIF/KIFUITestActor-IdentifierTests.h>
+#import "StaticDataTableViewController.h"
 
 #endif /* KIFTests_bridgingheader_h */

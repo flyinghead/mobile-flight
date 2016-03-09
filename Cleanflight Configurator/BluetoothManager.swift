@@ -30,8 +30,13 @@ struct BluetoothPeripheral {
 }
 
 class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-    let ServiceUUID = 0xFFE0
-    let CharacteristicUUID = 0xFFE1
+    // HM-10,11... series
+    let HM10ServiceUUID = "FFE0"
+    let HM10CharacteristicUUID = "FFE1"
+    // Red Bear Lab BLEMini
+    let RBLServiceUUID = "713D0000-503E-4C75-BA94-3148F18D941E"
+    let RBLCharTxUUID = "713D0002-503E-4C75-BA94-3148F18D941E"
+    let RBLCharRxUUID = "713D0003-503E-4C75-BA94-3148F18D941E"
     
     let btQueue: dispatch_queue_t
     let manager: CBCentralManager
@@ -59,13 +64,13 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         }
         startScanningIfNeeded()
     }
+    
     private func startScanningIfNeeded() {
         if (scanningRequested) {
             scanningRequested = false
             NSTimer.scheduledTimerWithTimeInterval(scanningDuration, target:self, selector:"scanTimer", userInfo: nil, repeats: false)
             
-            let serviceUUID = String(format: "%04x", ServiceUUID)
-            let serviceUUIDs = [CBUUID(string: serviceUUID)]
+            let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
             manager.scanForPeripheralsWithServices(serviceUUIDs, options: nil)
         }
     }
@@ -108,8 +113,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         activePeripheral = peripheral
         activePeripheral?.delegate = self
         
-        let serviceUUID = String(format: "%04x", ServiceUUID)
-        let serviceUUIDs = [CBUUID(string: serviceUUID)]
+        let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
         activePeripheral?.discoverServices(serviceUUIDs)
         
         NSLog("Connected to device %@", peripheral.name!)
@@ -139,9 +143,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         } else {
             NSLog("Discover services for device %@ succeeded: %d services", peripheral.name!, peripheral.services!.count)
             let service = peripheral.services![0]
-            NSLog("Discovering characteristics for service %@", service.UUID.UUIDString)
-            let characteristicUUID = String(format: "%04x", CharacteristicUUID)
-            let characteristicUUIDs = [CBUUID(string: characteristicUUID)]
+            let characteristicUUIDs = [CBUUID(string: HM10CharacteristicUUID), CBUUID(string: RBLCharTxUUID), CBUUID(string: RBLCharRxUUID)]
             peripheral.discoverCharacteristics(characteristicUUIDs, forService: service)
         }
     }
@@ -149,7 +151,17 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
         if error == nil {
             NSLog("Discovered characteristics for service %@", service.UUID.UUIDString)
-            notifyReceivedData(peripheral, enabled: true)
+            var characteristic: CBCharacteristic!
+            if service.UUID.UUIDString == RBLServiceUUID {
+                for char in service.characteristics! {
+                    if char.UUID.UUIDString == RBLCharTxUUID {
+                        characteristic = char
+                    }
+                }
+            } else {
+                characteristic = service.characteristics![0]
+            }
+            peripheral.setNotifyValue(true, forCharacteristic: characteristic)
             delegate?.connectedPeripheral(BluetoothPeripheral(peripheral))
         } else {
             NSLog("Error discovering characteristics for service %@: %@", service.UUID.UUIDString, error!)
@@ -181,7 +193,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 return
             }
         }
-        delegate?.failedToConnectToPeripheral(peripheral, error: NSError(domain: "com.phtouz", code: 1, userInfo: [NSLocalizedDescriptionKey : "Device cannot be found"]))
+        delegate?.failedToConnectToPeripheral(peripheral, error: NSError(domain: "com.flyinghead", code: 1, userInfo: [NSLocalizedDescriptionKey : "Device cannot be found"]))
     }
     
     func disconnect(peripheral: BluetoothPeripheral) {
@@ -201,20 +213,26 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         if (activePeripheral!.services == nil || activePeripheral!.services?.count == 0 || activePeripheral?.services![0].characteristics == nil || activePeripheral?.services![0].characteristics?.count == 0) {
             return
         }
+        let service = activePeripheral!.services![0]
+        var characteristic: CBCharacteristic!
+        if service.UUID.UUIDString == RBLServiceUUID {
+            for char in service.characteristics! {
+                if char.UUID.UUIDString == RBLCharRxUUID {
+                    characteristic = char
+                    break
+                }
+            }
+        } else {
+            characteristic = activePeripheral!.services![0].characteristics![0]
+        }
+        if characteristic == nil {
+            return
+        }
+        
         let nsdata = NSData(bytes: data, length: data.count)
-        let characteristic = activePeripheral!.services![0].characteristics![0]
         for (var i = 0; i < nsdata.length; i += 20) {
             let datarange = nsdata.subdataWithRange(NSRange(location: i, length: min(nsdata.length - i, 20)))
-            if characteristic.properties.contains(.WriteWithoutResponse) {
-                activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithoutResponse)
-            } else {
-                activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithResponse)
-            }
+            activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithoutResponse)
         }
-    }
-    
-    func notifyReceivedData(peripheral: CBPeripheral, enabled: Bool) {
-        let characteristic = peripheral.services![0].characteristics![0]
-        peripheral.setNotifyValue(enabled, forCharacteristic: characteristic)
     }
 }

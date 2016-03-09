@@ -997,7 +997,7 @@
 				INFOPLIST_FILE = KIFTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.flyinghead.KIFTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.KIFTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
@@ -1012,7 +1012,7 @@
 				INFOPLIST_FILE = KIFTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.flyinghead.KIFTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.KIFTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
@@ -1153,7 +1153,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
 			};
@@ -1165,7 +1165,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
 			};
@@ -1176,7 +1176,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = "Cleanflight Configurator";
 				USES_XCTRUNNER = YES;
@@ -1188,7 +1188,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.phtouz.Cleanflight-ConfiguratorUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = "Cleanflight Configurator";
 				USES_XCTRUNNER = YES;

@@ -18,7 +18,7 @@
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = [NSError errorWithDomain:@"com.phtouz"
+            *error = [NSError errorWithDomain:@"com.flyinghead"
                                          code:1
                                      userInfo:@{NSLocalizedDescriptionKey: exception.name}];
         }

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import StaticDataTableViewController
 
 class ConfigChildViewController: StaticDataTableViewController, UITextFieldDelegate {
     
