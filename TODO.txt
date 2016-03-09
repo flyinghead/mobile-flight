@@ -149,3 +149,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Crash when enabling Follow Me (v1.1): negative longitude raises an exception in writeInt32()
 - Tab bar navigation settings (icon order, More, ...) is not saved
 - Bluetooth: Module sometimes appears twice
+- Support for Red Bear Lab BLEMini modules
