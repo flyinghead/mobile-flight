@@ -81,7 +81,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                             if success {
                                 self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
+                                        if self.mspvehicle.config.isApiVersionAtLeast("1.16") {    // 1.12
                                             self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
                                                 if success {
                                                     self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
@@ -252,7 +252,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
     
     private func saveNewFailsafeSettings() {
-        if Configuration.theConfig.isApiVersionAtLeast("1.16") {
+        if mspvehicle.config.isApiVersionAtLeast("1.16") {
             self.msp.sendRxConfig(self.newSettings!, midRc: self.newMisc!.midRC, callback: { success in
                 if success {
                     self.msp.sendFailsafeConfig(self.newSettings!, failsafeThrottle: self.newMisc!.failsafeThrottle, callback: { success in
@@ -319,8 +319,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
     
     @IBAction func cancelAction(sender: AnyObject) {
-        newSettings = Settings(copyOf: Settings.theSettings)
-        newMisc = Misc(copyOf: Misc.theMisc)
+        newSettings = Settings(copyOf: mspvehicle.settings)
+        newMisc = Misc(copyOf: mspvehicle.misc)
         
         fetchInformation()
     }
@@ -335,8 +335,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
     
     func receivedSettingsData() {
-        newSettings = Settings(copyOf: Settings.theSettings)
-        newMisc = Misc(copyOf: Misc.theMisc)
+        newSettings = Settings(copyOf: mspvehicle.settings)
+        newMisc = Misc(copyOf: mspvehicle.misc)
         refreshUI(true)
     }
     

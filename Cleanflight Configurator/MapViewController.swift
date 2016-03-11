@@ -9,9 +9,8 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener, CLLocationManagerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     var locationManager: CLLocationManager?
-    var gpsPositions = 0
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
@@ -49,19 +48,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
-        receivedData()
-        //receivedAltitudeData()
-        receivedGpsData()
-        
         vehicle.batteryVolts.addObserver(self, listener: { newValue in
             self.batteryLabel.voltage = newValue
         })
         
         vehicle.rssi.addObserver(self, listener: { newValue in
-            self.rssiLabel.rssi = newValue!
+            if newValue == nil {
+                self.rssiLabel.text = "?"
+            } else {
+                self.rssiLabel.rssi = newValue!
+            }
         })
         
+        vehicle.sikRssi.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                self.rssiLabel.sikRssi = newValue!
+            }
+        })
+
         vehicle.altitude.addObserver(self, listener: { newValue in
             self.altitudeLabel.text = formatAltitude(newValue)
         })
@@ -126,6 +130,19 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
         })
         
+        vehicle.waypointPosition.addObserver(self, listener: { newValue in
+            if self.posHoldLocation != nil {
+                self.mapView.removeAnnotation(self.posHoldLocation!)
+                self.posHoldLocation = nil
+            }
+            if newValue != nil {
+                self.posHoldLocation = MKPointAnnotation()
+                self.posHoldLocation!.coordinate = newValue!.position2d.toCLLocationCoordinate2D()
+                self.posHoldLocation!.title = "Position Hold"
+                self.mapView.addAnnotation(self.posHoldLocation!)
+            }
+        })
+        
         vehicle.armed.addObserver(self, listener: { newValue in
             if newValue {
                 self.stopwatchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "stopwatchTimer:", userInfo: nil, repeats: true)
@@ -134,6 +151,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 self.stopwatchTimer = nil
             }
         })
+        
+        vehicle.positions.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                self.mapView.removeOverlays(self.mapView.overlays)
+                var coordinates = [CLLocationCoordinate2D]()
+                for p in newValue! {
+                    coordinates.append(p.position2d.toCLLocationCoordinate2D())
+                }
+                let polyline = MKPolyline(coordinates: UnsafeMutablePointer(coordinates), count: coordinates.count)
+                self.mapView.addOverlay(polyline)
+            }
+        })
+        
+        if vehicle is MSPVehicle {
+            mspvehicle.gpsHoldMode.addObserver(self, listener: { newValue in
+                if !newValue && self.posHoldLocation != nil {
+                    self.mapView.removeAnnotation(self.posHoldLocation!)
+                    self.posHoldLocation = nil
+                }
+            })
+        }
 
         var coordinate = vehicle.position.value?.toCLLocationCoordinate2D()
         if coordinate == nil || (coordinate?.latitude == 0 && coordinate?.longitude == 0) {
@@ -158,15 +196,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
         vehicle.batteryVolts.removeObserver(self)
         vehicle.rssi.removeObserver(self)
+        vehicle.sikRssi.removeObserver(self)
         vehicle.altitude.removeObserver(self)
         vehicle.gpsNumSats.removeObserver(self)
         vehicle.gpsFix.removeObserver(self)
         vehicle.speed.removeObserver(self)
         vehicle.lastKnownGoodPosition.removeObserver(self)
         vehicle.homePosition.removeObserver(self)
+        vehicle.waypointPosition.removeObserver(self)
+        vehicle.positions.removeObserver(self)
+
+        if vehicle is MSPVehicle {
+            mspvehicle.gpsHoldMode.removeObserver(self)
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -185,57 +229,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
     
-    func receivedData() {
-        let config = Configuration.theConfig
-        
-        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
-            mapView.removeAnnotation(posHoldLocation!)
-            posHoldLocation = nil
-        }
-    }
-    
-    func received3drRssiData() {
-        let config = Configuration.theConfig
-        
-        rssiLabel.sikRssi = config.sikQuality
-    }
-
-    func receivedGpsData() {
-        let gpsData = GPSData.theGPSData
-        let config = Configuration.theConfig
-
-        if gpsData.lastKnownGoodLatitude != 0 || gpsData.lastKnownGoodLongitude != 0 {
-            if gpsData.positions.count != gpsPositions {
-                gpsPositions = gpsData.positions.count
-                
-                mapView.removeOverlays(mapView.overlays)
-                let polyline = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
-                mapView.addOverlay(polyline)
-            }
-        }
-
-        if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
-            var addAnnot = true
-            if posHoldLocation != nil {
-                if posHoldLocation!.coordinate.latitude == gpsData.posHoldPosition!.latitude && posHoldLocation!.coordinate.longitude == gpsData.posHoldPosition!.longitude {
-                    addAnnot = false
-                } else {
-                    mapView.removeAnnotation(posHoldLocation!)
-                }
-            }
-            if addAnnot {
-                posHoldLocation = MKPointAnnotation()
-                posHoldLocation!.coordinate = gpsData.posHoldPosition!.toCLLocationCoordinate2D()
-                posHoldLocation!.title = "Position Hold"
-                mapView.addAnnotation(posHoldLocation!)
-            }
-            
-        }
-    }
-    
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation.title ?? "" == "Aircraft" {
-            annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: nil)
+            annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: nil, vehicle: vehicle)
             return annotationView
         } else if annotation === homeLocation {
             let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "homeAnnotationView")
@@ -269,8 +265,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         if vehicle.replaying.value {
             return
         }
-        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: Configuration.theConfig.mode) {
-            let alertController = UIAlertController(title: "Waypoint", message: "Enable GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
+        if !(vehicle is MSPVehicle) {
+            return
+        }
+        if !mspvehicle.gpsHoldMode.value {
+            let alertController = UIAlertController(title: "Waypoint", message: "Activate GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             alertController.popoverPresentationController?.sourceView = mapView
             presentViewController(alertController, animated: true, completion: nil)
@@ -297,9 +296,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
 
 class MKAircraftView : MKAnnotationView {
     let Size: CGFloat = 26.0
+    var vehicle: Vehicle! = nil
     
-    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+    init(annotation: MKAnnotation?, reuseIdentifier: String?, vehicle: Vehicle) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        self.vehicle = vehicle
     }
     
     override init(frame: CGRect) {
@@ -323,7 +324,7 @@ class MKAircraftView : MKAnnotationView {
         CGContextSaveGState(ctx)
         
         CGContextTranslateCTM(ctx, Size / 2, Size / 2)
-        var rotation = SensorData.theSensorData.heading
+        var rotation = vehicle.heading.value
         if rotation > 180 {
             rotation -= 360
         }

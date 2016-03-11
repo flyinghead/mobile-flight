@@ -150,15 +150,35 @@ class ThrottleField : NumberField {
         toolbar.sizeToFit()
     }
     
-    func currentThrottle() {
+    private var vehicle: Vehicle {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.msp.sendMessage(.MSP_RC, data: nil, retry: 0, callback: { success in
-            if success {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.value = Double(Receiver.theReceiver.channels[3])
-                })
-            }
-        })
+        return appDelegate.vehicle
+    }
+    
+    func currentThrottle() {
+        if let throttleValue = vehicle.rcChannels.value?[2] {
+            self.value = Double(throttleValue)
+        }
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        if super.becomeFirstResponder() {
+            vehicle.rcChannels.addObserver(self, listener: { newValue in })
+            
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    override func resignFirstResponder() -> Bool {
+        if super.resignFirstResponder() {
+            vehicle.rcChannels.removeObserver(self)
+            
+            return true
+        } else {
+            return false
+        }
     }
 }
 

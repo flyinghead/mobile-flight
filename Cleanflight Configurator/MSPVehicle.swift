@@ -25,4 +25,20 @@ class MSPVehicle : Vehicle {
     var telemetryMode = ObservableBool(false)
     var blackboxMode = ObservableBool(false)
     var autotuneMode = ObservableBool(false)
+    
+    var settings = Settings()
+    var misc = Misc()
+    var config = Configuration()
+    var gpsData = GPSData()
+    var receiver = Receiver()
+    var sensorData = SensorData()
+    var motorData = MotorData()
+    var dataflash = Dataflash()
+    
+    var rcCommands: [Int]?
+    
+    override init() {
+        super.init()
+        self.rcChannelsNativeOrder = [ 0, 1, 3, 2 ]
+    }
 }

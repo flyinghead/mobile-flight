@@ -48,10 +48,12 @@ class Vehicle {
     var verticalSpeed = ObservableDouble(0.0)
     
     // RC
-    var rcChannels = NillableObservableArray<Int>()
+    var rcChannels = NillableObservableArray<Int>()     // Order AETR
     var rssi = NillableObservableInt()
+    var sikRssi = NillableObservableInt()
     var rcOutEnabled = ObservableBool(false)            // FIXME Need a way to enable this when it's allowed
-    var rcOutChannels: [Int]?
+    var rcChannelsNativeOrder = [ 0, 1, 2, 3 ]
+    var rcCommandsProvider: RcCommandsProvider?
     
     // GPS
     var gpsFix = NillableObservableBool()       // nil if no GPS
@@ -60,6 +62,7 @@ class Vehicle {
     var maxDistanceToHome = ObservableDouble(0.0)
     var position = NillableObservablePosition()
     var lastKnownGoodPosition = NillableObservablePosition()
+    var positions = NillableObservableArray<Position3D>()
     
     // Battery
     var batteryVolts = ObservableDouble(0.0)
@@ -112,18 +115,33 @@ class Vehicle {
         position.addObserver(self, listener: { newValue in
             if (newValue?.latitude != 0 || newValue?.longitude != 0) && self.gpsFix.value == true {
                 self.lastKnownGoodPosition.value = self.position.value
+                
+                let position3d = Position3D(position2d: newValue!, altitude: self.altitude.value)
+                if let positions = self.positions.value {
+                    if positions.count == 0 || positions.last! != position3d {
+                        self.positions.value!.append(position3d)
+                        self.positions.notifyListeners()
+                    }
+                } else {
+                    self.positions.value = [ position3d ]
+                }
             }
         })
     }
 }
 
-struct Position {
+struct Position : Equatable {
     var latitude: Double
     var longitude: Double
     
     func toCLLocationCoordinate2D() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
+    
+}
+
+func ==(lhs: Position, rhs: Position) -> Bool {
+    return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
 class NillableObservablePosition : Observable<Position?> {
@@ -142,9 +160,13 @@ class NillableObservablePosition : Observable<Position?> {
     }
 }
 
-struct Position3D {
+struct Position3D : Equatable {
     var position2d: Position
     var altitude: Double
+}
+
+func ==(lhs: Position3D, rhs: Position3D) -> Bool {
+    return lhs.position2d == rhs.position2d && lhs.altitude == rhs.altitude
 }
 
 class NillableObservablePosition3D : Observable<Position3D?> {

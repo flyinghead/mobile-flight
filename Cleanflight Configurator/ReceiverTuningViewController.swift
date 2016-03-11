@@ -69,12 +69,12 @@ class ReceiverTuningViewController: UITableViewController {
                             if success {
                                 self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        self.settings = Settings(copyOf: Settings.theSettings)
-                                        self.rcMap = Receiver.theReceiver.map
-                                        self.rssiChannel = Misc.theMisc.rssiChannel
+                                        self.settings = Settings(copyOf: self.mspvehicle.settings)
+                                        self.rcMap = self.mspvehicle.receiver.map
+                                        self.rssiChannel = self.mspvehicle.misc.rssiChannel
                                         
                                         var rssiChannels = [ "Disabled" ]
-                                        for var i = 0; i < Receiver.theReceiver.activeChannels - 4; i++ {
+                                        for var i = 0; i < self.mspvehicle.receiver.activeChannels - 4; i++ {
                                             rssiChannels.append(String(format: "AUX %d", i + 1))
                                         }
                                         dispatch_async(dispatch_get_main_queue(), {
@@ -116,7 +116,7 @@ class ReceiverTuningViewController: UITableViewController {
         // Save settings
         var somethingChanged = false
         
-        let misc = Misc.theMisc
+        let misc = mspvehicle.misc
 
         if rssiChannelPicker!.selectedIndex >= 0 {
             let previousRssi = misc.rssiChannel
@@ -127,7 +127,7 @@ class ReceiverTuningViewController: UITableViewController {
             somethingChanged = somethingChanged || previousRssi != misc.rssiChannel
         }
         
-        let receiver = Receiver.theReceiver
+        let receiver = mspvehicle.receiver
         var newMap: [Int]?
         if channelMapPicker?.selectedIndex == 0 {
             // Default

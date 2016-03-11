@@ -14,14 +14,7 @@ class Observable<T> {
     var value: T {
         didSet {
             if !areEqual(oldValue, value) {
-                dispatch_async(dispatch_get_main_queue(), {
-                    objc_sync_enter(self)
-                    let observers = [(target: AnyObject, listener: Listener)](self.observers)
-                    objc_sync_exit(self)
-                    for (_, listener) in observers {
-                        listener(newValue: self.value)
-                    }
-                })
+                notifyListeners()
             }
         }
     }
@@ -53,6 +46,17 @@ class Observable<T> {
         let ret = observers.count > 0
         objc_sync_exit(self)
         return ret
+    }
+    
+    func notifyListeners() {
+        dispatch_async(dispatch_get_main_queue(), {
+            objc_sync_enter(self)
+            let observers = [(target: AnyObject, listener: Listener)](self.observers)
+            objc_sync_exit(self)
+            for (_, listener) in observers {
+                listener(newValue: self.value)
+            }
+        })
     }
 }
 

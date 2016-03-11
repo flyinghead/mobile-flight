@@ -31,7 +31,7 @@ class DataflashController: UIViewController {
     private func updateSummary() {
         msp.sendMessage(.MSP_DATAFLASH_SUMMARY, data: nil, retry: 2, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
-                let dataflash = Dataflash.theDataflash
+                let dataflash = self.mspvehicle.dataflash
                 
                 self.gauge.maximumValue = Double(dataflash.totalSize)
                 self.gauge.value = Double(dataflash.usedSize)
@@ -68,7 +68,7 @@ class DataflashController: UIViewController {
             } else {
                 NSLog("Received address %d size %d", readUInt32(data!, index: 0), data!.count - 4)
                 let nextAddress = address + data!.count - 4
-                if (nextAddress > Dataflash.theDataflash.usedSize) {
+                if (nextAddress > self.mspvehicle.dataflash.usedSize) {
                     NSLog("Done (> usedSize). Success!")
                 } else {
                     done = false
@@ -84,7 +84,7 @@ class DataflashController: UIViewController {
 
     func eraseTimer(timer: NSTimer) {
         msp.sendMessage(.MSP_DATAFLASH_SUMMARY, data: nil, retry: 0, callback: { success in
-            if success && Dataflash.theDataflash.ready != 0 {
+            if success && self.mspvehicle.dataflash.ready != 0 {
                 dispatch_async(dispatch_get_main_queue(), {
                     timer.invalidate()
                     self.updateSummary()

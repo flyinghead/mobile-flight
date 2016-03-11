@@ -120,6 +120,9 @@ class FlightLogFile {
             data.getBytes(&aircraftDataSize, length: 4)
             data = file.readDataOfLength(Int(aircraftDataSize))
             AllAircraftData.allAircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! AllAircraftData
+            if let vehicle = (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle as? MSPVehicle {
+                AllAircraftData.allAircraftData.updateVehicle(vehicle)
+            }
         } else {
             file.seekToFileOffset(0)
         }
@@ -141,19 +144,11 @@ class FlightLogFile {
             let vehicle = (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle
             stats.flightTime = vehicle.lastArmedTime
             
-            let gpsData = GPSData.theGPSData
-            let config = Configuration.theConfig
-            let sensorData = SensorData.theSensorData
-            
-            stats.maxSpeed = gpsData.maxSpeed
-            stats.maxDistanceToHome = Double(gpsData.maxDistanceToHome)
-            if config.isBarometerActive() {
-                stats.maxAltitude = sensorData.maxAltitude
-            } else {
-                stats.maxAltitude = Double(gpsData.maxAltitude)
-            }
-            stats.maxAmps = config.maxAmperage
-            stats.mAmpsUsed = Double(config.mAhDrawn)
+            stats.maxSpeed = vehicle.maxSpeed.value
+            stats.maxDistanceToHome = Double(vehicle.maxDistanceToHome.value)
+            stats.maxAltitude = vehicle.maxAltitude.value
+            stats.maxAmps = vehicle.maxBatteryAmps.value
+            stats.mAmpsUsed = Double(vehicle.batteryConsumedMAh.value)
             writeFlightStats2(stats, toFile: datalog)
             
             datalog.closeFile()

@@ -8,49 +8,34 @@
 
 import UIKit
 
-class ReceiverViewController: UITableViewController, FlightDataListener {
+class ReceiverViewController: UITableViewController {
     
     var colors = [UIColor(hex6: 0xf1453d), UIColor(hex6: 0x673fb4), UIColor(hex6: 0x2b98f0), UIColor(hex6: 0x1fbcd2),
         UIColor(hex6: 0x159588), UIColor(hex6: 0x50ae55), UIColor(hex6: 0xcdda49), UIColor(hex6: 0xfdc02f),
         UIColor(hex6: 0xfc5830), UIColor(hex6: 0x785549), UIColor(hex6: 0x9e9e9e), UIColor(hex6: 0x617d8a),
         UIColor(hex6: 0xcf267d), UIColor(hex6: 0x7a1464), UIColor(hex6: 0x3a7a14), UIColor(hex6: 0x14407a)]
-    var timer: NSTimer?
-    
-    func receivedReceiverData() {
-        tableView.reloadData()
-    }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        msp.addDataListener(self)
-        
-        if (timer == nil) {
-            // Cleanflight/chrome uses configurable interval (default 50ms)
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-        }
+
+        vehicle.rcChannels.addObserver(self, listener: { newValue in
+            self.tableView.reloadData()
+        })
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        msp.removeDataListener(self)
-        
-        timer?.invalidate()
-        timer = nil
+
+        vehicle.rcChannels.removeObserver(self)
     }
-    
-    func timerDidFire(sender: AnyObject) {
-        msp.sendMessage(.MSP_RC, data: nil)
-    }
-    
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return Receiver.theReceiver.activeChannels
+            return vehicle.rcChannels.value?.count ?? 0
         } else {
             return 1
         }
@@ -63,9 +48,9 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         case 1:
             return "Pitch"
         case 2:
-            return "Yaw"
-        case 3:
             return "Throttle"
+        case 3:
+            return "Yaw"
         default:
             return String(format: "AUX %d", i - 3)
         }
@@ -78,10 +63,14 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         }
         
         let cell = tableView.dequeueReusableCellWithIdentifier("ChannelCell", forIndexPath: indexPath) as! ChannelCell
-        let channelNum = indexPath.row
+        var channelNum = indexPath.row
+        if channelNum < 4 {
+            channelNum = vehicle.rcChannelsNativeOrder[channelNum]
+        }
         cell.channelView.label = ReceiverViewController.channelLabel(channelNum)
-        cell.channelView.color = channelNum >= colors.count ? colors[colors.count - 1] : colors[channelNum]
-        cell.channelView.setValue(Receiver.theReceiver.channels[channelNum])
+        cell.channelView.color = indexPath.row >= colors.count ? colors[colors.count - 1] : colors[indexPath.row]
+        cell.channelView.value = vehicle.rcChannels.value![channelNum]
+
         return cell
     }
     

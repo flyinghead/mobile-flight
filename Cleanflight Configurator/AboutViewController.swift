@@ -51,7 +51,7 @@ class AboutViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
         
-        let config = Configuration.theConfig;
+        let config = mspvehicle.config;
         switch indexPath.section {
         case 0:
             switch indexPath.row {

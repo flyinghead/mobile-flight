@@ -83,7 +83,7 @@ class BarometerViewController: BaseSensorViewController {
     }
     
     func updateSensorData() {
-        let sensorData = SensorData.theSensorData
+        let sensorData = mspvehicle.sensorData
         
         let value = useImperialUnits() ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
         samples.append(value)

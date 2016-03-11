@@ -48,7 +48,7 @@ class ServoConfigViewController: UITableViewController {
     }
 
     func saveIfNeeded() {
-        let settings = Settings.theSettings
+        let settings = mspvehicle.settings
         if settings.servoConfigs == nil || settings.servoConfigs!.count <= servoIdx {
             return
         }
@@ -102,7 +102,7 @@ class ServoConfigViewController: UITableViewController {
     }
 
     @IBAction func refreshAction(sender: AnyObject) {
-        let settings = Settings.theSettings
+        let settings = mspvehicle.settings
         
         if settings.servoConfigs != nil && settings.servoConfigs!.count > servoIdx {
             let servoConfig = settings.servoConfigs![servoIdx]

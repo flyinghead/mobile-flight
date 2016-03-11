@@ -12,7 +12,6 @@ import SVProgressHUD
 extension UIViewController {
     func initiateMAVLinkHandShake(callback: (success: Bool) -> Void) {
         dispatch_async(dispatch_get_main_queue(), {
-            resetAircraftModel()
             callback(success: true)
             SVProgressHUD.dismiss()
         })

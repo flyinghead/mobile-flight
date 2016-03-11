@@ -29,7 +29,7 @@ class SonarViewController: BarometerViewController {
     }
 
     override func updateSensorData() {
-        let sonar = Double(SensorData.theSensorData.sonar)
+        let sonar = Double(mspvehicle.sensorData.sonar)
         let value = useImperialUnits() ? sonar / 2.54 : sonar
         
         samples.append(value)

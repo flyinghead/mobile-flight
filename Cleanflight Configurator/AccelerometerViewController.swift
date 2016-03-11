@@ -25,7 +25,7 @@ class AccelerometerViewController: XYZSensorViewController {
     }
 
     override func updateSensorData() {
-        let sensorData = SensorData.theSensorData
+        let sensorData = mspvehicle.sensorData
         
         xSensor.append(sensorData.accelerometerX);
         ySensor.append(sensorData.accelerometerY);

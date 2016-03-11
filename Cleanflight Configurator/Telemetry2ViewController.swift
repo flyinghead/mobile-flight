@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
+class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -130,8 +130,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        msp.addDataListener(self)
         
         vehicle.armed.addObserver(self, listener: { newValue in
             self.armedLabel.armed = newValue
@@ -260,6 +258,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
         })
         
+        vehicle.sikRssi.addObserver(self, listener: { newValue in
+            if newValue != nil {
+                self.rssiLabel.sikRssi = newValue!
+            }
+        })
+        
         if let mspVehicle = vehicle as? MSPVehicle {
             mspVehicle.angleMode.addObserver(self, listener: { newValue in
                 self.setMspAccroMode()
@@ -318,15 +322,12 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
 
         startNavBarTimer()
         
-        //startRcTimerIfNeeded()
-        
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
         if showRCSticksButton.selected {
             if actingRC {
-                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.rcCommandsProvider = self
+                vehicle.rcCommandsProvider = self
             } else {
                 listenToRcChannels()
             }
@@ -372,7 +373,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         hideNavBarTimer?.invalidate()
         hideNavBarTimer = nil
         
-        msp.removeDataListener(self)
         vehicle.armed.removeObserver(self)
         vehicle.pitchAngle.removeObserver(self)
         vehicle.rollAngle.removeObserver(self)
@@ -390,7 +390,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         vehicle.navigationHeading.removeObserver(self)
         vehicle.batteryVoltsCritical.removeObserver(self)
         vehicle.rssi.removeObserver(self)
+        vehicle.sikRssi.removeObserver(self)
         vehicle.rcChannels.removeObserver(self)
+        
         if let mspVehicle = vehicle as? MSPVehicle {
             mspVehicle.angleMode.removeObserver(self)
             mspVehicle.baroMode.removeObserver(self)
@@ -408,9 +410,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             mspVehicle.autotuneMode.removeObserver(self)
         }
         
-        //stopRcTimer()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.rcCommandsProvider = nil
+        vehicle.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
     }
@@ -448,11 +448,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
         }
     }
-
-    func received3drRssiData() {
-        let config = Configuration.theConfig
-        rssiLabel.sikRssi = config.sikQuality
-    }
     
     @IBAction func menuAction(sender: AnyObject) {
         actionsView.hidden = !actionsView.hidden
@@ -476,10 +471,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         leftStick.hidden = !leftStick.hidden
         rightStick.hidden = !rightStick.hidden
         showRCSticksButton.selected = !showRCSticksButton.selected
-        if !vehicle.replaying.value && Settings.theSettings.features.contains(.RxMsp) {
+        if !vehicle.replaying.value && vehicle is MSPVehicle && mspvehicle.settings.features.contains(.RxMsp) {
             actingRC = showRCSticksButton.selected
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.rcCommandsProvider = actingRC ? self : nil
+            vehicle.rcCommandsProvider = actingRC ? self : nil
             leftStick.userInteractionEnabled = true
             rightStick.userInteractionEnabled = true
         } else {

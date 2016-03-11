@@ -27,9 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private var stayAliveTimer: NSTimer!
     
-    private var rcCommands: [Int]?
-    var rcCommandsProvider: RcCommandsProvider?
-    
     private var locationManager: CLLocationManager?
     private var lastFollowMeUpdate: NSDate?
     private let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
@@ -130,8 +127,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         let bytesPerSesond = CommSpeedMeter.instance.bytesPerSecond
         NSLog("Bandwidth in: %.01f kb/s (%.0f%%)", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200)
         /*
-        let config = Configuration.theConfig
-        if config.sikRssi != 0 {
+        if vehicle.sikRssi.value != 0 {
+            let config = Configuration.theConfig
             NSLog("SIK RSSI: errors/fixed %d/%d - RSSI %d/%d - Remote %d/%d - Buffer %d", config.rxerrors, config.fixedErrors, config.sikRssi, config.noise, config.sikRemoteRssi, config.remoteNoise, config.txBuffer)
         }
         */
@@ -244,6 +241,10 @@ extension UIViewController {
     var vehicle: Vehicle {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         return appDelegate.vehicle
+    }
+    
+    var mspvehicle: MSPVehicle {
+        return vehicle as! MSPVehicle
     }
 }
 
