@@ -36,20 +36,21 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         calMagView.layer.borderColor = calMagView.tintColor.CGColor
         accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
         
-        let config = Configuration.theConfig
-        enableAccCalibration(config.isGyroAndAccActive())
+        if vehicle is MSPVehicle {
+            let config = mspvehicle.config
+            enableAccCalibration(config.isGyroAndAccActive())
         
-        enableMagCalibration(config.isMagnetometerActive())
+            enableMagCalibration(config.isMagnetometerActive())
         
-        accTrimPitchStepper.minimumValue = -100
-        accTrimRollStepper.minimumValue = -100
+            accTrimPitchStepper.minimumValue = -100
+            accTrimRollStepper.minimumValue = -100
         
-        let misc = Misc.theMisc
-        accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
-        accTrimPitchChanged(accTrimPitchStepper)
-        accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
-        accTrimRollChanged(accTrimRollStepper)
-        
+            let misc = mspvehicle.misc
+            accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
+            accTrimPitchChanged(accTrimPitchStepper)
+            accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
+            accTrimRollChanged(accTrimRollStepper)
+        }
         // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
     }
     
@@ -66,9 +67,9 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     }
     
     func receivedData() {
-        let config = Configuration.theConfig
+        let config = mspvehicle.config
         
-        let armed = Settings.theSettings.isModeOn(.ARM, forStatus: config.mode)
+        let armed = mspvehicle.settings.isModeOn(.ARM, forStatus: config.mode)
         self.enableAccCalibration(!armed && config.isGyroAndAccActive())
         self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }
@@ -166,7 +167,7 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     }
     
     @IBAction func accTrimSaveAction(sender: AnyObject) {
-        let misc = Misc.theMisc
+        let misc = mspvehicle.misc
         misc.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
         misc.accelerometerTrimRoll = Int(accTrimRollStepper.value)
         let msp = self.msp

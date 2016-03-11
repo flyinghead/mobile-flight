@@ -39,7 +39,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
         let enable = (sender as? UISwitch)!.on
         
         if (!enable) {
-            let miscData = Misc.theMisc
+            let miscData = mspvehicle.misc
             masterSlider.value = Float(miscData.minCommand)
             slider1.value = Float(miscData.minCommand)
             slider2.value = Float(miscData.minCommand)
@@ -53,7 +53,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
         }
         masterSlider.enabled = enable
         
-        let motorData = MotorData.theMotorData
+        let motorData = mspvehicle.motorData
         if (motorData.nMotors >= 1) {
             slider1.enabled = enable
         }
@@ -80,7 +80,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
         }
     }
     @IBAction func masterSliderChanged(sender: AnyObject) {
-        let motorData = MotorData.theMotorData
+        let motorData = mspvehicle.motorData
         if (motorData.nMotors >= 1) {
             slider1.value = masterSlider.value
         }
@@ -135,7 +135,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType)
+        modelView.image = MultiTypes.getImage(mspvehicle.config.multiType)
         
         msp.sendMessage(.MSP_MISC, data: nil)
     }
@@ -166,7 +166,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
 
     func receivedMotorData() {
         if (timer != nil) {
-            let motorData = MotorData.theMotorData
+            let motorData = mspvehicle.motorData
             value1.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[0])
             value2.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[1])
             value3.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[2])
@@ -179,7 +179,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
     }
     
     func receivedData() {
-        let miscData = Misc.theMisc
+        let miscData = mspvehicle.misc
         masterSlider.minimumValue = Float(miscData.minCommand)
         masterSlider.maximumValue = Float(miscData.maxThrottle)
         slider1.minimumValue = Float(miscData.minCommand)

@@ -197,8 +197,13 @@ class MAVLink : ProtocolHandler {
                     } else {
                         vehicle.rssi.value = Int(rawRssi)
                     }
+                    // Reverse pitch channel
+                    var pitch = Int(mavlink_msg_rc_channels_raw_get_chan2_raw(&msg))
+                    if pitch > 900 {
+                        pitch = 3000 - pitch
+                    }
                     var rcChannels = [
-                        Int(mavlink_msg_rc_channels_raw_get_chan1_raw(&msg)), 3000 - Int(mavlink_msg_rc_channels_raw_get_chan2_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan3_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan4_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan5_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan6_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan7_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan8_raw(&msg)) ]
+                        Int(mavlink_msg_rc_channels_raw_get_chan1_raw(&msg)), pitch, Int(mavlink_msg_rc_channels_raw_get_chan3_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan4_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan5_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan6_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan7_raw(&msg)), Int(mavlink_msg_rc_channels_raw_get_chan8_raw(&msg)) ]
                     while rcChannels.last == 65535 {
                         rcChannels.popLast()
                     }

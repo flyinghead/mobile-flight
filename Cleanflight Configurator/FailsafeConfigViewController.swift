@@ -47,10 +47,10 @@ class FailsafeConfigViewController: ConfigChildViewController {
             field.delegate = self
         }
         
-        post112 = Configuration.theConfig.isApiVersionAtLeast("1.16")    // 1.12
+        post112 = mspvehicle.config.isApiVersionAtLeast("1.16")    // 1.12
         if post112 {
             cells(pre112Config, setHidden: true)
-            cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
+            cells(Array(channelCells.suffix(channelCells.count - mspvehicle.receiver.activeChannels)), setHidden: true)
         } else {
             cells(post112Cells, setHidden: true)
             cells(channelCells, setHidden: true)

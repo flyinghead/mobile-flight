@@ -25,7 +25,7 @@ class GyroscopeViewController: XYZSensorViewController {
     }
 
     override func updateSensorData() {
-        let sensorData = SensorData.theSensorData
+        let sensorData = mspvehicle.sensorData
         
         xSensor.append(sensorData.gyroscopeX);
         ySensor.append(sensorData.gyroscopeY);

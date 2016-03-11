@@ -56,7 +56,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                                     if success {
                                         dispatch_async(dispatch_get_main_queue(), {
                                             appDelegate.startTimer()
-                                            let settings = Settings.theSettings
+                                            let settings = self.mspvehicle.settings
                                             self.modeRanges = [ModeRange](settings.modeRanges!)
                                             self.modeRangeSlots = settings.modeRangeSlots
                                             self.dontReloadTable = false
@@ -93,7 +93,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     func receivedReceiverData() {
-        let channelCount = Receiver.theReceiver.activeChannels - 3
+        let channelCount = mspvehicle.receiver.activeChannels - 3
         // If the receiver config has changed, remove extraneous channels
         while channelCount < channelLabels.count {
             channelLabels.removeLast()
@@ -103,7 +103,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             channelLabels.append(String(format: "AUX%d", i))
         }
         if let visibleRowIndices = tableView.indexPathsForVisibleRows {
-            let receiver = Receiver.theReceiver
+            let receiver = mspvehicle.receiver
             for indexPath in visibleRowIndices {
                 if let cell = tableView.cellForRowAtIndexPath(indexPath) as? ModeRangeCell {
                     let channel = modeRanges![cell.modeRangeIdx].auxChannelId
@@ -113,7 +113,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         }
     }
     func receivedData() {
-        let config = Configuration.theConfig
+        let config = mspvehicle.config
         if !dontReloadTable && config.mode != previousModes {
             previousModes = config.mode
             tableView.reloadData()
@@ -165,7 +165,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     func findModeRangeIndex(modeIdx modeIdx: Int, rangeIdx: Int) -> Int {
-        let settings = Settings.theSettings
+        let settings = mspvehicle.settings
 
         var index = -1
         if let modeRanges = modeRanges {
@@ -186,12 +186,12 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return Settings.theSettings.boxIds?.count ?? 0
+        return mspvehicle.settings.boxIds?.count ?? 0
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var count = 0
-        if let modeId = Settings.theSettings.boxIds?[section] {
+        if let modeId = mspvehicle.settings.boxIds?[section] {
             if modeRanges != nil {
                 for range in modeRanges! {
                     if range.id == modeId {
@@ -230,7 +230,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         cell.rangeSlider.referenceValue = 0         // Hidden by default
         if cell.channelPicker.selectedIndex >= 0 {
             let rcChannel = cell.channelPicker.selectedIndex + 3
-            let receiver = Receiver.theReceiver
+            let receiver = mspvehicle.receiver
             if rcChannel < receiver.channels.count {
                 cell.rangeSlider.referenceValue = Double(receiver.channels[rcChannel])
             }
@@ -249,8 +249,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
 
         let label = UILabel(frame: CGRect(x: 10, y: 5, width: tableView.frame.width, height: 25))
-        label.text = Settings.theSettings.boxNames![section]
-        label.textColor = Configuration.theConfig.mode & (1 << section) != 0 ? UIColor.redColor() : UIColor.blackColor()
+        label.text = mspvehicle.settings.boxNames![section]
+        label.textColor = mspvehicle.config.mode & (1 << section) != 0 ? UIColor.redColor() : UIColor.blackColor()
         label.font = UIFont.systemFontOfSize(16)
         
         view.addSubview(label)
@@ -268,7 +268,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         let addButton = AddRangeButton(type: .ContactAdd)
         addButton.addTarget(self, action: "addRangeAction:", forControlEvents: .TouchDown)
-        addButton.modeId = Settings.theSettings.boxIds![section]
+        addButton.modeId = mspvehicle.settings.boxIds![section]
         addButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addButton)
         

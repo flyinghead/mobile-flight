@@ -37,7 +37,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
     }
     
     func slowTimerDidFire(sender: AnyObject) {
-        if Configuration.theConfig.isGPSActive() {
+        if vehicle.gpsFix.value != nil {
             msp.sendMessage(.MSP_GPSSVINFO, data: nil)
         }
     }
@@ -52,7 +52,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
         if (section == 0) {
             return 9
         } else {
-            return GPSData.theGPSData.satellites.count;
+            return mspvehicle.gpsData.satellites.count;
         }
     }
     
@@ -65,7 +65,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let gpsData = GPSData.theGPSData;
+        let gpsData = mspvehicle.gpsData;
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCellWithIdentifier("GPSCell", forIndexPath: indexPath)
             

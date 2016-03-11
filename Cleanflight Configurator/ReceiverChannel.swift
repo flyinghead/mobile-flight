@@ -29,6 +29,12 @@ class ReceiverChannel: UIView {
             valueLabel?.font = UIFont.systemFontOfSize(fontSize)
         }
     }
+    @IBInspectable var value: Int = 0 {
+        didSet {
+            slider?.value = Double(value)
+            valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), value)
+        }
+    }
     
     var labelControl: UILabel?
     var slider: LinearGauge?
@@ -49,7 +55,7 @@ class ReceiverChannel: UIView {
             slider = LinearGauge();
             slider?.minimumValue = 900
             slider?.maximumValue = 2100
-            slider?.value = 1500
+            slider?.value = 0
             slider?.cornerRadius = 6
             slider?.translatesAutoresizingMaskIntoConstraints = false
             if color != nil {
@@ -93,11 +99,7 @@ class ReceiverChannel: UIView {
             let left3 = NSLayoutConstraint(item: slider!, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: valueLabel, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: -8)
             addConstraint(left3)
         }
-        setValue(0)
-    }
-    
-    func setValue(value: Int) {
-        slider?.value = Double(value)
-        valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), value)
+        // Set actual value
+        self.value = Int(value)
     }
 }

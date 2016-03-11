@@ -271,7 +271,7 @@ struct PortConfig : DictionaryCoding {
 class Settings : AutoCoded {
     var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "minCheck", "spektrumSatBind", "rxMinUsec",
         "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue" ]
-    static var theSettings = Settings()
+    static var theSettings: Settings!
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
     var autoDisarmDelay = 5       // sec
@@ -344,8 +344,9 @@ class Settings : AutoCoded {
     var rxFailMode: [Int]?          // 0: Auto, 1: Hold, 2: Set
     var rxFailValue: [Int]?         // For mode 2 (Set)
     
-    private override init() {
+    override init() {
         super.init()
+        Settings.theSettings = self
     }
 
     init(copyOf: Settings) {
@@ -486,7 +487,7 @@ class Settings : AutoCoded {
 
 class Misc : AutoCoded {
     var autoEncoding = [ "midRC", "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "rssiChannel", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
-    static var theMisc = Misc()
+    static var theMisc: Misc!
     
     // MSP_MISC / MSP_SET_MISC
     var midRC = 1500            // rxConfig.midrc [1401 - 1599], also set by RX_CONFIG (but then no range is enforced...)
@@ -510,8 +511,9 @@ class Misc : AutoCoded {
     var accelerometerTrimPitch = 0
     var accelerometerTrimRoll = 0
     
-    private override init() {
+    override init() {
         super.init()
+        Misc.theMisc = self
     }
     
     init(copyOf: Misc) {
@@ -545,7 +547,7 @@ class Misc : AutoCoded {
 
 class Configuration : AutoCoded {
     var autoEncoding = [ "version", "multiType", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage" ]
-    static var theConfig = Configuration()
+    static var theConfig: Configuration!
     
     // MSP_IDENT
     var version: String?
@@ -616,8 +618,9 @@ class Configuration : AutoCoded {
     private var lastLocalSNRTime: NSDate?
     private var lastRemoteSNRTime: NSDate?
     
-    private override init() {
+    override init() {
         super.init()
+        Configuration.theConfig = self
     }
     
     // MARK: NSCoding
@@ -797,7 +800,7 @@ struct GPSLocation : DictionaryCoding {
 
 class GPSData : AutoCoded {
     var autoEncoding = [ "fix", "latitude", "longitude", "altitude", "speed", "headingOverGround", "numSat", "distanceToHome", "directionToHome", "update", "lastKnownGoodLatitude", "lastKnownGoodLongitude", "lastKnownGoodAltitude", "lastKnownGoodTimestamp" ]
-    static var theGPSData = GPSData()
+    static var theGPSData: GPSData!
     
     // MSP_RAW_GPS
     var fix = false
@@ -894,8 +897,9 @@ class GPSData : AutoCoded {
         }
     }
     
-    private override init() {
+    override init() {
         super.init()
+        GPSData.theGPSData = self
     }
 
     // MARK: NSCoding
@@ -939,15 +943,16 @@ class GPSData : AutoCoded {
 
 class Receiver : AutoCoded {
     var autoEncoding = [ "activeChannels", "channels", "map" ]
-    static var theReceiver = Receiver()
+    static var theReceiver: Receiver!
     
     var activeChannels = 0
     var channels = [Int](count: 18, repeatedValue: 0)   // Length must match MAX_SUPPORTED_RC_CHANNEL_COUNT in cleanflight
     
     var map = [Int](count: 8, repeatedValue: 0)         // Length must match MAX_MAPPABLE_RX_INPUTS in cleanflight
 
-    private override init() {
+    override init() {
         super.init()
+        Receiver.theReceiver = self
     }
     
     // MARK: NSCoding
@@ -958,7 +963,7 @@ class Receiver : AutoCoded {
 
 class SensorData : AutoCoded {
     var autoEncoding = [ "accelerometerX", "accelerometerY", "accelerometerZ", "gyroscopeX", "gyroscopeY", "gyroscopeZ", "magnetometerX", "magnetometerY", "magnetometerZ", "altitude", "variometer", "sonar", "rollAngle", "pitchAngle", "heading", "altitudeHold", "headingHold" ]
-    static var theSensorData = SensorData()
+    static var theSensorData: SensorData!
     
     // MSP_RAW_IMU
     var accelerometerX = 0.0, accelerometerY = 0.0, accelerometerZ = 0.0
@@ -1008,8 +1013,9 @@ class SensorData : AutoCoded {
     var turnRate = 0.0          // deg / s
     var lastAttitude: NSDate?
     
-    private override init() {
+    override init() {
         super.init()
+        SensorData.theSensorData = self
     }
     
     // MARK: NSCoding
@@ -1020,7 +1026,7 @@ class SensorData : AutoCoded {
 
 class MotorData : AutoCoded {
     var autoEncoding = [ "nMotors", "throttle", "servoValue" ]
-    static var theMotorData = MotorData()
+    static var theMotorData: MotorData!
     
     // MSP_MOTOR
     var nMotors = 8
@@ -1028,8 +1034,9 @@ class MotorData : AutoCoded {
     // MSP_SERVO
     var servoValue = [Int](count: 8, repeatedValue: 0)
 
-    private override init() {
+    override init() {
         super.init()
+        MotorData.theMotorData = self
     }
     
     // MARK: NSCoding
@@ -1040,15 +1047,16 @@ class MotorData : AutoCoded {
 
 class Dataflash : AutoCoded {
     var autoEncoding = [ "ready", "sectors", "usedSize", "totalSize" ]
-    static var theDataflash = Dataflash()
+    static var theDataflash: Dataflash!
     
     var ready = 0
     var sectors = 0
     var usedSize = 0
     var totalSize = 0
 
-    private override init() {
+    override init() {
         super.init()
+        Dataflash.theDataflash = self
     }
     
     // MARK: NSCoding
@@ -1123,17 +1131,15 @@ class AllAircraftData : NSObject, NSCoding {
         coder.encodeObject(dataflash, forKey: "Dataflash")
     }
 
-}
-
-func resetAircraftModel() {
-    Settings.theSettings = Settings()
-    Misc.theMisc = Misc()
-    Configuration.theConfig = Configuration()
-    GPSData.theGPSData = GPSData()
-    Receiver.theReceiver = Receiver()
-    SensorData.theSensorData = SensorData()
-    MotorData.theMotorData = MotorData()
-    Dataflash.theDataflash = Dataflash()
-    
-    AllAircraftData.allAircraftData = AllAircraftData()
+    // FIXME Hack
+    func updateVehicle(vehicle: MSPVehicle) {
+        vehicle.settings = settings
+        vehicle.misc = misc
+        vehicle.config = configuration
+        vehicle.gpsData = gpsData
+        vehicle.receiver = receiver
+        vehicle.sensorData = sensorData
+        vehicle.motorData = motorData
+        vehicle.dataflash = dataflash
+    }
 }

@@ -106,13 +106,13 @@ class MSPParser : ProtocolHandler {
     }
 
     func processMessage(code: MSP_code, message: [UInt8]) -> Bool {
-        let settings = Settings.theSettings
-        let config = Configuration.theConfig
-        let gpsData = GPSData.theGPSData
-        let receiver = Receiver.theReceiver
-        let misc = Misc.theMisc
-        let sensorData = SensorData.theSensorData
-        let motorData = MotorData.theMotorData
+        let settings = _vehicle.settings
+        let config = _vehicle.config
+        let gpsData = _vehicle.gpsData
+        let receiver = _vehicle.receiver
+        let misc = _vehicle.misc
+        let sensorData = _vehicle.sensorData
+        let motorData = _vehicle.motorData
         
         switch code {
         case .MSP_IDENT:
@@ -139,12 +139,6 @@ class MSPParser : ProtocolHandler {
             pingDataListeners()
             
             _vehicle.armed.value = settings.isModeOn(.ARM, forStatus: config.mode)
-            if !settings.isModeOn(Mode.BARO, forStatus: config.mode) && !settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
-                _vehicle.altitudeHold.value = nil
-            }
-            if !settings.isModeOn(Mode.MAG, forStatus: config.mode) {
-                _vehicle.navigationHeading.value = nil
-            }
             _vehicle.angleMode.value = settings.isModeOn(.ANGLE, forStatus: config.mode)
             _vehicle.horizonMode.value = settings.isModeOn(.HORIZON, forStatus: config.mode)
             _vehicle.baroMode.value = settings.isModeOn(.BARO, forStatus: config.mode)
@@ -158,6 +152,15 @@ class MSPParser : ProtocolHandler {
             _vehicle.telemetryMode.value = settings.isModeOn(.TELEMETRY, forStatus: config.mode)
             _vehicle.blackboxMode.value = settings.isModeOn(.BLACKBOX, forStatus: config.mode)
             _vehicle.autotuneMode.value = settings.isModeOn(.AUTOTUNE, forStatus: config.mode) || settings.isModeOn(Mode.GTUNE, forStatus: config.mode)
+            if !_vehicle.baroMode.value && !_vehicle.sonarMode.value {
+                _vehicle.altitudeHold.value = nil
+            }
+            if !_vehicle.magMode.value {
+                _vehicle.navigationHeading.value = nil
+            }
+            if !_vehicle.gpsHoldMode.value {
+                _vehicle.waypointPosition.value = nil
+            }
             
         case .MSP_RAW_IMU:
             if message.count < 18 {
@@ -257,7 +260,16 @@ class MSPParser : ProtocolHandler {
             
             var channels = [Int]()
             for (var i = 0; i < channelCount; i++) {
-                channels.append(Int(readUInt16(message, index: (i * 2))))
+                // Invert Yaw & Throttle since channels native order is AERT
+                let chan: Int
+                if i == 2 {
+                    chan = 3
+                } else if i == 3 {
+                    chan = 2
+                } else {
+                    chan = i
+                }
+                channels.append(Int(readUInt16(message, index: (chan * 2))))
             }
             _vehicle.rcChannels.value = channels
             
@@ -478,16 +490,18 @@ class MSPParser : ProtocolHandler {
             sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
             pingSensorListeners()
             
-            if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+            if _vehicle.baroMode.value || _vehicle.sonarMode.value {
                 _vehicle.altitudeHold.value = Double(readInt32(message, index: 9)) / 100    // cm
             }
-            if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+            if _vehicle.magMode.value {
                 _vehicle.navigationHeading.value = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
             }
             if wpNum == 0 {
                 _vehicle.homePosition.value = Position3D(position2d: Position(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000), altitude: 0)
             } else {
-                _vehicle.waypointPosition.value = Position3D(position2d: Position(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000), altitude: Double(readInt32(message, index: 9)) / 100)
+                if _vehicle.gpsHoldMode.value {
+                    _vehicle.waypointPosition.value = Position3D(position2d: Position(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000), altitude: Double(readInt32(message, index: 9)) / 100)
+                }
             }
             
         case .MSP_BOXIDS:
@@ -668,7 +682,7 @@ class MSPParser : ProtocolHandler {
             if message.count < 13 {
                 return false
             }
-            let dataflash = Dataflash.theDataflash
+            let dataflash = _vehicle.dataflash
             dataflash.ready = Int(message[0])
             dataflash.sectors = readUInt32(message, index: 1)
             dataflash.totalSize = readUInt32(message, index: 5)
@@ -690,6 +704,8 @@ class MSPParser : ProtocolHandler {
             config.noise = Int(message[7])
             config.remoteNoise = Int(message[8])
             ping3drRssiListeners()
+            
+            vehicle.sikRssi.value = config.sikQuality
             
         // ACKs for sent commands
         case .MSP_SET_MISC,
@@ -966,7 +982,7 @@ class MSPParser : ProtocolHandler {
         data.append(UInt8(round(settings.throttleMid * 100)))
         data.append(UInt8(round(settings.throttleExpo * 100)))
         data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
-        if Configuration.theConfig.isApiVersionAtLeast("1.10") {
+        if _vehicle.config.isApiVersionAtLeast("1.10") {
             data.append(UInt8(round(settings.yawExpo * 100)))
         }
         
@@ -1207,13 +1223,13 @@ class MSPParser : ProtocolHandler {
     
     @objc
     private func timerDidFire(timer: NSTimer) {
-        // FIXME
-        //if rcCommandsProvider != nil {
-        //    rcCommands = rcCommandsProvider!.rcCommands()
-        //}
-        //if rcCommands != nil {
-        //    msp.sendRawRc(rcCommands!)
-        //}
+        if let rcCommands = _vehicle.rcCommandsProvider?.rcCommands() {
+            _vehicle.rcCommands = rcCommands
+        }
+        if _vehicle.rcCommands != nil {
+            // FIXME This only works when using the default AETR Rx map.
+            sendRawRc(_vehicle.rcCommands!)
+        }
         
         sendMessage(.MSP_STATUS, data: nil)
         timerSwitch = !timerSwitch

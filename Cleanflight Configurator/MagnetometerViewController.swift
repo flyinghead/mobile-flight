@@ -24,7 +24,7 @@ class MagnetometerViewController: XYZSensorViewController {
     }
     
     override func updateSensorData() {
-        let sensorData = SensorData.theSensorData
+        let sensorData = mspvehicle.sensorData
         
         xSensor.append(sensorData.magnetometerX);
         ySensor.append(sensorData.magnetometerY);

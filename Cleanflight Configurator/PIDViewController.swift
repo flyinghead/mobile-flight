@@ -65,8 +65,10 @@ class PIDViewController: StaticDataTableViewController {
         profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
         profilePicker?.setPlaceholder("")           // To keep width down
         
+        let config = mspvehicle.config
+        
         let pidControllers: [String]
-        if Configuration.theConfig.isApiVersionAtLeast("1.14") {    // 1.10
+        if config.isApiVersionAtLeast("1.14") {    // 1.10
             pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
         } else {
             pidControllers = [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ]
@@ -74,7 +76,7 @@ class PIDViewController: StaticDataTableViewController {
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
         pidControllerPicker?.setPlaceholder("")     // To keep width down
         
-        if !Configuration.theConfig.isApiVersionAtLeast("1.16") {   // 1.12
+        if !config.isApiVersionAtLeast("1.16") {   // 1.12
             cell(resetPIDValuesCell, setHidden: true)
         }
         cancelAction(self)
@@ -90,9 +92,9 @@ class PIDViewController: StaticDataTableViewController {
                                 self.msp.sendMessage(.MSP_PID, data: nil, retry: 2, callback: { success in
                                     if success {
                                         dispatch_async(dispatch_get_main_queue(), {
-                                            let settings = Settings.theSettings
+                                            let settings = self.mspvehicle.settings
                                             self.settings = settings
-                                            self.profile = Configuration.theConfig.profile ?? 0
+                                            self.profile = self.mspvehicle.config.profile ?? 0
                                             
                                             self.pidControllerPicker?.selectedIndex = settings.pidController
                                             self.profilePicker?.selectedIndex = self.profile!
