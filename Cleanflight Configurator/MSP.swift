@@ -152,6 +152,8 @@ class MSPParser : ProtocolHandler {
             _vehicle.telemetryMode.value = settings.isModeOn(.TELEMETRY, forStatus: config.mode)
             _vehicle.blackboxMode.value = settings.isModeOn(.BLACKBOX, forStatus: config.mode)
             _vehicle.autotuneMode.value = settings.isModeOn(.AUTOTUNE, forStatus: config.mode) || settings.isModeOn(Mode.GTUNE, forStatus: config.mode)
+            _vehicle.airMode.value = settings.isModeOn(.AIR, forStatus: config.mode)
+            
             if !_vehicle.baroMode.value && !_vehicle.sonarMode.value {
                 _vehicle.altitudeHold.value = nil
             }

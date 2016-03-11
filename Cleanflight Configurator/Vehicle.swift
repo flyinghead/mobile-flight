@@ -185,3 +185,7 @@ class NillableObservablePosition3D : Observable<Position3D?> {
     }
 }
 
+protocol RcCommandsProvider {
+    func rcCommands() -> [Int]
+}
+

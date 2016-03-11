@@ -54,6 +54,14 @@
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AE957D111C8F506600FA44BA /* CommSpeedMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE957D101C8F506600FA44BA /* CommSpeedMeter.swift */; };
 		AE957D131C8F5B1B00FA44BA /* ProtocolFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE957D121C8F5B1B00FA44BA /* ProtocolFinder.swift */; };
+		AEA21EE21C93068F000B3762 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEA21EE31C9306A7000B3762 /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DC81C8CB5120065A62C /* Vehicle.swift */; };
+		AEA21EE41C9306B8000B3762 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DCA1C8CD58B0065A62C /* Observable.swift */; };
+		AEA21EE61C93071C000B3762 /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DC81C8CB5120065A62C /* Vehicle.swift */; };
+		AEA21EE71C930720000B3762 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
+		AEA21EE81C930730000B3762 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1B9DCA1C8CD58B0065A62C /* Observable.swift */; };
+		AEA21EEA1C930754000B3762 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
+		AEA21EEB1C930764000B3762 /* MSPVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEBA640D1C3086CF00783ECE /* Connection.storyboard */; };
@@ -64,8 +72,6 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
-		AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
-		AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AEC2A0D41C78F2E100EDF1D4 /* MAVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */; };
@@ -112,8 +118,6 @@
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
 		AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
 		AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
-		AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
-		AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
 		AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
@@ -924,11 +928,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEF621B01C7B90FA0041E5B3 /* Utilities.swift in Sources */,
+				AEA21EE41C9306B8000B3762 /* Observable.swift in Sources */,
+				AEA21EE21C93068F000B3762 /* Utilities.swift in Sources */,
 				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
 				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
-				AEBEE5C71C7CF9610094FABD /* AircraftModel.swift in Sources */,
 				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
+				AEA21EE31C9306A7000B3762 /* Vehicle.swift in Sources */,
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
 				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
 			);
@@ -938,14 +943,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEA21EEB1C930764000B3762 /* MSPVehicle.swift in Sources */,
 				AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */,
-				AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */,
 				AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */,
 				AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */,
 				AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */,
+				AEA21EE81C930730000B3762 /* Observable.swift in Sources */,
+				AEA21EE61C93071C000B3762 /* Vehicle.swift in Sources */,
 				AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */,
-				AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */,
+				AEA21EE71C930720000B3762 /* Utilities.swift in Sources */,
 				AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */,
+				AEA21EEA1C930754000B3762 /* AircraftModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -994,6 +1002,10 @@
 			baseConfigurationReference = 2A93B4168FD030547414695E /* Pods-KIFTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = KIFTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1009,6 +1021,10 @@
 			baseConfigurationReference = 1177D394FBE963D5A31D6264 /* Pods-KIFTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = KIFTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1151,6 +1167,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
@@ -1163,6 +1183,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
@@ -1174,6 +1198,10 @@
 		AE72AB871C0F3D230020C4B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";
@@ -1186,6 +1214,10 @@
 		AE72AB881C0F3D230020C4B0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"Cleanflight Configurator/mavlink/common\"",
+					"\"Cleanflight Configurator/mavlink\"",
+				);
 				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";

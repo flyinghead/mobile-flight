@@ -171,7 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 
     func userDefaultsDidChange(sender: AnyObject) {
         // This will start or stop the flight log as needed if the user setting changed
-        if protocolHandler.communicationEstablished && !protocolHandler.replaying && armed {
+        if protocolHandler != nil && protocolHandler.communicationEstablished && !protocolHandler.replaying && armed {
             if userDefaultEnabled(.RecordFlightlog) && protocolHandler.datalog == nil {
                 startFlightlogRecording()
             } else if !userDefaultEnabled(.RecordFlightlog) && protocolHandler.datalog != nil {
@@ -246,8 +246,4 @@ extension UIViewController {
     var mspvehicle: MSPVehicle {
         return vehicle as! MSPVehicle
     }
-}
-
-protocol RcCommandsProvider {
-    func rcCommands() -> [Int]
 }
