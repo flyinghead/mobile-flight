@@ -201,6 +201,9 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
             send(mspCode, NSNumber(char: 1), NSNumber(char: Int8(numSats)), NSNumber(int: 0), NSNumber(int: 0), NSNumber(short: 0), NSNumber(short: Int16(speed * 100000 / 3600)), NSNumber(short: Int16(heading * 10)))
         case .MSP_COMP_GPS:
             send(mspCode, NSNumber(short: Int16(distanceToHome)), NSNumber(short: 0), NSNumber(char: 1))
+        case .MSP_MISC:
+            send(mspCode, NSNumber(short: 1500), NSNumber(short: 1150), NSNumber(short: 1850), NSNumber(short: 1000), NSNumber(short: 1200), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(short: 0), NSNumber(char: 11), NSNumber(char: 33), NSNumber(char: 43), NSNumber(char: 34))
+            
         default:
             NSLog("CleanflightSimulator: Unhandled operation %d", mspCode.rawValue)
         }

@@ -165,6 +165,10 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
             self.variometerScale.currentValue = newValue
         })
         
+        vehicle.speed.addObserver(self, listener: { newValue in
+            self.speedScale.currentValue = newValue
+        })
+        
         vehicle.batteryVolts.addObserver(self, listener: { newValue in
             self.voltsGauge.value = newValue
             self.voltsValueLabel.voltage = newValue
