@@ -145,3 +145,10 @@ private func getArcInRadians(p1: Position, _ p2: Position) -> Double {
     
     return 2 * asin(sqrt(latitudeH + tmp * longitudeH))
 }
+
+// Swift version of the Java "synchronized" section
+func synchronized(lock: AnyObject, closure: () -> Void) {
+    objc_sync_enter(lock)
+    closure()
+    objc_sync_exit(lock)
+}

@@ -124,6 +124,13 @@
 		AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
 		AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+		AEFC51F81C94332A00B7F903 /* MAVLinkVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */; };
+		AEFC51FB1C94BB3600B7F903 /* MAVLinkTelemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */; };
+		AEFC51FD1C94BBD800B7F903 /* UseMAVLinkVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */; };
+		AEFC51FF1C959C2700B7F903 /* VehicleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC51FE1C959C2700B7F903 /* VehicleEvent.swift */; };
+		AEFC52021C95B81600B7F903 /* MSPTelemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52011C95B81600B7F903 /* MSPTelemetry.swift */; };
+		AEFC52041C95B96D00B7F903 /* UseMSPVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52031C95B96D00B7F903 /* UseMSPVehicle.swift */; };
+		AEFC52061C95D42700B7F903 /* ArduCopterFlightMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
 		BE579EDCBDCFF05EE8CB459F /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BB80BD9C9A3AFFEC7B50A1A /* Pods_KIFTests.framework */; };
 /* End PBXBuildFile section */
@@ -283,6 +290,13 @@
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
 		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanflightSimulator.swift; sourceTree = "<group>"; };
 		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
+		AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLinkVehicle.swift; sourceTree = "<group>"; };
+		AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLinkTelemetry.swift; sourceTree = "<group>"; };
+		AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UseMAVLinkVehicle.swift; sourceTree = "<group>"; };
+		AEFC51FE1C959C2700B7F903 /* VehicleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleEvent.swift; sourceTree = "<group>"; };
+		AEFC52011C95B81600B7F903 /* MSPTelemetry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPTelemetry.swift; sourceTree = "<group>"; };
+		AEFC52031C95B96D00B7F903 /* UseMSPVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UseMSPVehicle.swift; sourceTree = "<group>"; };
+		AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArduCopterFlightMode.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -454,6 +468,8 @@
 				AEA48A671C25CFDD006BC53E /* Communication */,
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
+				AEFC51F91C94BAD800B7F903 /* MAVLink */,
+				AEFC52001C95B7ED00B7F903 /* MSP */,
 				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
@@ -469,13 +485,8 @@
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
-				AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */,
 				AECE8D831C1E187700FB183E /* ModesViewController.swift */,
 				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
-				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
-				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
-				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
-				AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */,
 				AEDDD2741C15EBBF004232AA /* MultiTypes.swift */,
 				AE1B9DCA1C8CD58B0065A62C /* Observable.swift */,
 				AEC2A0D91C79CFF100EDF1D4 /* ProtocolHandler.swift */,
@@ -488,6 +499,7 @@
 				AEBA641B1C342BD900783ECE /* UserDefaults.swift */,
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
 				AE1B9DC81C8CB5120065A62C /* Vehicle.swift */,
+				AEFC51FE1C959C2700B7F903 /* VehicleEvent.swift */,
 				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
 				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
 				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
@@ -550,6 +562,31 @@
 				AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */,
 			);
 			name = RangeSlider;
+			sourceTree = "<group>";
+		};
+		AEFC51F91C94BAD800B7F903 /* MAVLink */ = {
+			isa = PBXGroup;
+			children = (
+				AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */,
+				AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */,
+				AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */,
+				AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */,
+				AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */,
+			);
+			name = MAVLink;
+			sourceTree = "<group>";
+		};
+		AEFC52001C95B7ED00B7F903 /* MSP */ = {
+			isa = PBXGroup;
+			children = (
+				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
+				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
+				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
+				AEFC52011C95B81600B7F903 /* MSPTelemetry.swift */,
+				AED52FD21C8F31ED0027EE1E /* MSPVehicle.swift */,
+				AEFC52031C95B96D00B7F903 /* UseMSPVehicle.swift */,
+			);
+			name = MSP;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -869,14 +906,18 @@
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
 				AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */,
+				AEFC52061C95D42700B7F903 /* ArduCopterFlightMode.swift in Sources */,
 				AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */,
 				AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */,
 				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
 				AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */,
+				AEFC52021C95B81600B7F903 /* MSPTelemetry.swift in Sources */,
+				AEFC51FB1C94BB3600B7F903 /* MAVLinkTelemetry.swift in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
 				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
+				AEFC51FF1C959C2700B7F903 /* VehicleEvent.swift in Sources */,
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
 				AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */,
@@ -891,6 +932,7 @@
 				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
 				AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */,
 				AE1B9DCB1C8CD58B0065A62C /* Observable.swift in Sources */,
+				AEFC51FD1C94BBD800B7F903 /* UseMAVLinkVehicle.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
@@ -899,6 +941,8 @@
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
 				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
+				AEFC51F81C94332A00B7F903 /* MAVLinkVehicle.swift in Sources */,
+				AEFC52041C95B96D00B7F903 /* UseMSPVehicle.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
 				AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */,

@@ -38,7 +38,7 @@ class VoiceAlert: NSObject {
             self.timer = nil
             return
         }
-        VoiceMessage.speak(speech)
+        VoiceMessage.theVoice.speak(speech)
     }
 }
 
@@ -165,8 +165,7 @@ class VoiceMessage: NSObject, FlightDataListener {
         alert.startSpeaking()
     }
 
-    class func speak(speech: String) {
-        let synthesizer = AVSpeechSynthesizer()
+    func speak(speech: String) {
         let utterance = AVSpeechUtterance(string: speech)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
         utterance.rate = 0.15

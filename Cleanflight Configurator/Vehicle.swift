@@ -81,7 +81,7 @@ class Vehicle {
     var homePosition = NillableObservablePosition3D()
     
     init() {
-        armed.addObserver(self, listener: { newValue in
+        armed.addObserver(self) { newValue in
             if newValue {
                 self.lastArmedDate = NSDate()
             } else {
@@ -91,28 +91,28 @@ class Vehicle {
                     self._totalArmedTime += self.lastArmedTime
                 }
             }
-        })
-        speed.addObserver(self, listener: { newValue in
+        }
+        speed.addObserver(self) { newValue in
             if newValue > self.maxSpeed.value {
                 self.maxSpeed.value = newValue
             }
-        })
-        altitude.addObserver(self, listener: { newValue in
+        }
+        altitude.addObserver(self) { newValue in
             if newValue > self.maxAltitude.value {
                 self.maxAltitude.value = newValue
             }
-        })
-        distanceToHome.addObserver(self, listener: { newValue in
+        }
+        distanceToHome.addObserver(self) { newValue in
             if newValue > self.maxDistanceToHome.value {
                 self.maxDistanceToHome.value = newValue
             }
-        })
-        batteryAmps.addObserver(self, listener: { newValue in
+        }
+        batteryAmps.addObserver(self) { newValue in
             if newValue > self.maxBatteryAmps.value {
                 self.maxBatteryAmps.value = newValue
             }
-        })
-        position.addObserver(self, listener: { newValue in
+        }
+        position.addObserver(self) { newValue in
             if (newValue?.latitude != 0 || newValue?.longitude != 0) && self.gpsFix.value == true {
                 self.lastKnownGoodPosition.value = self.position.value
                 
@@ -126,7 +126,7 @@ class Vehicle {
                     self.positions.value = [ position3d ]
                 }
             }
-        })
+        }
     }
 }
 
@@ -137,27 +137,13 @@ struct Position : Equatable {
     func toCLLocationCoordinate2D() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
-    
 }
 
 func ==(lhs: Position, rhs: Position) -> Bool {
     return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
-class NillableObservablePosition : Observable<Position?> {
-    init() {
-        super.init(nil)
-    }
-    
-    override func areEqual(o1: Position?, _ o2: Position?) -> Bool {
-        if o1 == nil {
-            return o2 == nil
-        } else if o2 == nil {
-            return false
-        } else {
-            return o1!.latitude == o2!.latitude && o1!.longitude == o2!.longitude
-        }
-    }
+class NillableObservablePosition : NillableObservable<Position> {
 }
 
 struct Position3D : Equatable {
@@ -169,20 +155,7 @@ func ==(lhs: Position3D, rhs: Position3D) -> Bool {
     return lhs.position2d == rhs.position2d && lhs.altitude == rhs.altitude
 }
 
-class NillableObservablePosition3D : Observable<Position3D?> {
-    init() {
-        super.init(nil)
-    }
-    
-    override func areEqual(o1: Position3D?, _ o2: Position3D?) -> Bool {
-        if o1 == nil {
-            return o2 == nil
-        } else if o2 == nil {
-            return false
-        } else {
-            return o1!.position2d.latitude == o2!.position2d.latitude && o1!.position2d.longitude == o2!.position2d.longitude && o1!.altitude == o2!.altitude
-        }
-    }
+class NillableObservablePosition3D : NillableObservable<Position3D> {
 }
 
 protocol RcCommandsProvider {
