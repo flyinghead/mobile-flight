@@ -3,5 +3,6 @@
 //
 #import "StaticDataTableViewController.h"
 #import "TryCatch.h"
-#import "mavlink.h"
-#import "common/common.h"
+
+#undef I        // defined in /usr/include/complex.h
+#import "ardupilotmega/mavlink.h"
