@@ -58,8 +58,16 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     
     var hideNavBarTimer: NSTimer?
     var viewDisappeared = false
-    var rcTimer: NSTimer?
     var stopwatchTimer: NSTimer?
+    
+    @IBOutlet weak var containerView: UIView!
+    var mavlinkTelemetryViewController: UIViewController!
+    var mspTelemetryViewController: UIViewController!
+    
+    override func awakeFromNib() {
+        mavlinkTelemetryViewController = storyboard!.instantiateViewControllerWithIdentifier("MAVLinkTelemetry")
+        mspTelemetryViewController = storyboard!.instantiateViewControllerWithIdentifier("MSPTelemetry")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,8 +105,40 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         voltsValueLabel.displayUnit = false
         
         setInstrumentsUnitSystem()
+        
+        let specificViewController: UIViewController
+        if vehicle is MAVLinkVehicle {
+            specificViewController = mavlinkTelemetryViewController
+        } else {
+            specificViewController = mspTelemetryViewController
+        }
+        
+        addChildViewController(specificViewController)
+        specificViewController.didMoveToParentViewController(self)
+        
+        let subView = specificViewController.view
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        
+        containerView.addSubview(subView)
+        
+        let viewDict = ["view" : subView]
+        
+        //Horizontal constraints
+        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: .AlignAllTop, metrics: nil, views: viewDict)
+        NSLayoutConstraint.activateConstraints(horizontalConstraints)
+        
+        //Vertical constraints
+        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: .AlignAllTop, metrics: nil, views: viewDict)
+        NSLayoutConstraint.activateConstraints(verticalConstraints)
     }
     
+    override func viewDidLayoutSubviews() {
+        self.containerView.layoutMargins.left = self.speedScale.frame.maxX
+        self.containerView.layoutMargins.right = self.attitudeIndicator.bounds.width - self.altitudeScale.frame.minX
+        self.containerView.layoutMargins.top = self.headingStrip.frame.maxY
+        self.containerView.layoutMargins.bottom = 0
+    }
+
     func setInstrumentsUnitSystem() {
         speedScale.scale = useImperialUnits() ? SpeedScale * 1.852 : SpeedScale
         altitudeScale.scale = useImperialUnits() ? AltScale * 2.54 * 12 / 100 : AltScale
@@ -267,62 +307,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
                 self.rssiLabel.sikRssi = newValue!
             }
         })
-        
-        if let mspVehicle = vehicle as? MSPVehicle {
-            mspVehicle.angleMode.addObserver(self, listener: { newValue in
-                self.setMspAccroMode()
-            })
-            mspVehicle.horizonMode.addObserver(self, listener: { newValue in
-                self.setMspAccroMode()
-            })
-            mspVehicle.baroMode.addObserver(self, listener: { newValue in
-                if newValue {
-                    self.altModeLabel.hidden = false
-                } else if !mspVehicle.sonarMode.value {
-                    self.altModeLabel.hidden = true
-                }
-            })
-            mspVehicle.sonarMode.addObserver(self, listener: { newValue in
-                self.sonarMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-                if newValue {
-                    self.altModeLabel.hidden = false
-                } else if !mspVehicle.baroMode.value {
-                    self.altModeLabel.hidden = true
-                }
-            })
-            mspVehicle.magMode.addObserver(self, listener: { newValue in
-                self.headingModeLabel.hidden = !newValue
-            })
-            mspVehicle.airMode.addObserver(self, listener: { newValue in
-                self.airModeLabel.hidden = !newValue
-            })
-            mspVehicle.failsafeMode.addObserver(self, listener: { newValue in
-                self.rxFailView.hidden = !newValue
-            })
-            mspVehicle.gpsHomeMode.addObserver(self, listener: { newValue in
-                self.setMspGpsMode()
-            })
-            mspVehicle.gpsHoldMode.addObserver(self, listener: { newValue in
-                self.setMspGpsMode()
-            })
-            
-            mspVehicle.camStabMode.addObserver(self, listener: { newValue in
-                self.camStabMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-            })
-            mspVehicle.calibrateMode.addObserver(self, listener: { newValue in
-                self.calibrateMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-            })
-            mspVehicle.telemetryMode.addObserver(self, listener: { newValue in
-                self.telemetryMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-            })
-            mspVehicle.blackboxMode.addObserver(self, listener: { newValue in
-                self.blackboxMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-            })
-            mspVehicle.autotuneMode.addObserver(self, listener: { newValue in
-                self.autotuneMode.tintColor = newValue ? UIColor.greenColor() : UIColor.blackColor()
-            })
-
-        }
 
         startNavBarTimer()
         
@@ -397,23 +381,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         vehicle.sikRssi.removeObserver(self)
         vehicle.rcChannels.removeObserver(self)
         
-        if let mspVehicle = vehicle as? MSPVehicle {
-            mspVehicle.angleMode.removeObserver(self)
-            mspVehicle.baroMode.removeObserver(self)
-            mspVehicle.sonarMode.removeObserver(self)
-            mspVehicle.magMode.removeObserver(self)
-            mspVehicle.airMode.removeObserver(self)
-            mspVehicle.failsafeMode.removeObserver(self)
-            mspVehicle.gpsHomeMode.removeObserver(self)
-            mspVehicle.gpsHoldMode.removeObserver(self)
-            
-            mspVehicle.camStabMode.removeObserver(self)
-            mspVehicle.calibrateMode.removeObserver(self)
-            mspVehicle.telemetryMode.removeObserver(self)
-            mspVehicle.blackboxMode.removeObserver(self)
-            mspVehicle.autotuneMode.removeObserver(self)
-        }
-        
         vehicle.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
@@ -423,34 +390,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     private func stopwatchTimer(timer: NSTimer) {
         let armedTime = Int(round(vehicle.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
-    }
-    
-    private func setMspAccroMode() {
-        if let mspVehicle = vehicle as? MSPVehicle {
-            if mspVehicle.angleMode.value {
-                accroModeLabel.text = "ANGL"
-                accroModeLabel.hidden = false
-            } else if mspVehicle.horizonMode.value {
-                accroModeLabel.text = "HOZN"
-                accroModeLabel.hidden = false
-            } else {
-                accroModeLabel.hidden = true
-            }
-        }
-    }
-    
-    private func setMspGpsMode() {
-        if let mspVehicle = vehicle as? MSPVehicle {
-            if mspVehicle.gpsHomeMode.value {
-                posModeLabel.text = "RTH"
-                posModeLabel.hidden = false
-            } else if mspVehicle.gpsHoldMode.value {
-                posModeLabel.text = "POS"
-                posModeLabel.hidden = false
-            } else {
-                posModeLabel.hidden = true
-            }
-        }
     }
     
     @IBAction func menuAction(sender: AnyObject) {

@@ -86,15 +86,17 @@ class MSPParser : ProtocolHandler {
         }
         objc_sync_exit(self)
 
-        lastDataReceived = NSDate()
-        _vehicle.noDataReceived.value = false
-
         //NSLog("Received %d bytes", data.count)
         
         for b in data {
             if let (success, mspCode, message) = codec.decode(b) {
                 if success {
-                    protocolRecognized = true
+                    if mspCode != .MSP_SIKRADIO {
+                        // MSP_SIKRADIO messages are injected into the stream by the local radio itself
+                        protocolRecognized = true
+                        lastDataReceived = NSDate()
+                        _vehicle.noDataReceived.value = false
+                    }
                     if processMessage(mspCode, message: message) {
                         callSuccessCallback(mspCode, data: message)
                     }

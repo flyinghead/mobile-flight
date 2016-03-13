@@ -8,29 +8,9 @@
 import Foundation
 import UIKit
 
-enum ArduCopterFlightMode : Int {
-    case STABILIZE = 0
-    case ACRO = 1
-    case ALT_HOLD = 2
-    case AUTO = 3
-    case GUIDED = 4
-    case LOITER = 5
-    case RTL = 6
-    case CIRCLE = 7
-    case LAND = 9
-    case DRIFT = 11
-    case SPORT = 13
-    case FLIP = 14
-    case AUTOTUNE = 15
-    case POSHOLD = 16
-    case BRAKE = 17
-    case THROW = 18
-    case UNKNOWN = 999
-}
-
 class MAVLink : ProtocolHandler {
-    private let mySystemId = UInt8(144)
-    private let myComponentId = UInt8(MAV_COMP_ID_SYSTEM_CONTROL.rawValue)
+    private let mySystemId = UInt8(255)
+    private let myComponentId = UInt8(MAV_COMP_ID_MISSIONPLANNER.rawValue)
     // Target system
     private var systemId: UInt8 = 1
     private var componentId: UInt8 = 1
@@ -46,7 +26,6 @@ class MAVLink : ProtocolHandler {
     private var lastReveivedMessageIsHeartbeat = false
     private var heartbeatTimer: NSTimer?
     
-    private var flightMode = ArduCopterFlightMode.UNKNOWN
     private var failsafeBatteryVoltage: Double?
     
     var datalog: NSFileHandle? {
@@ -60,27 +39,29 @@ class MAVLink : ProtocolHandler {
     }
     private var datalogStart: NSDate?
     
-    var vehicle = Vehicle()
+    var _vehicle = MAVLinkVehicle()
+    var vehicle: Vehicle { return _vehicle }
     
     func read(data: [UInt8]) {
-        lastDataReceived = NSDate()
-        vehicle.noDataReceived.value = false
-        
         var msg = mavlink_message_t()
         var status = mavlink_status_t()
         
         for c in data {
             if mavlink_parse_char(0, c, &msg, &status) == 1 {
-                protocolRecognized = true
-                //let sensorData = SensorData.theSensorData
-                
-
                 // Message received
                 let msgId = Int32(msg.msgid)
-                if msgId != MAVLINK_MSG_ID_HEARTBEAT {
-                    lastReveivedMessageIsHeartbeat = false
+
+                //NSLog("Received MAVLink msg %d (%d, %d)", msg.msgid, msg.sysid, msg.compid)
+                
+                if (msgId != MAVLINK_MSG_ID_RADIO_STATUS && msgId != MAVLINK_MSG_ID_RADIO) || msg.sysid != 51  || msg.compid != 68 {
+                    // RADIO and RADIO_STATUS messages are injected into the stream by the local radio itself (system id '3', component id 'D')
+                    if msgId != MAVLINK_MSG_ID_HEARTBEAT {
+                        lastReveivedMessageIsHeartbeat = false
+                    }
+                    protocolRecognized = true
+                    lastDataReceived = NSDate()
+                    vehicle.noDataReceived.value = false
                 }
-                //NSLog("Received MAVLink msg %d", msg.msgid)
 
                 switch msgId {
                 case MAVLINK_MSG_ID_ATTITUDE:
@@ -88,7 +69,6 @@ class MAVLink : ProtocolHandler {
                     vehicle.pitchAngle.value = -Double(mavlink_msg_attitude_get_pitch(&msg)) * 180 / M_PI
                     //vehicle.heading.value = Double(mavlink_msg_attitude_get_yaw(&msg)) * 180 / M_PI
                     vehicle.turnRate.value = Double(mavlink_msg_attitude_get_yawspeed(&msg)) * 180 / M_PI
-                    //pingSensorListeners()
                     
                 case MAVLINK_MSG_ID_HEARTBEAT:      // Sent every second
                     systemId = msg.sysid
@@ -107,10 +87,10 @@ class MAVLink : ProtocolHandler {
                         requestHomePosition()
                     }
                     
-                    flightMode = ArduCopterFlightMode(rawValue: Int(mavlink_msg_heartbeat_get_custom_mode(&msg))) ?? .UNKNOWN
+                    _vehicle.flightMode.value = ArduCopterFlightMode(rawValue: Int(mavlink_msg_heartbeat_get_custom_mode(&msg))) ?? .UNKNOWN
                     let systemStatus = MAV_STATE(UInt32(mavlink_msg_heartbeat_get_system_status(&msg)))
                     let type = MAV_TYPE(UInt32(mavlink_msg_heartbeat_get_type(&msg)))
-                    NSLog("Heartbeat status=%d mode=%d", systemStatus.rawValue, flightMode.rawValue)
+                    NSLog("Heartbeat status=%d mode: %@", systemStatus.rawValue, _vehicle.flightMode.value.modeName())
                     
                 case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
                     vehicle.position.value = Position(latitude: Double(mavlink_msg_global_position_int_get_lat(&msg)) * 10000000, longitude: Double(mavlink_msg_global_position_int_get_lon(&msg)) * 10000000)
@@ -124,7 +104,6 @@ class MAVLink : ProtocolHandler {
                     
                     if (vehicle.position.value!.latitude != 0 || vehicle.position.value!.longitude != 0) {
                         if vehicle.homePosition.value == nil {
-                            //executeCommand(410)     // GET_HOME_POSITION. Not supported on Copter 3.3
                             requestHomePosition()
                         }  else {
                             vehicle.distanceToHome.value = getDistance(vehicle.homePosition.value!.position2d, vehicle.position.value!)
@@ -134,7 +113,11 @@ class MAVLink : ProtocolHandler {
                 case MAVLINK_MSG_ID_SYS_STATUS:
                     vehicle.batteryVolts.value = Double(mavlink_msg_sys_status_get_voltage_battery(&msg)) / 1000
                     vehicle.batteryAmps.value = Double(mavlink_msg_sys_status_get_current_battery(&msg)) / 100
-                    // TODO battery remaining % (?)
+                    _vehicle.batteryRemaining.value = Int(mavlink_msg_sys_status_get_battery_remaining(&msg))
+                    //let present = mavlink_msg_sys_status_get_onboard_control_sensors_present(&msg)
+                    //let enabled = mavlink_msg_sys_status_get_onboard_control_sensors_enabled(&msg)
+                    //let healthy = mavlink_msg_sys_status_get_onboard_control_sensors_health(&msg)
+                    //NSLog("Sensors: %0x %0x %0x", present, enabled, healthy)
                     // TODO sensors
                     
                 case MAVLINK_MSG_ID_GPS_RAW_INT:
@@ -158,8 +141,7 @@ class MAVLink : ProtocolHandler {
                     }
                 
                 case MAVLINK_MSG_ID_MISSION_CURRENT:
-                    // Current waypoint #
-                    break
+                    _vehicle.currentMissionItem.value = Int(mavlink_msg_mission_current_get_seq(&msg))
                     
                 case MAVLINK_MSG_ID_MISSION_ITEM:
                     let seq = mavlink_msg_mission_item_get_seq(&msg)
@@ -174,10 +156,14 @@ class MAVLink : ProtocolHandler {
                     var charBytes = [Int8](count: 50, repeatedValue: 0)
                     mavlink_msg_statustext_get_text(&msg, &charBytes)
                     let messageText = NSString(bytes: charBytes, length: charBytes.count, encoding: NSASCIIStringEncoding)!
-                    let severity = MAV_SEVERITY(UInt32(mavlink_msg_statustext_get_severity(&msg)))
-                    NSLog("MESSAGE %d - %@", severity.rawValue, messageText)
-                    VoiceMessage.speak(messageText as String)
-                
+                    let severity = UInt32(mavlink_msg_statustext_get_severity(&msg))
+                    // BUG in APM < 3.4 (?) severity levels are: LOW=1, MEDIUM=2, HIGH=3, CRITICAL=4
+                    NSLog("MESSAGE %d - %@", severity, messageText)
+                    if severity > 1 {
+                        VoiceMessage.theVoice.speak(messageText as String)
+                    }
+                    _vehicle.autopilotMessage.newEvent((severity: MAV_SEVERITY(6 - severity), message: messageText as String))
+                    
                 case MAVLINK_MSG_ID_PARAM_VALUE:
                     var charBytes = [Int8](count: 16, repeatedValue: 0)
                     mavlink_msg_param_value_get_param_id(&msg, &charBytes)
@@ -222,6 +208,26 @@ class MAVLink : ProtocolHandler {
                 case MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
                     // Servo/motors output
                     break
+                
+                case MAVLINK_MSG_ID_FENCE_STATUS:
+                    _vehicle.fenceBreached.value = mavlink_msg_fence_status_get_breach_status(&msg) != 0
+                    _vehicle.fenceBreachType.value = FENCE_BREACH(UInt32(mavlink_msg_fence_status_get_breach_type(&msg)))
+                    
+                case MAVLINK_MSG_ID_POWER_STATUS:
+                    // 5V rail and servo rail voltage
+                    break
+                    
+                case MAVLINK_MSG_ID_MEMINFO:
+                    // Free/used APM RAM
+                    break
+                    
+                case MAVLINK_MSG_ID_AHRS2:
+                    // Status of secondary AHRS filter
+                    break
+                    
+                case MAVLINK_MSG_ID_RADIO, MAVLINK_MSG_ID_RADIO_STATUS:
+                    // TODO: SiK radio RSSI
+                    break
                     
                 default:
                     NSLog("Unknown MAVLink msg %d", msg.msgid)
@@ -235,24 +241,28 @@ class MAVLink : ProtocolHandler {
     
     private func requestMAVLinkRates() {
         var msg = mavlink_message_t()
-        //mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RAW_SENSORS.rawValue), 2, 1)         // 2Hz: RAW_IMU, SCALED_PRESSURE, (Enable IMU_RAW, GPS_RAW, GPS_STATUS packets)
-        //sendMAVLinkMsg(msg)
-        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTENDED_STATUS.rawValue), 2, 1)     // SYS_STATUS, GPS_RAW_INT, MISSION_CURRENT, NAV_CONTROLLER_OUTPUT (Enable GPS_STATUS, CONTROL_STATUS, AUX_STATUS)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RAW_SENSORS.rawValue), 0, 0)         // 2Hz: RAW_IMU, SCALED_PRESSURE, (Enable IMU_RAW, GPS_RAW, GPS_STATUS packets)
+        sendMAVLinkMsg(msg)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTENDED_STATUS.rawValue), 2, 1)     // 2Hz: SYS_STATUS, GPS_RAW_INT, MISSION_CURRENT, NAV_CONTROLLER_OUTPUT, FENCE_STATUS (Enable GPS_STATUS, CONTROL_STATUS, AUX_STATUS)
         sendMAVLinkMsg(msg)
         mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RC_CHANNELS.rawValue), 5, 1)         // 5Hz: RC_CHANNELS_RAW, SERVO_OUTPUT_RAW (Enable RC_CHANNELS_SCALED, RC_CHANNELS_RAW, SERVO_OUTPUT_RAW)
         sendMAVLinkMsg(msg)
-        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_POSITION.rawValue), 2, 1)            // GLOBAL_POSITION_INT (Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RAW_CONTROLLER.rawValue), 0, 0)
         sendMAVLinkMsg(msg)
-        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA1.rawValue), 5, 1)              // ATTITUDE
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_POSITION.rawValue), 2, 1)            // 2Hz: GLOBAL_POSITION_INT (Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages)
         sendMAVLinkMsg(msg)
-        //mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA2.rawValue), 2, 1)              // VFR_HUD
-        //sendMAVLinkMsg(msg)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA1.rawValue), 5, 1)              // 5Hz: ATTITUDE, AHRS2
+        sendMAVLinkMsg(msg)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA2.rawValue), 0, 0)              // 2Hz: VFR_HUD
+        sendMAVLinkMsg(msg)
+        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA3.rawValue), 0, 0)
+        sendMAVLinkMsg(msg)
     }
     
     private func cancelMAVLinkRates() {
         var msg = mavlink_message_t()
-        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RAW_SENSORS.rawValue), 0, 0)
-        sendMAVLinkMsg(msg)
+        //mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RAW_SENSORS.rawValue), 0, 0)
+        //sendMAVLinkMsg(msg)
         mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTENDED_STATUS.rawValue), 0, 0)
         sendMAVLinkMsg(msg)
         mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_RC_CHANNELS.rawValue), 0, 0)
@@ -261,8 +271,8 @@ class MAVLink : ProtocolHandler {
         sendMAVLinkMsg(msg)
         mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA1.rawValue), 0, 0)
         sendMAVLinkMsg(msg)
-        mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA2.rawValue), 0, 0)
-        sendMAVLinkMsg(msg)
+        //mavlink_msg_request_data_stream_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt8(MAV_DATA_STREAM_EXTRA2.rawValue), 0, 0)
+        //sendMAVLinkMsg(msg)
     }
 
     private func sendMAVLinkMsg(var msg: mavlink_message_t) {
@@ -270,17 +280,6 @@ class MAVLink : ProtocolHandler {
         let len = mavlink_msg_to_send_buffer(&buf, &msg)
         outputBuffer.appendContentsOf(buf.prefix(Int(len)))
         commChannel?.flushOut()
-    }
-    
-    func addDataListener(listener: FlightDataListener) {
-        
-    }
-    func removeDataListener(listener: FlightDataListener) {
-        
-    }
-    
-    func sendRawRc(values: [Int]) {
-        
     }
     
     func recognizeProtocol(commChannel: CommChannel) {
@@ -300,6 +299,8 @@ class MAVLink : ProtocolHandler {
         vehicle.replaying.value = commChannel is ReplayComm
         vehicle.connected.value = true
         vehicle.rcOutEnabled.value = true       // Can send RC_OVERRIDE
+        
+        requestMAVLinkRates()
     }
     
     func closeCommChannel() {
@@ -354,10 +355,12 @@ class MAVLink : ProtocolHandler {
     }
 
     private func altitudeHoldActive() -> Bool {
+        let flightMode = _vehicle.flightMode.value
         return flightMode != .STABILIZE && flightMode != .DRIFT && flightMode != .ACRO && flightMode != .FLIP && flightMode != .UNKNOWN  && flightMode != .THROW
     }
     
     private func navigationActive() -> Bool {
+        let flightMode = _vehicle.flightMode.value
         return flightMode == .AUTO || flightMode == .GUIDED || flightMode == .LOITER || flightMode == .RTL || flightMode == .CIRCLE || flightMode == .POSHOLD
     }
     
@@ -387,6 +390,8 @@ class MAVLink : ProtocolHandler {
     }
     
     func requestHomePosition() {
+        //executeCommand(MAV_CMD_GET_HOME_POSITION)     // APM 3.4+
+
         var msg = mavlink_message_t()
         // Waypoint #0 is Home/Launch location
         mavlink_msg_mission_request_pack(mySystemId, myComponentId, &msg, systemId, componentId, 0)

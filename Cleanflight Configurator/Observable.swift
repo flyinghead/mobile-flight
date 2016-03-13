@@ -60,76 +60,59 @@ class Observable<T> {
     }
 }
 
-class ObservableBool : Observable<Bool> {
+class EquatableObservable<T : Equatable> : Observable<T> {
+    override init(_ value: T) {
+        super.init(value)
+    }
+    override func areEqual(o1: T, _ o2: T) -> Bool {
+        return o1 == o2
+    }
+}
+
+class ObservableBool : EquatableObservable<Bool> {
     override init(_ value: Bool) {
         super.init(value)
     }
-    override func areEqual(o1: Bool, _ o2: Bool) -> Bool {
-        return o1 == o2
-    }
 }
 
-class ObservableDouble : Observable<Double> {
+class ObservableDouble : EquatableObservable<Double> {
     override init(_ value: Double) {
         super.init(value)
     }
-    override func areEqual(o1: Double, _ o2: Double) -> Bool {
-        return o1 == o2
-    }
 }
 
-class ObservableInt : Observable<Int> {
+class ObservableInt : EquatableObservable<Int> {
     override init(_ value: Int) {
         super.init(value)
     }
-    override func areEqual(o1: Int, _ o2: Int) -> Bool {
-        return o1 == o2
-    }
 }
 
-class ObservableString : Observable<String> {
+class ObservableString : EquatableObservable<String> {
     override init(_ value: String) {
         super.init(value)
     }
-    override func areEqual(o1: String, _ o2: String) -> Bool {
+}
+
+class NillableObservable<T : Equatable> : Observable<T?> {
+    init() {
+        super.init(nil)
+    }
+    
+    override func areEqual(o1: T?, _ o2: T?) -> Bool {
         return o1 == o2
     }
 }
 
-class NillableObservableBool : Observable<Bool?> {
-    init() {
-        super.init(nil)
-    }
-    override func areEqual(o1: Bool?, _ o2: Bool?) -> Bool {
-        return o1 == o2
-    }
+class NillableObservableBool : NillableObservable<Bool> {
 }
 
-class NillableObservableDouble : Observable<Double?> {
-    init() {
-        super.init(nil)
-    }
-    override func areEqual(o1: Double?, _ o2: Double?) -> Bool {
-        return o1 == o2
-    }
+class NillableObservableDouble : NillableObservable<Double> {
 }
 
-class NillableObservableInt : Observable<Int?> {
-    init() {
-        super.init(nil)
-    }
-    override func areEqual(o1: Int?, _ o2: Int?) -> Bool {
-        return o1 == o2
-    }
+class NillableObservableInt : NillableObservable<Int> {
 }
 
-class NillableObservableString : Observable<String?> {
-    init() {
-        super.init(nil)
-    }
-    override func areEqual(o1: String?, _ o2: String?) -> Bool {
-        return o1 == o2
-    }
+class NillableObservableString : NillableObservable<String> {
 }
 
 class NillableObservableArray<ET : Equatable> : Observable<Array<ET>?> {

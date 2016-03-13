@@ -1141,5 +1141,11 @@ class AllAircraftData : NSObject, NSCoding {
         vehicle.sensorData = sensorData
         vehicle.motorData = motorData
         vehicle.dataflash = dataflash
+        
+        if settings.features.contains(.VBat) && configuration.batteryCells != 0 {
+            vehicle.batteryVoltsWarning.value = misc.vbatWarningCellVoltage * Double(configuration.batteryCells)
+            vehicle.batteryVoltsCritical.value = misc.vbatMinCellVoltage * Double(configuration.batteryCells)
+        }
+
     }
 }

@@ -58,11 +58,6 @@ class ProtocolFinder : ProtocolHandler {
         mavlinkProtocolHandler.detachCommChannel()
     }
     
-    func addDataListener(listener: FlightDataListener) {}
-    func removeDataListener(listener: FlightDataListener) {}
-    
-    func sendRawRc(values: [Int]) {}
-    
     func openCommChannel(commChannel: CommChannel) {}
     func closeCommChannel() {}
     
