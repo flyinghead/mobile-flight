@@ -2250,7 +2250,7 @@
     <GPS_GNSS_MODE>
       <DisplayName>GNSS system configuration</DisplayName>
       <Description>Bitmask for what GNSS system to use</Description>
-      <Values>0: Leave as currently configured 1: GPS 2: SBAS 4: Galileo 8: Beidou 16: IMES 32: QZSS 64: GLONASS</Values>
+      <!-- Values>0: Leave as currently configured 1: GPS 2: SBAS 4: Galileo 8: Beidou 16: IMES 32: QZSS 64: GLONASS</Values -->
       <User>Advanced</User>
       <RebootRequired>True</RebootRequired>
     </GPS_GNSS_MODE>

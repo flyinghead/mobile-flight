@@ -131,6 +131,10 @@
 		AEFC52021C95B81600B7F903 /* MSPTelemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52011C95B81600B7F903 /* MSPTelemetry.swift */; };
 		AEFC52041C95B96D00B7F903 /* UseMSPVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52031C95B96D00B7F903 /* UseMSPVehicle.swift */; };
 		AEFC52061C95D42700B7F903 /* ArduCopterFlightMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */; };
+		AEFC52081C9607BC00B7F903 /* MAVLink.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEFC52071C9607BC00B7F903 /* MAVLink.storyboard */; };
+		AEFC520A1C960FF600B7F903 /* ParameterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC52091C960FF600B7F903 /* ParameterList.swift */; };
+		AEFC520C1C9610FB00B7F903 /* ParameterMetaDataBackup.xml in Resources */ = {isa = PBXBuildFile; fileRef = AEFC520B1C9610FB00B7F903 /* ParameterMetaDataBackup.xml */; };
+		AEFC520E1C962A6C00B7F903 /* FullParamsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
 		BE579EDCBDCFF05EE8CB459F /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BB80BD9C9A3AFFEC7B50A1A /* Pods_KIFTests.framework */; };
 /* End PBXBuildFile section */
@@ -297,6 +301,11 @@
 		AEFC52011C95B81600B7F903 /* MSPTelemetry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPTelemetry.swift; sourceTree = "<group>"; };
 		AEFC52031C95B96D00B7F903 /* UseMSPVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UseMSPVehicle.swift; sourceTree = "<group>"; };
 		AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArduCopterFlightMode.swift; sourceTree = "<group>"; };
+		AEFC52071C9607BC00B7F903 /* MAVLink.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MAVLink.storyboard; sourceTree = "<group>"; };
+		AEFC52091C960FF600B7F903 /* ParameterList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterList.swift; sourceTree = "<group>"; };
+		AEFC520B1C9610FB00B7F903 /* ParameterMetaDataBackup.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ParameterMetaDataBackup.xml; sourceTree = "<group>"; };
+		AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullParamsViewController.swift; sourceTree = "<group>"; };
+		AEFC520F1C96D35B00B7F903 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		B9528EA4E3880B1D0B737CAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -438,6 +447,7 @@
 		AE72AB4D1C0F3D230020C4B0 = {
 			isa = PBXGroup;
 			children = (
+				AEFC520F1C96D35B00B7F903 /* MyPlayground.playground */,
 				AEC2A0D51C790F7E00EDF1D4 /* mavlink */,
 				AEA48A681C26BE6F006BC53E /* TODO.txt */,
 				AEDDD2781C1615C8004232AA /* Podfile */,
@@ -568,10 +578,14 @@
 			isa = PBXGroup;
 			children = (
 				AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */,
+				AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */,
 				AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */,
 				AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */,
 				AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */,
+				AEFC52091C960FF600B7F903 /* ParameterList.swift */,
 				AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */,
+				AEFC52071C9607BC00B7F903 /* MAVLink.storyboard */,
+				AEFC520B1C9610FB00B7F903 /* ParameterMetaDataBackup.xml */,
 			);
 			name = MAVLink;
 			sourceTree = "<group>";
@@ -743,8 +757,10 @@
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
+				AEFC52081C9607BC00B7F903 /* MAVLink.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
+				AEFC520C1C9610FB00B7F903 /* ParameterMetaDataBackup.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -899,6 +915,7 @@
 				AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */,
 				AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */,
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
+				AEFC520E1C962A6C00B7F903 /* FullParamsViewController.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AE957D111C8F506600FA44BA /* CommSpeedMeter.swift in Sources */,
@@ -937,6 +954,7 @@
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AE5BB66D1C4E9C2100CF2A7C /* AttitudeIndicator2.swift in Sources */,
+				AEFC520A1C960FF600B7F903 /* ParameterList.swift in Sources */,
 				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
 				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,

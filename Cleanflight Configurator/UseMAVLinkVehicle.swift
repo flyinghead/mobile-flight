@@ -16,4 +16,9 @@ extension UseMAVLinkVehicle {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         return appDelegate.vehicle as! MAVLinkVehicle
     }
+    
+    var mavlinkProtocolHandler: MAVLink {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return appDelegate.protocolHandler as! MAVLink
+    }
 }

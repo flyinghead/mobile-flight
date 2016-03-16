@@ -30,37 +30,37 @@ enum ArduCopterFlightMode : Int {
     func modeName() -> String {
         switch self {
         case .STABILIZE:
-            return "Stabilize"
+            return "STABILIZE"
         case .ACRO:
-            return "Acro"
+            return "ACRO"
         case .ALT_HOLD:
-            return "Altitude Hold"
+            return "ALT HOLD"
         case .AUTO:
-            return "Auto"
+            return "AUTO"
         case .GUIDED:
-            return "Guided"
+            return "GUIDED"
         case .LOITER:
-            return "Loiter"
+            return "LOITER"
         case .RTL:
-            return "Return to Launch"
+            return "RTL"
         case .CIRCLE:
-            return "Circle"
+            return "CIRCLE"
         case .LAND:
-            return "Land"
+            return "LAND"
         case .DRIFT:
-            return "Drift"
+            return "DRIFT"
         case .SPORT:
-            return "Sport"
+            return "SPORT"
         case .FLIP:
-            return "Flip"
+            return "FLIP"
         case .AUTOTUNE:
-            return "Autotune"
+            return "AUTOTUNE"
         case .POSHOLD:
-            return "Position Hold"
+            return "POS HOLD"
         case .BRAKE:
-            return "Brake"
+            return "BRAKE"
         case .THROW:
-            return "Throw"
+            return "THROW"
         case .UNKNOWN:
             return ""
         }
