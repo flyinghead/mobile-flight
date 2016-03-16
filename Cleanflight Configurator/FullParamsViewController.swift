@@ -17,8 +17,8 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
     private var sections = [String : [String]]()
     private var sortedSections = [String]()
     
-    let searchController = UISearchController(searchResultsController: nil)
-    var filteredParamIds = [String]()
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var filteredParamIds = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if mavlinkVehicle.parametersById.count != mavlinkVehicle.parameters.count {
+        if !mavlinkVehicle.parametersLoaded {
             refreshAction(self)
         }
     }
@@ -80,8 +80,8 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
         } else {
             return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
         }
-
     }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(indexPath == detailedRow ? "detailedParamTableCell" : "paramTableCell", forIndexPath: indexPath) as! ParamTableCell
 
@@ -109,10 +109,14 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
         }
         tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
     }
-
+    
+    // MARK: UISearchResultsUpdating
+    
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         filterContentForSearch(searchController.searchBar.text!)
     }
+    
+    // MARK:
     
     func filterContentForSearch(searchText: String) {
         detailedRow = nil
@@ -135,7 +139,7 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
     }
     
     @IBAction func refreshAction(sender: AnyObject) {
-        SVProgressHUD.showProgress(0, status: "Loading parameters...", maskType: .Clear)
+        SVProgressHUD.showProgress(0, status: "Loading parameters...", maskType: .Black)
         mavlinkProtocolHandler.requestAllParameters() { progress in
             if progress == 100 {
                 self.sections.removeAll()
@@ -162,12 +166,42 @@ class FullParamsViewController: UITableViewController, UseMAVLinkVehicle, UISear
                 
                 SVProgressHUD.dismiss()
             } else {
-                SVProgressHUD.showProgress(Float(progress) / 100, status: "Loading parameters...", maskType: .Clear)
+                SVProgressHUD.showProgress(Float(progress) / 100, status: "Loading parameters...", maskType: .Black)
             }
         }
     }
     
     @IBAction func saveAction(sender: AnyObject) {
+        var dirtyParams = [MAVLinkParameter]()
+        for param in mavlinkVehicle.parametersById.values {
+            if param.dirty {
+                dirtyParams.append(param)
+            }
+        }
+        if dirtyParams.isEmpty {
+            SVProgressHUD.showInfoWithStatus("Nothing to save")
+            return
+        }
+        SVProgressHUD.showProgress(0, status: "Saving parameters...", maskType: .Black)
+        var successCount = 0
+        for param in dirtyParams {
+            mavlinkProtocolHandler.setParameter(param, callback: { success in
+                if success {
+                    if successCount != -1 {
+                        successCount++
+                        SVProgressHUD.showProgress(Float(successCount) / Float(dirtyParams.count), status: "Saving parameters...", maskType: .Black)
+                        if successCount == dirtyParams.count {
+                            SVProgressHUD.dismiss()
+                            self.tableView.reloadData()
+                        }
+                    }
+                } else {
+                    successCount = -1
+                    SVProgressHUD.showErrorWithStatus("Save failed")
+                    self.tableView.reloadData()
+                }
+            })
+        }
     }
 }
 
@@ -194,14 +228,26 @@ class ParamTableCell : UITableViewCell, UseMAVLinkVehicle {
         }
         self.paramId = paramId
 
-        let mavlinkParam = mavlinkVehicle.parametersById[paramId]!
-        dirty = mavlinkParam.dirty
-        
-        // Reset and hide both
+        // Reset and hide both input controls
         numberValueField.value = 0
         valuePicker!.text = nil
         pickerValueField.hidden = true
         numberValueField.hidden = true
+        
+        propertyNameLabel.text = paramId
+        descriptionLabel?.text = ""
+        unitLabel?.text = ""
+        dirty = false
+
+        guard let mavlinkParam = mavlinkVehicle.parametersById[paramId] else {
+            // Can happen during a refresh
+            if let parameterMetadata = ParameterList.instance.getParameter(paramId) {
+                propertyNameLabel.text = parameterMetadata.name
+            }
+            return
+        }
+        
+        dirty = mavlinkParam.dirty
         
         if let parameterMetadata = ParameterList.instance.getParameter(paramId) {
             propertyNameLabel.text = parameterMetadata.name
@@ -239,12 +285,9 @@ class ParamTableCell : UITableViewCell, UseMAVLinkVehicle {
             numberValueField.suggestedMinimum = parameterMetadata.min
             numberValueField.suggestedMaximum = parameterMetadata.max
         } else {
-            propertyNameLabel.text = paramId
             numberValueField.increment = mavlinkParam.intrisicIncrement
             numberValueField.suggestedMinimum = nil
             numberValueField.suggestedMaximum = nil
-            descriptionLabel?.text = ""
-            unitLabel?.text = ""
         }
         numberValueField.minimumValue = mavlinkParam.intrisicMinimum
         numberValueField.maximumValue = mavlinkParam.intrisicMaximum

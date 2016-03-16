@@ -20,8 +20,8 @@ class MAVLinkVehicle : Vehicle {
     var fenceBreached = ObservableBool(false)
     var fenceBreachType = EquatableObservable<FENCE_BREACH>(FENCE_BREACH_NONE)
     
-    var parameters: [MAVLinkParameter?]!
     var parametersById = [String : MAVLinkParameter]()
+    var parametersLoaded = false
     
     override init() {
         super.init()

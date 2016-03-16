@@ -21,6 +21,7 @@
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
 		AE1DD68D1C7E2F9100861248 /* TelemetryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */; };
 		AE1DD68E1C7E43D500861248 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
+		AE1EECC81C99C38800F30535 /* MAVLinkMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
 		AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E45E21C50E96000E33E9F /* RoundGauge.swift */; };
@@ -199,6 +200,7 @@
 		AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KIFTests_bridgingheader.h; sourceTree = "<group>"; };
 		AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCaseKIFExtension.swift; sourceTree = "<group>"; };
 		AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryTest.swift; sourceTree = "<group>"; };
+		AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLinkMessageHandler.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
 		AE3E45E21C50E96000E33E9F /* RoundGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundGauge.swift; sourceTree = "<group>"; };
@@ -450,9 +452,9 @@
 			isa = PBXGroup;
 			children = (
 				AEFC520F1C96D35B00B7F903 /* MyPlayground.playground */,
-				AEC2A0D51C790F7E00EDF1D4 /* mavlink */,
 				AEA48A681C26BE6F006BC53E /* TODO.txt */,
 				AEDDD2781C1615C8004232AA /* Podfile */,
+				AEC2A0D51C790F7E00EDF1D4 /* mavlink */,
 				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
 				AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
@@ -582,6 +584,7 @@
 				AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */,
 				AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */,
 				AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */,
+				AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */,
 				AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */,
 				AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */,
 				AEFC52091C960FF600B7F903 /* ParameterList.swift */,
@@ -933,6 +936,7 @@
 				AEFC52021C95B81600B7F903 /* MSPTelemetry.swift in Sources */,
 				AEFC51FB1C94BB3600B7F903 /* MAVLinkTelemetry.swift in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
+				AE1EECC81C99C38800F30535 /* MAVLinkMessageHandler.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
 				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
