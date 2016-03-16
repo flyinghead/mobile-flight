@@ -50,12 +50,27 @@ class NumberField: UITextField {
     }
     @IBInspectable var increment: Double = 1.0 {
         didSet {
-            stepper.stepValue = increment
+            if increment == 0 {
+                stepper.hidden = true
+            } else {
+                stepper.hidden = false
+                stepper.stepValue = increment
+            }
         }
     }
     @IBInspectable var wraps: Bool = false {
         didSet {
             stepper.wraps = wraps
+        }
+    }
+    @IBInspectable var suggestedMinimum: Double? {
+        didSet {
+            setStepperTintColor()
+        }
+    }
+    @IBInspectable var suggestedMaximum: Double? {
+        didSet {
+            setStepperTintColor()
         }
     }
     
@@ -92,8 +107,12 @@ class NumberField: UITextField {
     }
     
     private func updateFieldText() {
-        let stringFormat = String(format: "%%.%df", decimalDigits)
-        self.text = String(format: stringFormat, locale: NSLocale.currentLocale(), value)
+        let formatter = NSNumberFormatter()
+        formatter.locale = NSLocale.currentLocale()
+        formatter.minimumIntegerDigits = 1
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = decimalDigits
+        self.text = formatter.stringFromNumber(value)
     }
 
     func doneWithNumberPad() {
@@ -122,6 +141,7 @@ class NumberField: UITextField {
             if value != nil {
                 stepper.value = value!.doubleValue
                 self._value = stepper.value
+                setStepperTintColor()
             }
         }
     }
@@ -130,11 +150,20 @@ class NumberField: UITextField {
         UIDevice.currentDevice().playInputClick()
         value = stepper.value
         updateFieldText()
+        setStepperTintColor()
     }
     
     override var enabled: Bool {
         didSet {
             textColor = enabled ? savedTextColor : UIColor.lightGrayColor()
+        }
+    }
+    
+    private func setStepperTintColor() {
+        if (suggestedMinimum != nil && _value < suggestedMinimum!) || (suggestedMaximum != nil && _value > suggestedMaximum!) {
+            stepper.tintColor = UIColor.redColor()
+        } else {
+            stepper.tintColor = stepper.superview!.tintColor
         }
     }
 }
