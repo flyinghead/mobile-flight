@@ -29,6 +29,8 @@ class MAVLink : ProtocolHandler {
     
     private var failsafeBatteryVoltage: Double?
     
+    private var messageHandlers = [Int32 : [MAVLinkMessageHandler]]()
+    
     var datalog: NSFileHandle? {
         didSet {
             if datalog != nil {
@@ -43,10 +45,11 @@ class MAVLink : ProtocolHandler {
     var _vehicle = MAVLinkVehicle()
     var vehicle: Vehicle { return _vehicle }
     
-    var totalParamCount = 0
+    var loadedParameters: [MAVLinkParameter?]?      // Set to the correct size as soon as the total number of params is known. nil entries are params not yet received.
     var lastParamReceived: NSDate?
     var requestingAllParams = false
     var allParamsLoaderListener: ((Int) -> Void)?
+    var retryParameterIndex = -1
     
     func read(data: [UInt8]) {
         var msg = mavlink_message_t()
@@ -86,7 +89,7 @@ class MAVLink : ProtocolHandler {
                         requestMAVLinkRates()
                     }
                     lastReveivedMessageIsHeartbeat = true
-                    let autopilot = MAV_AUTOPILOT(UInt32(mavlink_msg_heartbeat_get_autopilot(&msg)))
+                    //let autopilot = MAV_AUTOPILOT(UInt32(mavlink_msg_heartbeat_get_autopilot(&msg)))
                     let baseMode = MAV_MODE_FLAG(UInt32(mavlink_msg_heartbeat_get_base_mode(&msg)))
                     let wasArmed = vehicle.armed.value
                     vehicle.armed.value = baseMode.rawValue & MAV_MODE_FLAG_SAFETY_ARMED.rawValue != 0
@@ -96,9 +99,9 @@ class MAVLink : ProtocolHandler {
                     }
                     
                     _vehicle.flightMode.value = ArduCopterFlightMode(rawValue: Int(mavlink_msg_heartbeat_get_custom_mode(&msg))) ?? .UNKNOWN
-                    let systemStatus = MAV_STATE(UInt32(mavlink_msg_heartbeat_get_system_status(&msg)))
-                    let type = MAV_TYPE(UInt32(mavlink_msg_heartbeat_get_type(&msg)))
-                    NSLog("Heartbeat status=%d mode: %@", systemStatus.rawValue, _vehicle.flightMode.value.modeName())
+                    //let systemStatus = MAV_STATE(UInt32(mavlink_msg_heartbeat_get_system_status(&msg)))
+                    //let type = MAV_TYPE(UInt32(mavlink_msg_heartbeat_get_type(&msg)))
+                    //NSLog("Heartbeat status=%d mode: %@", systemStatus.rawValue, _vehicle.flightMode.value.modeName())
                     
                 case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
                     vehicle.position.value = Position(latitude: Double(mavlink_msg_global_position_int_get_lat(&msg)) / 10000000, longitude: Double(mavlink_msg_global_position_int_get_lon(&msg)) / 10000000)
@@ -173,40 +176,38 @@ class MAVLink : ProtocolHandler {
                     _vehicle.autopilotMessage.newEvent((severity: MAV_SEVERITY(6 - severity), message: messageText as String))
                     
                 case MAVLINK_MSG_ID_PARAM_VALUE:
-                    totalParamCount = Int(mavlink_msg_param_value_get_param_count(&msg))
-                    if _vehicle.parameters == nil {
-                        _vehicle.parameters = [MAVLinkParameter?](count: totalParamCount, repeatedValue: nil)
+                    let totalParamCount = Int(mavlink_msg_param_value_get_param_count(&msg))
+                    if loadedParameters == nil {
+                        loadedParameters = [MAVLinkParameter?](count: totalParamCount, repeatedValue: nil)
                     }
                     
-                    var charBytes = [Int8](count: 17, repeatedValue: 0)
-                    mavlink_msg_param_value_get_param_id(&msg, &charBytes)
-                    let paramId = NSString(CString: charBytes, encoding: NSASCIIStringEncoding)! as String
-
-                    let paramType = MAV_PARAM_TYPE(rawValue: UInt32(mavlink_msg_param_value_get_param_type(&msg)))
-                    // Avoid rounding errors when converting directly from float to double
-                    let doubleValue = Double(NSNumber(float: mavlink_msg_param_value_get_param_value(&msg)).stringValue)!
-                    
-                    var paramIndex = Int(mavlink_msg_param_value_get_param_index(&msg))
-                    let mavlinkParameter = MAVLinkParameter(paramId: paramId, index: paramIndex, type: paramType, value: doubleValue)
-                    if paramIndex != 65535 {    // FIXME Not sure how and why this happens
-                        _vehicle.parameters[mavlinkParameter.index] = mavlinkParameter
-                        _vehicle.parametersById[paramId] = mavlinkParameter
+                    let mavlinkParameter = parseParamValueMessage(msg)
+                    if mavlinkParameter.index != 65535 {    // Parameter index is not known
+                        loadedParameters![mavlinkParameter.index] = mavlinkParameter
+                        _vehicle.parametersById[mavlinkParameter.paramId] = mavlinkParameter
                     }
                     
-                    paramReceived(paramId, value: doubleValue)
+                    paramReceived(mavlinkParameter.paramId, value: mavlinkParameter.value)
 
                     if _vehicle.parametersById.count == totalParamCount {
                         // All params received
+                        NSLog("All params received")
                         lastParamReceived = nil
+                        retryParameterIndex = -1
                         requestingAllParams = false
+                        _vehicle.parametersLoaded = true
                         dispatch_async(dispatch_get_main_queue(), {
                             self.allParamsLoaderListener?(100)
+                            self.allParamsLoaderListener = nil
                         })
                     } else {
                         lastParamReceived = NSDate()
                         dispatch_async(dispatch_get_main_queue(), {
-                            self.allParamsLoaderListener?(self._vehicle.parametersById.count * 100 / self.totalParamCount)
+                            self.allParamsLoaderListener?(self._vehicle.parametersById.count * 100 / totalParamCount)
                         })
+                        if retryParameterIndex != -1 {
+                            retryNextParameter()
+                        }
                     }
 
                 case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
@@ -226,7 +227,7 @@ class MAVLink : ProtocolHandler {
                     while rcChannels.last == 65535 {
                         rcChannels.popLast()
                     }
-                    for var i = 0; i < rcChannels.count; i++ {
+                    for i in 0..<rcChannels.count {
                         if rcChannels[i] == 65535 {
                             rcChannels[i] = 0
                         }
@@ -265,10 +266,16 @@ class MAVLink : ProtocolHandler {
                 default:
                     NSLog("Unknown MAVLink msg %d", msg.msgid)
                 }
+                
+                // Match message handlers
+                if let handlers = messageHandlers[msgId] {
+                    for handler in handlers {
+                        if handler.match(msg) {
+                            break
+                        }
+                    }
+                }
             }
-        }
-        if vehicle.connected.value && failsafeBatteryVoltage == nil {
-            requestParam("FS_BATT_VOLTAGE")
         }
     }
     
@@ -308,7 +315,7 @@ class MAVLink : ProtocolHandler {
         //sendMAVLinkMsg(msg)
     }
 
-    private func sendMAVLinkMsg(var msg: mavlink_message_t) {
+    func sendMAVLinkMsg(var msg: mavlink_message_t) {
         var buf = [UInt8](count: 128, repeatedValue: 0)  // Max size?
         let len = mavlink_msg_to_send_buffer(&buf, &msg)
         synchronized(self) {
@@ -338,6 +345,7 @@ class MAVLink : ProtocolHandler {
         vehicle.rcOutEnabled.value = true       // Can send RC_OVERRIDE
         
         requestMAVLinkRates()
+        requestParam("FS_BATT_VOLTAGE")
     }
     
     func closeCommChannel() {
@@ -355,7 +363,8 @@ class MAVLink : ProtocolHandler {
     @objc
     private func heartbeatTimer(timer: NSTimer) {
         if communicationHealthy {
-            NSLog("MAVLink stats: %d overruns, %d drops, %d parse errors", status.buffer_overrun, status.packet_rx_drop_count, status.parse_error)
+            let chanStatus = mavlink_get_channel_status(0)
+            NSLog("MAVLink stats: %d overruns, %d drops, %d parse errors", chanStatus.memory.buffer_overrun, chanStatus.memory.packet_rx_drop_count, chanStatus.memory.parse_error)
             
             // Needed?
             //var msg = mavlink_message_t()
@@ -380,19 +389,19 @@ class MAVLink : ProtocolHandler {
                     lastParamReceivedInterval = -(self.lastParamReceived?.timeIntervalSinceNow ?? 0)
                 }
                 if lastParamReceivedInterval > 0.5 {
-                    // FIXME synchronize access to _vehicle
+                    NSLog("Param receive timeout")
+                    lastParamReceived = NSDate()
                     if _vehicle.parametersById.count < 400 {
-                        lastParamReceived = nil
-                        requestAllParameters(allParamsLoaderListener)
+                        var msg = mavlink_message_t()
+                        mavlink_msg_param_request_list_pack(mySystemId, myComponentId, &msg, systemId, componentId)
+                        sendMAVLinkMsg(msg)
                     } else {
                         // Re-request missing parameters (10 max)
-                        lastParamReceived = NSDate()
-                        var count = 10
-                        for var i = 0; i < _vehicle.parameters.count && count > 0; i++ {
-                            if _vehicle.parameters[i] == nil {
-                                requestParam(i)
-                                count--
-                            }
+                        if retryParameterIndex == -1 {
+                            retryParameterIndex = 0
+                        }
+                        for _ in 0..<10  {
+                            retryNextParameter()
                         }
                     }
                 }
@@ -434,13 +443,15 @@ class MAVLink : ProtocolHandler {
     }
     
     private func requestParam(param: String) {
+        NSLog("Requesting param %@", param)
         var msg = mavlink_message_t()
         let nsparam = param as NSString
         mavlink_msg_param_request_read_pack(mySystemId, myComponentId, &msg, systemId, componentId, nsparam.cStringUsingEncoding(NSASCIIStringEncoding), -1)
-        sendMAVLinkMsg(msg)
+        _ = ParamGetSetMessageHandler(self, msg: msg, paramIndex: -1, paramId: param)
     }
     
     private func requestParam(index: Int) {
+        NSLog("Requesting param %d", index)
         var msg = mavlink_message_t()
         mavlink_msg_param_request_read_pack(mySystemId, myComponentId, &msg, systemId, componentId, nil, Int16(index))
         sendMAVLinkMsg(msg)
@@ -454,7 +465,7 @@ class MAVLink : ProtocolHandler {
             vehicle.batteryVoltsCritical.value = failsafeBatteryVoltage
             
         default:
-            NSLog("Unrequested parameter: %@=%f", paramId, value)
+            break
         }
     }
     
@@ -470,17 +481,86 @@ class MAVLink : ProtocolHandler {
         var msg = mavlink_message_t()
         // Waypoint #0 is Home/Launch location
         mavlink_msg_mission_request_pack(mySystemId, myComponentId, &msg, systemId, componentId, 0)
-        sendMAVLinkMsg(msg)
+        _ = MAVLinkMessageHandler(self, msg: msg, expectedReply: MAVLINK_MSG_ID_MISSION_ITEM)
     }
     
     func requestAllParameters(listener: ((Int) -> Void)?) {
         allParamsLoaderListener = listener
         if !requestingAllParams {
             requestingAllParams = true
+            retryParameterIndex = -1
+            _vehicle.parametersById.removeAll()
+            loadedParameters = nil
+            _vehicle.parametersLoaded = false
             lastParamReceived = NSDate()
             var msg = mavlink_message_t()
             mavlink_msg_param_request_list_pack(mySystemId, myComponentId, &msg, systemId, componentId)
             sendMAVLinkMsg(msg)
+        }
+    }
+    
+    private func retryNextParameter() {
+        for _ in 0..<loadedParameters!.count {
+            if retryParameterIndex >= loadedParameters!.count {
+                retryParameterIndex = 0
+            }
+            if loadedParameters![retryParameterIndex] == nil {
+                requestParam(retryParameterIndex++)
+                return
+            } else {
+                retryParameterIndex++
+            }
+        }
+    }
+    
+    func parseParamValueMessage(var msg: mavlink_message_t) -> MAVLinkParameter {
+        var charBytes = [Int8](count: 17, repeatedValue: 0)
+        mavlink_msg_param_value_get_param_id(&msg, &charBytes)
+        let paramId = NSString(CString: charBytes, encoding: NSASCIIStringEncoding)! as String
+        
+        let paramType = MAV_PARAM_TYPE(rawValue: UInt32(mavlink_msg_param_value_get_param_type(&msg)))
+        // Avoid rounding errors when converting directly from float to double
+        let doubleValue = Double(NSNumber(float: mavlink_msg_param_value_get_param_value(&msg)).stringValue)!
+        
+        var paramIndex = Int(mavlink_msg_param_value_get_param_index(&msg))
+        if paramIndex == 65535 {
+            if let existingParam = _vehicle.parametersById[paramId] {
+                paramIndex = existingParam.index
+            }
+        }
+        return MAVLinkParameter(paramId: paramId, index: paramIndex, type: paramType, value: doubleValue)
+    }
+
+    func addMessageHandler(msgid: Int32, handler: MAVLinkMessageHandler) {
+        messageHandlers[msgid] = (messageHandlers[msgid] ?? []) + [handler]
+    }
+    
+    func removeMessageHandler(msgid: Int32, handler: MAVLinkMessageHandler) {
+        if let handlersArray = messageHandlers[msgid] {
+            messageHandlers[msgid] = handlersArray.filter({ $0 !== handler })
+        }
+    }
+    
+    func setParameter(param: MAVLinkParameter, callback: ((success: Bool) -> Void)?) {
+        var msg = mavlink_message_t()
+        let value = Float(String(param.value))!
+        var cstring = param.paramId.cStringUsingEncoding(NSASCIIStringEncoding)!
+        mavlink_msg_param_set_pack(mySystemId, myComponentId, &msg, systemId, componentId, &cstring, value, UInt8(param.type.rawValue))
+        _ = ParamGetSetMessageHandler(self, msg: msg, paramIndex: -1, paramId: param.paramId) { success in
+            dispatch_async(dispatch_get_main_queue(), {
+                callback?(success: success)
+            })
+        }
+    }
+    
+    // This doesn't seem to be supported on APM and is not necessary anyway
+    func writeParamsToEeprom(callback: ((success: Bool) -> Void)?) {
+        var msg = mavlink_message_t()
+        mavlink_msg_command_long_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt16(MAV_CMD_PREFLIGHT_STORAGE.rawValue), 0, 1, 0, 0, 0, 0, 0, 0)
+        _ = CommandMessageHandler(self, msg: msg) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                callback?(success: success)
+            }
         }
     }
 }
