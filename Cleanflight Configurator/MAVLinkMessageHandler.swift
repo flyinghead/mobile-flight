@@ -93,12 +93,46 @@ class CommandMessageHandler : MAVLinkMessageHandler {
     }
 
     override func match(var msg: mavlink_message_t) -> Bool {
-        if mavlink_msg_command_ack_get_command(&msg) == mavlink_msg_command_ack_get_command(&self.message) {
-            finish(mavlink_msg_command_ack_get_result(&msg) == 0)
+        if mavlink_msg_command_ack_get_command(&msg) == mavlink_msg_command_long_get_command(&self.message) {
+            let result = mavlink_msg_command_ack_get_result(&msg)
+            if result != 0 {
+                NSLog("Command %d failed: %d", mavlink_msg_command_ack_get_command(&msg), result)
+            }
+            finish(result == 0)
             
             return true
         }
         
+        return false
+    }
+}
+
+class MissionItemHandler : MAVLinkMessageHandler {
+    init(_ mavlink: MAVLink, msg: mavlink_message_t, callback: ((success: Bool) -> Void)? = nil) {
+        super.init(mavlink, msg: msg, expectedReply: MAVLINK_MSG_ID_MISSION_ACK, callback: callback)
+    }
+    
+    override func match(var msg: mavlink_message_t) -> Bool {
+        let result = mavlink_msg_command_ack_get_result(&msg)
+        if result != 0 {
+            NSLog("Mission cmd failed: %d", result)
+        }
+        finish(result == 0)
+        
+        return true
+    }
+}
+
+class MissionRequestHandler : MAVLinkMessageHandler {
+    init(_ mavlink: MAVLink, msg: mavlink_message_t, callback: ((success: Bool) -> Void)? = nil) {
+        super.init(mavlink, msg: msg, expectedReply: MAVLINK_MSG_ID_MISSION_ITEM, callback: callback)
+    }
+    override func match(var msg: mavlink_message_t) -> Bool {
+        if mavlink_msg_mission_request_get_seq(&self.message) == mavlink_msg_mission_item_get_seq(&msg) {
+            success()
+            
+            return true
+        }
         return false
     }
 }

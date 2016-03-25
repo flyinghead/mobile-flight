@@ -29,6 +29,9 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     var speed = 0.0
     var distanceToHome = 0
     
+    var altitudeHold = 0.0
+    var headingHold = 0
+    
     private var boxnames: [Mode] = [ .ANGLE, .ARM, .AUTOTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPSHOLD, .GPSHOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSDSW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY, .AIR ]
     
     private var thread: NSThread!
@@ -114,6 +117,9 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
         numSats = 0
         speed = 0.0
         distanceToHome = 0
+        
+        altitudeHold = 0.0
+        headingHold = 0
     }
     
     func stream(stream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -203,6 +209,8 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
             send(mspCode, NSNumber(short: Int16(distanceToHome)), NSNumber(short: 0), NSNumber(char: 1))
         case .MSP_MISC:
             send(mspCode, NSNumber(short: 1500), NSNumber(short: 1150), NSNumber(short: 1850), NSNumber(short: 1000), NSNumber(short: 1200), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(char: 0), NSNumber(short: 0), NSNumber(char: 11), NSNumber(char: 33), NSNumber(char: 43), NSNumber(char: 34))
+        case .MSP_WP:
+            send(mspCode, NSNumber(char: Int8(message[0])), NSNumber(int: 0), NSNumber(int: 0), NSNumber(int: Int32(altitudeHold * 100)), NSNumber(short: Int16(headingHold)), NSNumber(char: 0), NSNumber(short: 0))
             
         default:
             NSLog("CleanflightSimulator: Unhandled operation %d", mspCode.rawValue)

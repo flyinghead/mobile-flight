@@ -1,3 +1,5 @@
+- Animate scales to have smoother movement (sometimes they seem to go backward)
+
 - TCP/IP: Try UDP instead of TCP
 - BUG CLI issue: buffer overrun?
 - LED programming
@@ -150,3 +152,6 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Tab bar navigation settings (icon order, More, ...) is not saved
 - Bluetooth: Module sometimes appears twice
 - Support for Red Bear Lab BLEMini modules
+- MAVLink: heading and altitude bugs are not correct (just follow current heading, alt). See if we can have a vspeed and speed bugs as well
+- MAVLink: Navigate to waypoint: doesn't work
+- If armed while not on telemetry page, ARMED blinks red when displaying it even several minutes after actual armed action -> event

@@ -42,7 +42,7 @@ class ReplayComm : NSObject, CommChannel {
         closed = true
     }
     
-    private func closeAndDismissViewController() {
+    func closeAndDismissViewController() {
         protocolHandler!.closeCommChannel()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)

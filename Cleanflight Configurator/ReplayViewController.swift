@@ -85,27 +85,32 @@ class ReplayViewController: UITableViewController {
                 do {
                     try TryCatch.tryBlock({
                         do {
-                            let attrs = try NSFileManager.defaultManager().attributesOfItemAtPath(fileUrl.path!)
-                            let date = attrs[NSFileCreationDate] as! NSDate
+                            //let attrs = try NSFileManager.defaultManager().attributesOfItemAtPath(fileUrl.path!)
+                            //let date = attrs[NSFileCreationDate] as! NSDate
                             let df = NSDateFormatter()
                             df.dateStyle = .ShortStyle
                             df.timeStyle = .ShortStyle
-                            title = df.stringFromDate(date)
+                            //title = df.stringFromDate(date)
                             
-                            let (file, stats) = try FlightLogFile.openForReading(fileUrl)
-                            file.closeFile()
-                            if stats != nil {
-                                detail = String(format: "%02d:%02d", Int(stats!.flightTime) / 60, Int(round(stats!.flightTime)) % 60)
+                            let fileAndStats: (NSFileHandle, FlightLogStats?)
+                            if fileUrl.path!.hasSuffix(".rec") {
+                                fileAndStats = try FlightLogFile.openForReading(fileUrl)
+                            } else {
+                                fileAndStats = try TLogFile.openForReading(fileUrl)
+                            }
+                            fileAndStats.0.closeFile()
+                            if let stats = fileAndStats.1 {
+                                detail = String(format: "%02d:%02d", Int(stats.flightTime) / 60, Int(round(stats.flightTime)) % 60)
                                 
                                 if indexPath.row == self.detailedRow {
-                                    cell.maxAltitudeLabel.text = formatAltitude(stats!.maxAltitude)
-                                    cell.maxSpeedLabel.text = formatSpeed(stats!.maxSpeed)
-                                    cell.maxDistanceLabel.text = formatDistance(stats!.maxDistanceToHome)
-                                    cell.maxAmpsLabel.text = formatWithUnit(stats!.maxAmps, unit: "A")
+                                    cell.maxAltitudeLabel.text = formatAltitude(stats.maxAltitude)
+                                    cell.maxSpeedLabel.text = formatSpeed(stats.maxSpeed)
+                                    cell.maxDistanceLabel.text = formatDistance(stats.maxDistanceToHome)
+                                    cell.maxAmpsLabel.text = formatWithUnit(stats.maxAmps, unit: "A")
                                 }
                                 
-                                if stats!.armedDate.timeIntervalSinceReferenceDate > 0 {
-                                    title = df.stringFromDate(stats!.armedDate)
+                                if stats.armedDate.timeIntervalSinceReferenceDate > 0 {
+                                    title = df.stringFromDate(stats.armedDate)
                                 }
                             }
                         } catch let error as NSError {
@@ -138,11 +143,19 @@ class ReplayViewController: UITableViewController {
                 do {
                     try TryCatch.tryBlock({
                         do {
-                            let msp = MSPParser()
-                            appDelegate.vehicle = msp.vehicle
-                            let (file, _) = try FlightLogFile.openForReading(fileUrl)
-                            _ = ReplayComm(datalog: file, protocolHandler: msp)
-                            appDelegate.protocolHandler = msp
+                            if fileUrl.path!.hasSuffix(".rec") {
+                                let msp = MSPParser()
+                                appDelegate.vehicle = msp.vehicle
+                                let (file, _) = try FlightLogFile.openForReading(fileUrl)
+                                _ = ReplayComm(datalog: file, protocolHandler: msp)
+                                appDelegate.protocolHandler = msp
+                            } else {
+                                let mavlink = MAVLink()
+                                appDelegate.vehicle = mavlink.vehicle
+                                let (file, _) = try TLogFile.openForReading(fileUrl)
+                                _ = TLogReplayComm(datalog: file, protocolHandler: mavlink)
+                                appDelegate.protocolHandler = mavlink
+                            }
                             (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                         } catch  {
                             // Swift error

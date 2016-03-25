@@ -29,6 +29,7 @@ class Vehicle {
             return -(lastArmedDate?.timeIntervalSinceNow ?? 0.0)
         }
     }
+    var armingEvent = VehicleEvent<Bool>()
     private var _lastArmedTime: NSTimeInterval = 0.0
     private var _totalArmedTime = 0.0
 
@@ -80,15 +81,29 @@ class Vehicle {
     var waypointPosition = NillableObservablePosition3D()
     var homePosition = NillableObservablePosition3D()
     
+    // Motors / servos
+    var motors = NillableObservableArray<Int>()
+    
+    // Local stuff
+    var flightLogDirectory: NSURL!
+    
     init() {
         armed.addObserver(self) { newValue in
+            self.armingEvent.newEvent(newValue)
+            
             if newValue {
                 self.lastArmedDate = NSDate()
+                if self.flightLogDirectory != nil && !self.replaying.value {
+                    self.startFlightlogRecorder()
+                }
             } else {
                 if self.lastArmedDate != nil {
                     self._lastArmedTime = -self.lastArmedDate!.timeIntervalSinceNow
                     self.lastArmedDate = nil
                     self._totalArmedTime += self.lastArmedTime
+                }
+                if self.flightLogDirectory != nil && !self.replaying.value {
+                    self.stopFlightRecorder()
                 }
             }
         }
@@ -127,6 +142,26 @@ class Vehicle {
                 }
             }
         }
+    }
+    
+    func enableFlightRecorder(directory: NSURL) {
+        flightLogDirectory = directory
+        if armed.value && !replaying.value {
+            startFlightlogRecorder()
+        }
+    }
+    
+    func disableFlightRecorder() {
+        flightLogDirectory = nil
+        if armed.value && !replaying.value {
+            stopFlightRecorder()
+        }
+    }
+    
+    func startFlightlogRecorder() {
+    }
+    
+    func stopFlightRecorder() {
     }
 }
 

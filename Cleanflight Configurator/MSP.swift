@@ -66,8 +66,12 @@ class MSPParser : ProtocolHandler {
     
     var cliViewController: CLIViewController?
     
-    var _vehicle = MSPVehicle()
+    var _vehicle: MSPVehicle!
     private(set) var protocolRecognized = false
+    
+    init() {
+        _vehicle = MSPVehicle(self)
+    }
     
     func read(data: [UInt8]) {
         if cliViewController != nil {
@@ -225,6 +229,7 @@ class MSPParser : ProtocolHandler {
             if message.count < 16 {
                 return false
             }
+            /*
             var nMotors = 0
             for (var i = 0; i < 8; i++) {
                 motorData.throttle[i] = readUInt16(message, index: i*2)
@@ -234,6 +239,16 @@ class MSPParser : ProtocolHandler {
             }
             motorData.nMotors = nMotors
             pingMotorListeners()
+*/
+            var motors = [Int]()
+            for i in 0..<8 {
+                let v = readUInt16(message, index: i*2)
+                if v == 0 {
+                    break
+                }
+                motors.append(v)
+            }
+            vehicle.motors.value = motors
         
         case .MSP_UID:
             if message.count < 12 {
@@ -362,6 +377,8 @@ class MSPParser : ProtocolHandler {
             _vehicle.batteryAmps.value = Double(readInt16(message, index: 5)) / 100                // 1/100 A
             _vehicle.batteryConsumedMAh.value = readUInt16(message, index: 1)
             _vehicle.rssi.value = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
+            _vehicle.batteryVoltsWarning.value = misc.vbatWarningCellVoltage * Double(config.batteryCells)
+            _vehicle.batteryVoltsCritical.value = misc.vbatMinCellVoltage * Double(config.batteryCells)
             
         case .MSP_RC_TUNING:
             if message.count < 10 {
@@ -438,11 +455,6 @@ class MSPParser : ProtocolHandler {
             misc.vbatMaxCellVoltage = Double(message[offset++]) / 10; // 10-50
             misc.vbatWarningCellVoltage = Double(message[offset++]) / 10; // 10-50
             pingDataListeners()
-            
-            if settings.features.contains(.VBat) && config.batteryCells != 0 {
-                _vehicle.batteryVoltsWarning.value = misc.vbatWarningCellVoltage * Double(config.batteryCells)
-                _vehicle.batteryVoltsCritical.value = misc.vbatMinCellVoltage * Double(config.batteryCells)
-            }
             
         case .MSP_MOTOR_PINS:
             // Unused
@@ -1249,6 +1261,9 @@ class MSPParser : ProtocolHandler {
         sendMessage(.MSP_WP, data: [ timerSwitch ? 0 : 16  ])   // Altitude hold, mag hold
         if _vehicle.rcChannels.hasObservers() {
             sendMessage(.MSP_RC, data: nil)
+        }
+        if _vehicle.motors.hasObservers() {
+            sendMessage(.MSP_MOTOR, data: nil)
         }
         //NSLog("Status Requested")
         

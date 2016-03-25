@@ -16,6 +16,7 @@ class MAVLinkVehicle : Vehicle {
     var batteryRemaining = ObservableInt(100)
     
     var currentMissionItem = ObservableInt(0)
+    var missionItems = [APMNavigationCommand?]()
     
     var fenceBreached = ObservableBool(false)
     var fenceBreachType = EquatableObservable<FENCE_BREACH>(FENCE_BREACH_NONE)
@@ -23,14 +24,51 @@ class MAVLinkVehicle : Vehicle {
     var parametersById = [String : MAVLinkParameter]()
     var parametersLoaded = false
     
-    override init() {
+    var firmwareVersion = NillableObservableString()
+    
+    private let mavlink: MAVLink
+    
+    private var tlogDirectory: NSURL?
+    
+    init(mavlink: MAVLink) {
+        self.mavlink = mavlink
         super.init()
         
         flightMode.addObserver(self) { newValue in
             if newValue != .UNKNOWN {
                 VoiceMessage.theVoice.speak(newValue.spokenModeName())
+                
+                if (newValue == .LOITER || newValue == .POSHOLD) && self.position.value != nil {
+                    self.waypointPosition.value = Position3D(position2d: self.position.value!, altitude: self.altitude.value)
+                }
+                self.setCurrentMissionPositionAndAltitudeTargets()
             }
         }
+        
+        currentMissionItem.addObserver(self) { _ in
+            self.setCurrentMissionPositionAndAltitudeTargets()
+        }
+    }
+    
+    private func setCurrentMissionPositionAndAltitudeTargets() {
+        if self.flightMode.value == .AUTO && currentMissionItem.value < self.missionItems.count {
+            if let missionItem = self.missionItems[currentMissionItem.value] {
+                self.altitudeHold.value = missionItem.targetAltitude(self.altitudeHold.value ?? self.altitude.value)
+                
+                if self.waypointPosition.value != nil || self.position.value != nil {
+                    let targetPosition = missionItem.targetPosition(self.waypointPosition.value ?? Position3D(position2d: self.position.value!, altitude: self.altitude.value))
+                    self.waypointPosition.value = targetPosition ?? self.homePosition.value
+                }
+            }
+        }
+    }
+    
+    override func startFlightlogRecorder() {
+        TLogFile.openForWriting(flightLogDirectory, protocolHandler: mavlink)
+    }
+    
+    override func stopFlightRecorder() {
+        TLogFile.close(mavlink)
     }
 }
 

@@ -18,6 +18,7 @@ enum ArduCopterFlightMode : Int {
     case RTL = 6
     case CIRCLE = 7
     case LAND = 9
+    case OF_LOITER = 10     // Deprecated and removed in 3.3
     case DRIFT = 11
     case SPORT = 13
     case FLIP = 14
@@ -47,6 +48,8 @@ enum ArduCopterFlightMode : Int {
             return "CIRCLE"
         case .LAND:
             return "LAND"
+        case .OF_LOITER:
+            return "OF LOITER"
         case .DRIFT:
             return "DRIFT"
         case .SPORT:
@@ -62,7 +65,7 @@ enum ArduCopterFlightMode : Int {
         case .THROW:
             return "THROW"
         case .UNKNOWN:
-            return ""
+            return "?"
         }
     }
     
@@ -80,6 +83,8 @@ enum ArduCopterFlightMode : Int {
             return "Guided mode"
         case .LOITER:
             return "Loiter mode"
+        case .OF_LOITER:
+            return "O.F LOITER"
         case .RTL:
             return "Return to Launch mode"
         case .CIRCLE:

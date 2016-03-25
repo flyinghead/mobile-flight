@@ -85,6 +85,7 @@ class WifiViewController: UIViewController {
                 tcpComm.protocolHandler = protocolFinder
                 protocolFinder.recognizeProtocol(tcpComm)
             } else {
+                timeOutTimer.invalidate()
                 SVProgressHUD.showErrorWithStatus("Connection failed")
             }
         })

@@ -180,6 +180,13 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
                 self.stopwatchTimer = nil
             }
         })
+        vehicle.armingEvent.addListener(self) { event in
+            if event {
+                self.armedLabel.armingNow()
+            }
+        }
+        // Update armed time
+        stopwatchTimer(self)
         
         vehicle.pitchAngle.addObserver(self, listener: { newValue in
             self.attitudeIndicator.pitch = newValue
@@ -362,6 +369,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         hideNavBarTimer = nil
         
         vehicle.armed.removeObserver(self)
+        vehicle.armingEvent.removeListener(self)
         vehicle.pitchAngle.removeObserver(self)
         vehicle.rollAngle.removeObserver(self)
         vehicle.heading.removeObserver(self)
@@ -387,7 +395,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     }
     
     @objc
-    private func stopwatchTimer(timer: NSTimer) {
+    private func stopwatchTimer(sender: AnyObject) {
         let armedTime = Int(round(vehicle.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }

@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
     
     private var noDataReceived = false
-    private var armed = false
     
     private var stayAliveTimer: NSTimer!
     
@@ -58,26 +57,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         vehicle.rssi.addObserver(self, listener: { newValue in
             VoiceMessage.theVoice.checkAlarm(RSSILowAlarm())
         })
-        vehicle.armed.addObserver(self, listener: { newValue in
-            if newValue != self.armed {
-                self.armed = newValue
-                if self.armed {
-                    if self.protocolHandler.communicationEstablished && !self.protocolHandler.replaying && userDefaultEnabled(.RecordFlightlog) {
-                        self.startFlightlogRecording()
-                    }
-                }
-                else {
-                    self.stopFlightlogRecording()
-                }
-            }
-        })
         vehicle.gpsFix.addObserver(self, listener: { newValue in
             VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
         })
         vehicle.connected.addObserver(self, listener: { newValue in
             if !newValue {
                 self.stopTimer()
-                self.armed = false
                 
                 self.followMeActive = false
                 
@@ -94,6 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
                 self.dismissNoDataReceived()
             }
         })
+        userDefaultsDidChange(self)
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -158,25 +144,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
 
-    func startFlightlogRecording() {
-        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
-        let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
-        
-        FlightLogFile.openForWriting(fileURL, protocolHandler: protocolHandler)
-    }
-
-    func stopFlightlogRecording() {
-        FlightLogFile.close(protocolHandler)
-    }
-
     func userDefaultsDidChange(sender: AnyObject) {
-        // This will start or stop the flight log as needed if the user setting changed
-        if protocolHandler != nil && protocolHandler.communicationEstablished && !protocolHandler.replaying && armed {
-            if userDefaultEnabled(.RecordFlightlog) && protocolHandler.datalog == nil {
-                startFlightlogRecording()
-            } else if !userDefaultEnabled(.RecordFlightlog) && protocolHandler.datalog != nil {
-                stopFlightlogRecording()
-            }
+        if userDefaultEnabled(.RecordFlightlog) {
+            vehicle.enableFlightRecorder(NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0])
+        } else {
+            vehicle.disableFlightRecorder()
         }
     }
 

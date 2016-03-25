@@ -8,8 +8,9 @@
 
 import UIKit
 import MapKit
+import SVProgressHUD
 
-class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UseMAVLinkVehicle {
     var locationManager: CLLocationManager?
     
     @IBOutlet weak var mapView: MKMapView!
@@ -138,7 +139,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             if newValue != nil {
                 self.posHoldLocation = MKPointAnnotation()
                 self.posHoldLocation!.coordinate = newValue!.position2d.toCLLocationCoordinate2D()
-                self.posHoldLocation!.title = "Position Hold"
+                self.posHoldLocation!.title = "Current Waypoint"
                 self.mapView.addAnnotation(self.posHoldLocation!)
             }
         })
@@ -151,6 +152,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 self.stopwatchTimer = nil
             }
         })
+        // Update armed time
+        stopwatchTimer(self)
         
         vehicle.positions.addObserver(self, listener: { newValue in
             if newValue != nil {
@@ -206,6 +209,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         vehicle.lastKnownGoodPosition.removeObserver(self)
         vehicle.homePosition.removeObserver(self)
         vehicle.waypointPosition.removeObserver(self)
+        vehicle.armed.removeObserver(self)
         vehicle.positions.removeObserver(self)
 
         if vehicle is MSPVehicle {
@@ -224,7 +228,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     @objc
-    private func stopwatchTimer(timer: NSTimer) {
+    private func stopwatchTimer(sender: AnyObject) {
         let armedTime = Int(round(vehicle.totalArmedTime))
         timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }
@@ -265,18 +269,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         if vehicle.replaying.value {
             return
         }
-        if !(vehicle is MSPVehicle) {
-            return
-        }
-        if !mspvehicle.gpsHoldMode.value {
+        let point = sender.locationInView(mapView)
+        if vehicle is MSPVehicle && !mspvehicle.gpsHoldMode.value {
             let alertController = UIAlertController(title: "Waypoint", message: "Activate GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             alertController.popoverPresentationController?.sourceView = mapView
             presentViewController(alertController, animated: true, completion: nil)
-
+            
             return
         }
-        let point = sender.locationInView(mapView)
         if sender.state == .Began {
             let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
             
@@ -285,11 +286,30 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
             alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in
                 // TODO allow to set altitude
-                self.msp.sendWaypoint(16, latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
+                if self.vehicle is MSPVehicle {
+                    self.msp.sendWaypoint(16, latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0) { success in
+                        if !success {
+                            SVProgressHUD.showErrorWithStatus("Command failed")
+                        }
+                    }
+                } else {
+                    // MAVLink
+                    if self.mavlinkVehicle.flightMode.value != .GUIDED {
+                        self.mavlinkProtocolHandler.setFlightMode(.GUIDED)
+                    }
+                    let targetPosition = Position3D(position2d: Position(latitude: coordinates.latitude, longitude: coordinates.longitude), altitude: self.vehicle.altitude.value)
+                    self.mavlinkProtocolHandler.navigateToPosition(targetPosition.position2d) { success in
+                        if !success {
+                            SVProgressHUD.showErrorWithStatus("Command failed")
+                        } else {
+                            self.vehicle.waypointPosition.value = targetPosition
+                        }
+                    }
+                }
             }))
             alertController.popoverPresentationController?.sourceView = mapView
             presentViewController(alertController, animated: true, completion: nil)
-
+            
         }
     }
 }
