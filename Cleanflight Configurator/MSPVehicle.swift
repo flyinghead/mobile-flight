@@ -37,8 +37,19 @@ class MSPVehicle : Vehicle {
     
     var rcCommands: [Int]?
     
-    override init() {
+    private var msp: MSPParser
+    
+    init(_ msp: MSPParser) {
+        self.msp = msp
         super.init()
         self.rcChannelsNativeOrder = [ 0, 1, 3, 2 ]
+    }
+    
+    override func startFlightlogRecorder() {
+        FlightLogFile.openForWriting(flightLogDirectory, protocolHandler: msp)
+    }
+    
+    override func stopFlightRecorder() {
+        FlightLogFile.close(msp)
     }
 }

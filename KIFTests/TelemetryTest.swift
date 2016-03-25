@@ -92,13 +92,21 @@ class TelemetryTest : XCTestCase {
         connect()
 
         CleanflightSimulator.instance.voltage = 12.3
-        tester().waitForViewWithAccessibilityLabel("12.3")
+        let voltageLabel = tester().waitForViewWithAccessibilityLabel("12.3") as! UILabel
         
         CleanflightSimulator.instance.amps = 21.0
         tester().waitForViewWithAccessibilityLabel("21")
         
         CleanflightSimulator.instance.mAh = 982
         tester().waitForViewWithAccessibilityLabel("982")
+        
+        CleanflightSimulator.instance.voltage = 10.1
+        tester().waitForViewWithAccessibilityLabel("12.3")
+        XCTAssert(colorsEqual(voltageLabel.textColor, UIColor.yellowColor()))
+        
+        CleanflightSimulator.instance.voltage = 9.8
+        tester().waitForViewWithAccessibilityLabel("12.3")
+        XCTAssert(colorsEqual(voltageLabel.textColor, UIColor.redColor()))
     }
 
     func testFlightModes() {
@@ -191,23 +199,41 @@ class TelemetryTest : XCTestCase {
         let variometer = tester().waitForViewWithAccessibilityIdentifier("variometerIndicator") as! SimpleVerticalScale
         let speed = tester().waitForViewWithAccessibilityIdentifier("speedIndicator") as! VerticalScale
         
-        CleanflightSimulator.instance.roll = 15.0
-        CleanflightSimulator.instance.pitch = -22.0
-        CleanflightSimulator.instance.heading = 172
+        let sim = CleanflightSimulator.instance
+        sim.roll = 15.0
+        sim.pitch = -22.0
+        sim.heading = 172
         
-        CleanflightSimulator.instance.altitude = 32.7
-        CleanflightSimulator.instance.variometer = 4.5
+        sim.altitude = 32.7
+        sim.variometer = 4.5
         
-        CleanflightSimulator.instance.numSats = 5
-        CleanflightSimulator.instance.speed = 8.7
+        sim.numSats = 5
+        sim.speed = 8.7
         
-        tester().waitForTimeInterval(0.3)
+        sim.setMode(.BARO)
+        sim.altitudeHold = 35
+        sim.setMode(.MAG)
+        sim.headingHold = 180
+        
+        tester().waitForTimeInterval(0.6)
         XCTAssertEqual(attitude.roll, 15.0)
         XCTAssertEqual(attitude.pitch, -22.0)
         XCTAssertEqual(heading.heading, 172.0)
         XCTAssertEqual(altitude.currentValue, 32.7)
         XCTAssertEqual(variometer.currentValue, 4.5)
         XCTAssertEqualWithAccuracy(speed.currentValue, 8.7, accuracy: 0.1)
+        
+        XCTAssertEqual(altitude.bugs.count, 1)
+        XCTAssertEqual(altitude.bugs[0].value, 35)
+        XCTAssertEqual(heading.bugs.count, 1)
+        XCTAssertEqual(heading.bugs[0].value, 180)
+        
+        sim.unsetMode(.BARO)
+        sim.unsetMode(.MAG)
+        
+        tester().waitForTimeInterval(0.3)
+        XCTAssertEqual(altitude.bugs.count, 0)
+        XCTAssertEqual(heading.bugs.count, 0)
     }
     
     func testGPSSatsAndDTH() {

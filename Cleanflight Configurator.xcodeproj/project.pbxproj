@@ -24,6 +24,9 @@
 		AE1EECC81C99C38800F30535 /* MAVLinkMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
+		AE3503A71CA205A70044CE70 /* TLogReplayComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3503A61CA205A70044CE70 /* TLogReplayComm.swift */; };
+		AE3503A91CA323410044CE70 /* TLogFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3503A81CA323410044CE70 /* TLogFile.swift */; };
+		AE3503AB1CA461DF0044CE70 /* ByteArrayUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3503AA1CA461DF0044CE70 /* ByteArrayUtils.swift */; };
 		AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E45E21C50E96000E33E9F /* RoundGauge.swift */; };
 		AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E462D1C52C04300E33E9F /* RCStick.swift */; };
 		AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */; };
@@ -73,6 +76,7 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEBD44F51C9C8231002B4D28 /* APMNavigationCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD44F41C9C8231002B4D28 /* APMNavigationCommand.swift */; };
 		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AEC2A0D41C78F2E100EDF1D4 /* MAVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */; };
@@ -201,6 +205,9 @@
 		AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLinkMessageHandler.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
+		AE3503A61CA205A70044CE70 /* TLogReplayComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLogReplayComm.swift; sourceTree = "<group>"; };
+		AE3503A81CA323410044CE70 /* TLogFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLogFile.swift; sourceTree = "<group>"; };
+		AE3503AA1CA461DF0044CE70 /* ByteArrayUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArrayUtils.swift; sourceTree = "<group>"; };
 		AE3E45E21C50E96000E33E9F /* RoundGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundGauge.swift; sourceTree = "<group>"; };
 		AE3E462D1C52C04300E33E9F /* RCStick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RCStick.swift; sourceTree = "<group>"; };
 		AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVerticalScale.swift; sourceTree = "<group>"; };
@@ -249,6 +256,7 @@
 		AEBA64171C31538F00783ECE /* ReplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayViewController.swift; sourceTree = "<group>"; };
 		AEBA64191C332B3100783ECE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		AEBA641B1C342BD900783ECE /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		AEBD44F41C9C8231002B4D28 /* APMNavigationCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APMNavigationCommand.swift; sourceTree = "<group>"; };
 		AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLink.swift; sourceTree = "<group>"; };
 		AEC2A0D51C790F7E00EDF1D4 /* mavlink */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mavlink; path = "Cleanflight Configurator/mavlink"; sourceTree = "<group>"; };
 		AEC2A0D71C79B71400EDF1D4 /* InitiateMAVLinkHandshakeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitiateMAVLinkHandshakeExtension.swift; sourceTree = "<group>"; };
@@ -489,11 +497,11 @@
 				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
 				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
+				AE3503AA1CA461DF0044CE70 /* ByteArrayUtils.swift */,
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
 				AE1CB4821C70A71A003DB117 /* CLIViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
-				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
@@ -559,6 +567,7 @@
 				AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */,
 				AEBA64171C31538F00783ECE /* ReplayViewController.swift */,
 				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
+				AE3503A61CA205A70044CE70 /* TLogReplayComm.swift */,
 				AEBA64111C30A3B100783ECE /* WifiViewController.swift */,
 				AEBA640D1C3086CF00783ECE /* Connection.storyboard */,
 			);
@@ -579,6 +588,7 @@
 		AEFC51F91C94BAD800B7F903 /* MAVLink */ = {
 			isa = PBXGroup;
 			children = (
+				AEBD44F41C9C8231002B4D28 /* APMNavigationCommand.swift */,
 				AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */,
 				AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */,
 				AEC2A0D31C78F2E100EDF1D4 /* MAVLink.swift */,
@@ -586,6 +596,7 @@
 				AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */,
 				AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */,
 				AEFC52091C960FF600B7F903 /* ParameterList.swift */,
+				AE3503A81CA323410044CE70 /* TLogFile.swift */,
 				AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */,
 				AEFC52071C9607BC00B7F903 /* MAVLink.storyboard */,
 				AEFC520B1C9610FB00B7F903 /* ParameterMetaDataBackup.xml */,
@@ -596,6 +607,7 @@
 		AEFC52001C95B7ED00B7F903 /* MSP */ = {
 			isa = PBXGroup;
 			children = (
+				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AE72AB891C0F3DD50020C4B0 /* MSP.swift */,
 				AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */,
 				AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */,
@@ -922,6 +934,7 @@
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AE957D111C8F506600FA44BA /* CommSpeedMeter.swift in Sources */,
+				AE3503AB1CA461DF0044CE70 /* ByteArrayUtils.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
@@ -931,9 +944,11 @@
 				AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */,
 				AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */,
 				AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */,
+				AE3503A91CA323410044CE70 /* TLogFile.swift in Sources */,
 				AEFC52021C95B81600B7F903 /* MSPTelemetry.swift in Sources */,
 				AEFC51FB1C94BB3600B7F903 /* MAVLinkTelemetry.swift in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
+				AEBD44F51C9C8231002B4D28 /* APMNavigationCommand.swift in Sources */,
 				AE1EECC81C99C38800F30535 /* MAVLinkMessageHandler.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
@@ -942,6 +957,7 @@
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,
 				AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */,
+				AE3503A71CA205A70044CE70 /* TLogReplayComm.swift in Sources */,
 				AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */,
 				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
 				AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */,

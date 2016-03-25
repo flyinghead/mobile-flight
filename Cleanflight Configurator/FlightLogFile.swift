@@ -28,7 +28,11 @@ class FlightLogFile {
     static let Header1: [UInt8] = [ 77, 70, 76, 0 ]     // V1: flight stats use NSKeyedArchiver. Until 1.0.2
     static let Header2: [UInt8] = [ 77, 70, 76, 1 ]     // V2: flight stats loaded/saved "manually". Introduced in 1.1
     
-    class func openForWriting(fileURL: NSURL, protocolHandler: ProtocolHandler) {
+    class func openForWriting(directoryURL: NSURL, protocolHandler: ProtocolHandler) {
+        let df = NSDateFormatter()
+        df.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        
+        let fileURL = directoryURL.URLByAppendingPathComponent(String(format: "%@.rec", df.stringFromDate(NSDate())))
         do {
             if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
                 let file = try NSFileHandle(forUpdatingURL: fileURL)
