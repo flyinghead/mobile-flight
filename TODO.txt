@@ -1,16 +1,17 @@
 - for i in 0..<max
 - Cancel/Save/Refresh buttons in views -> use "system item" for UIBarButtonItem
-- BUG: UIApplication.idleTimer not enabled when disconnected from vehicle
-- BUG: set contentMode to .Redraw for all custom drawn controls
-- TCP/IP: Try UDP instead of TCP
+- BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 - BUG CLI issue: buffer overrun?
+- Move Settings into app
+- Imperial units: Should be able to choose between NM / kn and mile / mph
+- Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
+
+- TCP/IP: Try UDP instead of TCP
 - LED programming
 - RC Sticks: Add switches AUX 1-4, display configured modes
 - Failsafe: allow to choose configured mode for Aux channels set value
 - Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
 - Replay: When switching to other app or springboard, time counter should be paused
-- Imperial units: Should be able to choose between NM / kn and mile / mph
-- Move Settings into app
 - Use adaptive update frequency based on latency/comm bandwidth. See ardupilot/libraries/GCS_MAVLink/GCS_Common.cpp: 591
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
@@ -38,7 +39,6 @@
     + calibrate icon stolen on the web
 - Replay: visual indication of replay (pause/play, FF, REW ?)
 - When ARMED, disable Configuration, Motor testing, receiver config?, Modes?, Dataflash, CLI
-- Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
 - Map: Allow tapping on drone annotation, change annotation when GPS Fix lost (blink?)
 - Telemetry (map?): Display active profile, communication speed?
 - Map: Map type (sat, hybrid, map)
@@ -154,3 +154,4 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Tab bar navigation settings (icon order, More, ...) is not saved
 - Bluetooth: Module sometimes appears twice
 - Support for Red Bear Lab BLEMini modules
+- BUG: set contentMode to .Redraw for all custom drawn controls

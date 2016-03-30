@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="A7r-Ac-rau">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="A7r-Ac-rau">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -343,13 +343,13 @@
                                     <constraint firstItem="vPt-Fk-iKy" firstAttribute="leading" secondItem="Pzb-Ho-2cr" secondAttribute="trailing" id="xXu-ZL-NBY"/>
                                 </constraints>
                             </view>
-                            <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TE5-wJ-hyb" customClass="AttitudeIndicator2" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                            <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="TE5-wJ-hyb" customClass="AttitudeIndicator2" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="59" width="375" height="543"/>
                                 <subviews>
-                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-fW-yIn" customClass="HeadingStrip" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-fW-yIn" customClass="HeadingStrip" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
                                         <subviews>
-                                            <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="stf-M2-qLQ" customClass="TurnRateIndicator" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="stf-M2-qLQ" customClass="TurnRateIndicator" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="3" width="375" height="8"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
@@ -368,7 +368,7 @@
                                             <constraint firstAttribute="height" constant="40" id="whL-TB-e9r"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="SimpleVerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="SimpleVerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="352" y="40" width="24" height="503"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="variometerIndicator">
@@ -399,7 +399,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7CG-RW-afA" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="7CG-RW-afA" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="298" y="61" width="55" height="465"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="altitudeIndicator">
@@ -434,7 +434,7 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="positiveOnly" value="NO"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-zT-X9L" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-zT-X9L" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="-1" y="40" width="55" height="487"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="speedIndicator">
@@ -552,7 +552,7 @@
                                             <constraint firstAttribute="trailing" secondItem="oqQ-0h-fJh" secondAttribute="trailing" constant="8" id="zta-ah-zSw"/>
                                         </constraints>
                                     </view>
-                                    <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mtp-oQ-T8O" userLabel="LeftStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view hidden="YES" opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Mtp-oQ-T8O" userLabel="LeftStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="12" y="364" width="155" height="155"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
@@ -564,7 +564,7 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="verticalSpring" value="NO"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GWn-1s-XVz" userLabel="RightStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view hidden="YES" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="GWn-1s-XVz" userLabel="RightStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="208" y="364" width="155" height="155"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
@@ -823,7 +823,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j13-Ao-QcT" userLabel="Bottom instruments">
                                 <rect key="frame" x="-4" y="602" width="379" height="65"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vrA-Q3-v25" userLabel="Volts Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="vrA-Q3-v25" userLabel="Volts Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="18" y="4" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VOLTS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ZV-y8g" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
@@ -857,7 +857,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KU3-Qm-2Go" userLabel="Amps Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="KU3-Qm-2Go" userLabel="Amps Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="159" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AMPS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfQ-z5-fZv" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
@@ -891,7 +891,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wuh-Hv-O2R" userLabel="mAh Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="wuh-Hv-O2R" userLabel="mAh Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="301" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mAh" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-7o-dtq" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
