@@ -169,7 +169,7 @@ class ReplayViewController: UITableViewController {
             detailedRow = indexPath.row
             indexPaths.append(NSIndexPath(forRow: detailedRow, inSection: 0))
         }
-        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Middle)
+        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
     }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {

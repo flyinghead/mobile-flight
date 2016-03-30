@@ -1,3 +1,7 @@
+- for i in 0..<max
+- Cancel/Save/Refresh buttons in views -> use "system item" for UIBarButtonItem
+- BUG: UIApplication.idleTimer not enabled when disconnected from vehicle
+- BUG: set contentMode to .Redraw for all custom drawn controls
 - TCP/IP: Try UDP instead of TCP
 - BUG CLI issue: buffer overrun?
 - LED programming
@@ -7,7 +11,7 @@
 - Replay: When switching to other app or springboard, time counter should be paused
 - Imperial units: Should be able to choose between NM / kn and mile / mph
 - Move Settings into app
-- Use adaptive update frequency based on latency/comm bandwidth
+- Use adaptive update frequency based on latency/comm bandwidth. See ardupilot/libraries/GCS_MAVLink/GCS_Common.cpp: 591
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
 - Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
 - Mark inactive panels/gauge with red cross
