@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -409,15 +409,10 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Servo N" id="Vk1-yu-ZS9" userLabel="Navigation Item">
-                        <barButtonItem key="rightBarButtonItem" id="Hu9-Cr-tMc">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="UDc-YA-kbE">
-                                <rect key="frame" x="299" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh"/>
-                                <connections>
-                                    <action selector="refreshAction:" destination="MV4-3d-WHD" eventType="touchUpInside" id="hL9-Gk-qQ1"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Hu9-Cr-tMc">
+                            <connections>
+                                <action selector="refreshAction:" destination="MV4-3d-WHD" id="9pg-f2-OZ2"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
@@ -1944,25 +1939,15 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="PID Tuning" id="3o6-YK-wBJ">
-                        <barButtonItem key="leftBarButtonItem" id="XoU-dL-Pkv">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="V5u-Ni-3Fr">
-                                <rect key="frame" x="20" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh"/>
-                                <connections>
-                                    <action selector="cancelAction:" destination="Exb-KD-o8b" eventType="touchUpInside" id="uCo-Ye-nGi"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="XoU-dL-Pkv">
+                            <connections>
+                                <action selector="cancelAction:" destination="Exb-KD-o8b" id="7ql-RO-B9d"/>
+                            </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" id="pyP-BU-Cxc">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="de8-Wu-1Jw">
-                                <rect key="frame" x="520" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="saveAction:" destination="Exb-KD-o8b" eventType="touchUpInside" id="VVf-zP-FrR"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="pyP-BU-Cxc">
+                            <connections>
+                                <action selector="saveAction:" destination="Exb-KD-o8b" id="OgI-lM-Wl8"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -2389,15 +2374,10 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Configuration" id="o7Q-IY-i7H">
-                        <barButtonItem key="rightBarButtonItem" id="ODD-TD-0SH">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="sjk-9C-rnV">
-                                <rect key="frame" x="520" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh"/>
-                                <connections>
-                                    <action selector="refreshAction:" destination="tlO-Op-bKE" eventType="touchUpInside" id="p0w-Za-n3u"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="ODD-TD-0SH">
+                            <connections>
+                                <action selector="refreshAction:" destination="tlO-Op-bKE" id="LCZ-bU-0sJ"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -3137,25 +3117,15 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Modes" id="dIj-GF-8b5">
-                        <barButtonItem key="leftBarButtonItem" id="5wu-V7-hNE">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4vg-Ez-Glj">
-                                <rect key="frame" x="20" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh"/>
-                                <connections>
-                                    <action selector="cancelAction:" destination="bjK-r5-dLz" eventType="touchUpInside" id="Czb-g5-8ey"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="5wu-V7-hNE">
+                            <connections>
+                                <action selector="cancelAction:" destination="bjK-r5-dLz" id="rqS-AW-6Sv"/>
+                            </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" id="pXM-bQ-cVF">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bGb-3O-dMu">
-                                <rect key="frame" x="520" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="saveAction:" destination="bjK-r5-dLz" eventType="touchUpInside" id="pXK-uS-sXg"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="pXM-bQ-cVF">
+                            <connections>
+                                <action selector="saveAction:" destination="bjK-r5-dLz" id="5Mp-rv-mOA"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                 </tableViewController>
@@ -3391,25 +3361,15 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="CLI" id="uBu-yb-NmY">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="4vu-7l-XzT">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="vYf-ml-K5D">
-                                <rect key="frame" x="20" y="7" width="133" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Exit"/>
-                                <connections>
-                                    <action selector="exitAction:" destination="B4e-8j-xLV" eventType="touchUpInside" id="QiJ-mf-vA9"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" style="plain" systemItem="stop" id="4vu-7l-XzT">
+                            <connections>
+                                <action selector="exitAction:" destination="B4e-8j-xLV" id="z7z-vf-wcU"/>
+                            </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="fbA-GD-DyB">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cvw-OW-3FW">
-                                <rect key="frame" x="447" y="7" width="133" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="saveAction:" destination="B4e-8j-xLV" eventType="touchUpInside" id="bCM-sr-i3S"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="save" id="fbA-GD-DyB">
+                            <connections>
+                                <action selector="saveAction:" destination="B4e-8j-xLV" id="wUm-Dk-LvL"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>

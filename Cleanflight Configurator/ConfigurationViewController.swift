@@ -11,8 +11,6 @@ import DownPicker
 import SVProgressHUD
 
 class ConfigurationViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
-    @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var mixerTypeTextField: UITextField!
     @IBOutlet weak var mixerTypeView: UIImageView!
     @IBOutlet weak var motorStopField: UILabel!
@@ -205,8 +203,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         newSettings!.boardAlignRoll = Int(boardRollField.value)
         newSettings!.boardAlignYaw = Int(boardYawField.value)
         
-        saveButton.enabled = false
-        saveButton.setTitle("Saving...", forState: .Disabled)
+        navigationItem.rightBarButtonItem!.enabled = false
         
         saveFeatureSwitchValue(rssiSwitch, feature: .RssiAdc)
         saveFeatureSwitchValue(inFlightCalSwitch, feature: .InflightCal)
@@ -287,7 +284,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                     if success {
                         // Wait 1500 ms
                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-                            self.saveButton.enabled = true
+                            self.navigationItem.rightBarButtonItem!.enabled = true
                             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                             appDelegate.startTimer()
                             // Refetch information from FC
@@ -306,7 +303,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     func saveConfigFailed() {
         dispatch_async(dispatch_get_main_queue(), {
             self.showError("Save failed")
-            self.saveButton.enabled = true
+            self.navigationItem.rightBarButtonItem!.enabled = true
         })
     }
     
@@ -327,11 +324,6 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func mixerTypeChanged(sender: AnyObject) {
         mixerTypeView.image = MultiTypes.getImage(mixerTypePicker!.selectedIndex + 1)
-        enableSaveAndCancel()
-    }
-    private func enableSaveAndCancel() {
-        saveButton.enabled = true
-        cancelButton.enabled = true
     }
     
     func receivedSettingsData() {

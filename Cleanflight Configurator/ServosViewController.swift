@@ -7,13 +7,25 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ServosViewController: UITableViewController {
 
-    private func initialFetch() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "refreshServoConfig", forControlEvents: .ValueChanged)
+    }
+
+    @objc
+    private func refreshServoConfig() {
         msp.sendMessage(.MSP_SERVO_CONFIGURATIONS, data: nil, retry: 4, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
+                if !success {
+                    SVProgressHUD.showErrorWithStatus("Error fetching servo configuration")
+                }
             })
         })
 
@@ -22,7 +34,7 @@ class ServosViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        initialFetch()
+        refreshServoConfig()
     }
 
     // MARK: - Table view data source
@@ -55,41 +67,6 @@ class ServosViewController: UITableViewController {
         
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
     // MARK: - Navigation
 
