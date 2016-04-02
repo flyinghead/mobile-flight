@@ -1992,6 +1992,35 @@
             </objects>
             <point key="canvasLocation" x="1641" y="1952"/>
         </scene>
+        <!--AppSettings-->
+        <scene sceneID="TZW-Qx-1ZP">
+            <objects>
+                <tableViewController title="App Settings" id="wx2-y7-sSg" userLabel="AppSettings" customClass="AppSettingsViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="FRM-Rr-xaJ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="cLG-yh-pT4">
+                                <rect key="frame" x="0.0" y="114" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cLG-yh-pT4" id="CSB-8Y-Shc">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="wx2-y7-sSg" id="eWs-VP-7QN"/>
+                            <outlet property="delegate" destination="wx2-y7-sSg" id="13I-OY-nwd"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="App Settings" id="plk-gL-haR"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M08-HW-YJy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3124" y="1566"/>
+        </scene>
         <!--Receiver-->
         <scene sceneID="o7N-YC-0ZO">
             <objects>
@@ -2794,6 +2823,7 @@
                         <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
                         <segue destination="h5o-Xs-W7R" kind="relationship" relationship="viewControllers" id="LQz-sC-iMm"/>
                         <segue destination="LEP-hN-6U2" kind="relationship" relationship="viewControllers" id="Aef-lF-GaZ"/>
+                        <segue destination="2XE-6t-X30" kind="relationship" relationship="viewControllers" id="6WR-7g-jmh"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -3575,8 +3605,28 @@
             </objects>
             <point key="canvasLocation" x="68" y="2151"/>
         </scene>
+        <!--App Settings Navigation-->
+        <scene sceneID="k6x-DE-cbR">
+            <objects>
+                <navigationController title="App Settings" automaticallyAdjustsScrollViewInsets="NO" id="2XE-6t-X30" userLabel="App Settings Navigation" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" tag="14" title="App Settings" image="Config" selectedImage="Config" id="Zg6-PJ-tAW"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="WyB-wo-5MJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="wx2-y7-sSg" kind="relationship" relationship="rootViewController" id="ocy-mL-UCv"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zgv-7C-9O2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2312" y="1566"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="Config" width="30" height="30"/>
         <image name="GPS" width="30" height="30"/>
         <image name="Modes" width="30" height="30"/>
         <image name="Motor" width="30" height="30"/>

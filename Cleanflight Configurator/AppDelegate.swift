@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: kIASKAppSettingChanged, object: nil)
 
         stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: "stayAliveTimer:", userInfo: nil, repeats: true)
         
@@ -143,7 +144,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
     }
 
     func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {

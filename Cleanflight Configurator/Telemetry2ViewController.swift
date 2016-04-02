@@ -94,14 +94,24 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         dthLabel.text = ""
         
         voltsValueLabel.displayUnit = false
-        
-        setInstrumentsUnitSystem()
     }
     
     func setInstrumentsUnitSystem() {
-        speedScale.scale = useImperialUnits() ? SpeedScale * 1.852 : SpeedScale
-        altitudeScale.scale = useImperialUnits() ? AltScale * 2.54 * 12 / 100 : AltScale
-        if useImperialUnits() {
+        switch selectedUnitSystem() {
+        case .Aviation:
+            speedScale.scale = SpeedScale * METER_PER_NM / 1000
+            speedUnitLabel.text = "kn"
+        case .Imperial:
+            speedScale.scale = SpeedScale * METER_PER_MILE / 1000
+            speedUnitLabel.text = "mph"
+        default:
+            speedScale.scale = SpeedScale
+            speedUnitLabel.text = "km/h"
+        }
+
+        let metricUnits = selectedUnitSystem() == .Metric
+        altitudeScale.scale = !metricUnits ? AltScale / FEET_PER_METER : AltScale
+        if !metricUnits {
             altitudeScale.mainTicksInterval = 10
             altitudeScale.subTicksInterval = 5
             altitudeScale.subSubTicksInterval = 1
@@ -110,7 +120,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             variometerScale.subTicksInterval = 0
             variometerScale.subSubTicksInterval = 0.2
             
-            speedUnitLabel.text = "kn"
             altitudeUnitLabel.text = "ft"
         } else {
             altitudeScale.mainTicksInterval = 1
@@ -121,10 +130,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             variometerScale.subTicksInterval = 0.5
             variometerScale.subSubTicksInterval = 0.1
             
-            speedUnitLabel.text = "km/h"
             altitudeUnitLabel.text = "m"
         }
-        variometerScale.scale = useImperialUnits() ? VarioScale * 2.54 * 12 / 100 : VarioScale
+        variometerScale.scale = !metricUnits ? VarioScale / FEET_PER_METER : VarioScale
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -153,6 +161,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         viewDisappeared = false
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: kIASKAppSettingChanged, object: nil)
+        setInstrumentsUnitSystem()
         
         followMeButton.enabled = false
     }
@@ -198,6 +208,26 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         appDelegate.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
+    }
+    
+    private func convertAltitude(value: Double) -> Double {
+        if selectedUnitSystem() == .Metric {
+            return value
+        } else {
+            return value * FEET_PER_METER
+        }
+    }
+    
+    private func convertSpeed(value: Double) -> Double {
+        switch selectedUnitSystem() {
+        case .Aviation:
+            return value * 1000 / METER_PER_NM
+        case .Imperial:
+            return value * 1000 / METER_PER_NM
+        default:
+            return value
+        }
     }
     
     func receivedSensorData() {
@@ -212,7 +242,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         let settings = Settings.theSettings
         altitudeScale.bugs.removeAll()
         if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
-            altitudeScale.bugs.append((value: sensorData.altitudeHold, UIColor.cyanColor()))
+            altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyanColor()))
             altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
         } else {
             altHoldIndicator.text = ""
@@ -230,9 +260,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         // Use baro/sonar altitude if present, otherwise use GPS altitude
         let config = Configuration.theConfig
         if config.isBarometerActive() || config.isSonarActive() {
-            altitudeScale.currentValue = sensorData.altitude
+            altitudeScale.currentValue = convertAltitude(sensorData.altitude)
         }
-        variometerScale.currentValue = sensorData.variometer
+        variometerScale.currentValue = convertAltitude(sensorData.variometer)   // m -> ft <=> m/s -> ft/s
     }
     
     func receivedData() {
@@ -325,7 +355,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
                 gpsLabel.textColor = UIColor.yellowColor()
             }
             dthLabel.text = formatDistance(Double(gpsData.distanceToHome))
-            speedScale.currentValue = gpsData.speed
+            speedScale.currentValue = convertSpeed(gpsData.speed)
             
             followMeButton.enabled = !msp.replaying
         } else {
@@ -341,7 +371,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         }
         let config = Configuration.theConfig
         if !config.isBarometerActive() && !config.isSonarActive()  {
-            altitudeScale.currentValue = Double(gpsData.altitude)
+            altitudeScale.currentValue = convertAltitude(Double(gpsData.altitude))
         }
     }
 

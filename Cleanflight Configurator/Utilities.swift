@@ -65,25 +65,39 @@ func formatWithUnit(reading: Double, unit: String) -> String {
     }
 }
 
+let FEET_PER_METER = 100.0 / 2.54 / 12
+let METER_PER_MILE = 1609.344
+let METER_PER_NM = 1852.0
+
 func formatDistance(meters: Double) -> String {
-    if useImperialUnits() {
-        if meters >= 1852 {
-            // Use nautical mile
-            return formatWithUnit(meters / 1852, unit: "NM")
+    switch selectedUnitSystem() {
+    case .Imperial:
+        if meters >= METER_PER_MILE {
+            // Use statute mile
+            return formatWithUnit(meters / METER_PER_MILE, unit: "mi")
         } else {
             // Use feet
-            return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+            return formatWithUnit(meters * FEET_PER_METER, unit: "ft")
         }
-    } else {
+        
+    case .Aviation:
+        if meters >= METER_PER_NM {
+            // Use nautical mile
+            return formatWithUnit(meters / METER_PER_NM, unit: "NM")
+        } else {
+            // Use feet
+            return formatWithUnit(meters * FEET_PER_METER, unit: "ft")
+        }
+    default:
         // Meters
         return formatWithUnit(meters, unit: "m")
     }
 }
 
 func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
-    if useImperialUnits() {
+    if selectedUnitSystem() != .Metric {
         // Feet
-        return formatWithUnit(meters * 100 / 2.54 / 12, unit: appendUnit ? "ft" : "")
+        return formatWithUnit(meters * FEET_PER_METER, unit: appendUnit ? "ft" : "")
     } else {
         // Meters
         return formatWithUnit(meters, unit: appendUnit ? "m" : "")
@@ -91,25 +105,17 @@ func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
 }
 
 func formatSpeed(kmh: Double) -> String {
-    if useImperialUnits() {
+    switch selectedUnitSystem() {
+    case .Imperial:
+        // mile/h
+        return formatWithUnit(kmh * 1000 / METER_PER_MILE, unit: "mph")
+    case .Aviation:
         // Knots
-        return formatWithUnit(kmh / 1.852, unit: "kn")
-    } else {
-        // Meters
+        return formatWithUnit(kmh * 1000 / METER_PER_NM, unit: "kn")
+    default:
+        // km/h
         return formatWithUnit(kmh, unit: "km/h")
     }
-}
-
-func useImperialUnits() -> Bool {
-    switch userDefaultAsString(.UnitSystem) {
-    case "imperial":
-        return true
-    case "metric":
-        return false
-    default:
-        return !(NSLocale.currentLocale().objectForKey(NSLocaleUsesMetricSystem) as? Bool ?? true)
-    }
-    
 }
 
 func constrain(n: Double, min minimum: Double, max maximum: Double) -> Double {

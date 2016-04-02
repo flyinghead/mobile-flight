@@ -25,7 +25,7 @@ class BarometerViewController: BaseSensorViewController {
         leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
 
-        if useImperialUnits() {
+        if selectedUnitSystem() != .Metric {
             leftAxis.customAxisMax = 10.0
             leftAxis.customAxisMin = 0.0
         } else {
@@ -39,6 +39,7 @@ class BarometerViewController: BaseSensorViewController {
         chartView.leftAxis.valueFormatter = nf
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: kIASKAppSettingChanged, object: nil)
         userDefaultsDidChange(self)
     }
 
@@ -85,7 +86,7 @@ class BarometerViewController: BaseSensorViewController {
     func updateSensorData() {
         let sensorData = SensorData.theSensorData
         
-        let value = useImperialUnits() ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
+        let value = selectedUnitSystem() != .Metric ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
@@ -98,6 +99,6 @@ class BarometerViewController: BaseSensorViewController {
     }
     
     func userDefaultsDidChange(sender: AnyObject) {
-        titleLabel.text = useImperialUnits() ? "Barometer - feet" : "Barometer - meters"
+        titleLabel.text = selectedUnitSystem() != .Metric ? "Barometer - feet" : "Barometer - meters"
     }
 }

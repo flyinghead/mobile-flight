@@ -12,7 +12,7 @@
 			<key>Title</key>
 			<string>Flight Log</string>
 			<key>FooterText</key>
-			<string>When enabled, flight data such as altitude and location will be recorded and can be later played back.</string>
+			<string>When enabled, all received telemetry data while the aircraft is armed will be recorded and can be replayed afterwards.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -54,12 +54,14 @@
 				<string>default</string>
 				<string>metric</string>
 				<string>imperial</string>
+				<string>aviation</string>
 			</array>
 			<key>Titles</key>
 			<array>
 				<string>Locale Default</string>
 				<string>Metric</string>
 				<string>Imperial</string>
+				<string>Aviation</string>
 			</array>
 		</dict>
 		<dict>

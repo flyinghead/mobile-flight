@@ -8,6 +8,13 @@
 
 import Foundation
 
+enum UnitSystem {
+    case Default
+    case Metric
+    case Imperial
+    case Aviation
+}
+
 enum UserDefault : String {
     case RecordFlightlog = "record_flightlog"
     case ConnectionLostAlarm = "connection_lost_alarm"
@@ -59,4 +66,18 @@ func userDefaultAsString(userDefault: UserDefault) -> String {
 
 func userDefaultAsInt(userDefault: UserDefault) -> Int {
     return NSUserDefaults.standardUserDefaults().integerForKey(userDefault.rawValue)
+}
+
+func selectedUnitSystem() -> UnitSystem {
+    switch userDefaultAsString(.UnitSystem) {
+    case "imperial":
+        return .Imperial
+    case "metric":
+        return .Metric
+    case "aviation":
+        return .Aviation
+    default:
+        return (NSLocale.currentLocale().objectForKey(NSLocaleUsesMetricSystem) as? Bool ?? true) ? .Metric : .Imperial
+    }
+    
 }
