@@ -183,7 +183,6 @@ class VoiceMessage: NSObject, FlightDataListener, AVSpeechSynthesizerDelegate {
         if speeches.contains(speech) {
             return
         }
-        NSLog("Speak %@", speech)
         speeches.insert(speech)
         
         let utterance = AVSpeechUtterance(string: speech)
@@ -214,7 +213,6 @@ class VoiceMessage: NSObject, FlightDataListener, AVSpeechSynthesizerDelegate {
     // MARK: AVSpeechSynthesizerDelegate
     
     func speechSynthesizer(synthesizer: AVSpeechSynthesizer, didStartSpeechUtterance utterance: AVSpeechUtterance) {
-        let removed = speeches.remove(utterance.speechString)
-        NSLog("Started speaking %@", removed ?? "nil")
+        speeches.remove(utterance.speechString)
     }
 }

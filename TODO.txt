@@ -1,3 +1,4 @@
+- BUG: Many x3 icons are actually x4
 - BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 - BUG CLI issue: buffer overrun?
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
