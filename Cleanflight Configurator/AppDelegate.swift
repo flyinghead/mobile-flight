@@ -195,6 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     func communicationStatus(status: Bool) {
         if !status {
+            VoiceMessage.theVoice.stopAll()
             stopTimer()
             armed = false
             _totalArmedTime = 0.0

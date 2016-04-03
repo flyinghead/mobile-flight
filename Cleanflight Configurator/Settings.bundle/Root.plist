@@ -68,9 +68,9 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Alarms</string>
+			<string>Voice Alerts</string>
 			<key>FooterText</key>
-			<string>Select which voice alarms are active.</string>
+			<string>Select which voice alerts are active.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -109,6 +109,16 @@
 			<string>RSSI Low</string>
 			<key>File</key>
 			<string>RSSIAlarm</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Flight Modes</string>
+			<key>Key</key>
+			<string>flight_mode_alert</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>

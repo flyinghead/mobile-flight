@@ -25,6 +25,7 @@ enum UserDefault : String {
     case RSSIAlarmLow = "rssialarm_low"
     case RSSIAlarmCritical = "rssialarm_critical"
     case DisableIdleTimer = "disable_idle_timer"
+    case FlightModeAlert = "flight_mode_alert"
 }
 
 func registerInitialUserDefaults(plistFile: String)  -> [String:AnyObject] {
