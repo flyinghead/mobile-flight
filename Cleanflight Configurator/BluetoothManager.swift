@@ -31,12 +31,18 @@ struct BluetoothPeripheral {
 
 class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     // HM-10,11... series
-    let HM10ServiceUUID = "FFE0"
-    let HM10CharacteristicUUID = "FFE1"
+    static let HM10ServiceUUID = "FFE0"
+    static let HM10CharacteristicUUID = "FFE1"
     // Red Bear Lab BLEMini
-    let RBLServiceUUID = "713D0000-503E-4C75-BA94-3148F18D941E"
-    let RBLCharTxUUID = "713D0002-503E-4C75-BA94-3148F18D941E"
-    let RBLCharRxUUID = "713D0003-503E-4C75-BA94-3148F18D941E"
+    static let RBLServiceUUID = "713D0000-503E-4C75-BA94-3148F18D941E"
+    static let RBLCharTxUUID = "713D0002-503E-4C75-BA94-3148F18D941E"
+    static let RBLCharRxUUID = "713D0003-503E-4C75-BA94-3148F18D941E"
+    // Amp'ed RF BT43H (TBS Crossfire TX)
+    static let BT43ServiceUUID = "26CC3FC0-6241-F5B4-5347-63A3097F6764"
+    static let BT43CharacteristicUUID = "BF8796F1-64F7-70B5-1E41-09BB46D79100"
+    
+    let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID), CBUUID(string: BT43ServiceUUID)]
+    let characteristicUUIDs = [CBUUID(string: HM10CharacteristicUUID), CBUUID(string: RBLCharTxUUID), CBUUID(string: RBLCharRxUUID), CBUUID(string: BT43CharacteristicUUID)]
     
     let btQueue: dispatch_queue_t
     let manager: CBCentralManager
@@ -70,7 +76,6 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             scanningRequested = false
             NSTimer.scheduledTimerWithTimeInterval(scanningDuration, target:self, selector:"scanTimer", userInfo: nil, repeats: false)
             
-            let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
             manager.scanForPeripheralsWithServices(serviceUUIDs, options: nil)
         }
     }
@@ -113,7 +118,6 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         activePeripheral = peripheral
         activePeripheral?.delegate = self
         
-        let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
         activePeripheral?.discoverServices(serviceUUIDs)
         
         NSLog("Connected to device %@", peripheral.name!)
@@ -143,7 +147,6 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         } else {
             NSLog("Discover services for device %@ succeeded: %d services", peripheral.name!, peripheral.services!.count)
             let service = peripheral.services![0]
-            let characteristicUUIDs = [CBUUID(string: HM10CharacteristicUUID), CBUUID(string: RBLCharTxUUID), CBUUID(string: RBLCharRxUUID)]
             peripheral.discoverCharacteristics(characteristicUUIDs, forService: service)
         }
     }
@@ -152,9 +155,9 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         if error == nil {
             NSLog("Discovered characteristics for service %@", service.UUID.UUIDString)
             var characteristic: CBCharacteristic!
-            if service.UUID.UUIDString == RBLServiceUUID {
+            if service.UUID.UUIDString == BluetoothManager.RBLServiceUUID {
                 for char in service.characteristics! {
-                    if char.UUID.UUIDString == RBLCharTxUUID {
+                    if char.UUID.UUIDString == BluetoothManager.RBLCharTxUUID {
                         characteristic = char
                     }
                 }
@@ -173,7 +176,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     
     func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         if error == nil {
-            //NSLog("Received %@", characteristic.value!)
+            //NSLog("didUpdateValueForCharacteristic %@", characteristic.value!)
             let nsdata = characteristic.value!
             var data = [UInt8](count: nsdata.length, repeatedValue: 0)
             nsdata.getBytes(&data, length:nsdata.length)
@@ -215,9 +218,9 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         }
         let service = activePeripheral!.services![0]
         var characteristic: CBCharacteristic!
-        if service.UUID.UUIDString == RBLServiceUUID {
+        if service.UUID.UUIDString == BluetoothManager.RBLServiceUUID {
             for char in service.characteristics! {
-                if char.UUID.UUIDString == RBLCharRxUUID {
+                if char.UUID.UUIDString == BluetoothManager.RBLCharRxUUID {
                     characteristic = char
                     break
                 }
