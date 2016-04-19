@@ -10,10 +10,10 @@ import UIKit
 import SVProgressHUD
 
 class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
-    let btManager : BluetoothManager
-    var peripheral: BluetoothPeripheral
-    let msp: MSPParser
-    let btQueue: dispatch_queue_t
+    private let btManager : BluetoothManager
+    private var peripheral: BluetoothPeripheral
+    private let msp: MSPParser
+    private let btQueue: dispatch_queue_t
     
     private var _closed = false
     private var _connected = true
@@ -29,14 +29,32 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     
     func flushOut() {
         dispatch_async(btQueue, {
+            var packedData = [UInt8]()
+            
+
             while true {
                 let data = self.msp.nextOutputMessage()
-                if data == nil {
+
+                if data != nil {
+                    packedData.appendContentsOf(data!)
+                }
+                if packedData.count >= 20 || (data == nil && !packedData.isEmpty) {
+                    var remainingData: ArraySlice<UInt8>?
+                    if packedData.count > 20 {
+                        remainingData = packedData.suffix(packedData.count - 20)
+                        packedData = [UInt8](packedData[0..<20])
+                    }
+
+                    self.btManager.writeData(self.peripheral, data: packedData)
+                    if remainingData != nil {
+                        packedData = [UInt8](remainingData!)
+                    } else {
+                        packedData.removeAll()
+                    }
+                }
+                if data == nil && packedData.isEmpty {
                     break
                 }
-                
-                //NSLog("BluetoothComm.flushOut %d", data[4])
-                self.btManager.writeData(self.peripheral, data: data!)
             }
         })
     }
