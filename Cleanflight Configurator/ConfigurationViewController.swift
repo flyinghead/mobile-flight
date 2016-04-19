@@ -217,7 +217,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         saveFeatureSwitchValue(blackboxSwitch, feature: .Blackbox)
         saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
         
-        SVProgressHUD.showWithStatus("Saving settings")
+        SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
