@@ -187,7 +187,7 @@ class VoiceMessage: NSObject, FlightDataListener, AVSpeechSynthesizerDelegate {
         
         let utterance = AVSpeechUtterance(string: speech)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.15
+        utterance.rate = (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 9.0 ? 0.52 : 0.15
         synthesizer.speakUtterance(utterance)
     }
     

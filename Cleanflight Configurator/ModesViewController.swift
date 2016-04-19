@@ -121,7 +121,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
 
     override func viewWillAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         
         msp.addDataListener(self)
         
@@ -131,7 +131,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
         
