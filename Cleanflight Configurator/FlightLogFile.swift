@@ -120,7 +120,11 @@ class FlightLogFile {
             var data = file.readDataOfLength(4)
             data.getBytes(&aircraftDataSize, length: 4)
             data = file.readDataOfLength(Int(aircraftDataSize))
-            AllAircraftData.allAircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! AllAircraftData
+            if let aircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? AllAircraftData {
+                AllAircraftData.allAircraftData = aircraftData
+            } else {
+                throw NSError(domain: "com.flyinghead", code: 0, userInfo: nil)
+            }
         } else {
             file.seekToFileOffset(0)
         }
