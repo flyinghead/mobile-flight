@@ -8,13 +8,12 @@
 
 import UIKit
 
-class ReceiverViewController: UITableViewController, FlightDataListener {
+class ReceiverViewController: UITableViewController, FlightDataListener, MSPCommandSender {
     
     var colors = [UIColor(hex6: 0xf1453d), UIColor(hex6: 0x673fb4), UIColor(hex6: 0x2b98f0), UIColor(hex6: 0x1fbcd2),
         UIColor(hex6: 0x159588), UIColor(hex6: 0x50ae55), UIColor(hex6: 0xcdda49), UIColor(hex6: 0xfdc02f),
         UIColor(hex6: 0xfc5830), UIColor(hex6: 0x785549), UIColor(hex6: 0x9e9e9e), UIColor(hex6: 0x617d8a),
         UIColor(hex6: 0xcf267d), UIColor(hex6: 0x7a1464), UIColor(hex6: 0x3a7a14), UIColor(hex6: 0x14407a)]
-    var timer: NSTimer?
     
     func receivedReceiverData() {
         tableView.reloadData()
@@ -23,12 +22,9 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
         msp.addDataListener(self)
-        
-        if (timer == nil) {
-            // Cleanflight/chrome uses configurable interval (default 50ms)
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -36,14 +32,14 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
         
         msp.removeDataListener(self)
         
-        timer?.invalidate()
-        timer = nil
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
     
-    func timerDidFire(sender: AnyObject) {
+    func sendMSPCommands() {
         msp.sendMessage(.MSP_RC, data: nil)
     }
-    
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }

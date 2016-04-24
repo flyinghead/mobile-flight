@@ -43,7 +43,7 @@ class SonarViewController: BarometerViewController {
         }
     }
 
-    override func timerDidFire(sender: AnyObject) {
+    override func sendMSPCommands() {
         msp.sendMessage(.MSP_SONAR, data: nil)
     }
 

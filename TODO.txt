@@ -1,8 +1,8 @@
-- BUG: Many x3 icons are actually x4
+- AppDelegate.stayAliveTimer should probably be invalidated when switching to background and !armed
 - BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 - BUG CLI issue: buffer overrun?
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-
+- Background mode: app can receive and send data via BT even when in background. Need to keep the AppDelegate timer running (only when armed) when entering background. See https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html
 - for i in 0..<max
 - TCP/IP: Try UDP instead of TCP
 - LED programming
@@ -156,4 +156,6 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - Cancel/Save/Refresh buttons in views -> use "system item" for UIBarButtonItem
 - Move Settings into app
 - Imperial units: Should be able to choose between NM / kn and mile / mph
+- BUG: Always put a space between number and unit
+- BUG: Many x3 icons are actually x4
 

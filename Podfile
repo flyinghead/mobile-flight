@@ -20,3 +20,12 @@ target 'KIFTests', :exclusive => true do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']
     pod 'KIF/IdentifierTests', :configurations => ['Debug']
 end
+
+# Fix for "does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64"
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['ENABLE_BITCODE'] = 'NO'
+        end
+    end
+end

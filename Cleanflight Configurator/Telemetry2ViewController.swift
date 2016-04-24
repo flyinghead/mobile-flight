@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
+class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider, MSPCommandSender {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -58,7 +58,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     var hideNavBarTimer: NSTimer?
     var viewDisappeared = false
-    var rcTimer: NSTimer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,19 +148,18 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         startNavBarTimer()
         
-        startRcTimerIfNeeded()
-        
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
         if showRCSticksButton.selected && actingRC {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.rcCommandsProvider = self
         }
         viewDisappeared = false
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: kIASKAppSettingChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
         setInstrumentsUnitSystem()
         
         followMeButton.enabled = false
@@ -175,7 +173,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         if let tabBarController = parentViewController as? UITabBarController {
             if !tabBarController.tabBar.hidden {
                 hideNavBarTimer?.invalidate()
-                hideNavBarTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "hideNavBar:", userInfo: nil, repeats: false)
+                hideNavBarTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(Telemetry2ViewController.hideNavBar(_:)), userInfo: nil, repeats: false)
             }
         }
     }
@@ -203,9 +201,9 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         msp.removeDataListener(self)
         
-        stopRcTimer()
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
+        appDelegate.removeMSPCommandSender(self)
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
@@ -224,7 +222,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         case .Aviation:
             return value * 1000 / METER_PER_NM
         case .Imperial:
-            return value * 1000 / METER_PER_NM
+            return value * 1000 / METER_PER_MILE
         default:
             return value
         }
@@ -405,11 +403,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             rightStick.userInteractionEnabled = true
         } else {
             if showRCSticksButton.selected {
-                startRcTimerIfNeeded()
                 leftStick.userInteractionEnabled = false
                 rightStick.userInteractionEnabled = false
-            } else {
-                stopRcTimer()
             }
         }
     }
@@ -441,22 +436,14 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
         rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
     }
-    func startRcTimerIfNeeded() {
-        if showRCSticksButton.selected && !actingRC {
-            rcTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "rcTimerDidFire:", userInfo: nil, repeats: true)
-        }
-    }
-    
-    func stopRcTimer() {
-        rcTimer?.invalidate()
-        rcTimer = nil
-    }
-    
-    func rcTimerDidFire(timer: NSTimer) {
-        msp.sendMessage(.MSP_RC, data: nil)
-    }
     
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
+    }
+    
+    func sendMSPCommands() {
+        if showRCSticksButton.selected && !actingRC {
+            msp.sendMessage(.MSP_RC, data: nil)
+        }
     }
 }

@@ -10,8 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
-    var fastTimer: NSTimer?
+class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate, MSPCommandSender {
     var dontReloadTable = false
 
     var modeRanges: [ModeRange]?
@@ -24,19 +23,14 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        //let tap = UIPanGestureRecognizer(target: self, action: "tableViewTapped:")
-        //self.tableView.addGestureRecognizer(tap)
-        
         initialFetch()
     }
     
     func tableViewTapped(recognizer: UITapGestureRecognizer) {
         if recognizer.state == .Began || recognizer.state == .Changed {
             dontReloadTable = true
-            NSLog("Tap began")
         } else {
             dontReloadTable = false
-            NSLog("Tap ended")
         }
         recognizer.cancelsTouchesInView = false
     }
@@ -99,7 +93,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             channelLabels.removeLast()
         }
         // Similarly, add missing channels if needed
-        for var i = channelLabels.count; i < channelCount; i++ {
+        for i in channelLabels.count..<channelCount {
             channelLabels.append(String(format: "AUX%d", i))
         }
         if let visibleRowIndices = tableView.indexPathsForVisibleRows {
@@ -125,9 +119,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         msp.addDataListener(self)
         
-        if (fastTimer == nil) {
-            fastTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: "fastTimerDidFire:", userInfo: nil, repeats: true)
-        }
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -135,11 +128,11 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         msp.removeDataListener(self)
         
-        fastTimer?.invalidate()
-        fastTimer = nil
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
     
-    func fastTimerDidFire(sender: AnyObject?) {
+    func sendMSPCommands() {
         if modeRanges != nil {
             msp.sendMessage(.MSP_RC, data: nil)
         }
@@ -172,7 +165,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             if let modeId = settings.boxIds?[modeIdx] {
                 for (fullIndex, range) in modeRanges.enumerate() {
                     if range.id == modeId {
-                        if ++index == rangeIdx {
+                        index += 1
+                        if index == rangeIdx {
                             return fullIndex
                         }
                     }
@@ -195,7 +189,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             if modeRanges != nil {
                 for range in modeRanges! {
                     if range.id == modeId {
-                        count++
+                        count += 1
                     }
                 }
             }
@@ -209,10 +203,10 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         cell.viewController = self
         
         // Remove first to avoid adding duplicate targets (?)
-        cell.channelPicker.removeTarget(self, action: "pickerDidBeginEditing", forControlEvents: .EditingDidBegin)
-        cell.channelPicker.removeTarget(self, action: "pickerDidEndEditing", forControlEvents: .EditingDidEnd)
-        cell.channelPicker.addTarget(self, action: "pickerDidBeginEditing", forControlEvents: .EditingDidBegin)
-        cell.channelPicker.addTarget(self, action: "pickerDidEndEditing", forControlEvents: .EditingDidEnd)
+        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), forControlEvents: .EditingDidBegin)
+        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), forControlEvents: .EditingDidEnd)
+        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), forControlEvents: .EditingDidBegin)
+        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), forControlEvents: .EditingDidEnd)
         
         cell.rangeSlider.interval = 25
         cell.rangeSlider.minimumValue = 900
@@ -267,7 +261,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         view.userInteractionEnabled = true
         
         let addButton = AddRangeButton(type: .ContactAdd)
-        addButton.addTarget(self, action: "addRangeAction:", forControlEvents: .TouchDown)
+        addButton.addTarget(self, action: #selector(ModesViewController.addRangeAction(_:)), forControlEvents: .TouchDown)
         addButton.modeId = Settings.theSettings.boxIds![section]
         addButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addButton)
@@ -344,7 +338,7 @@ class ModeRangeCell : UITableViewCell {
     var channelPicker: MyDownPicker {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
-            _channelPicker?.addTarget(self, action: "channelChanged:", forControlEvents: .ValueChanged)
+            _channelPicker?.addTarget(self, action: #selector(ModeRangeCell.channelChanged(_:)), forControlEvents: .ValueChanged)
             _channelPicker?.setPlaceholder("")
         }
         return _channelPicker!

@@ -38,8 +38,8 @@ class BarometerViewController: BaseSensorViewController {
         nf.maximumFractionDigits = 1
         chartView.leftAxis.valueFormatter = nf
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: kIASKAppSettingChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
         userDefaultsDidChange(self)
     }
 
@@ -51,7 +51,7 @@ class BarometerViewController: BaseSensorViewController {
         var yVals = [ChartDataEntry]()
         let initialOffset = samples.count - MaxSampleCount
         
-        for (var i = 0; i < samples.count; i++) {
+        for i in 0..<samples.count {
             yVals.append(ChartDataEntry(value: samples[i], xIndex: i - initialOffset))
         }
         
@@ -70,12 +70,6 @@ class BarometerViewController: BaseSensorViewController {
         }
         updateChartData()
     }
-
-    func timerDidFire(sender: AnyObject) {
-        // Done by appDelegate
-        // msp.sendMessage(.MSP_ALTITUDE, data: nil)
-    }
-    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)

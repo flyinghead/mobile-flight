@@ -58,10 +58,11 @@ func writeInt8(i: Int) -> UInt8 {
 
 // Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.
 func formatWithUnit(reading: Double, unit: String) -> String {
+    let suffix = unit.isEmpty ? "" : " ".stringByAppendingString(unit)
     if reading < 10 {
-        return String(format: "%.1f %@", locale: NSLocale.currentLocale(), reading, unit)
+        return String(format: "%.1f%@", locale: NSLocale.currentLocale(), reading, suffix)
     } else {
-        return String(format: "%.0f %@", locale: NSLocale.currentLocale(), reading, unit)
+        return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, suffix)
     }
 }
 

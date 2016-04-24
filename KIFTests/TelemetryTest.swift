@@ -205,9 +205,9 @@ class TelemetryTest : XCTestCase {
         XCTAssertEqual(attitude.roll, 15.0)
         XCTAssertEqual(attitude.pitch, -22.0)
         XCTAssertEqual(heading.heading, 172.0)
-        XCTAssertEqual(altitude.currentValue, 32.7)
-        XCTAssertEqual(variometer.currentValue, 4.5)
-        XCTAssertEqualWithAccuracy(speed.currentValue, 8.7, accuracy: 0.1)
+        XCTAssertEqualWithAccuracy(altitude.currentValue, 107.28, accuracy: 0.1)        // 32.7 m = 107.28 ft
+        XCTAssertEqualWithAccuracy(variometer.currentValue, 14.76, accuracy: 0.1)       // 4.5 m/s = 14.76 ft/s
+        XCTAssertEqualWithAccuracy(speed.currentValue, 5.41, accuracy: 0.1)             // 8.7 km/h = 5.41 mph
     }
     
     func testGPSSatsAndDTH() {
@@ -230,12 +230,12 @@ class TelemetryTest : XCTestCase {
         CleanflightSimulator.instance.distanceToHome = 88
         
         tester().waitForViewWithAccessibilityLabel("17")
-        tester().waitForViewWithAccessibilityLabel("289ft") // = 88m
+        tester().waitForViewWithAccessibilityLabel("289 ft") // = 88m
         tester().tapViewWithAccessibilityLabel("menuw 1")
         XCTAssert(followMe.enabled)
         XCTAssert(colorsEqual(gpsSats.textColor, UIColor.whiteColor()))
         
-        CleanflightSimulator.instance.distanceToHome = Int(1852.0 * 1.5)
-        tester().waitForViewWithAccessibilityLabel("1.5NM")
+        CleanflightSimulator.instance.distanceToHome = Int(METER_PER_MILE * 1.5)
+        tester().waitForViewWithAccessibilityLabel("1.5 mi")
     }
 }

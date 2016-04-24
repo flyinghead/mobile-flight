@@ -10,7 +10,7 @@ import UIKit
 import SVProgressHUD
 import MapKit
 
-class CalibrationViewController: UIViewController, FlightDataListener {
+class CalibrationViewController: StaticDataTableViewController, FlightDataListener {
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
     @IBOutlet weak var calAccImgButton: UIButton!
@@ -23,6 +23,19 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     @IBOutlet weak var calAccView: UIView!
     @IBOutlet weak var calMagView: UIView!
     @IBOutlet weak var accTrimSaveButton: UIButton!
+    
+    @IBOutlet weak var metarTableCell: UITableViewCell!
+    @IBOutlet weak var metarDateLabel: UILabel!
+    @IBOutlet weak var metarSiteLabel: UILabel!
+    @IBOutlet weak var metarSiteDescription: UILabel!
+    @IBOutlet weak var metarWind: UILabel!
+    @IBOutlet weak var metarTemperature: UILabel!
+    @IBOutlet weak var metarVisibility: UILabel!
+    @IBOutlet weak var metarDescription: UILabel!
+    @IBOutlet weak var metarWeatherImage: UIImageView!
+    
+    var metarTimer: NSTimer?
+    var reportIndex = 0
     
     let AccelerationCalibDuration = 2.0
     let MagnetometerCalibDuration = 30.0
@@ -43,6 +56,10 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         
         accTrimPitchStepper.minimumValue = -100
         accTrimRollStepper.minimumValue = -100
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         let misc = Misc.theMisc
         accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
@@ -51,18 +68,25 @@ class CalibrationViewController: UIViewController, FlightDataListener {
         accTrimRollChanged(accTrimRollStepper)
         
         // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
+
         msp.addDataListener(self)
+        
+        MetarManager.instance.addObserver(self, selector: #selector(metarUpdated))
+        
+        metarUpdated()
+        
+        metarTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(metarTimerFired), userInfo: nil, repeats: true)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
+        
+        MetarManager.instance.removeObserver(self)
+        
+        metarTimer?.invalidate()
+        metarTimer = nil
     }
     
     func receivedData() {
@@ -94,23 +118,30 @@ class CalibrationViewController: UIViewController, FlightDataListener {
     }
     
     @IBAction func calibrateAccelerometer(sender: AnyObject) {
-        stopTimer()
-
-        enableAccCalibration(false)
-        msp.sendMessage(.MSP_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
-                if success {
-                    self.calibrationStart = NSDate()
-                    self.calibrateAccProgress(nil)   // To show the progressHUD
-                    NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "calibrateAccProgress:", userInfo: nil, repeats: true)
-                } else {
-                    SVProgressHUD.showErrorWithStatus("Cannot start calibration")
-                    self.enableAccCalibration(true)
-                    self.startTimer()
-
-                }
+        let alertController = UIAlertController(title: "Accelerometer Calibration", message: "Place the aircraft on a flat leveled surface and do not move it", preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
+            self.stopTimer()
+            
+            self.enableAccCalibration(false)
+            self.msp.sendMessage(.MSP_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
+                dispatch_async(dispatch_get_main_queue(), {
+                    if success {
+                        self.calibrationStart = NSDate()
+                        self.calibrateAccProgress(nil)   // To show the progressHUD
+                        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(CalibrationViewController.calibrateAccProgress(_:)), userInfo: nil, repeats: true)
+                    } else {
+                        SVProgressHUD.showErrorWithStatus("Cannot start calibration")
+                        self.enableAccCalibration(true)
+                        self.startTimer()
+                        
+                    }
+                })
             })
-        })
+        }))
+        alertController.popoverPresentationController?.sourceView = sender as? UIView
+        presentViewController(alertController, animated: true, completion: nil)
+
     }
     
     func calibrateAccProgress(timer: NSTimer?) {
@@ -122,27 +153,33 @@ class CalibrationViewController: UIViewController, FlightDataListener {
             self.startTimer()
         }
         else {
-            SVProgressHUD.showProgress(Float(elapsed / AccelerationCalibDuration), status: "Calibrating Accelerometer", maskType: .Clear)
+            SVProgressHUD.showProgress(Float(elapsed / AccelerationCalibDuration), status: "Calibrating Accelerometer", maskType: .Black)
         }
     }
     
     @IBAction func calibrateMagnetometer(sender: AnyObject) {
-        stopTimer()
-        enableMagCalibration(false)
-        msp.sendMessage(.MSP_MAG_CALIBRATION, data: nil, retry: 2, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
-                if success {
-                    self.calibrationStart = NSDate()
-                    self.calibrateMagProgress(nil)   // To show the progressHUD
-                    NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "calibrateMagProgress:", userInfo: nil, repeats: true)
-                } else {
-                    SVProgressHUD.showErrorWithStatus("Cannot start calibration")
-                    self.enableMagCalibration(true)
-                    self.startTimer()
-
-                }
+        let alertController = UIAlertController(title: "Compass Calibration", message: "You have 30 seconds to rotate the aircraft around all axes: yaw, pitch and roll", preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
+            self.stopTimer()
+            self.enableMagCalibration(false)
+            self.msp.sendMessage(.MSP_MAG_CALIBRATION, data: nil, retry: 2, callback: { success in
+                dispatch_async(dispatch_get_main_queue(), {
+                    if success {
+                        self.calibrationStart = NSDate()
+                        self.calibrateMagProgress(nil)   // To show the progressHUD
+                        NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(CalibrationViewController.calibrateMagProgress(_:)), userInfo: nil, repeats: true)
+                    } else {
+                        SVProgressHUD.showErrorWithStatus("Cannot start calibration")
+                        self.enableMagCalibration(true)
+                        self.startTimer()
+                        
+                    }
+                })
             })
-        })
+        }))
+        alertController.popoverPresentationController?.sourceView = sender as? UIView
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     func calibrateMagProgress(timer: NSTimer?) {
@@ -154,7 +191,7 @@ class CalibrationViewController: UIViewController, FlightDataListener {
             self.startTimer()
         }
         else {
-            SVProgressHUD.showProgress(Float(elapsed / MagnetometerCalibDuration), status: "Calibrating Magnetometer", maskType: .Clear)
+            SVProgressHUD.showProgress(Float(elapsed / MagnetometerCalibDuration), status: "Calibrating Magnetometer", maskType: .Black)
         }
     }
     @IBAction func accTrimPitchChanged(sender: AnyObject) {
@@ -179,6 +216,61 @@ class CalibrationViewController: UIViewController, FlightDataListener {
                 })
             }
         })
+    }
+    
+    @objc
+    private func metarUpdated() {
+        if let reports = MetarManager.instance.reports where reports.count > 0 {
+            if reportIndex >= reports.count {
+                reportIndex = 0
+            }
+            let report = reports[reportIndex]
+            metarDateLabel.text = String(format: "Updated %@", report.observationTimeFromNow)
+            metarSiteLabel.text = report.site
+            metarSiteDescription.text = String(format: "%@ %@", formatDistance(report.distance), compassPoint(report.heading))
+            if report.windSpeed != nil && report.windDirection != nil {
+                metarWind.text = String(format: "%@ %@ %@", compassPoint(report.windDirection!), formatSpeed(report.windSpeed! * 1.852), report.windGust != nil ? String(format: " gusts %@", formatSpeed(report.windGust! * 1.852)) : "")
+            } else {
+                metarWind.text = ""
+            }
+            metarTemperature.text = report.temperature != nil ? String(format: "%d° C", Int(round(report.temperature!))) : ""
+            metarVisibility.text = report.visibility != nil ? formatDistance(report.visibility! * 1852) : ""
+            metarDescription.text = report.description
+            switch report.weatherLevel {
+            case .Overcast:
+                metarWeatherImage.image = UIImage(named: "cloud")
+            case .Clear:
+                metarWeatherImage.image = UIImage(named: "sun")
+            case .PartlyCloudy:
+                metarWeatherImage.image = UIImage(named: "partlycloudy")
+            case .Rain:
+                metarWeatherImage.image = UIImage(named: "rain")
+            case .Snow:
+                metarWeatherImage.image = UIImage(named: "snow")
+            case .Thunderstorm:
+                metarWeatherImage.image = UIImage(named: "storm")
+            }
+        } else {
+            metarDateLabel.text = ""
+            metarSiteLabel.text = "No information available"
+            metarSiteDescription.text = ""
+            metarWind.text = ""
+            metarTemperature.text = ""
+            metarVisibility.text = ""
+            metarDescription.text = ""
+            metarWeatherImage.image = UIImage(named: "sun")
+        }
+    }
+    
+    @objc
+    private func metarTimerFired(timer: NSTimer?) {
+        if let reports = MetarManager.instance.reports where reports.count > 1 {
+            reportIndex = (reportIndex + 1) % min(MetarManager.instance.reports.count, 3)
+            metarUpdated()
+            updateCell(metarTableCell)
+            reloadTableViewRowAnimation = .Right
+            reloadDataAnimated(true)
+        }
     }
     
     /*

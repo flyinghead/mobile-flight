@@ -118,7 +118,7 @@
 			<key>Key</key>
 			<string>flight_mode_alert</string>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Type</key>

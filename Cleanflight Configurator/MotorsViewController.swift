@@ -8,14 +8,12 @@
 
 import UIKit
 
-class MotorsViewController: UIViewController, FlightDataListener {
+class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSender {
 
-    var timerInterval = 0.1     // 100ms by default
-    var timer: NSTimer?
-    
     @IBOutlet weak var modelView: UIImageView!
     @IBOutlet weak var enableMotorView: UIView!
     
+    @IBOutlet weak var enableMotorSwitch: UISwitch!
     @IBOutlet weak var masterSlider: UISlider!
     @IBOutlet weak var slider1: UISlider!
     @IBOutlet weak var slider2: UISlider!
@@ -38,7 +36,17 @@ class MotorsViewController: UIViewController, FlightDataListener {
     @IBAction func enableMotorChanged(sender: AnyObject) {
         let enable = (sender as? UISwitch)!.on
         
-        if (!enable) {
+        if enable {
+            let alertController = UIAlertController(title: "WARNING", message: "To avoid injury, be sure to remove the propellers from the motors before proceeding", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { alertController in
+                self.enableMotorSwitch.on = false
+            }))
+            alertController.addAction(UIAlertAction(title: "Arm Motors", style: UIAlertActionStyle.Destructive, handler: { alertController in
+                self.enableSliders(true)
+            }))
+            alertController.popoverPresentationController?.sourceView = sender as? UIView
+            presentViewController(alertController, animated: true, completion: nil)
+        } else  {
             let miscData = Misc.theMisc
             masterSlider.value = Float(miscData.minCommand)
             slider1.value = Float(miscData.minCommand)
@@ -50,7 +58,12 @@ class MotorsViewController: UIViewController, FlightDataListener {
             slider7.value = Float(miscData.minCommand)
             slider8.value = Float(miscData.minCommand)
             sendMotorData()
+            
+            enableSliders(false)
         }
+    }
+    
+    private func enableSliders(enable: Bool) {
         masterSlider.enabled = enable
         
         let motorData = MotorData.theMotorData
@@ -79,6 +92,7 @@ class MotorsViewController: UIViewController, FlightDataListener {
             slider8.enabled = enable
         }
     }
+    
     @IBAction func masterSliderChanged(sender: AnyObject) {
         let motorData = MotorData.theMotorData
         if (motorData.nMotors >= 1) {
@@ -105,31 +119,6 @@ class MotorsViewController: UIViewController, FlightDataListener {
         if (motorData.nMotors >= 8) {
             slider8.value = masterSlider.value
         }
-        sendMotorData()
-    }
-    @IBAction func slider1Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider2Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider3Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider4Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider5Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider6Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider7Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider8Changed(sender: AnyObject) {
-        sendMotorData()
     }
 
     override func viewDidLoad() {
@@ -141,43 +130,42 @@ class MotorsViewController: UIViewController, FlightDataListener {
     }
 
     override func viewWillAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         
         msp.addDataListener(self)
         
-        if (timer == nil) {
-            timer = NSTimer.scheduledTimerWithTimeInterval(timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-        }
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
         
-        timer?.invalidate()
-        timer = nil
-        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
     
-    func timerDidFire(sender: AnyObject) {
+    func sendMSPCommands() {
         msp.sendMessage(.MSP_MOTOR, data: nil)
+        if enableMotorSwitch.on {
+            sendMotorData()
+        }
     }
 
     func receivedMotorData() {
-        if (timer != nil) {
-            let motorData = MotorData.theMotorData
-            value1.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[0])
-            value2.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[1])
-            value3.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[2])
-            value4.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[3])
-            value5.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[4])
-            value6.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[5])
-            value7.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[6])
-            value8.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[7])
-        }
+        let motorData = MotorData.theMotorData
+        value1.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[0])
+        value2.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[1])
+        value3.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[2])
+        value4.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[3])
+        value5.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[4])
+        value6.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[5])
+        value7.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[6])
+        value8.text = String(format: "%d", locale: NSLocale.currentLocale(), motorData.throttle[7])
     }
-    
+
     func receivedData() {
         let miscData = Misc.theMisc
         masterSlider.minimumValue = Float(miscData.minCommand)
