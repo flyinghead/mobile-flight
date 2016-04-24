@@ -30,8 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     private var _lastArmedTime = 0.0
     private var lastArming: NSDate?
     
-    private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
-
     private var stayAliveTimer: NSTimer!
     
     private var rcCommands: [Int]?
@@ -188,11 +186,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
         VoiceMessage.theVoice.checkAlarm(RSSILowAlarm())
-        
-        if completionHandler != nil {
-            completionHandler!(.NewData)
-            completionHandler = nil
-        }
     }
     
     func receivedSensorData() {
@@ -288,16 +281,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.DisableIdleTimer) {
                 UIApplication.sharedApplication().idleTimerDisabled = true
         }
-    }
-    
-    // FIXME Doesn't seem to be ever called. Actually being called very very very unfrequently (hours?)
-    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        if !userDefaultEnabled(.RecordFlightlog) || !armed {
-            completionHandler(.NoData)
-            return
-        }
-        self.completionHandler = completionHandler
-        statusTimerDidFire(statusTimer)
     }
     
     var followMeActive = false {
