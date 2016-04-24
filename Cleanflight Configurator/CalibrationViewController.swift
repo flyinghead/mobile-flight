@@ -233,7 +233,7 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
             } else {
                 metarWind.text = ""
             }
-            metarTemperature.text = report.temperature != nil ? String(format: "%d° C", Int(round(report.temperature!))) : ""
+            metarTemperature.text = report.temperature != nil ? formatTemperature(report.temperature!) : ""
             metarVisibility.text = report.visibility != nil ? formatDistance(report.visibility! * 1852) : ""
             metarDescription.text = report.description
             switch report.weatherLevel {

@@ -124,6 +124,14 @@ func formatSpeed(kmh: Double) -> String {
     }
 }
 
+func formatTemperature(celsius: Double) -> String {
+    if selectedUnitSystem() == .Imperial {
+        return String(format: "%.0f° F", celsius * 1.8 + 32)
+    } else {
+        return String(format: "%.0f° C", celsius)
+    }
+}
+
 func constrain(n: Double, min minimum: Double, max maximum: Double) -> Double {
     return min(maximum, max(minimum, n))
 }
