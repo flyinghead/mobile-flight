@@ -61,13 +61,15 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        let misc = Misc.theMisc
-        accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
-        accTrimPitchChanged(accTrimPitchStepper)
-        accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
-        accTrimRollChanged(accTrimRollStepper)
-        
-        // TODO Refresh config? We MUST stop data polling during Acc calibration (not sure about Mag)
+        msp.sendMessage(.MSP_ACC_TRIM, data: nil, retry: 2) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                let misc = Misc.theMisc
+                self.accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
+                self.accTrimPitchChanged(self.accTrimPitchStepper)
+                self.accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
+                self.accTrimRollChanged(self.accTrimRollStepper)
+            }
+        }
 
         msp.addDataListener(self)
         
@@ -207,14 +209,26 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
         misc.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
         misc.accelerometerTrimRoll = Int(accTrimRollStepper.value)
         let msp = self.msp
-        msp.sendSetAccTrim(misc, callback: { success in
+        msp.sendSetAccTrim(misc) { success in
             if success {
-                msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: nil)
+                msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2) { success in
+                    if success {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            SVProgressHUD.showSuccessWithStatus("Settings saved")
+                        })
+                    } else {
+                        self.saveFailedError()
+                    }
+                }
             } else {
-                dispatch_async(dispatch_get_main_queue(), {
-                    SVProgressHUD.showErrorWithStatus("Save failed")
-                })
+                self.saveFailedError()
             }
+        }
+    }
+    
+    private func saveFailedError() {
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }
     

@@ -1,4 +1,3 @@
-- BUG: Acc Trim values not saved (to eeprom)? (Error on iNav msg 239 MSP_SET_ACC_TRIM)
 - BUG: Time counter not reset after disconnect: 147:18
 - AppDelegate.stayAliveTimer should probably be invalidated when switching to background and !armed
 - BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
@@ -161,4 +160,5 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - BUG: Always put a space between number and unit
 - BUG: Many x3 icons are actually x4
 - BUG: iNav save config fails on message 114 MSP_MISC (id INAV, version 1.1.0, API 1.15) -> Increased delay after reboot to 3 sec
+- BUG: Acc Trim values not saved (to eeprom)? (Error on iNav msg 239 MSP_SET_ACC_TRIM)
 
