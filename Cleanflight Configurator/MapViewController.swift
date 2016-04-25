@@ -34,7 +34,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         mapView.layoutMargins = UIEdgeInsets(top: 85, left: 0, bottom: 0, right: 0)     // Display the compass below the right-handside instrument panel
         mapView.delegate = self
-        mapView.showsUserLocation = true
         
         batteryLabel.text = "?"
         rssiLabel.text = "?"
@@ -52,6 +51,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         receivedData()
         receivedAltitudeData()
         receivedGpsData()
+        
+        mapView.showsUserLocation = true
         
         var coordinate = MapViewController.getAircraftCoordinates()
         if coordinate == nil {

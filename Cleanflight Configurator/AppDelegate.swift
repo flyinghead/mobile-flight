@@ -60,8 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
 
-        stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: #selector(AppDelegate.stayAliveTimer(_:)), userInfo: nil, repeats: true)
-        
         return true
     }
 
@@ -71,15 +69,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
-        // Keep the status timer active if armed so we can continue to record telemetry
+        // Keep the timers active if armed so we can continue to record telemetry
         if !armed || msp.replaying || !userDefaultEnabled(.RecordFlightlog) {
             stopTimer()
+        } else {
+            // This one however is useless while in background
+            stayAliveTimer?.invalidate()
+            stayAliveTimer = nil
+        }
+        if !followMeActive {
+            stopLocationManager()
         }
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         startTimer()
+        startLocationManagerIfNeeded()
     }
     
     func startTimer() {
@@ -91,6 +97,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         if logTimer == nil {
             logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(AppDelegate.logTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
+        if stayAliveTimer == nil {
+            stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: #selector(AppDelegate.stayAliveTimer(_:)), userInfo: nil, repeats: true)
+        }
     }
     
     func stopTimer() {
@@ -99,6 +108,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         logTimer?.invalidate()
         logTimer = nil
+        
+        stayAliveTimer?.invalidate()
+        stayAliveTimer = nil
         
         lastDataReceived = nil
     }
@@ -287,11 +299,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     var followMeActive = false {
         didSet {
-            if followMeActive && !msp.replaying {
-                startLocationManager()
-            } else if currentLocationCallbacks.isEmpty {
+            startLocationManagerIfNeeded()
+            // else
+            if !followMeActive && currentLocationCallbacks.isEmpty {
                 stopLocationManager()
             }
+        }
+    }
+    
+    private func startLocationManagerIfNeeded() {
+        if (followMeActive || !currentLocationCallbacks.isEmpty) && !msp.replaying {
+            startLocationManager()
         }
     }
     
@@ -307,6 +325,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private func startLocationManager() {
         if !updatingLocation {
+            NSLog("LocationManager Start")
             locationManager.startUpdatingLocation()
             updatingLocation = true
         }
@@ -314,12 +333,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private func stopLocationManager() {
         if _locationManager != nil {
+            NSLog("LocationManager Stop")
             _locationManager!.stopUpdatingLocation()
         }
         updatingLocation = false
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        NSLog("locationManager(didUpdateLocations:)")
         if let location = locations.last {
             if followMeActive && (lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod) {
                 self.lastFollowMeUpdate = NSDate()
@@ -349,6 +370,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
             stopLocationManager()
             currentLocationCallbacks.removeAll()
             followMeActive = false      // FIXME Should deselect and disable UI
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
+            startLocationManagerIfNeeded()
         }
     }
     

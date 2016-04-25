@@ -39,22 +39,21 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
     
     var locationProvider: UserLocationProvider! {
         didSet {
-            if locationProvider != nil {
-                locationProvider.currentLocation({
-                    self.position = $0
-                    // Only when setting the initial position. Otherwise, let the update timer do its job
-                    if self.updateTimer == nil {
-                        self.retrieveMetarReports()
-                    }
-                })
+            // Only when setting the initial provider. Otherwise, let the update timer do its job
+            if updateTimer == nil {
+                updateCurrentLocationAndRetrieveReports()
             }
         }
     }
     
-    private func retrieveMetarReports() {
-        if position == nil {
-            return
+    private func updateCurrentLocationAndRetrieveReports() {
+        locationProvider?.currentLocation() {
+            self.position = $0
+            self.retrieveMetarReports()
         }
+    }
+    
+    private func retrieveMetarReports() {
         if dataTask != nil {
             return
         }
@@ -224,7 +223,7 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
     
     @objc
     private func updateTimerFired(timer: NSTimer?) {
-        retrieveMetarReports()
+        updateCurrentLocationAndRetrieveReports()
     }
 }
 
