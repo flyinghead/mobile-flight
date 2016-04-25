@@ -71,9 +71,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        stopTimer()
+        // Keep the status timer active if armed so we can continue to record telemetry
+        if !armed || msp.replaying || !userDefaultEnabled(.RecordFlightlog) {
+            stopTimer()
+        }
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -156,7 +157,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        msp.closeCommChannel()
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
     }
