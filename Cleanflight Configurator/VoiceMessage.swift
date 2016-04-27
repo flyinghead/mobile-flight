@@ -168,7 +168,7 @@ class VoiceMessage: NSObject, FlightDataListener {
     func speak(speech: String) {
         let utterance = AVSpeechUtterance(string: speech)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.15
+        utterance.rate = 0.5 // FIXME Why do we need to increase it??
         synthesizer.speakUtterance(utterance)
     }
     

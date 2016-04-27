@@ -181,7 +181,7 @@ class MotorsViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         
         vehicle.motors.addObserver(self) {_ in
             self.receivedMotorData()
@@ -189,7 +189,7 @@ class MotorsViewController: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         vehicle.motors.removeObserver(self)
     }
