@@ -1,18 +1,15 @@
+- BUG: ESP8266 lots of comm errors although latency is very low. Why?
 - BUG: Time counter not reset after disconnect: 147:18 ????
 - BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 - BUG CLI issue: buffer overrun?
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
-- Background mode: app can receive and send data via BT even when in background. Need to keep the AppDelegate timer running (only when armed) when entering background. See https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html
-- for i in 0..<max
 - TCP/IP: Try UDP instead of TCP
 - LED programming
 - RC Sticks: Add switches AUX 1-4, display configured modes
 - Failsafe: allow to choose configured mode for Aux channels set value
 - Support for cleanflight 1.12: MSP_(SET_)TRANSPONDER_CONFIG (?) supported(1), data, MSP_(SET_)RC_DEADBAND (3), MSP_(SET_)SENSOR_ALIGNMENT(3), MSP_SDCARD_SUMMARY, MSP_(SET_)BLACKBOX_CONFIG, MSP_(SET_)3D
 - Replay: When switching to other app or springboard, time counter should be paused
-- Use adaptive update frequency based on latency/comm bandwidth. See ardupilot/libraries/GCS_MAVLink/GCS_Common.cpp: 591
 - RC Sticks depend on channel order set in Receiver tuning. Should be independent! Option for Mode 2/Mode 1 may be.
-- Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
 - Mark inactive panels/gauge with red cross
 - UAV Health page (sensors, etc.) / Pre-flight checks page -> merge with Calibration
   - Calibrate accelerometer
@@ -41,13 +38,9 @@
 - Telemetry (map?): Display active profile, communication speed?
 - Map: Map type (sat, hybrid, map)
 - Backup / Restore
-(- Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
 - Ability to name models: use cleanflight UID and BT uuid to identify it. Alert levels settings (Alt, Amp, mAh, etc.) are specific to model
 
 - Comm: Use FPV audio channel to transmit data (ImmersionRC EzOSD)
-
-- Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
-    Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
 
 - Hardware targets for iOS 8+ (http://iossupportmatrix.com/)
     iPad2 (No BLE support)
@@ -161,4 +154,12 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - BUG: iNav save config fails on message 114 MSP_MISC (id INAV, version 1.1.0, API 1.15) -> Increased delay after reboot to 3 sec
 - BUG: Acc Trim values not saved (to eeprom)? (Error on iNav msg 239 MSP_SET_ACC_TRIM)
 - AppDelegate.stayAliveTimer should probably be invalidated when switching to background and !armed
+- Background mode: app can receive and send data via BT even when in background. Need to keep the AppDelegate timer running (only when armed) when entering background. See https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html
+- for i in 0..<max: some done. Remaining will be done as needed.
+- Use adaptive update frequency based on latency/comm bandwidth. See ardupilot/libraries/GCS_MAVLink/GCS_Common.cpp: 591
+- Weather info for current location using METAR (https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=1,47,4,50&density=all)
+- N/A. Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
+- REMOVED Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
+    Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
+
 

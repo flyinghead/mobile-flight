@@ -25,9 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Required for Follow Me feature</string>
+	<string>Used for Follow Me feature</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Required to display your position on the map</string>
+	<string>Used to display your position on the map and for local weather reports</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
