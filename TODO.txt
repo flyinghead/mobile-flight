@@ -1,3 +1,11 @@
+- BUG: Cleanflight_Configurator.TCPComm userCancelledReconnection:]: message sent to deallocated instance 0x174150cd0
+- MAVLink: detect failsafe condition: No RC Receiver, Battery, ...
+  system_status == MAV_STATE.CRITICAL => failsafe, then use sensors health to find out what's wrong (radio) battery?, gcs?, ekf? MP/CurrentState.cs
+- MAVLink initial setup:
+  Mandatory: frame type, Accel calib, Accel level calib, compass (general config, enable compass 1,2,3, calibration, on-board calib), Rx calib / DSM bind, ESC calib, Flight modes, Failsafe
+  Optional: SiK radio, Battery monitors 1&2, Compass motor calib, Sonar, Airspeed, Optical flow, OSD, Cam gimbal, Antenna tracker, Motor test, Bluetooth, Parachute
+- MAVLink config/tuning: Flight modes, GeoFence, Basic tuning (RC feel, Roll/pitch sensitivity, Throttle Hover), Extended tuning (PID params), Standard params (arming checks, autotune_axes, batt_, batt2_, cam_trig, and many more), Advanced params (lots of stuff), Full parameter list/tree
+-> Pre-flight: accel level calib, compass calib??, Rx calib??, Flight modes, Failsafe?, GeoFence, Arming checks, Sensors health?
 - Animate scales to have smoother movement (sometimes they seem to go backward)
 
 - TCP/IP: Try UDP instead of TCP

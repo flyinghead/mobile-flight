@@ -132,8 +132,8 @@ class MAVLink : ProtocolHandler {
                     if !altitudeHoldActive() && _vehicle.flightMode.value != .AUTO {
                         vehicle.altitudeHold.value = nil
                     }
-                    //let systemStatus = MAV_STATE(UInt32(mavlink_msg_heartbeat_get_system_status(&msg)))
-                    //let type = MAV_TYPE(UInt32(mavlink_msg_heartbeat_get_type(&msg)))
+                    _vehicle.systemStatus.value = MAV_STATE(UInt32(mavlink_msg_heartbeat_get_system_status(&msg)))
+                    _vehicle.frameType.value = MAV_TYPE(UInt32(mavlink_msg_heartbeat_get_type(&msg)))
                     //NSLog("Heartbeat status=%d mode: %@", systemStatus.rawValue, _vehicle.flightMode.value.modeName())
                     
                 case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
@@ -784,4 +784,15 @@ class MAVLink : ProtocolHandler {
             }
         }
     }
+    
+    func motorTest(motorIndex: Int, throttle: Int, timeout: Int, callback: ((success: Bool) -> Void)?) {
+        var msg = mavlink_message_t()
+        mavlink_msg_command_long_pack(mySystemId, myComponentId, &msg, systemId, componentId, UInt16(MAV_CMD_DO_MOTOR_TEST.rawValue), 0, Float(motorIndex + 1), Float(MOTOR_TEST_THROTTLE_PERCENT.rawValue), Float(throttle), Float(timeout), 0, 0, 0)
+        _ = CommandMessageHandler(self, msg: msg) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                callback?(success: success)
+            }
+        }
+    }
+
 }

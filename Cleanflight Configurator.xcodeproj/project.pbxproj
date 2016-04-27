@@ -21,6 +21,9 @@
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
 		AE1DD68D1C7E2F9100861248 /* TelemetryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */; };
 		AE1DD68E1C7E43D500861248 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
+		AE1EA9E51CA9A55E00C24E2A /* GeoFenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EA9E41CA9A55E00C24E2A /* GeoFenceViewController.swift */; };
+		AE1EA9E71CA9A74800C24E2A /* MyStaticDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EA9E61CA9A74800C24E2A /* MyStaticDataViewController.swift */; };
+		AE1EA9E91CA9C75700C24E2A /* MotorTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EA9E81CA9C75700C24E2A /* MotorTestViewController.swift */; };
 		AE1EECC81C99C38800F30535 /* MAVLinkMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */; };
 		AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */; };
 		AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */; };
@@ -204,6 +207,9 @@
 		AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KIFTests_bridgingheader.h; sourceTree = "<group>"; };
 		AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCaseKIFExtension.swift; sourceTree = "<group>"; };
 		AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryTest.swift; sourceTree = "<group>"; };
+		AE1EA9E41CA9A55E00C24E2A /* GeoFenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoFenceViewController.swift; sourceTree = "<group>"; };
+		AE1EA9E61CA9A74800C24E2A /* MyStaticDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyStaticDataViewController.swift; sourceTree = "<group>"; };
+		AE1EA9E81CA9C75700C24E2A /* MotorTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorTestViewController.swift; sourceTree = "<group>"; };
 		AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAVLinkMessageHandler.swift; sourceTree = "<group>"; };
 		AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSConfigViewController.swift; sourceTree = "<group>"; };
 		AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryVoltageLabel.swift; sourceTree = "<group>"; };
@@ -397,6 +403,14 @@
 			path = KIFTests;
 			sourceTree = "<group>";
 		};
+		AE1EA9E31CA9A52700C24E2A /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				AE1EA9E41CA9A55E00C24E2A /* GeoFenceViewController.swift */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
 		AE1F73E31C18C5AB0029C330 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
@@ -434,6 +448,7 @@
 		AE26A1D41C41D308007498EF /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */,
 				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
@@ -444,6 +459,7 @@
 				AE1CB4861C71187E003DB117 /* InsetTextField.swift */,
 				AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */,
 				AECE8D871C1EBE3E00FB183E /* MyDownPicker.swift */,
+				AE1EA9E61CA9A74800C24E2A /* MyStaticDataViewController.swift */,
 				AEF3703F1C1CAC0B00667E9D /* NumberField.swift */,
 				AE3E462D1C52C04300E33E9F /* RCStick.swift */,
 				AEDDD2421C10EEC3004232AA /* ReceiverChannel.swift */,
@@ -492,7 +508,6 @@
 				AE26A1D41C41D308007498EF /* Controls */,
 				AEFC51F91C94BAD800B7F903 /* MAVLink */,
 				AEFC52001C95B7ED00B7F903 /* MSP */,
-				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
@@ -590,6 +605,7 @@
 		AEFC51F91C94BAD800B7F903 /* MAVLink */ = {
 			isa = PBXGroup;
 			children = (
+				AE1EA9E31CA9A52700C24E2A /* Configuration */,
 				AEBD44F41C9C8231002B4D28 /* APMNavigationCommand.swift */,
 				AEFC52051C95D42700B7F903 /* ArduCopterFlightMode.swift */,
 				AEFC520D1C962A6C00B7F903 /* FullParamsViewController.swift */,
@@ -597,6 +613,7 @@
 				AE1EECC71C99C38800F30535 /* MAVLinkMessageHandler.swift */,
 				AEFC51FA1C94BB3600B7F903 /* MAVLinkTelemetry.swift */,
 				AEFC51F71C94332A00B7F903 /* MAVLinkVehicle.swift */,
+				AE1EA9E81CA9C75700C24E2A /* MotorTestViewController.swift */,
 				AEFC52091C960FF600B7F903 /* ParameterList.swift */,
 				AE3503A81CA323410044CE70 /* TLogFile.swift */,
 				AEFC51FC1C94BBD800B7F903 /* UseMAVLinkVehicle.swift */,
@@ -911,6 +928,7 @@
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
 				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
+				AE1EA9E51CA9A55E00C24E2A /* GeoFenceViewController.swift in Sources */,
 				AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
@@ -941,6 +959,7 @@
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
 				AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */,
+				AE1EA9E91CA9C75700C24E2A /* MotorTestViewController.swift in Sources */,
 				AEFC52061C95D42700B7F903 /* ArduCopterFlightMode.swift in Sources */,
 				AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */,
 				AEC2A0DA1C79CFF100EDF1D4 /* ProtocolHandler.swift in Sources */,
@@ -964,6 +983,7 @@
 				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
 				AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */,
 				AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */,
+				AE1EA9E71CA9A74800C24E2A /* MyStaticDataViewController.swift in Sources */,
 				AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */,
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
 				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,

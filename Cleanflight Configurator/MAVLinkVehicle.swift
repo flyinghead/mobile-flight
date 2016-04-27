@@ -25,6 +25,27 @@ class MAVLinkVehicle : Vehicle {
     var parametersLoaded = false
     
     var firmwareVersion = NillableObservableString()
+
+    var systemStatus = EquatableObservable<MAV_STATE>(MAV_STATE_UNINIT)
+    var frameType = NillableObservable<MAV_TYPE>()
+
+    var motorCount: Int {
+        guard let frameType = self.frameType.value else {
+            return 0
+        }
+        switch frameType {
+        case MAV_TYPE_TRICOPTER, MAV_TYPE_QUADROTOR:
+            return 4
+        case MAV_TYPE_HEXAROTOR:
+            return 6
+        case MAV_TYPE_OCTOROTOR:
+            return 8
+        case MAV_TYPE_HELICOPTER:
+            return 0
+        default:
+            return 8
+        }
+    }
     
     private let mavlink: MAVLink
     
@@ -70,6 +91,7 @@ class MAVLinkVehicle : Vehicle {
     override func stopFlightRecorder() {
         TLogFile.close(mavlink)
     }
+
 }
 
 class MAVLinkParameter {

@@ -34,7 +34,11 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         storyboard = UIStoryboard(name: "MAVLink", bundle: nil)
         let controller2 = storyboard.instantiateViewControllerWithIdentifier("FullParamsViewController")
         viewControllers!.insert(controller2, atIndex: 8)
-        
+        //let geoFence = storyboard.instantiateViewControllerWithIdentifier("GeoFenceViewController")
+        //viewControllers!.insert(geoFence, atIndex: 8)
+        let motorTest = storyboard.instantiateViewControllerWithIdentifier("MotorTestViewController")
+        viewControllers![7] = motorTest
+
         customizableViewControllers = viewControllers!.filter({
             return !($0 is Telemetry2ViewController)
         })
