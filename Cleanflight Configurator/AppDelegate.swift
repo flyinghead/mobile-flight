@@ -325,7 +325,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private func startLocationManager() {
         if !updatingLocation {
-            NSLog("LocationManager Start")
             locationManager.startUpdatingLocation()
             updatingLocation = true
         }
@@ -333,14 +332,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private func stopLocationManager() {
         if _locationManager != nil {
-            NSLog("LocationManager Stop")
             _locationManager!.stopUpdatingLocation()
         }
         updatingLocation = false
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        NSLog("locationManager(didUpdateLocations:)")
         if let location = locations.last {
             if followMeActive && (lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod) {
                 self.lastFollowMeUpdate = NSDate()

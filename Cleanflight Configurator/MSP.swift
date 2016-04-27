@@ -1129,7 +1129,7 @@ class MSPParser {
                 if curMsg.count >= 5 && curMsg[4] == msgCode {
                     outputQueue[i] = msg
                     objc_sync_exit(self)
-                    NSLog("Message %d already in output queue", msgCode)
+                    //NSLog("Message %d already in output queue", msgCode)
                     if flush {
                         commChannel?.flushOut()
                     }
