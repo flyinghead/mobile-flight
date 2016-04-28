@@ -72,6 +72,7 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
                 || viewController is MapViewController
                 || viewController is GPSViewController
                 || viewController is SensorPagesViewController
+                || viewController is AppSettingsViewController
         })
         setViewControllers(filteredVC, animated: false)
     }

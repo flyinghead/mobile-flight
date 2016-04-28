@@ -35,7 +35,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         mapView.layoutMargins = UIEdgeInsets(top: 85, left: 0, bottom: 0, right: 0)     // Display the compass below the right-handside instrument panel
         mapView.delegate = self
-        mapView.showsUserLocation = true
         
         batteryLabel.text = "?"
         rssiLabel.text = "?"
@@ -225,6 +224,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             locationManager?.delegate = self
             locationManager?.requestWhenInUseAuthorization()
         }
+        mapView.showsUserLocation = true
     }
     
     @objc

@@ -52,7 +52,7 @@ class ReceiverTuningViewController: UITableViewController {
     func getRcMapString() -> String {
         let reference = ["A", "E", "R", "T", "1", "2", "3", "4"]
         var string = ""
-        for var i = 0; i < 8; i++ {
+        for i in 0..<8 {
             let refIdx = rcMap!.indexOf(i) ?? i
             string += reference[refIdx]
         }
@@ -102,18 +102,37 @@ class ReceiverTuningViewController: UITableViewController {
                                             self.yawExpo.value = self.settings!.yawExpo
                                             
                                         })
+                                    } else {
+                                        self.fetchError()
                                     }
                                 })
+                            } else {
+                                self.fetchError()
                             }
                         })
+                    } else {
+                        self.fetchError()
                     }
                 })
+            } else {
+                self.fetchError()
             }
         })
     }
     
+    private func fetchError() {
+        dispatch_async(dispatch_get_main_queue()) {
+            SVProgressHUD.showErrorWithStatus("Communication error")
+        }
+    }
+    
     func saveIfNeeded() {
         // Save settings
+        
+        if settings == nil {
+            // In case we failed to fetch exiting data
+            return
+        }
         var somethingChanged = false
         
         let misc = mspvehicle.misc

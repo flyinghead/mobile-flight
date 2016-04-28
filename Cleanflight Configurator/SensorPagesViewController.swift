@@ -10,11 +10,14 @@ import UIKit
 
 class SensorPagesViewController: UIPageViewController, UIPageViewControllerDataSource {
 
-    var accelerometerViewController: UIViewController?
-    var gyroscopeViewController: UIViewController?
-    var magnetometerViewController: UIViewController?
-    var barometerViewController: UIViewController?
-    var sonarViewController: UIViewController?
+    var accelerometerViewController: UIViewController!
+    var gyroscopeViewController: UIViewController!
+    var magnetometerViewController: UIViewController!
+    var barometerViewController: UIViewController!
+    var sonarViewController: UIViewController!
+    var dataLinkViewController: UIViewController!
+    
+    var activeViewControllers: [UIViewController]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,67 +36,61 @@ class SensorPagesViewController: UIPageViewController, UIPageViewControllerDataS
         magnetometerViewController = storyboard!.instantiateViewControllerWithIdentifier("MagnetometerViewController")
         barometerViewController = storyboard!.instantiateViewControllerWithIdentifier("BarometerViewController")
         sonarViewController = storyboard!.instantiateViewControllerWithIdentifier("SonarViewController")
+        dataLinkViewController = storyboard!.instantiateViewControllerWithIdentifier("DataLinkViewController")
 
         self.dataSource = self
-        self.setViewControllers([ accelerometerViewController! ], direction: .Forward, animated: false, completion: nil)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        activeViewControllers = [ accelerometerViewController, gyroscopeViewController ]
+        
+        let config = Configuration.theConfig
+        if config.isMagnetometerActive() {
+            activeViewControllers.append(magnetometerViewController)
+        }
+        if config.isBarometerActive() {
+            activeViewControllers.append(barometerViewController)
+        }
+        if config.isSonarActive() {
+            activeViewControllers.append(sonarViewController)
+        }
+        activeViewControllers.append(dataLinkViewController)
+
+        let currentIndex = presentationIndexForPageViewController(self)
+
+        self.setViewControllers([ activeViewControllers[currentIndex] ], direction: .Forward, animated: false, completion: nil)
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if (viewController === gyroscopeViewController) {
-            return accelerometerViewController!
-        } else if (viewController === magnetometerViewController) {
-            return gyroscopeViewController
-        } else if (viewController === barometerViewController) {
-            if (Configuration.theConfig.isMagnetometerActive()) {
-                return magnetometerViewController
-            } else {
-                return gyroscopeViewController
-            }
-
-        } else if (viewController === sonarViewController) {
-            if (Configuration.theConfig.isBarometerActive()) {
-                return barometerViewController
-            } else if (Configuration.theConfig.isMagnetometerActive()) {
-                return magnetometerViewController
-            } else {
-                return gyroscopeViewController
-            }
+        guard let index = activeViewControllers.indexOf(viewController) else {
+            return nil
         }
-
-        return nil
+        if index == activeViewControllers.startIndex {
+            return nil
+        }
+        
+        return activeViewControllers[index.predecessor()]
     }
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if (viewController === accelerometerViewController) {
-            return gyroscopeViewController!
-        } else if (viewController === gyroscopeViewController) {
-            if (Configuration.theConfig.isMagnetometerActive()) {
-                return magnetometerViewController
-            } else if (Configuration.theConfig.isBarometerActive()) {
-                return barometerViewController
-            }else if (Configuration.theConfig.isSonarActive()) {
-                return sonarViewController
-            }
-        } else if (viewController === magnetometerViewController) {
-            if (Configuration.theConfig.isBarometerActive()) {
-                return barometerViewController
-            } else if (Configuration.theConfig.isSonarActive()) {
-                return sonarViewController
-            }
-
-        } else if (viewController === barometerViewController) {
-            if (Configuration.theConfig.isSonarActive()) {
-                return sonarViewController
-            }
-            
-        }
     
-        return nil
+    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+        guard let index = activeViewControllers.indexOf(viewController) else {
+            return nil
+        }
+        if index == activeViewControllers.endIndex - 1 {
+            return nil
+        }
+
+        return activeViewControllers[index.successor()]
     }
+    
     func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return 2 + (Configuration.theConfig.isMagnetometerActive() ? 1 : 0) + (Configuration.theConfig.isBarometerActive() ? 1 : 0) + (Configuration.theConfig.isSonarActive() ? 1 : 0);
+        return activeViewControllers.count
     }
     
     func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return 0
+        guard let viewControllers = pageViewController.viewControllers where !viewControllers.isEmpty else {
+            return 0
+        }
+        return activeViewControllers.indexOf(viewControllers[0]) ?? 0
     }
 }

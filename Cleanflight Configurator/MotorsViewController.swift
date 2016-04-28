@@ -8,11 +8,12 @@
 
 import UIKit
 
-class MotorsViewController: UIViewController {
+class MotorsViewController: UIViewController, MSPCommandSender {
 
     @IBOutlet weak var modelView: UIImageView!
     @IBOutlet weak var enableMotorView: UIView!
     
+    @IBOutlet weak var enableMotorSwitch: UISwitch!
     @IBOutlet weak var masterSlider: UISlider!
     @IBOutlet weak var slider1: UISlider!
     @IBOutlet weak var slider2: UISlider!
@@ -35,19 +36,36 @@ class MotorsViewController: UIViewController {
     @IBAction func enableMotorChanged(sender: AnyObject) {
         let enable = (sender as? UISwitch)!.on
         
-        if (!enable && vehicle is MSPVehicle) {
-            let miscData = mspvehicle.misc
-            masterSlider.value = Float(miscData.minCommand)
-            slider1.value = Float(miscData.minCommand)
-            slider2.value = Float(miscData.minCommand)
-            slider3.value = Float(miscData.minCommand)
-            slider4.value = Float(miscData.minCommand)
-            slider5.value = Float(miscData.minCommand)
-            slider6.value = Float(miscData.minCommand)
-            slider7.value = Float(miscData.minCommand)
-            slider8.value = Float(miscData.minCommand)
-            sendMotorData()
+        if (vehicle is MSPVehicle) {
+            if enable {
+                let alertController = UIAlertController(title: "WARNING", message: "To avoid injury, be sure to remove the propellers from the motors before proceeding", preferredStyle: UIAlertControllerStyle.Alert)
+                alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { alertController in
+                    self.enableMotorSwitch.on = false
+                }))
+                alertController.addAction(UIAlertAction(title: "Arm Motors", style: UIAlertActionStyle.Destructive, handler: { alertController in
+                    self.enableSliders(true)
+                }))
+                alertController.popoverPresentationController?.sourceView = sender as? UIView
+                presentViewController(alertController, animated: true, completion: nil)
+            } else  {
+                let miscData = mspvehicle.misc
+                masterSlider.value = Float(miscData.minCommand)
+                slider1.value = Float(miscData.minCommand)
+                slider2.value = Float(miscData.minCommand)
+                slider3.value = Float(miscData.minCommand)
+                slider4.value = Float(miscData.minCommand)
+                slider5.value = Float(miscData.minCommand)
+                slider6.value = Float(miscData.minCommand)
+                slider7.value = Float(miscData.minCommand)
+                slider8.value = Float(miscData.minCommand)
+                sendMotorData()
+                
+                enableSliders(false)
+            }
         }
+    }
+    
+    private func enableSliders(enable: Bool) {
         masterSlider.enabled = enable
         if let nMotors = vehicle.motors.value?.count {
             if nMotors >= 1 {
@@ -76,6 +94,7 @@ class MotorsViewController: UIViewController {
             }
         }
     }
+    
     @IBAction func masterSliderChanged(sender: AnyObject) {
         if let nMotors = vehicle.motors.value?.count {
             if nMotors >= 1 {
@@ -104,30 +123,6 @@ class MotorsViewController: UIViewController {
             }
             sendMotorData()
         }
-    }
-    @IBAction func slider1Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider2Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider3Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider4Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider5Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider6Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider7Changed(sender: AnyObject) {
-        sendMotorData()
-    }
-    @IBAction func slider8Changed(sender: AnyObject) {
-        sendMotorData()
     }
 
     override func viewDidLoad() {
@@ -186,6 +181,9 @@ class MotorsViewController: UIViewController {
         vehicle.motors.addObserver(self) {_ in
             self.receivedMotorData()
         }
+
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -239,5 +237,39 @@ class MotorsViewController: UIViewController {
             
             msp.sendMessage(.MSP_SET_MOTOR, data: buffer)
         }
+        msp.removeDataListener(self)
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
+    
+    func sendMSPCommands() {
+        msp.sendMessage(.MSP_MOTOR, data: nil)
+        if enableMotorSwitch.on {
+            sendMotorData()
+        }
+    }
+
+    func receivedData() {
+        let miscData = Misc.theMisc
+        masterSlider.minimumValue = Float(miscData.minCommand)
+        masterSlider.maximumValue = Float(miscData.maxThrottle)
+        slider1.minimumValue = Float(miscData.minCommand)
+        slider1.maximumValue = Float(miscData.maxThrottle)
+        slider2.minimumValue = Float(miscData.minCommand)
+        slider2.maximumValue = Float(miscData.maxThrottle)
+        slider3.minimumValue = Float(miscData.minCommand)
+        slider3.maximumValue = Float(miscData.maxThrottle)
+        slider4.minimumValue = Float(miscData.minCommand)
+        slider4.maximumValue = Float(miscData.maxThrottle)
+        slider5.minimumValue = Float(miscData.minCommand)
+        slider5.maximumValue = Float(miscData.maxThrottle)
+        slider6.minimumValue = Float(miscData.minCommand)
+        slider6.maximumValue = Float(miscData.maxThrottle)
+        slider7.minimumValue = Float(miscData.minCommand)
+        slider7.maximumValue = Float(miscData.maxThrottle)
+        slider8.minimumValue = Float(miscData.minCommand)
+        slider8.maximumValue = Float(miscData.maxThrottle)
+    }
+    
 }

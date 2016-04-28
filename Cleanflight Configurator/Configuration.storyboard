@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="RwG-hd-ALP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="RwG-hd-ALP">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -1355,25 +1355,15 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Configuration" image="Config" selectedImage="Config" id="Yrd-at-HNP"/>
                     <navigationItem key="navigationItem" title="Configuration" id="eZl-Nz-tVM">
-                        <barButtonItem key="leftBarButtonItem" id="KoH-0m-oEk">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KuW-BI-zIx">
-                                <rect key="frame" x="20" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh"/>
-                                <connections>
-                                    <action selector="cancelAction:" destination="nuR-kD-jb9" eventType="touchUpInside" id="P4G-lD-1U9"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="KoH-0m-oEk">
+                            <connections>
+                                <action selector="cancelAction:" destination="nuR-kD-jb9" id="SlX-Tn-J9R"/>
+                            </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" id="40A-RB-PjQ">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ydr-Ug-fln">
-                                <rect key="frame" x="520" y="7" width="60" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="saveAction:" destination="nuR-kD-jb9" eventType="touchUpInside" id="kaB-2Q-3WL"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="40A-RB-PjQ">
+                            <connections>
+                                <action selector="saveAction:" destination="nuR-kD-jb9" id="ftv-Gg-hRE"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -1383,7 +1373,6 @@
                         <outlet property="boardPitchField" destination="Ml6-EI-pBd" id="XuY-Qk-zxC"/>
                         <outlet property="boardRollField" destination="2Pl-Ik-fQN" id="w4U-Hc-JIk"/>
                         <outlet property="boardYawField" destination="60D-bm-YCH" id="9m3-pm-aZv"/>
-                        <outlet property="cancelButton" destination="KuW-BI-zIx" id="51C-tz-6ra"/>
                         <outlet property="channelForwardingSwitch" destination="bsV-rx-wsL" id="H88-gY-UjN"/>
                         <outlet property="currentMeterField" destination="xT9-z2-nHU" id="DDT-Z6-PS2"/>
                         <outlet property="disarmMotorsSwitch" destination="Wtg-hr-dvy" id="4I2-KI-7Q6"/>
@@ -1402,7 +1391,6 @@
                         <outlet property="oneShotEscSwitch" destination="921-X1-QYv" id="ErS-Bh-mPL"/>
                         <outlet property="receiverTypeField" destination="nXs-Zb-FPh" id="6xk-h4-DQh"/>
                         <outlet property="rssiSwitch" destination="wfe-X5-bK4" id="jf3-lR-K1s"/>
-                        <outlet property="saveButton" destination="ydr-Ug-fln" id="5fN-vS-T15"/>
                         <outlet property="servoGimbalSwitch" destination="hQx-XX-7tJ" id="O34-YN-hfc"/>
                         <outlet property="softSerialSwitch" destination="t35-Mh-7AN" id="ZVH-hE-c0M"/>
                         <outlet property="sonarSwitch" destination="wkE-uE-MLt" id="Dk6-Rf-Sfn"/>

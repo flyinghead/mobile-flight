@@ -123,9 +123,13 @@ class FlightLogFile {
             var data = file.readDataOfLength(4)
             data.getBytes(&aircraftDataSize, length: 4)
             data = file.readDataOfLength(Int(aircraftDataSize))
-            AllAircraftData.allAircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! AllAircraftData
-            if let vehicle = (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle as? MSPVehicle {
-                AllAircraftData.allAircraftData.updateVehicle(vehicle)
+            if let aircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? AllAircraftData {
+                AllAircraftData.allAircraftData = aircraftData
+                if let vehicle = (UIApplication.sharedApplication().delegate as! AppDelegate).vehicle as? MSPVehicle {
+                    AllAircraftData.allAircraftData.updateVehicle(vehicle)
+                }
+            } else {
+                throw NSError(domain: "com.flyinghead", code: 0, userInfo: nil)
             }
         } else {
             file.seekToFileOffset(0)

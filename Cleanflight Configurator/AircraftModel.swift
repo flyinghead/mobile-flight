@@ -87,6 +87,69 @@ enum Mode : String {
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
     case AIR = "AIR MODE"
+    
+    var spokenName: String {
+        switch self {
+        case .ARM:
+            return "armed"
+        case .ANGLE:
+            return "angle mode"
+        case .HORIZON:
+            return "horizon mode"
+        case .BARO:
+            return "barometer mode"
+        case .MAG:
+            return "heading mode"
+        case .HEADFREE:
+            return "head free mode"
+        case .HEADADJ:
+            return "head adjust mode"
+        case .CAMSTAB:
+            return "camera stabilization"
+        case .CAMTRIG:
+            return "camera trigger"
+        case .GPSHOME:
+            return "return to home mode"
+        case .GPSHOLD:
+            return "GPS hold mode"
+        case .PASSTHRU:
+            return "Pass-through mode"
+        case .BEEPER:
+            return "beeper"
+        case .LEDMAX:
+            return "max led"
+        case .LEDLOW:
+            return "low led"
+        case .LLIGHTS:
+            return "led lights"
+        case .CALIB:
+            return "calibration mode"
+        case .GOVERNOR:
+            return "governor mode"
+        case .OSDSW:
+            return "on-screen display"
+        case .TELEMETRY:
+            return "telemetry"
+        case .AUTOTUNE:
+            return "auto-tune mode"
+        case .GTUNE:
+            return "g-tune mode"
+        case .SONAR:
+            return "sonar mode"
+        case .SERVO1:
+            return "servo one mode"
+        case .SERVO2:
+            return "servo two mode"
+        case .SERVO3:
+            return "servo three mode"
+        case .BLACKBOX:
+            return "blackbox"
+        case .FAILSAFE:
+            return "failsafe mode"
+        case .AIR:
+            return "air mode"
+        }
+    }
 }
 
 struct ModeRange : DictionaryCoding {
@@ -578,9 +641,43 @@ class Configuration : AutoCoded {
     var cycleTime = 0     // microsecond?
     var i2cError = 0
     var activeSensors = 0
-    var mode = 0
+    var mode = 0 {
+        didSet {
+            let modeChanges = oldValue ^ mode
+            if !_loading && modeChanges != 0 && userDefaultEnabled(.FlightModeAlert) {
+                guard let boxNames = Settings.theSettings.boxNames else {
+                    return
+                }
+                for (i, m) in boxNames.enumerate() {
+                    if modeChanges & (1 << i) != 0 {
+                        // Mode has changed
+                        guard let flightMode = Mode(rawValue: m) else {
+                            continue
+                        }
+                        var speech = flightMode.spokenName
+                        if mode & (1 << i) != 0 {
+                            // Activated
+                            if flightMode == .ARM {
+                                speech = "motors armed"
+                            } else {
+                                speech = speech + " activated"
+                            }
+                        } else {
+                            // Off
+                            if flightMode == .ARM {
+                                speech = "disarmed"
+                            } else {
+                                speech = speech + " off"
+                            }
+                        }
+                        VoiceMessage.theVoice.speak(speech)
+                    }
+                }
+            }
+        }
+    }
     var profile = 0
-    
+
     // MSP_ANALOG
     var voltage = 0.0 {      // V
         didSet {
@@ -618,14 +715,18 @@ class Configuration : AutoCoded {
     private var lastLocalSNRTime: NSDate?
     private var lastRemoteSNRTime: NSDate?
     
+    private var _loading = true
+
     override init() {
         super.init()
         Configuration.theConfig = self
+        _loading = false
     }
     
     // MARK: NSCoding
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        _loading = false
     }
     // MARK:
     
@@ -993,9 +1094,9 @@ class SensorData : AutoCoded {
                         headingVariation -= 360
                     }
                     turnRate = headingVariation / deltaTime / 2 + turnRate / 2
-                    if abs(turnRate) > 360 {
-                        NSLog("Turn rate %.0f, (dt=%f)", turnRate, deltaTime)
-                    }
+                    //if abs(turnRate) > 360 {
+                    //    NSLog("Turn rate %.0f, (dt=%f)", turnRate, deltaTime)
+                    //}
                     lastAttitude = NSDate()
                 }
             } else {

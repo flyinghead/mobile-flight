@@ -16,7 +16,7 @@ public class MSPCodec {
     
     private var state: ParserState = .Sync1
     private var directionOut: Bool = false
-    private var unknownMSPCode = false
+    private var unsupportedMSPCode = false
     private var expectedMsgLength: Int = 0
     private var checksum: UInt8 = 0
     private var messageBuffer: [UInt8]?
@@ -43,15 +43,15 @@ public class MSPCodec {
             }
         case .Direction:
             if b == 62 { // >
-                unknownMSPCode = false
+                unsupportedMSPCode = false
                 directionOut = false
                 state = .Length
             } else if b == 60 {     // <
-                unknownMSPCode = false
+                unsupportedMSPCode = false
                 directionOut = true
                 state = .Length
             } else if b == 33 {     // !
-                unknownMSPCode = true
+                unsupportedMSPCode = true
                 state = .Length
             } else {
                 NSLog("MSP expected '>', got %@", bstr)
@@ -80,11 +80,11 @@ public class MSPCodec {
         case .Checksum:
             state = .Sync1
             let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-            if checksum == b && mspCode != .MSP_UNKNOWN && directionOut != gcsMode && !unknownMSPCode {
+            if checksum == b && mspCode != .MSP_UNKNOWN && directionOut != gcsMode && !unsupportedMSPCode {
                 //NSLog("Received MSP %d", mspCode.rawValue)
                 return (true, mspCode, messageBuffer!)
             } else {
-                if unknownMSPCode {
+                if unsupportedMSPCode {
                     return (false, mspCode, messageBuffer!)
                 } else {
                     let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
@@ -95,7 +95,7 @@ public class MSPCodec {
                     } else {
                         NSLog("Unknown MSP code %d: %@", code, datalog)
                     }
-                    errors++
+                    errors += 1
                     // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
                     if checksum != b && b == 36 {     // $
                         state = .Sync2

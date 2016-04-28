@@ -25,7 +25,7 @@ class BarometerViewController: BaseSensorViewController {
         leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
 
-        if useImperialUnits() {
+        if selectedUnitSystem() != .Metric {
             leftAxis.customAxisMax = 10.0
             leftAxis.customAxisMin = 0.0
         } else {
@@ -38,7 +38,8 @@ class BarometerViewController: BaseSensorViewController {
         nf.maximumFractionDigits = 1
         chartView.leftAxis.valueFormatter = nf
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
         userDefaultsDidChange(self)
     }
 
@@ -50,7 +51,7 @@ class BarometerViewController: BaseSensorViewController {
         var yVals = [ChartDataEntry]()
         let initialOffset = samples.count - MaxSampleCount
         
-        for (var i = 0; i < samples.count; i++) {
+        for i in 0..<samples.count {
             yVals.append(ChartDataEntry(value: samples[i], xIndex: i - initialOffset))
         }
         
@@ -69,12 +70,6 @@ class BarometerViewController: BaseSensorViewController {
         }
         updateChartData()
     }
-
-    func timerDidFire(sender: AnyObject) {
-        // Done by appDelegate
-        // msp.sendMessage(.MSP_ALTITUDE, data: nil)
-    }
-    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -85,7 +80,7 @@ class BarometerViewController: BaseSensorViewController {
     func updateSensorData() {
         let sensorData = mspvehicle.sensorData
         
-        let value = useImperialUnits() ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
+        let value = selectedUnitSystem() != .Metric ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
@@ -98,6 +93,6 @@ class BarometerViewController: BaseSensorViewController {
     }
     
     func userDefaultsDidChange(sender: AnyObject) {
-        titleLabel.text = useImperialUnits() ? "Barometer - feet" : "Barometer - meters"
+        titleLabel.text = selectedUnitSystem() != .Metric ? "Barometer - feet" : "Barometer - meters"
     }
 }

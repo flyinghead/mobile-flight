@@ -7,13 +7,25 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ServosViewController: UITableViewController {
 
-    private func initialFetch() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "refreshServoConfig", forControlEvents: .ValueChanged)
+    }
+
+    @objc
+    private func refreshServoConfig() {
         msp.sendMessage(.MSP_SERVO_CONFIGURATIONS, data: nil, retry: 4, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
+                if !success {
+                    SVProgressHUD.showErrorWithStatus("Error fetching servo configuration")
+                }
             })
         })
 
@@ -22,7 +34,7 @@ class ServosViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        initialFetch()
+        refreshServoConfig()
     }
 
     // MARK: - Table view data source

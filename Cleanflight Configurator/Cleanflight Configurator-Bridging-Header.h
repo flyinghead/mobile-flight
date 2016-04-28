@@ -6,3 +6,6 @@
 
 #undef I        // defined in /usr/include/complex.h
 #import "ardupilotmega/mavlink.h"
+
+#import "IASKAppSettingsViewController.h"
+#import "IASKSettingsReader.h"

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, RcCommandsProvider {
+class Telemetry2ViewController: UIViewController {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -104,8 +104,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         
         voltsValueLabel.displayUnit = false
         
-        setInstrumentsUnitSystem()
-        
         let specificViewController: UIViewController
         if vehicle is MAVLinkVehicle {
             specificViewController = mavlinkTelemetryViewController
@@ -140,9 +138,21 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     }
 
     func setInstrumentsUnitSystem() {
-        speedScale.scale = useImperialUnits() ? SpeedScale * 1.852 : SpeedScale
-        altitudeScale.scale = useImperialUnits() ? AltScale * 2.54 * 12 / 100 : AltScale
-        if useImperialUnits() {
+        switch selectedUnitSystem() {
+        case .Aviation:
+            speedScale.scale = SpeedScale * METER_PER_NM / 1000
+            speedUnitLabel.text = "kn"
+        case .Imperial:
+            speedScale.scale = SpeedScale * METER_PER_MILE / 1000
+            speedUnitLabel.text = "mph"
+        default:
+            speedScale.scale = SpeedScale
+            speedUnitLabel.text = "km/h"
+        }
+
+        let metricUnits = selectedUnitSystem() == .Metric
+        altitudeScale.scale = !metricUnits ? AltScale / FEET_PER_METER : AltScale
+        if !metricUnits {
             altitudeScale.mainTicksInterval = 10
             altitudeScale.subTicksInterval = 5
             altitudeScale.subSubTicksInterval = 1
@@ -151,7 +161,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
             variometerScale.subTicksInterval = 0
             variometerScale.subSubTicksInterval = 0.2
             
-            speedUnitLabel.text = "kn"
             altitudeUnitLabel.text = "ft"
         } else {
             altitudeScale.mainTicksInterval = 1
@@ -162,10 +171,9 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
             variometerScale.subTicksInterval = 0.5
             variometerScale.subSubTicksInterval = 0.1
             
-            speedUnitLabel.text = "km/h"
             altitudeUnitLabel.text = "m"
         }
-        variometerScale.scale = useImperialUnits() ? VarioScale * 2.54 * 12 / 100 : VarioScale
+        variometerScale.scale = !metricUnits ? VarioScale / FEET_PER_METER : VarioScale
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -329,7 +337,9 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         }
         viewDisappeared = false
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
+        setInstrumentsUnitSystem()
         
         followMeButton.enabled = false
     }
@@ -342,7 +352,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         if let tabBarController = parentViewController as? UITabBarController {
             if !tabBarController.tabBar.hidden {
                 hideNavBarTimer?.invalidate()
-                hideNavBarTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "hideNavBar:", userInfo: nil, repeats: false)
+                hideNavBarTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(Telemetry2ViewController.hideNavBar(_:)), userInfo: nil, repeats: false)
             }
         }
     }
@@ -392,6 +402,26 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         vehicle.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
+    }
+    
+    private func convertAltitude(value: Double) -> Double {
+        if selectedUnitSystem() == .Metric {
+            return value
+        } else {
+            return value * FEET_PER_METER
+        }
+    }
+    
+    private func convertSpeed(value: Double) -> Double {
+        switch selectedUnitSystem() {
+        case .Aviation:
+            return value * 1000 / METER_PER_NM
+        case .Imperial:
+            return value * 1000 / METER_PER_MILE
+        default:
+            return value
+        }
     }
     
     @objc
@@ -472,5 +502,11 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
 
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
+    }
+    
+    func sendMSPCommands() {
+        if showRCSticksButton.selected && !actingRC {
+            msp.sendMessage(.MSP_RC, data: nil)
+        }
     }
 }

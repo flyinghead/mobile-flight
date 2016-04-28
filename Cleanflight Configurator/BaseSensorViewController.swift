@@ -9,12 +9,9 @@
 import UIKit
 import Charts
 
-class BaseSensorViewController: UIViewController, FlightDataListener {
+class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommandSender {
 
     let MaxSampleCount = 300
-    
-    var timerInterval = 0.1     // 100ms by default
-    var timer: NSTimer?
     
     var chartView: LineChartView!
     
@@ -29,24 +26,21 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
     }
 
     override func viewWillAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         
         msp.addDataListener(self)
-        
-        if (timer == nil) {
-            // Cleanflight/chrome uses configurable interval (default 50ms)
-            timer = NSTimer(timeInterval: timerInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-            NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
-        }
+
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
         
-        timer?.invalidate()
-        timer = nil
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
     
     func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
@@ -62,5 +56,9 @@ class BaseSensorViewController: UIViewController, FlightDataListener {
         dataSet.lineWidth = 2
 
         return dataSet;
+    }
+    
+    func sendMSPCommands() {
+        // Override in derived classes
     }
 }

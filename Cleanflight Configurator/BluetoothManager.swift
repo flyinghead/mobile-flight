@@ -31,12 +31,18 @@ struct BluetoothPeripheral {
 
 class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     // HM-10,11... series
-    let HM10ServiceUUID = "FFE0"
-    let HM10CharacteristicUUID = "FFE1"
+    static let HM10ServiceUUID = "FFE0"
+    static let HM10CharacteristicUUID = "FFE1"
     // Red Bear Lab BLEMini
-    let RBLServiceUUID = "713D0000-503E-4C75-BA94-3148F18D941E"
-    let RBLCharTxUUID = "713D0002-503E-4C75-BA94-3148F18D941E"
-    let RBLCharRxUUID = "713D0003-503E-4C75-BA94-3148F18D941E"
+    static let RBLServiceUUID = "713D0000-503E-4C75-BA94-3148F18D941E"
+    static let RBLCharTxUUID = "713D0002-503E-4C75-BA94-3148F18D941E"
+    static let RBLCharRxUUID = "713D0003-503E-4C75-BA94-3148F18D941E"
+    // Amp'ed RF BT43H (TBS Crossfire TX). This is a commonly used service so some unexpected devices may be discovered
+    static let BT43ServiceUUID = "180F"         // Battery Service
+    static let BT43CharacteristicUUID = "2A19"  // Battery Level
+    
+    let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID), CBUUID(string: BT43ServiceUUID)]
+    let characteristicUUIDs = [CBUUID(string: HM10CharacteristicUUID), CBUUID(string: RBLCharTxUUID), CBUUID(string: RBLCharRxUUID), CBUUID(string: BT43CharacteristicUUID)]
     
     let btQueue: dispatch_queue_t
     let manager: CBCentralManager
@@ -49,7 +55,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     var delegate: BluetoothDelegate?
     
     override init() {
-        btQueue = dispatch_queue_create("cleanflightBluetoothQueue", DISPATCH_QUEUE_CONCURRENT)
+        btQueue = dispatch_queue_create("cleanflightBluetoothQueue", DISPATCH_QUEUE_SERIAL)
         manager = CBCentralManager(delegate: nil, queue: btQueue, options: [CBCentralManagerOptionShowPowerAlertKey : NSNumber(integer: 1)])
         super.init()
         manager.delegate = self
@@ -70,7 +76,6 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             scanningRequested = false
             NSTimer.scheduledTimerWithTimeInterval(scanningDuration, target:self, selector:"scanTimer", userInfo: nil, repeats: false)
             
-            let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
             manager.scanForPeripheralsWithServices(serviceUUIDs, options: nil)
         }
     }
@@ -113,7 +118,6 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         activePeripheral = peripheral
         activePeripheral?.delegate = self
         
-        let serviceUUIDs = [CBUUID(string: HM10ServiceUUID), CBUUID(string: RBLServiceUUID)]
         activePeripheral?.discoverServices(serviceUUIDs)
         
         NSLog("Connected to device %@", peripheral.name!)
@@ -142,9 +146,9 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             delegate?.failedToConnectToPeripheral(BluetoothPeripheral(peripheral), error: error)
         } else {
             NSLog("Discover services for device %@ succeeded: %d services", peripheral.name!, peripheral.services!.count)
-            let service = peripheral.services![0]
-            let characteristicUUIDs = [CBUUID(string: HM10CharacteristicUUID), CBUUID(string: RBLCharTxUUID), CBUUID(string: RBLCharRxUUID)]
-            peripheral.discoverCharacteristics(characteristicUUIDs, forService: service)
+            for service in peripheral.services! {
+                peripheral.discoverCharacteristics(characteristicUUIDs, forService: service)
+            }
         }
     }
     
@@ -152,17 +156,19 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         if error == nil {
             NSLog("Discovered characteristics for service %@", service.UUID.UUIDString)
             var characteristic: CBCharacteristic!
-            if service.UUID.UUIDString == RBLServiceUUID {
+            if service.UUID.UUIDString == BluetoothManager.RBLServiceUUID {
                 for char in service.characteristics! {
-                    if char.UUID.UUIDString == RBLCharTxUUID {
+                    if char.UUID.UUIDString == BluetoothManager.RBLCharTxUUID {
                         characteristic = char
                     }
                 }
             } else {
-                characteristic = service.characteristics![0]
+                guard let characteristics = service.characteristics where !characteristics.isEmpty else {
+                    return
+                }
+                characteristic = characteristics[0]
             }
             peripheral.setNotifyValue(true, forCharacteristic: characteristic)
-            delegate?.connectedPeripheral(BluetoothPeripheral(peripheral))
         } else {
             NSLog("Error discovering characteristics for service %@: %@", service.UUID.UUIDString, error!)
             activePeripheral = nil
@@ -171,19 +177,37 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         }
     }
     
+    func peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+        if error == nil {
+            delegate?.connectedPeripheral(BluetoothPeripheral(peripheral))
+        } else {
+            NSLog("didUpdateNotificationStateForCharacteristic %@: %@", characteristic.UUID.UUIDString, error!)
+            activePeripheral = nil
+            manager.cancelPeripheralConnection(peripheral)
+            delegate?.failedToConnectToPeripheral(BluetoothPeripheral(peripheral), error: error)
+        }
+    }
+    
     func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         if error == nil {
-            //NSLog("Received %@", characteristic.value!)
+            //NSLog("didUpdateValueForCharacteristic %@", characteristic.value!)
             let nsdata = characteristic.value!
             var data = [UInt8](count: nsdata.length, repeatedValue: 0)
             nsdata.getBytes(&data, length:nsdata.length)
 
+            //NSLog("Read %@", beautifyData(data))
             delegate?.receivedData(BluetoothPeripheral(peripheral), data: data)
         } else {
             NSLog("Error updating value for characteristic: %@", error!)
         }
     }
 
+    func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
+        if error != nil {
+            NSLog("Error writing value for characteristic: %@", error!)
+        }
+    }
+    
     // MARK:
     
     func connect(peripheral: BluetoothPeripheral) {
@@ -210,29 +234,50 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         if (peripheral.uuid != activePeripheral?.identifier.UUIDString) {
             return
         }
-        if (activePeripheral!.services == nil || activePeripheral!.services?.count == 0 || activePeripheral?.services![0].characteristics == nil || activePeripheral?.services![0].characteristics?.count == 0) {
+        guard let services = activePeripheral!.services where !services.isEmpty else {
             return
         }
-        let service = activePeripheral!.services![0]
+        let service = services[0]
+        if service.characteristics == nil || service.characteristics!.isEmpty {
+            return
+        }
         var characteristic: CBCharacteristic!
-        if service.UUID.UUIDString == RBLServiceUUID {
+        if service.UUID.UUIDString == BluetoothManager.RBLServiceUUID {
             for char in service.characteristics! {
-                if char.UUID.UUIDString == RBLCharRxUUID {
+                if char.UUID.UUIDString == BluetoothManager.RBLCharRxUUID {
                     characteristic = char
                     break
                 }
             }
         } else {
-            characteristic = activePeripheral!.services![0].characteristics![0]
+            characteristic = service.characteristics![0]
         }
         if characteristic == nil {
             return
         }
         
+        //NSLog("Writing %@", beautifyData(data))
         let nsdata = NSData(bytes: data, length: data.count)
         for (var i = 0; i < nsdata.length; i += 20) {
             let datarange = nsdata.subdataWithRange(NSRange(location: i, length: min(nsdata.length - i, 20)))
-            activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithoutResponse)
+            if characteristic.properties.contains(.WriteWithoutResponse) {
+                activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithoutResponse)
+            } else {
+                activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithResponse)
+            }
         }
+    }
+    
+    private func beautifyData(data: [UInt8]) -> String {
+        var string = ""
+        for var c in data {
+            if c >= 32 && c < 128 {
+                string += NSString(bytes: &c, length: 1, encoding: NSASCIIStringEncoding)! as String
+            } else {
+                string += String(format: "'%d'", c)
+            }
+            string += " "
+        }
+        return string
     }
 }

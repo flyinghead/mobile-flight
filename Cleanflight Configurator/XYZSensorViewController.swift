@@ -27,7 +27,7 @@ class XYZSensorViewController: BaseSensorViewController {
         var yValsZ = [ChartDataEntry]()
         let initialOffset = xSensor.count - MaxSampleCount
         
-        for (var i = 0; i < xSensor.count; i++) {
+        for i in 0..<xSensor.count {
             yValsX.append(ChartDataEntry(value: xSensor[i], xIndex: i - initialOffset))
             yValsY.append(ChartDataEntry(value: ySensor[i], xIndex: i - initialOffset))
             yValsZ.append(ChartDataEntry(value: zSensor[i], xIndex: i - initialOffset))
@@ -53,7 +53,7 @@ class XYZSensorViewController: BaseSensorViewController {
         updateChartData()
     }
 
-    func timerDidFire(sender: AnyObject) {
+    override func sendMSPCommands() {
         msp.sendMessage(.MSP_RAW_IMU, data: nil)
     }
 
@@ -63,11 +63,6 @@ class XYZSensorViewController: BaseSensorViewController {
         xSensor.removeAll()
         ySensor.removeAll()
         zSensor.removeAll()
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        NSLog("Ciao")
     }
     
     func updateSensorData() {

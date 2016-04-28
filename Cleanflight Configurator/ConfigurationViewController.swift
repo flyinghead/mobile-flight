@@ -11,8 +11,6 @@ import DownPicker
 import SVProgressHUD
 
 class ConfigurationViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
-    @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var mixerTypeTextField: UITextField!
     @IBOutlet weak var mixerTypeView: UIImageView!
     @IBOutlet weak var motorStopField: UILabel!
@@ -50,7 +48,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     override func viewDidLoad() {
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
-        mixerTypePicker!.addTarget(self, action: "mixerTypeChanged:", forControlEvents: .ValueChanged)
+        mixerTypePicker!.addTarget(self, action: #selector(ConfigurationViewController.mixerTypeChanged(_:)), forControlEvents: .ValueChanged)
         mixerTypePicker!.setPlaceholder("")
         
         fetchInformation()
@@ -68,8 +66,18 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         msp.removeDataListener(self)
     }
     
+    private func enableUserInteraction(enable: Bool) {
+        self.tableView.userInteractionEnabled = enable
+        self.navigationItem.leftBarButtonItem!.enabled = enable
+        self.navigationItem.rightBarButtonItem!.enabled = enable
+    }
+    
     func fetchInformation() {
-        tableView.userInteractionEnabled = false
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.stopTimer()
+        
+        enableUserInteraction(false)
+        
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
         }
@@ -91,7 +99,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                                                     self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
                                                                         if success {
                                                                             dispatch_async(dispatch_get_main_queue(), {
-                                                                                self.tableView.userInteractionEnabled = true
+                                                                                appDelegate.startTimer()
+                                                                                self.enableUserInteraction(true)
                                                                                 SVProgressHUD.dismiss()
                                                                             })
                                                                         } else {
@@ -112,7 +121,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                             })
                                         } else {
                                             dispatch_async(dispatch_get_main_queue(), {
-                                                self.tableView.userInteractionEnabled = true
+                                                appDelegate.startTimer()
+                                                self.enableUserInteraction(true)
                                                 SVProgressHUD.dismiss()
                                             })
                                         }
@@ -136,6 +146,9 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func fetchInformationFailed() {
         dispatch_async(dispatch_get_main_queue(), {
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.startTimer()
+            self.enableUserInteraction(true)
             self.showError("Communication error")
         })
     }
@@ -205,9 +218,6 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         newSettings!.boardAlignRoll = Int(boardRollField.value)
         newSettings!.boardAlignYaw = Int(boardYawField.value)
         
-        saveButton.enabled = false
-        saveButton.setTitle("Saving...", forState: .Disabled)
-        
         saveFeatureSwitchValue(rssiSwitch, feature: .RssiAdc)
         saveFeatureSwitchValue(inFlightCalSwitch, feature: .InflightCal)
         saveFeatureSwitchValue(servoGimbalSwitch, feature: .ServoTilt)
@@ -220,8 +230,9 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         saveFeatureSwitchValue(blackboxSwitch, feature: .Blackbox)
         saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
         
-        SVProgressHUD.showWithStatus("Saving settings")
-        
+        SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
+        enableUserInteraction(false)
+
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
         msp.sendSerialConfig(self.newSettings!, callback: { success in
@@ -285,11 +296,8 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                 })
                 self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
                     if success {
-                        // Wait 1500 ms
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-                            self.saveButton.enabled = true
-                            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                            appDelegate.startTimer()
+                        // Wait 3 sec
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(3000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
                             // Refetch information from FC
                             self.fetchInformation()
                         })
@@ -305,8 +313,10 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func saveConfigFailed() {
         dispatch_async(dispatch_get_main_queue(), {
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.startTimer()
             self.showError("Save failed")
-            self.saveButton.enabled = true
+            self.enableUserInteraction(true)
         })
     }
     
@@ -327,11 +337,6 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func mixerTypeChanged(sender: AnyObject) {
         mixerTypeView.image = MultiTypes.getImage(mixerTypePicker!.selectedIndex + 1)
-        enableSaveAndCancel()
-    }
-    private func enableSaveAndCancel() {
-        saveButton.enabled = true
-        cancelButton.enabled = true
     }
     
     func receivedSettingsData() {

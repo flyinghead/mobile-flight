@@ -279,14 +279,14 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
 
     func setMode(mode: Mode) {
         if let index = boxnames.indexOf(mode) {
-            self.mode = self.mode | UInt32(1 << Int(index.value))
+            self.mode = self.mode | UInt32(1 << index)
         } else {
             XCTFail("Unknown mode")
         }
     }
     func unsetMode(mode: Mode) {
         if let index = boxnames.indexOf(mode) {
-            self.mode = self.mode & ~UInt32(1 << Int(index.value))
+            self.mode = self.mode & ~UInt32(1 << index)
         } else {
             XCTFail("Unknown mode")
         }

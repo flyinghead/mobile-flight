@@ -58,32 +58,52 @@ func writeInt8(i: Int) -> UInt8 {
 
 // Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.
 func formatWithUnit(reading: Double, unit: String) -> String {
+    let suffix = unit.isEmpty ? "" : " ".stringByAppendingString(unit)
     if reading < 10 {
-        return String(format: "%.1f%@", locale: NSLocale.currentLocale(), reading, unit)
+        return String(format: "%.1f%@", locale: NSLocale.currentLocale(), reading, suffix)
     } else {
-        return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, unit)
+        return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, suffix)
     }
 }
 
+let FEET_PER_METER = 100.0 / 2.54 / 12
+let METER_PER_MILE = 1609.344
+let METER_PER_NM = 1852.0
+
 func formatDistance(meters: Double) -> String {
-    if useImperialUnits() {
-        if meters >= 1852 {
-            // Use nautical mile
-            return formatWithUnit(meters / 1852, unit: "NM")
+    switch selectedUnitSystem() {
+    case .Imperial:
+        if meters >= METER_PER_MILE {
+            // Statute mile
+            return formatWithUnit(meters / METER_PER_MILE, unit: "mi")
         } else {
-            // Use feet
-            return formatWithUnit(meters * 100 / 2.54 / 12, unit: "ft")
+            // Feet
+            return formatWithUnit(meters * FEET_PER_METER, unit: "ft")
         }
-    } else {
-        // Meters
-        return formatWithUnit(meters, unit: "m")
+        
+    case .Aviation:
+        if meters >= METER_PER_NM {
+            // Nautical mile
+            return formatWithUnit(meters / METER_PER_NM, unit: "NM")
+        } else {
+            // Feet
+            return formatWithUnit(meters * FEET_PER_METER, unit: "ft")
+        }
+    default:
+        if meters >= 1000 {
+            // Kilometer
+            return formatWithUnit(meters / 1000, unit: "km")
+        } else {
+            // Meter
+            return formatWithUnit(meters, unit: "m")
+        }
     }
 }
 
 func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
-    if useImperialUnits() {
+    if selectedUnitSystem() != .Metric {
         // Feet
-        return formatWithUnit(meters * 100 / 2.54 / 12, unit: appendUnit ? "ft" : "")
+        return formatWithUnit(meters * FEET_PER_METER, unit: appendUnit ? "ft" : "")
     } else {
         // Meters
         return formatWithUnit(meters, unit: appendUnit ? "m" : "")
@@ -91,28 +111,32 @@ func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
 }
 
 func formatSpeed(kmh: Double) -> String {
-    if useImperialUnits() {
+    switch selectedUnitSystem() {
+    case .Imperial:
+        // mile/h
+        return formatWithUnit(kmh * 1000 / METER_PER_MILE, unit: "mph")
+    case .Aviation:
         // Knots
-        return formatWithUnit(kmh / 1.852, unit: "kn")
-    } else {
-        // Meters
+        return formatWithUnit(kmh * 1000 / METER_PER_NM, unit: "kn")
+    default:
+        // km/h
         return formatWithUnit(kmh, unit: "km/h")
     }
 }
 
-func useImperialUnits() -> Bool {
-    switch userDefaultAsString(.UnitSystem) {
-    case "imperial":
-        return true
-    case "metric":
-        return false
-    default:
-        return !(NSLocale.currentLocale().objectForKey(NSLocaleUsesMetricSystem) as? Bool ?? true)
+func formatTemperature(celsius: Double) -> String {
+    if selectedUnitSystem() == .Imperial {
+        return String(format: "%.0f° F", celsius * 1.8 + 32)
+    } else {
+        return String(format: "%.0f° C", celsius)
     }
-    
 }
 
 func constrain(n: Double, min minimum: Double, max maximum: Double) -> Double {
+    return min(maximum, max(minimum, n))
+}
+
+func constrain(n: Int, min minimum: Int, max maximum: Int) -> Int {
     return min(maximum, max(minimum, n))
 }
 
@@ -141,9 +165,29 @@ private func getArcInRadians(p1: Position, _ p2: Position) -> Double {
     var longitudeH = sin(longitudeArc / 2)
     longitudeH *= longitudeH
     
-    let tmp = cos(p1.latitude * M_PI / 180) * cos(p2.latitude * M_PI / 180)
+    let tmp = cos(toRadians(p1.latitude)) * cos(toRadians(p2.latitude))
     
     return 2 * asin(sqrt(latitudeH + tmp * longitudeH))
+}
+
+func getHeading(from: GPSLocation, to: GPSLocation) -> Double {
+    let lat1 = toRadians(from.latitude)
+    let lon1 = toRadians(from.longitude)
+    let lat2 = toRadians(to.latitude)
+    let lon2 = toRadians(to.longitude)
+    
+    let x = sin(lon2 - lon1) * cos(lat2)
+    let y = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2 - lon1)
+    let heading = atan2(x, y)
+    return (toDegrees(heading) + 360) % 360
+}
+
+private func toRadians(a: Double) -> Double {
+    return a * M_PI / 180
+}
+
+private func toDegrees(a: Double) -> Double {
+    return a / M_PI * 180
 }
 
 // Swift version of the Java "synchronized" section
@@ -151,4 +195,21 @@ func synchronized(lock: AnyObject, closure: () -> Void) {
     objc_sync_enter(lock)
     closure()
     objc_sync_exit(lock)
+}
+
+let compassPoints = [ "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N" ]
+
+func compassPoint(heading: Double) -> String {
+    var localHeading = heading
+    localHeading %= 360
+    if localHeading < 0 {
+        localHeading += 360
+    }
+
+    for i in 0..<17 {
+        if localHeading < (Double(i) + 0.5) * 360 / 16 {
+            return compassPoints[i]
+        }
+    }
+    return "?"
 }

@@ -20,11 +20,11 @@
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
-			<string>RSSI Low:</string>
+			<string>RSSI Low</string>
 			<key>Key</key>
 			<string>rssialarm_low</string>
 			<key>DefaultValue</key>
-			<string>60</string>
+			<string>20</string>
 			<key>KeyboardType</key>
 			<string>NumberPad</string>
 			<key>IASKTextAlignment</key>
@@ -34,11 +34,11 @@
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
-			<string>RSSI Critical:</string>
+			<string>RSSI Critical</string>
 			<key>Key</key>
 			<string>rssialarm_critical</string>
 			<key>DefaultValue</key>
-			<string>40</string>
+			<string>10</string>
 			<key>KeyboardType</key>
 			<string>NumberPad</string>
 			<key>IASKTextAlignment</key>

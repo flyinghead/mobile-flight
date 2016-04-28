@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -25,9 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Required for Follow Me feature</string>
+	<string>Used for Follow Me feature</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Required to display your position on the map</string>
+	<string>Used to display your position on the map and for local weather reports</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

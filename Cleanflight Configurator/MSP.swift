@@ -40,6 +40,7 @@ class DataMessageRetryHandler : MessageRetryHandler {
 class MSPParser : ProtocolHandler {
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
+    let latencyMsgs = Set<MSP_code>(arrayLiteral: .MSP_STATUS, .MSP_RAW_GPS, .MSP_COMP_GPS, .MSP_ALTITUDE, .MSP_ATTITUDE, .MSP_ANALOG, .MSP_WP)
     
     var datalog: NSFileHandle? {
         didSet {
@@ -52,7 +53,7 @@ class MSPParser : ProtocolHandler {
     }
     private var datalogStart: NSDate?
     
-    var outputQueue = [[UInt8]]()
+    private var outputQueue = [[UInt8]]()
     
     var dataListeners = [FlightDataListener]()
     var dataListenersLock = NSObject()
@@ -71,6 +72,43 @@ class MSPParser : ProtocolHandler {
     
     init() {
         _vehicle = MSPVehicle(self)
+    }
+
+    var receiveStats = [(date: NSDate, size: Int)]()
+    private var sentDates = [MSP_code : NSDate]()
+    private var msgLatencies = [MSP_code : Double]()
+    
+    var incomingBytesPerSecond: Int {
+        var byteCount = 0
+        objc_sync_enter(self)
+        for (date, size) in receiveStats {
+            if -date.timeIntervalSinceNow >= 0.5 {
+                break
+            }
+            byteCount += size
+        }
+        objc_sync_exit(self)
+        return byteCount * 2
+    }
+    
+    var latency: Double {
+        if msgLatencies.isEmpty {
+            return 0.2      // Unknown. Let's pretend it's 200ms
+        }
+        var latencies = [Double]()
+        for mspCode in msgLatencies.keys {
+            var latency = msgLatencies[mspCode]!
+            if let sentDate = sentDates[mspCode] where -sentDate.timeIntervalSinceNow > latency {
+                latency = -sentDate.timeIntervalSinceNow
+            }
+            latencies.append(min(latency, 1.0))
+        }
+        latencies.sortInPlace()
+        if latencies.count % 2 == 1 {
+            return latencies[latencies.count / 2]
+        } else {
+            return (latencies[latencies.count / 2 - 1] + latencies[latencies.count / 2]) / 2
+        }
     }
     
     func read(data: [UInt8]) {
@@ -94,6 +132,10 @@ class MSPParser : ProtocolHandler {
         
         for b in data {
             if let (success, mspCode, message) = codec.decode(b) {
+                if let date = self.sentDates[mspCode] {
+                    msgLatencies[mspCode] = -date.timeIntervalSinceNow
+                    self.sentDates.removeValueForKey(mspCode)
+                }
                 if success {
                     if mspCode != .MSP_SIKRADIO {
                         // MSP_SIKRADIO messages are injected into the stream by the local radio itself
@@ -125,8 +167,6 @@ class MSPParser : ProtocolHandler {
             if message.count < 4 {
                 return false
             }
-            NSLog("Received deprecated msp command: MSP_IDENT")
-            // Deprecated
             config.version = String(format:"%d.%02d", message[0] / 100, message[0] % 100)
             config.multiType = Int(message[1])
             config.mspVersion = Int(message[2])
@@ -194,7 +234,7 @@ class MSPParser : ProtocolHandler {
             if message.count < 16 {
                 return false
             }
-            for var i = 0; i < 8; i++ {
+            for i in 0..<8 {
                 motorData.servoValue[i] = readUInt16(message, index: i*2)
             }
             pingMotorListeners()
@@ -202,7 +242,7 @@ class MSPParser : ProtocolHandler {
         case .MSP_SERVO_CONFIGURATIONS:
             let servoConfSize = 14
             var servoConfigs = [ServoConfig]()
-            for (var i = 0; (i + 1) * servoConfSize <= message.count; i++) {
+            for i in 0..<message.count / servoConfSize {
                 let offset = i * servoConfSize
                 var servoConfig = ServoConfig(
                     minimumRC: readInt16(message, index: offset),
@@ -231,10 +271,10 @@ class MSPParser : ProtocolHandler {
             }
             /*
             var nMotors = 0
-            for (var i = 0; i < 8; i++) {
+            for i in 0..<8 {
                 motorData.throttle[i] = readUInt16(message, index: i*2)
                 if (motorData.throttle[i] > 0) {
-                    nMotors++
+                    nMotors += 1
                 }
             }
             motorData.nMotors = nMotors
@@ -272,7 +312,7 @@ class MSPParser : ProtocolHandler {
                 channelCount = receiver.channels.count
             }
             receiver.activeChannels = channelCount
-            for (var i = 0; i < channelCount; i++) {
+            for i in 0..<channelCount {
                 receiver.channels[i] = Int(readUInt16(message, index: (i * 2)))
             }
             pingReceiverListeners()
@@ -363,7 +403,6 @@ class MSPParser : ProtocolHandler {
             pingSonarListeners()
 
         case .MSP_ANALOG:
-            //NSLog("ANALOG received")
             if message.count < 7 {
                 return false
             }
@@ -400,7 +439,7 @@ class MSPParser : ProtocolHandler {
             
         case .MSP_PID:
             settings.pidValues = [[Double]]()
-            for var i = 0; i < message.count / 3; i++ {
+            for i in 0..<message.count / 3 {
                 settings.pidValues!.append([Double]())
                 
                 if i <= 3 || i >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
@@ -442,18 +481,28 @@ class MSPParser : ProtocolHandler {
             offset += 2
             misc.failsafeThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.gpsType = Int(message[offset++])
-            misc.gpsBaudRate = Int(message[offset++])
-            misc.gpsUbxSbas = Int(message[offset++])
-            misc.multiwiiCurrentOutput = Int(message[offset++])
-            misc.rssiChannel = Int(message[offset++])
-            misc.placeholder2 = Int(message[offset++])
+            misc.gpsType = Int(message[offset])
+            offset += 1
+            misc.gpsBaudRate = Int(message[offset])
+            offset += 1
+            misc.gpsUbxSbas = Int(message[offset])
+            offset += 1
+            misc.multiwiiCurrentOutput = Int(message[offset])
+            offset += 1
+            misc.rssiChannel = Int(message[offset])
+            offset += 1
+            misc.placeholder2 = Int(message[offset])
+            offset += 1
             misc.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
             offset += 2;
-            misc.vbatScale = Int(message[offset++]) // 10-200
-            misc.vbatMinCellVoltage = Double(message[offset++]) / 10; // 10-50
-            misc.vbatMaxCellVoltage = Double(message[offset++]) / 10; // 10-50
-            misc.vbatWarningCellVoltage = Double(message[offset++]) / 10; // 10-50
+            misc.vbatScale = Int(message[offset]) // 10-200
+            offset += 1
+            misc.vbatMinCellVoltage = Double(message[offset]) / 10; // 10-50
+            offset += 1
+            misc.vbatMaxCellVoltage = Double(message[offset]) / 10; // 10-50
+            offset += 1
+            misc.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
+            offset += 1
             pingDataListeners()
             
         case .MSP_MOTOR_PINS:
@@ -466,7 +515,7 @@ class MSPParser : ProtocolHandler {
         case .MSP_BOXNAMES:
             settings.boxNames = [String]()
             var buf = [UInt8]()
-            for (var i = 0; i < message.count; i++) {
+            for i in 0..<message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
                     settings.boxNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()
@@ -479,7 +528,7 @@ class MSPParser : ProtocolHandler {
         case .MSP_PIDNAMES:
             settings.pidNames = [String]()
             var buf = [UInt8]()
-            for (var i = 0; i < message.count; i++) {
+            for i in 0..<message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
                     settings.pidNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()
@@ -522,7 +571,7 @@ class MSPParser : ProtocolHandler {
             
         case .MSP_BOXIDS:
             settings.boxIds = [Int]()
-            for (var i = 0; i < message.count; i++) {
+            for i in 0..<message.count {
                 settings.boxIds?.append(Int(message[i]))
             }
             pingSettingsListeners()
@@ -536,7 +585,7 @@ class MSPParser : ProtocolHandler {
                 return false
             }
             var sats = [Satellite]()
-            for (var i = 0; i < numSat; i++) {
+            for i in 0..<numSat {
                 sats.append(Satellite(channel: Int(message[i * 4 + 1]), svid: Int(message[i * 4 + 2]), quality: GpsSatQuality(rawValue: Int(message[i * 4 + 3])), cno: Int(message[i * 4 + 4])))
             }
             gpsData.satellites = sats
@@ -578,8 +627,8 @@ class MSPParser : ProtocolHandler {
             }
             settings.rxFailMode = [Int]()
             settings.rxFailValue = [Int]()
-            for var i = 0; i < message.count / 3; i++ {
-                settings.rxFailMode!.append(Int(message[i*3]))
+            for i in 0..<message.count / 3 {
+                settings.rxFailMode!.append(Int(message[i * 3]))
                 settings.rxFailValue!.append(readUInt16(message, index: i * 3 + 1))
             }
             pingSettingsListeners()
@@ -659,7 +708,7 @@ class MSPParser : ProtocolHandler {
         case .MSP_MODE_RANGES:
             let nRanges = message.count / 4
             var modeRanges = [ModeRange]()
-            for (var i = 0; i < nRanges; i++) {
+            for i in 0..<nRanges {
                 let offset = i * 4
                 let start = 900 + Int(message[offset+2]) * 25
                 let end = 900 + Int(message[offset+3]) * 25
@@ -681,7 +730,7 @@ class MSPParser : ProtocolHandler {
                 return false
             }
             settings.portConfigs = [PortConfig]()
-            for var i = 0; i < nPorts; i++ {
+            for i in 0..<nPorts {
                 let offset = i * 7
                 settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(rawValue: Int(message[offset]))!, functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(rawValue: Int(message[offset+3]))!, gpsBaudRate: BaudRate(rawValue: Int(message[offset+4]))!, telemetryBaudRate: BaudRate(rawValue: Int(message[offset+5]))!, blackboxBaudRate: BaudRate(rawValue: Int(message[offset+6]))!))
             }
@@ -777,15 +826,15 @@ class MSPParser : ProtocolHandler {
     }
     
     func makeSendMessageTimer(handler: MessageRetryHandler) {
-        // FIXME This sucks. NSTimer should not be scheduled on the main thread. Ideally they should be on their own run loop? or concurrent?
         dispatch_async(dispatch_get_main_queue(), {
             if !handler.cancelled {
-                handler.timer = NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "sendMessageTimedOut:", userInfo: handler, repeats: false)
+                handler.timer = NSTimer(timeInterval: 0.3, target: self, selector: #selector(MSPParser.sendMessageTimedOut(_:)), userInfo: handler, repeats: false)
+                NSRunLoop.mainRunLoop().addTimer(handler.timer!, forMode: NSRunLoopCommonModes)
             }
         })
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, callback: ((success: Bool) -> Void)?) {
+    func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, flush: Bool = true, callback: ((success: Bool) -> Void)?) {
         if retry > 0 || callback != nil {
             let messageRetry = MessageRetryHandler(code: code, data: data, maxTries: retry, callback: callback)
             makeSendMessageTimer(messageRetry)
@@ -794,18 +843,18 @@ class MSPParser : ProtocolHandler {
             retriedMessages[code] = messageRetry
             objc_sync_exit(retriedMessageLock)
         }
-        
-        addOutputMessage(codec.encode(code, message: data))
+        addOutputMessage(codec.encode(code, message: data), flush: flush)
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?) {
-        sendMessage(code, data: data, retry: 0, callback: nil)
+    func sendMessage(code: MSP_code, data: [UInt8]?, flush: Bool = true) {
+        sendMessage(code, data: data, retry: 0, flush: flush, callback: nil)
     }
     
     @objc
     func sendMessageTimedOut(timer: NSTimer) {
         let handler = timer.userInfo as! MessageRetryHandler
-        if ++handler.tries > handler.maxTries {
+        handler.tries += 1
+        if handler.tries > handler.maxTries {
             handler.cancelled = true
             NSLog("sendMessage %d failed", handler.code.rawValue)
             callErrorCallback(handler.code)
@@ -1171,6 +1220,8 @@ class MSPParser : ProtocolHandler {
         commChannel?.close()
         commChannel = nil
         FlightLogFile.close(self)
+        sentDates.removeAll()
+        msgLatencies.removeAll()
         pingCommunicationStatusListeners(false)
     }
     
@@ -1194,19 +1245,32 @@ class MSPParser : ProtocolHandler {
         }
         let msg = outputQueue.removeFirst()
         objc_sync_exit(self)
+        
+        if msg[0] == 36 {   // $
+            if let mspCode = MSP_code(rawValue: Int(msg[4])) where latencyMsgs.contains(mspCode) {
+                let sentDate = sentDates[mspCode]
+                if sentDate == nil {
+                    sentDates[mspCode] = NSDate()
+                }
+            }
+        }
+        
         return msg
     }
     
-    func addOutputMessage(msg: [UInt8]) {
+    func addOutputMessage(msg: [UInt8], flush: Bool = true) {
         objc_sync_enter(self)
         if msg[0] == 36 {   // $
             let msgCode = msg[4]
-            for var i = 0; i < outputQueue.count; i++ {
+            for i in 0..<outputQueue.count {
                 let curMsg = outputQueue[i]
                 if curMsg.count >= 5 && curMsg[4] == msgCode {
                     outputQueue[i] = msg
                     objc_sync_exit(self)
-                    commChannel?.flushOut()
+                    //NSLog("Message %d already in output queue", msgCode)
+                    if flush {
+                        commChannel?.flushOut()
+                    }
                     return
                 }
             }
@@ -1214,7 +1278,9 @@ class MSPParser : ProtocolHandler {
         outputQueue.append(msg)
         objc_sync_exit(self)
         
-        commChannel?.flushOut()
+        if flush {
+            commChannel?.flushOut()
+        }
     }
     
     var vehicle: Vehicle {

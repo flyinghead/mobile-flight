@@ -69,7 +69,7 @@ class CommunicationLostAlarm : VoiceAlarm {
     }
     
     override func voiceAlert() -> VoiceAlert {
-        return VoiceAlert(speech: "Communication Lost", repeatInterval: 10.0, condition: { self.on })
+        return VoiceAlert(speech: "Communication Lost", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 
@@ -91,7 +91,7 @@ class GPSFixLostAlarm : VoiceAlarm {
     }
     
     override func voiceAlert() -> VoiceAlert {
-        return VoiceAlert(speech: "GPS Fix Lost", repeatInterval: 10.0, condition: { self.on })
+        return VoiceAlert(speech: "GPS Fix Lost", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 
@@ -126,7 +126,7 @@ class BatteryLowAlarm : VoiceAlarm {
     }
     
     override func voiceAlert() -> VoiceAlert {
-        return VoiceAlert(speech: batteryStatus() == .Critical ? "Battery level critical" : "Battery low", repeatInterval: 10.0, condition: { self.on })
+        return VoiceAlert(speech: batteryStatus() == .Critical ? "Battery level critical" : "Battery low", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 
@@ -144,15 +144,21 @@ class RSSILowAlarm : VoiceAlarm {
     }
     
     override func voiceAlert() -> VoiceAlert! {
-        return VoiceAlert(speech: vehicle.rssi.value <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.on })
+        return VoiceAlert(speech: vehicle.rssi.value <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 
-class VoiceMessage: NSObject, FlightDataListener {
+class VoiceMessage: NSObject, FlightDataListener, AVSpeechSynthesizerDelegate {
     static let theVoice = VoiceMessage()
     let synthesizer = AVSpeechSynthesizer()
     
     private var alerts = [String: VoiceAlert]()
+    private var speeches = Set<String>()
+    
+    private override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
     
     private func addAlert(name: String, alert: VoiceAlert) {
         if let oldAlert = alerts[name] {
@@ -166,9 +172,14 @@ class VoiceMessage: NSObject, FlightDataListener {
     }
 
     func speak(speech: String) {
+        if speeches.contains(speech) {
+            return
+        }
+        speeches.insert(speech)
+        
         let utterance = AVSpeechUtterance(string: speech)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.5 // FIXME Why do we need to increase it??
+        utterance.rate = (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 9.0 ? 0.52 : 0.15
         synthesizer.speakUtterance(utterance)
     }
     
@@ -178,10 +189,22 @@ class VoiceMessage: NSObject, FlightDataListener {
         }
     }
     
-    func stopAlerts() {
+    private func stopAlerts() {
         for alert in alerts.values {
             alert.timer?.invalidate()
         }
         alerts.removeAll()
+    }
+    
+    func stopAll() {
+        stopAlerts()
+        synthesizer.stopSpeakingAtBoundary(.Word)
+        speeches.removeAll()
+    }
+    
+    // MARK: AVSpeechSynthesizerDelegate
+    
+    func speechSynthesizer(synthesizer: AVSpeechSynthesizer, didStartSpeechUtterance utterance: AVSpeechUtterance) {
+        speeches.remove(utterance.speechString)
     }
 }
