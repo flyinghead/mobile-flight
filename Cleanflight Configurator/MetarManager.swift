@@ -19,7 +19,7 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
     private var urlSession : NSURLSession!
     private var dataTask: NSURLSessionDataTask?
     
-    private var position: GPSLocation!
+    private var position: Position!
     private var rangeMultiplier = 1.0
     private var lastRetrieveDate: NSDate?
     private var observers = [(object: AnyObject, selector: Selector)]()
@@ -91,7 +91,7 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
                     let coordinates = geometry["coordinates"] as! Array<NSNumber>
                     
                     let metarReport = MetarReport()
-                    metarReport.position = GPSLocation(latitude: coordinates[1].doubleValue, longitude: coordinates[0].doubleValue)
+                    metarReport.position = Position(latitude: coordinates[1].doubleValue, longitude: coordinates[0].doubleValue)
                     
                     let properties = airport["properties"] as! Dictionary<String, NSObject>
                     metarReport.site = properties["site"] as? NSString as? String ?? "Unknown"
@@ -249,7 +249,7 @@ class MetarReport {
                                         "VC" : "%@", "PR" : "partial %@", "DR" : "blowing %@", "SH" : "%@ showers", "FZ" : "freezing %@" ]
     
     var site = "Unknown"
-    var position: GPSLocation!
+    var position: Position!
     var observationTime: NSDate!
     var temperature: Double?        // ° Celsius
     var windSpeed: Double?          // knots

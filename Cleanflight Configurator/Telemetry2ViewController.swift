@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController {
+class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s

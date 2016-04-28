@@ -10,7 +10,7 @@ import UIKit
 import SVProgressHUD
 import CoreLocation
 
-typealias LocationCallback = (GPSLocation) -> Void
+typealias LocationCallback = (Position) -> Void
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLocationManagerDelegate, UserLocationProvider {
@@ -154,7 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         lastDataReceived = nil
     }
 
-    func logTimerDidFire(sender: AnyObject) {
+    func statusTimerDidFire(sender: AnyObject?) {
         msp.sendMessage(.MSP_STATUS, data: nil, flush: false)
         statusSwitch = !statusSwitch
         if statusSwitch {
@@ -297,7 +297,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
                 })
             }
             for callback in currentLocationCallbacks {
-                callback(GPSLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+                callback(Position(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
             }
             currentLocationCallbacks.removeAll()
             if !followMeActive {

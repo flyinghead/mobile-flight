@@ -121,7 +121,6 @@ class MotorsViewController: UIViewController, MSPCommandSender {
             if nMotors >= 8 {
                 slider8.value = masterSlider.value
             }
-            sendMotorData()
         }
     }
 
@@ -190,6 +189,9 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         super.viewWillDisappear(animated)
         
         vehicle.motors.removeObserver(self)
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.removeMSPCommandSender(self)
     }
 
     private func receivedMotorData() {
@@ -237,10 +239,6 @@ class MotorsViewController: UIViewController, MSPCommandSender {
             
             msp.sendMessage(.MSP_SET_MOTOR, data: buffer)
         }
-        msp.removeDataListener(self)
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
     }
     
     func sendMSPCommands() {

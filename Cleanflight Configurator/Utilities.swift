@@ -170,7 +170,7 @@ private func getArcInRadians(p1: Position, _ p2: Position) -> Double {
     return 2 * asin(sqrt(latitudeH + tmp * longitudeH))
 }
 
-func getHeading(from: GPSLocation, to: GPSLocation) -> Double {
+func getHeading(from: Position, to: Position) -> Double {
     let lat1 = toRadians(from.latitude)
     let lon1 = toRadians(from.longitude)
     let lat2 = toRadians(to.latitude)
