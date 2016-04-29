@@ -57,9 +57,14 @@ class MSPParser : ProtocolHandler {
     
     var dataListeners = [FlightDataListener]()
     var dataListenersLock = NSObject()
+    private var mspCommandSenders = [MSPCommandSender]()
+
     private var commChannel: CommChannel?
     private var timer: NSTimer?
     private var timerSwitch = false
+    private var timerInterval = 0.0
+    private let timerMinInterval = 0.1
+
     private var lastDataReceived: NSDate?
     
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
@@ -74,22 +79,8 @@ class MSPParser : ProtocolHandler {
         _vehicle = MSPVehicle(self)
     }
 
-    var receiveStats = [(date: NSDate, size: Int)]()
     private var sentDates = [MSP_code : NSDate]()
     private var msgLatencies = [MSP_code : Double]()
-    
-    var incomingBytesPerSecond: Int {
-        var byteCount = 0
-        objc_sync_enter(self)
-        for (date, size) in receiveStats {
-            if -date.timeIntervalSinceNow >= 0.5 {
-                break
-            }
-            byteCount += size
-        }
-        objc_sync_exit(self)
-        return byteCount * 2
-    }
     
     var latency: Double {
         if msgLatencies.isEmpty {
@@ -269,17 +260,6 @@ class MSPParser : ProtocolHandler {
             if message.count < 16 {
                 return false
             }
-            /*
-            var nMotors = 0
-            for i in 0..<8 {
-                motorData.throttle[i] = readUInt16(message, index: i*2)
-                if (motorData.throttle[i] > 0) {
-                    nMotors += 1
-                }
-            }
-            motorData.nMotors = nMotors
-            pingMotorListeners()
-*/
             var motors = [Int]()
             for i in 0..<8 {
                 let v = readUInt16(message, index: i*2)
@@ -318,7 +298,7 @@ class MSPParser : ProtocolHandler {
             pingReceiverListeners()
             
             var channels = [Int]()
-            for (var i = 0; i < channelCount; i++) {
+            for i in 0..<channelCount {
                 // Invert Yaw & Throttle since channels native order is AERT
                 let chan: Int
                 if i == 2 {
@@ -1289,12 +1269,7 @@ class MSPParser : ProtocolHandler {
     
     private func startTimer() {
         if communicationEstablished && timer == nil {
-            // FIXME In this configuration: Naze32 - RPi - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is a bit less then 200ms so 10Hz update is too much.
-            // We should design an adaptative algorithm to find the optimal update frequency.
-            // In this config: Naze32 - 3DR(64kbps) - 3DR - Macbook - Wifi - iPhone, the latency is around 130-140ms
-            // With bluetooth, the latency is a bit less than 100ms (70-90). Sometimes two requests are sent before a response is received but this doesn't cause any problem.
-            timer = NSTimer(timeInterval:0.15, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
-            NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+            timerDidFire(nil)
         }
     }
     
@@ -1304,7 +1279,7 @@ class MSPParser : ProtocolHandler {
     }
     
     @objc
-    private func timerDidFire(timer: NSTimer) {
+    private func timerDidFire(timer: NSTimer?) {
         if let rcCommands = _vehicle.rcCommandsProvider?.rcCommands() {
             _vehicle.rcCommands = rcCommands
         }
@@ -1313,29 +1288,51 @@ class MSPParser : ProtocolHandler {
             sendRawRc(_vehicle.rcCommands!)
         }
         
-        sendMessage(.MSP_STATUS, data: nil)
+        sendMessage(.MSP_STATUS, data: nil, flush: false)
         timerSwitch = !timerSwitch
         if timerSwitch {
-            sendMessage(.MSP_RAW_GPS, data: nil)
+            sendMessage(.MSP_RAW_GPS, data: nil, flush: false)
         } else {
-            sendMessage(.MSP_COMP_GPS, data: nil)       // distance to home, direction to home
+            sendMessage(.MSP_COMP_GPS, data: nil, flush: false)       // distance to home, direction to home
         }
-        sendMessage(.MSP_ALTITUDE, data: nil)
-        sendMessage(.MSP_ATTITUDE, data: nil)
-        sendMessage(.MSP_ANALOG, data: nil)
-        // WP #0 = home, WP #16 = poshold
-        sendMessage(.MSP_WP, data: [ timerSwitch ? 0 : 16  ])   // Altitude hold, mag hold
+        sendMessage(.MSP_ALTITUDE, data: nil, flush: false)
+        sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
+        sendMessage(.MSP_ANALOG, data: nil, flush: false)
         if _vehicle.rcChannels.hasObservers() {
-            sendMessage(.MSP_RC, data: nil)
+            sendMessage(.MSP_RC, data: nil, flush: false)
         }
         if _vehicle.motors.hasObservers() {
-            sendMessage(.MSP_MOTOR, data: nil)
+            sendMessage(.MSP_MOTOR, data: nil, flush: false)
         }
+        for sender in mspCommandSenders {
+            sender.sendMSPCommands()
+        }
+        // WP #0 = home, WP #16 = poshold
+        sendMessage(.MSP_WP, data: [ timerSwitch ? 0 : 16  ])   // Altitude hold, mag hold
         //NSLog("Status Requested")
         
-        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > 0.75 && communicationHealthy {
-            // Set warning if no data received for 0.75 sec
+        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > max(0.75, timerInterval)  && communicationHealthy {
+            // Set warning if no data received for 0.75 sec (or last status interval if bigger)
             _vehicle.noDataReceived.value = true
         }
+        timerInterval = constrain(latency * 1.33, min: timerInterval, max: 1)
+        self.timer = NSTimer(timeInterval: timerInterval, target: self, selector: #selector(MSPParser.timerDidFire(_:)), userInfo: nil, repeats: false)
+        NSRunLoop.mainRunLoop().addTimer(self.timer!, forMode: NSRunLoopCommonModes)
     }
+    
+    func addMSPCommandSender(sender: MSPCommandSender) {
+        mspCommandSenders.append(sender)
+    }
+    
+    func removeMSPCommandSender(sender: MSPCommandSender) {
+        if let index = mspCommandSenders.indexOf({ $0 === sender }) {
+            mspCommandSenders.removeAtIndex(index)
+        }
+    }
+
+}
+
+
+protocol MSPCommandSender : class {
+    func sendMSPCommands()
 }

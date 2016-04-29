@@ -10,6 +10,7 @@
   Optional: SiK radio, Battery monitors 1&2, Compass motor calib, Sonar, Airspeed, Optical flow, OSD, Cam gimbal, Antenna tracker, Motor test, Bluetooth, Parachute
 - MAVLink config/tuning: Flight modes, GeoFence, Basic tuning (RC feel, Roll/pitch sensitivity, Throttle Hover), Extended tuning (PID params), Standard params (arming checks, autotune_axes, batt_, batt2_, cam_trig, and many more), Advanced params (lots of stuff), Full parameter list/tree
 -> Pre-flight: accel level calib, compass calib??, Rx calib??, Flight modes, Failsafe?, GeoFence, Arming checks, Sensors health?
+- Kp-index: http://www.swpc.noaa.gov/products/planetary-k-index#
 - Animate scales to have smoother movement (sometimes they seem to go backward)
 
 - TCP/IP: Try UDP instead of TCP

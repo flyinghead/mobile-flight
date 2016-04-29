@@ -119,8 +119,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         msp.addDataListener(self)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
+        msp.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -128,8 +127,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         msp.removeDataListener(self)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
+        msp.removeMSPCommandSender(self)
     }
     
     func sendMSPCommands() {

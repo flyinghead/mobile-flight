@@ -28,19 +28,21 @@ class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommand
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
-
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
+        if vehicle is MSPVehicle {
+            msp.addDataListener(self)
+            
+            msp.addMSPCommandSender(self)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        if vehicle is MSPVehicle {
+            msp.removeDataListener(self)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
+            msp.removeMSPCommandSender(self)
+        }
     }
     
     func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {

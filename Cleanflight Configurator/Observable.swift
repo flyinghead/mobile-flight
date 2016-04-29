@@ -14,7 +14,7 @@ class Observable<T> {
     var value: T {
         didSet {
             if !areEqual(oldValue, value) {
-                notifyListeners()
+                notifyObservers()
             }
         }
     }
@@ -28,7 +28,9 @@ class Observable<T> {
         objc_sync_enter(self)
         observers.append((target, listener))
         objc_sync_exit(self)
-        listener(newValue: value)
+        dispatch_async(dispatch_get_main_queue()) {
+            listener(newValue: self.value)
+        }
     }
     
     func removeObserver(target: AnyObject) {
@@ -48,7 +50,7 @@ class Observable<T> {
         return ret
     }
     
-    func notifyListeners() {
+    func notifyObservers() {
         dispatch_async(dispatch_get_main_queue(), {
             objc_sync_enter(self)
             let observers = [(target: AnyObject, listener: Listener)](self.observers)

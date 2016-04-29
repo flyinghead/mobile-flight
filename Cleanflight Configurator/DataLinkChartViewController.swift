@@ -76,17 +76,25 @@ class DataLinkChartViewController: UIViewController {
     func updateChartData() {
         var yVals1 = [ChartDataEntry]()
         var yVals2 = [ChartDataEntry]()
-        let initialOffset = latencies.count - MaxSampleCount
+        let initialOffset = max(latencies.count, dataRates.count) - MaxSampleCount
         
         for i in 0 ..< latencies.count {
             yVals1.append(ChartDataEntry(value: latencies[i], xIndex: i - initialOffset))
+        }
+        for i in 0 ..< dataRates.count {
             yVals2.append(ChartDataEntry(value: dataRates[i], xIndex: i - initialOffset))
         }
         
-        let dataSet1 = makeDataSet(yVals1, label: "Latency (ms)", color: UIColor.blueColor())
-        let dataSet2 = makeDataSet(yVals2, label: "Data rate (byte/s)", color: UIColor.redColor())
+        var dataSets = [IChartDataSet]()
+        if latencies.count > 0 {
+            let dataSet1 = makeDataSet(yVals1, label: "Latency (ms)", color: UIColor.blueColor())
+            dataSets.append(dataSet1)
+        }
         
-        let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSets: [ dataSet1, dataSet2 ])
+        let dataSet2 = makeDataSet(yVals2, label: "Data rate (byte/s)", color: UIColor.redColor())
+        dataSets.append(dataSet2)
+        
+        let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSets: dataSets)
         
         chartView.data = data
         view.setNeedsDisplay()
@@ -96,20 +104,27 @@ class DataLinkChartViewController: UIViewController {
         updateSensorData()
         while latencies.count > MaxSampleCount {
             latencies.removeFirst()
+        }
+        while dataRates.count > MaxSampleCount {
             dataRates.removeFirst()
         }
         updateChartData()
     }
     
     func updateSensorData() {
-        let value = msp.latency * 1000
-        latencies.append(value)
-        let dataRate = Double(msp.incomingBytesPerSecond)
+        let leftAxis = chartView.leftAxis
+        
+        if vehicle is MSPVehicle {
+            let value = msp.latency * 1000
+            latencies.append(value)
+            if value > leftAxis.customAxisMax {
+                leftAxis.resetCustomAxisMax()
+            }
+        }
+        let dataRate = Double(CommSpeedMeter.instance.bytesPerSecond)
         dataRates.append(dataRate)
         
-        
-        let leftAxis = chartView.leftAxis
-        if value > leftAxis.customAxisMax || dataRate > leftAxis.customAxisMax {
+        if dataRate > leftAxis.customAxisMax {
             leftAxis.resetCustomAxisMax()
         }
     }

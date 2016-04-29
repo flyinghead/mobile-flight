@@ -135,7 +135,7 @@ class Vehicle {
                 if let positions = self.positions.value {
                     if positions.count == 0 || positions.last! != position3d {
                         self.positions.value!.append(position3d)
-                        self.positions.notifyListeners()
+                        self.positions.notifyObservers()
                     }
                 } else {
                     self.positions.value = [ position3d ]

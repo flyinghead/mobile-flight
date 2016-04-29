@@ -23,31 +23,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
             registerVehicleObservers()
         }
     }
-    
-    private var statusTimer: NSTimer?
-    private var statusSwitch = false        // Used to alternate between RAW_GPS and COMP_GPS during each status timer callback since GPS info is only updated at 5 Hz
-    private var statusTimerInterval = 0.0
-    private let statusTimerMinInterval = 0.1
 
-    private var lastDataReceived: NSDate?
     private var noDataReceived = false
     private var armed = false
-    private var _totalArmedTime = 0.0
-    private var _lastArmedTime = 0.0
-    private var lastArming: NSDate?
     
     private var stayAliveTimer: NSTimer!
-    
-    private var rcCommands: [Int]?
-    var rcCommandsProvider: RcCommandsProvider?
     
     private var _locationManager: CLLocationManager?
     private var lastFollowMeUpdate: NSDate?
     private let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
     private var currentLocationCallbacks = [LocationCallback]()
     private var updatingLocation = false
-    
-    private var mspCommandSenders = [MSPCommandSender]()
     
     private var logTimer: NSTimer?      // DEBUG
     
@@ -59,10 +45,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         registerInitialUserDefaults()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDefaultsDidChange:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
 
-        stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: "stayAliveTimer:", userInfo: nil, repeats: true)
+        stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: #selector(AppDelegate.stayAliveTimer(_:)), userInfo: nil, repeats: true)
         
         startTimer()
         registerVehicleObservers()
@@ -82,12 +68,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         })
         vehicle.connected.addObserver(self, listener: { newValue in
             if !newValue {
+                VoiceMessage.theVoice.stopAll()
                 self.stopTimer()
-                
+                self.armed = false
                 self.followMeActive = false
-                
+                SVProgressHUD.dismiss()
                 self.dismissNoDataReceived()
             } else {
+                // Update the weather reports
                 MetarManager.instance.locationProvider = self
             }
         })
@@ -111,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 
     func applicationDidEnterBackground(application: UIApplication) {
         // Keep the timers active if armed so we can continue to record telemetry
-        if !armed || msp.replaying || !userDefaultEnabled(.RecordFlightlog) {
+        if !armed || protocolHandler.replaying || !userDefaultEnabled(.RecordFlightlog) {
             stopTimer()
         } else {
             // This one however is useless while in background
@@ -130,12 +118,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
     
     func startTimer() {
-        if msp.communicationEstablished {
-            if statusTimer == nil {
-                statusTimerDidFire(nil)
-            }
-        }
-
         if logTimer == nil {
             logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(AppDelegate.logTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
@@ -150,45 +132,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         stayAliveTimer?.invalidate()
         stayAliveTimer = nil
-        
-        lastDataReceived = nil
-    }
-
-    func statusTimerDidFire(sender: AnyObject?) {
-        msp.sendMessage(.MSP_STATUS, data: nil, flush: false)
-        statusSwitch = !statusSwitch
-        if statusSwitch {
-            msp.sendMessage(.MSP_RAW_GPS, data: nil, flush: false)
-        } else {
-            msp.sendMessage(.MSP_COMP_GPS, data: nil, flush: false)       // distance to home, direction to home
-        }
-        msp.sendMessage(.MSP_ALTITUDE, data: nil, flush: false)
-        msp.sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
-        msp.sendMessage(.MSP_ANALOG, data: nil, flush: false)
-        // WP #0 = home, WP #16 = poshold
-        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ])   // Altitude hold, mag hold
-        
-        for sender in mspCommandSenders {
-            sender.sendMSPCommands()
-        }
-        //NSLog("Status Requested")
-        
-        if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > max(0.75, statusTimerInterval) && msp.communicationHealthy {
-            // Display warning if no data received for 0.75 sec (or last status interval if bigger)
-            noDataReceived = true
-            if !SVProgressHUD.isVisible() {
-                SVProgressHUD.showWithStatus("No data received")
-            }
-        }
-        
-        statusTimerInterval = constrain(msp.latency * 1.33, min: statusTimerMinInterval, max: 1)
-        statusTimer = NSTimer(timeInterval: statusTimerInterval, target: self, selector: #selector(AppDelegate.statusTimerDidFire(_:)), userInfo: nil, repeats: false)
-        NSRunLoop.mainRunLoop().addTimer(statusTimer!, forMode: NSRunLoopCommonModes)
     }
 
     func logTimerDidFire(sender: AnyObject) {
         let bytesPerSesond = CommSpeedMeter.instance.bytesPerSecond
-        NSLog("Bandwidth in: %.01f kbps (%.0f%%), latency %.0f ms, statusTimer %.0f ms", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200, msp.latency * 1000, statusTimerInterval * 1000)
+        var latency = 0.0
+        if vehicle is MSPVehicle {
+            latency = msp.latency
+        }
+        NSLog("Bandwidth in: %.01f kbps (%.0f%%), latency %.0f ms", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200, latency * 1000 /* , statusTimerInterval * 1000 */)
         
         let config = Configuration.theConfig
         if config.sikRssi != 0 {
@@ -201,7 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        msp.closeCommChannel()
+        protocolHandler?.closeCommChannel()
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
@@ -223,6 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func userDefaultsDidChange(sender: AnyObject) {
+        // This will start or stop the flight log as needed if the user setting changed
         if userDefaultEnabled(.RecordFlightlog) {
             vehicle.enableFlightRecorder(NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0])
         } else {
@@ -231,11 +184,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func stayAliveTimer(timer: NSTimer) {
+        UIApplication.sharedApplication().idleTimerDisabled = false
         guard let protocolHandler = self.protocolHandler else {
             return
         }
         // If connected to a live aircraft, disable screen saver
-        UIApplication.sharedApplication().idleTimerDisabled = false
         if protocolHandler.communicationEstablished && !protocolHandler.replaying && userDefaultEnabled(.DisableIdleTimer) {
                 UIApplication.sharedApplication().idleTimerDisabled = true
         }
@@ -321,20 +274,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
     
     func currentLocation(callback: LocationCallback) {
-        if !msp.replaying {
-            currentLocationCallbacks.append(callback)
-            startLocationManager()
-        }
-    }
-    
-    func addMSPCommandSender(sender: MSPCommandSender) {
-        mspCommandSenders.append(sender)
-    }
-    
-    func removeMSPCommandSender(sender: MSPCommandSender) {
-        if let index = mspCommandSenders.indexOf({ $0 === sender }) {
-            mspCommandSenders.removeAtIndex(index)
-        }
+        currentLocationCallbacks.append(callback)
+        startLocationManager()
     }
 }
 
@@ -361,8 +302,4 @@ extension UIViewController {
 
 protocol UserLocationProvider {
     func currentLocation(callback: LocationCallback)
-}
-
-protocol MSPCommandSender : class {
-    func sendMSPCommands()
 }

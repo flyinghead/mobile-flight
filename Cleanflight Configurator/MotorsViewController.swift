@@ -181,8 +181,9 @@ class MotorsViewController: UIViewController, MSPCommandSender {
             self.receivedMotorData()
         }
 
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
+        if vehicle is MSPVehicle {
+            msp.addMSPCommandSender(self)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -190,8 +191,9 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         
         vehicle.motors.removeObserver(self)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
+        if vehicle is MSPVehicle {
+            msp.removeMSPCommandSender(self)
+        }
     }
 
     private func receivedMotorData() {
@@ -217,32 +219,29 @@ class MotorsViewController: UIViewController, MSPCommandSender {
     }
     
     private func sendMotorData() {
-        if vehicle is MSPVehicle {
-            var buffer = [UInt8]()
-            
-            buffer.append(UInt8(Int(slider1.value) % 256))
-            buffer.append(UInt8(Int(slider1.value) / 256))
-            buffer.append(UInt8(Int(slider2.value) % 256))
-            buffer.append(UInt8(Int(slider2.value) / 256))
-            buffer.append(UInt8(Int(slider3.value) % 256))
-            buffer.append(UInt8(Int(slider3.value) / 256))
-            buffer.append(UInt8(Int(slider4.value) % 256))
-            buffer.append(UInt8(Int(slider4.value) / 256))
-            buffer.append(UInt8(Int(slider5.value) % 256))
-            buffer.append(UInt8(Int(slider5.value) / 256))
-            buffer.append(UInt8(Int(slider6.value) % 256))
-            buffer.append(UInt8(Int(slider6.value) / 256))
-            buffer.append(UInt8(Int(slider7.value) % 256))
-            buffer.append(UInt8(Int(slider7.value) / 256))
-            buffer.append(UInt8(Int(slider8.value) % 256))
-            buffer.append(UInt8(Int(slider8.value) / 256))
-            
-            msp.sendMessage(.MSP_SET_MOTOR, data: buffer)
-        }
+        var buffer = [UInt8]()
+        
+        buffer.append(UInt8(Int(slider1.value) % 256))
+        buffer.append(UInt8(Int(slider1.value) / 256))
+        buffer.append(UInt8(Int(slider2.value) % 256))
+        buffer.append(UInt8(Int(slider2.value) / 256))
+        buffer.append(UInt8(Int(slider3.value) % 256))
+        buffer.append(UInt8(Int(slider3.value) / 256))
+        buffer.append(UInt8(Int(slider4.value) % 256))
+        buffer.append(UInt8(Int(slider4.value) / 256))
+        buffer.append(UInt8(Int(slider5.value) % 256))
+        buffer.append(UInt8(Int(slider5.value) / 256))
+        buffer.append(UInt8(Int(slider6.value) % 256))
+        buffer.append(UInt8(Int(slider6.value) / 256))
+        buffer.append(UInt8(Int(slider7.value) % 256))
+        buffer.append(UInt8(Int(slider7.value) / 256))
+        buffer.append(UInt8(Int(slider8.value) % 256))
+        buffer.append(UInt8(Int(slider8.value) / 256))
+        
+        msp.sendMessage(.MSP_SET_MOTOR, data: buffer)
     }
-    
+
     func sendMSPCommands() {
-        msp.sendMessage(.MSP_MOTOR, data: nil)
         if enableMotorSwitch.on {
             sendMotorData()
         }
