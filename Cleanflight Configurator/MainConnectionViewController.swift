@@ -93,8 +93,6 @@ class MainConnectionViewController: UIViewController {
             viewController.removeViewControllersForReplay()
         } else {
             viewController.enableAllViewControllers()
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
         }
 
         presentViewController(viewController, animated: true, completion: nil)

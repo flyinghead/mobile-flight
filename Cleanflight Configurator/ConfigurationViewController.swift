@@ -73,8 +73,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     }
     
     func fetchInformation() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
+        msp.stopTimer()
         
         enableUserInteraction(false)
         
@@ -99,7 +98,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                                                     self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
                                                                         if success {
                                                                             dispatch_async(dispatch_get_main_queue(), {
-                                                                                appDelegate.startTimer()
+                                                                                self.msp.startTimer()
                                                                                 self.enableUserInteraction(true)
                                                                                 SVProgressHUD.dismiss()
                                                                             })
@@ -121,7 +120,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
                                             })
                                         } else {
                                             dispatch_async(dispatch_get_main_queue(), {
-                                                appDelegate.startTimer()
+                                                self.msp.startTimer()
                                                 self.enableUserInteraction(true)
                                                 SVProgressHUD.dismiss()
                                             })
@@ -146,8 +145,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func fetchInformationFailed() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.msp.startTimer()
             self.enableUserInteraction(true)
             self.showError("Communication error")
         })
@@ -233,8 +231,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
         enableUserInteraction(false)
 
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
+        msp.stopTimer()
         msp.sendSerialConfig(self.newSettings!, callback: { success in
             if success {
                 self.msp.sendSetMisc(self.newMisc!, callback: { success in
@@ -313,8 +310,7 @@ class ConfigurationViewController: UITableViewController, FlightDataListener, UI
     
     func saveConfigFailed() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.msp.startTimer()
             self.showError("Save failed")
             self.enableUserInteraction(true)
         })

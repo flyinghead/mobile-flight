@@ -72,9 +72,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
                 self.stopTimer()
                 self.armed = false
                 self.followMeActive = false
-                SVProgressHUD.dismiss()
                 self.dismissNoDataReceived()
             } else {
+                self.startTimer()
                 // Update the weather reports
                 MetarManager.instance.locationProvider = self
             }
@@ -117,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         startLocationManagerIfNeeded()
     }
     
-    func startTimer() {
+    private func startTimer() {
         if logTimer == nil {
             logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(AppDelegate.logTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
@@ -126,7 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
     
-    func stopTimer() {
+    private func stopTimer() {
         logTimer?.invalidate()
         logTimer = nil
         

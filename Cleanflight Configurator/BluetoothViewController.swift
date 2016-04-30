@@ -94,22 +94,24 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
                     appDelegate.msp = protocolHandler as! MSPParser
                     self.initiateHandShake({ success in
                         if success {
+                            self.btCommBeingOpened = nil
                             self.selectedPeripheral = nil
                             (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                         } else {
-                            protocolHandler.closeCommChannel()
                             self.cancelBtConnection(btComm)
+                            protocolHandler.closeCommChannel()
                             SVProgressHUD.showErrorWithStatus("Handshake failed")
                         }
                     })
                 } else {
                     self.initiateMAVLinkHandShake({ success in
                         if success {
+                            self.btCommBeingOpened = nil
                             self.selectedPeripheral = nil
                             (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                         } else {
-                            protocolHandler.closeCommChannel()
                             self.cancelBtConnection(btComm)
+                            protocolHandler.closeCommChannel()
                             SVProgressHUD.showErrorWithStatus("Handshake failed")
                         }
                     })

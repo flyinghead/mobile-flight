@@ -70,7 +70,15 @@ class MSPParser : ProtocolHandler {
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
-    var cliViewController: CLIViewController?
+    var cliViewController: CLIViewController? {
+        didSet {
+            if cliViewController != nil {
+                stopTimer()
+            } else {
+                startTimer()
+            }
+        }
+    }
     
     var _vehicle: MSPVehicle!
     private(set) var protocolRecognized = false
@@ -1267,13 +1275,13 @@ class MSPParser : ProtocolHandler {
         return _vehicle
     }
     
-    private func startTimer() {
+    func startTimer() {
         if communicationEstablished && timer == nil {
             timerDidFire(nil)
         }
     }
     
-    private func stopTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }

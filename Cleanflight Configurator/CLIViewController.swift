@@ -36,14 +36,12 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
-
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(200) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-            self.msp.cliViewController = self
+        self.msp.cliViewController = self
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
             self.msp.addOutputMessage(Array(("#").utf8))
         })
     }
@@ -54,8 +52,6 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         msp.cliViewController = nil
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.startTimer()
     }
 
     func keyboardDidShow(notification: NSNotification?) {

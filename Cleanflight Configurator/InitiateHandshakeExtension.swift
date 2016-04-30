@@ -34,37 +34,52 @@ extension UIViewController {
                                                 msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 4, callback: { success in
                                                     if success {
                                                         self.msp.sendMessage(.MSP_MISC, data: nil, retry: 4, callback: { success in
-                                                            if success {
-                                                                dispatch_async(dispatch_get_main_queue(), {
+                                                            dispatch_async(dispatch_get_main_queue()) {
+                                                                if success {
                                                                     SVProgressHUD.dismiss()
                                                                     callback(success: true)
-                                                                })
-                                                            } else {
-                                                                callback(success: false)
+                                                                } else {
+                                                                    callback(success: false)
+                                                                }
                                                             }
                                                         })
                                                     } else {
-                                                        callback(success: false)
+                                                        dispatch_async(dispatch_get_main_queue()) {
+                                                            callback(success: false)
+                                                        }
+                                                        
                                                     }
                                                 })
                                             } else {
-                                                callback(success: false)
+                                                dispatch_async(dispatch_get_main_queue()) {
+                                                    callback(success: false)
+                                                }
+                                                
                                             }
                                         })
                                     } else {
-                                        callback(success: false)
+                                        dispatch_async(dispatch_get_main_queue()) {
+                                            callback(success: false)
+                                        }
+                                        
                                     }
                                 })
                             }
                         } else {
-                            callback(success: false)
+                            dispatch_async(dispatch_get_main_queue()) {
+                                callback(success: false)
+                            }
+                            
                         }
                     })
                 } else {
-                    callback(success: false)
+                    dispatch_async(dispatch_get_main_queue()) {
+                        callback(success: false)
+                    }
+                    
                 }
             })
         })
     }
-
+    
 }

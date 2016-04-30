@@ -38,8 +38,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     func initialFetch() {
         dontReloadTable = true
 
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
+        msp.stopTimer()
         msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
             if success {
                 self.msp.sendMessage(.MSP_BOXIDS, data: nil, retry: 2, callback: { success in
@@ -49,7 +48,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                                 self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
                                     if success {
                                         dispatch_async(dispatch_get_main_queue(), {
-                                            appDelegate.startTimer()
+                                            self.msp.startTimer()
                                             let settings = self.mspvehicle.settings
                                             self.modeRanges = [ModeRange](settings.modeRanges!)
                                             self.modeRangeSlots = settings.modeRangeSlots
@@ -76,8 +75,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
     private func refreshError() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.msp.startTimer()
             
             SVProgressHUD.showErrorWithStatus("Communication error")
             if !self.dontReloadTable {
@@ -281,8 +279,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     @IBAction func saveAction(sender: AnyObject) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
+        msp.stopTimer()
         sendModeRange(0)
     }
     
@@ -296,8 +293,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                 if index >= self.modeRangeSlots - 1 {
                     self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                         dispatch_async(dispatch_get_main_queue(), {
-                            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                            appDelegate.startTimer()
+                            self.msp.startTimer()
                             if success {
                                 SVProgressHUD.showSuccessWithStatus("Settings saved")
                             } else {
@@ -310,8 +306,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
-                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                    appDelegate.startTimer()
+                    self.msp.startTimer()
                     SVProgressHUD.showErrorWithStatus("Save failed")
                 })
             }

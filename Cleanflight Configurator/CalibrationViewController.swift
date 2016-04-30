@@ -111,13 +111,11 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     }
     
     private func startTimer() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.startTimer()
+        msp.startTimer()
     }
     
     private func stopTimer() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.stopTimer()
+        msp.stopTimer()
     }
     
     @IBAction func calibrateAccelerometer(sender: AnyObject) {
