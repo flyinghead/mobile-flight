@@ -26,7 +26,7 @@ class ReceiverChannel: UIView {
     @IBInspectable var fontSize: CGFloat = UIFont.systemFontSize() {
         didSet {
             labelControl?.font = UIFont.systemFontOfSize(fontSize)
-            valueLabel?.font = UIFont.systemFontOfSize(fontSize)
+            valueLabel?.font = UIFont.systemFontOfSize(fontSize).monospacedDigitFont
         }
     }
     
@@ -60,9 +60,9 @@ class ReceiverChannel: UIView {
         }
         if (valueLabel == nil) {
             valueLabel = UILabel()
-            valueLabel?.text = "2000"
+            valueLabel?.text = "8888"
             valueLabel?.textAlignment = .Right
-            valueLabel?.font = UIFont.systemFontOfSize(fontSize)
+            valueLabel?.font = UIFont.systemFontOfSize(fontSize).monospacedDigitFont
             valueLabel?.translatesAutoresizingMaskIntoConstraints = false
             addSubview(valueLabel!)
 

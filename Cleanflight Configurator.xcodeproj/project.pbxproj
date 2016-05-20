@@ -45,6 +45,7 @@
 		AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */; };
 		AE3E465D1C58147500E33E9F /* SimpleVerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */; };
 		AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */; };
+		AE4432991CEF0A97003C0D81 /* MonospacedDigitFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4432981CEF0A97003C0D81 /* MonospacedDigitFont.swift */; };
 		AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */; };
 		AE59A1C31C4ECFB300837475 /* Telemetry2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */; };
 		AE5BB66D1C4E9C2100CF2A7C /* AttitudeIndicator2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */; };
@@ -250,6 +251,7 @@
 		AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVerticalScale.swift; sourceTree = "<group>"; };
 		AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleVerticalScale.swift; sourceTree = "<group>"; };
 		AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetarReportTest.swift; sourceTree = "<group>"; };
+		AE4432981CEF0A97003C0D81 /* MonospacedDigitFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonospacedDigitFont.swift; sourceTree = "<group>"; };
 		AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverTuningViewController.swift; sourceTree = "<group>"; };
 		AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Telemetry2ViewController.swift; sourceTree = "<group>"; };
 		AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator2.swift; sourceTree = "<group>"; };
@@ -546,6 +548,7 @@
 				AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */,
 				AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */,
 				AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */,
+				AE4432981CEF0A97003C0D81 /* MonospacedDigitFont.swift */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -1006,6 +1009,7 @@
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
 				AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */,
+				AE4432991CEF0A97003C0D81 /* MonospacedDigitFont.swift in Sources */,
 				AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */,
 				AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */,
 				AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */,

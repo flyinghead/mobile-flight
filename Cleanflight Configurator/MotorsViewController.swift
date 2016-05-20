@@ -124,6 +124,15 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        value1.font = value1.font.monospacedDigitFont
+        value2.font = value2.font.monospacedDigitFont
+        value3.font = value3.font.monospacedDigitFont
+        value4.font = value4.font.monospacedDigitFont
+        value5.font = value5.font.monospacedDigitFont
+        value6.font = value6.font.monospacedDigitFont
+        value7.font = value7.font.monospacedDigitFont
+        value8.font = value8.font.monospacedDigitFont
+        
         modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType)
         
         msp.sendMessage(.MSP_MISC, data: nil)
