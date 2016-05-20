@@ -44,6 +44,6 @@ class RssiLabel: BlinkingLabel {
             textColor = _defaultColor
         }
         
-        self.text = String(format:"%d%%", locale: NSLocale.currentLocale(), value)
+        self.text = String(format:"%d%%", value)
     }
 }

@@ -197,11 +197,11 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
         }
     }
     @IBAction func accTrimPitchChanged(sender: AnyObject) {
-        accTrimPitchField.text = String(format: "%.0f", locale: NSLocale.currentLocale(), accTrimPitchStepper.value)
+        accTrimPitchField.text = formatNumber(accTrimPitchStepper.value, precision: 0)
     }
     
     @IBAction func accTrimRollChanged(sender: AnyObject) {
-        accTrimRollField.text = String(format: "%.0f", locale: NSLocale.currentLocale(), accTrimRollStepper.value)
+        accTrimRollField.text = formatNumber(accTrimRollStepper.value, precision: 0)
     }
     
     @IBAction func accTrimSaveAction(sender: AnyObject) {

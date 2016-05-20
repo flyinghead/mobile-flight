@@ -92,8 +92,7 @@ class NumberField: UITextField {
     }
     
     private func updateFieldText() {
-        let stringFormat = String(format: "%%.%df", decimalDigits)
-        self.text = String(format: stringFormat, locale: NSLocale.currentLocale(), value)
+        self.text = formatNumber(value, precision: decimalDigits)
     }
 
     func doneWithNumberPad() {

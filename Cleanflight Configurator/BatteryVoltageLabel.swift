@@ -33,7 +33,7 @@ class BatteryVoltageLabel: BlinkingLabel {
                 textColor = UIColor.redColor()
             }
 
-            self.text = String(format:"%.1f%@", locale: NSLocale.currentLocale(), self.voltage, displayUnit ? " V" : "")
+            self.text = String(format:"%@%@", formatNumber(self.voltage, precision: 1), displayUnit ? " V" : "")
         }
     }
 }

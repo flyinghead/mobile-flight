@@ -56,13 +56,24 @@ func writeInt8(i: Int) -> UInt8 {
     return UInt8(bitPattern: Int8(i))
 }
 
+func formatNumber(n: Double, precision: Int) -> String {
+    let formatter = NSNumberFormatter()
+    formatter.locale = NSLocale.currentLocale()
+    formatter.usesGroupingSeparator = false
+    formatter.minimumFractionDigits = precision
+    formatter.maximumFractionDigits = precision
+    formatter.minimumIntegerDigits = 1
+    
+    return formatter.stringFromNumber(n)!
+}
+
 // Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.
 func formatWithUnit(reading: Double, unit: String) -> String {
     let suffix = unit.isEmpty ? "" : " ".stringByAppendingString(unit)
     if reading < 10 {
-        return String(format: "%.1f%@", locale: NSLocale.currentLocale(), reading, suffix)
+        return String(format: "%@%@", formatNumber(reading, precision: 1), suffix)
     } else {
-        return String(format: "%.0f%@", locale: NSLocale.currentLocale(), reading, suffix)
+        return String(format: "%@%@", formatNumber(reading, precision: 0), suffix)
     }
 }
 
@@ -126,9 +137,9 @@ func formatSpeed(kmh: Double) -> String {
 
 func formatTemperature(celsius: Double) -> String {
     if selectedUnitSystem() == .Imperial {
-        return String(format: "%.0f° F", celsius * 1.8 + 32)
+        return String(format: "%@° F", formatNumber(celsius * 1.8 + 32, precision: 0))
     } else {
-        return String(format: "%.0f° C", celsius)
+        return String(format: "%@° C", formatNumber(celsius, precision: 0))
     }
 }
 

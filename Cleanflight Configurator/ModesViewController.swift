@@ -347,8 +347,8 @@ class ModeRangeCell : UITableViewCell {
     private var _channelPicker: MyDownPicker?
     
     @IBAction func rangeChanged(sender: AnyObject) {
-        lowerLabel.text = String(format: "%.0f", locale: NSLocale.currentLocale(), rangeSlider.lowerValue)
-        upperLabel.text = String(format: "%.0f", locale: NSLocale.currentLocale(), rangeSlider.upperValue)
+        lowerLabel.text = String(format: "%.0f", rangeSlider.lowerValue)
+        upperLabel.text = String(format: "%.0f", rangeSlider.upperValue)
         
         viewController!.modeRanges![modeRangeIdx].start = Int(rangeSlider.lowerValue)
         viewController!.modeRanges![modeRangeIdx].end = Int(rangeSlider.upperValue)

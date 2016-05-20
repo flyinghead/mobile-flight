@@ -527,6 +527,7 @@
 		AE26A1D41C41D308007498EF /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */,
 				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
@@ -582,7 +583,6 @@
 				AEA48A671C25CFDD006BC53E /* Communication */,
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
-				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,

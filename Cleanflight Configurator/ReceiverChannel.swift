@@ -60,7 +60,7 @@ class ReceiverChannel: UIView {
         }
         if (valueLabel == nil) {
             valueLabel = UILabel()
-            valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), 2000)
+            valueLabel?.text = "2000"
             valueLabel?.textAlignment = .Right
             valueLabel?.font = UIFont.systemFontOfSize(fontSize)
             valueLabel?.translatesAutoresizingMaskIntoConstraints = false
@@ -98,6 +98,6 @@ class ReceiverChannel: UIView {
     
     func setValue(value: Int) {
         slider?.value = Double(value)
-        valueLabel?.text = String(format: "%d", locale: NSLocale.currentLocale(), value)
+        valueLabel?.text = String(format: "%d", value)
     }
 }

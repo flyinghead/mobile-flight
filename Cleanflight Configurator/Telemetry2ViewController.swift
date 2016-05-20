@@ -283,7 +283,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         ampsValueLabel.text = formatWithUnit(config.amperage, unit: "")
         
         mAhGauge.value = Double(config.mAhDrawn)
-        mAHValueLabel.text = String(format: "%d", locale: NSLocale.currentLocale(), config.mAhDrawn)
+        mAHValueLabel.text = String(format: "%d", config.mAhDrawn)
         
         rssiLabel.rssi = config.rssi
         
@@ -344,7 +344,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     func receivedGpsData() {
         let gpsData = GPSData.theGPSData
 
-        gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), gpsData.numSat)
+        gpsLabel.text = String(format:"%d", gpsData.numSat)
         if gpsData.fix && gpsData.numSat >= 5 {
             gpsLabel.blinks = false
             if gpsData.numSat >= 5 {

@@ -86,25 +86,25 @@ class GPSViewController : UITableViewController, FlightDataListener {
                 cell.detailTextLabel!.text = formatAltitude(Double(gpsData.altitude))
             case 2:
                 cell.textLabel!.text = "Latitude"
-                cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.latitude)
+                cell.detailTextLabel!.text = String(format: "%@°", formatNumber(gpsData.latitude, precision: 4))
             case 3:
                 cell.textLabel!.text = "Longitude"
-                cell.detailTextLabel!.text = String(format: "%.4f°", locale: NSLocale.currentLocale(), gpsData.longitude)
+                cell.detailTextLabel!.text = String(format: "%@°", formatNumber(gpsData.longitude, precision: 4))
             case 4:
                 cell.textLabel!.text = "Speed"
                 cell.detailTextLabel!.text = formatSpeed(gpsData.speed)
             case 5:
                 cell.textLabel!.text = "Heading"
-                cell.detailTextLabel!.text = String(format: "%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
+                cell.detailTextLabel!.text = String(format: "%@°", formatNumber(gpsData.headingOverGround, precision: 0))
             case 6:
                 cell.textLabel!.text = "Satellites"
-                cell.detailTextLabel!.text = String(format: "%d", locale: NSLocale.currentLocale(), gpsData.numSat)
+                cell.detailTextLabel!.text = String(format: "%d", gpsData.numSat)
             case 7:
                 cell.textLabel!.text = "Distance to Home"
                 cell.detailTextLabel!.text = formatDistance(Double(gpsData.distanceToHome))
             case 8:
                 cell.textLabel!.text = "Direction to Home"
-                cell.detailTextLabel!.text = String(format: "%d°", locale: NSLocale.currentLocale(), gpsData.directionToHome)
+                cell.detailTextLabel!.text = String(format: "%d°", gpsData.directionToHome)
             default:
                 break
             }
@@ -115,7 +115,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
             
             let sats = gpsData.satellites
             if indexPath.row < sats.count {
-                cell.satIdLabel!.text = String(format: "%d", locale: NSLocale.currentLocale(), sats[indexPath.row].svid)
+                cell.satIdLabel!.text = String(format: "%d", sats[indexPath.row].svid)
                 cell.gauge!.color = sats[indexPath.row].quality.contains(.svUsed) ? cell.green : cell.blue
                 cell.gauge!.value = Double(sats[indexPath.row].cno)
             }

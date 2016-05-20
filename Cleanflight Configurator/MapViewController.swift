@@ -139,7 +139,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         let gpsData = GPSData.theGPSData
         let config = Configuration.theConfig
         
-        gpsLabel.text = String(format:"%d", locale: NSLocale.currentLocale(), gpsData.numSat)
+        gpsLabel.text = String(format:"%d", gpsData.numSat)
         if gpsData.fix {
             gpsLabel.blinks = false
             if gpsData.numSat >= 5 {
@@ -152,7 +152,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
             speedLabel.text = formatSpeed(gpsData.speed)
             if !config.isMagnetometerActive() {
-                //headingLabel.text = String(format:"%.0f°", locale: NSLocale.currentLocale(), gpsData.headingOverGround)
+                //headingLabel.text = String(format:"%@°", formatNumber(gpsData.headingOverGround, precision: 0))
             }
         } else {
             if config.isGPSActive() {
