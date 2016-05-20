@@ -77,10 +77,15 @@ class PIDViewController: StaticDataTableViewController {
         if !Configuration.theConfig.isApiVersionAtLeast("1.16") {   // 1.12
             cell(resetPIDValuesCell, setHidden: true)
         }
-        cancelAction(self)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        fetchData()
     }
 
-    @IBAction func cancelAction(sender: AnyObject) {
+    private func fetchData() {
         self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
             if success {
                 self.msp.sendMessage(.MSP_PIDNAMES, data: nil, retry: 2, callback: { success in
@@ -186,7 +191,7 @@ class PIDViewController: StaticDataTableViewController {
                                     if success {
                                         dispatch_async(dispatch_get_main_queue(), {
                                             SVProgressHUD.showSuccessWithStatus("Settings saved")
-                                            self.cancelAction(self)
+                                            self.fetchData()
                                         })
                                     } else {
                                         self.saveFailedAlert()
@@ -216,7 +221,7 @@ class PIDViewController: StaticDataTableViewController {
         msp.sendSelectProfile(profilePicker!.selectedIndex, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 if success {
-                    self.cancelAction(sender)
+                    self.fetchData()
                 } else {
                     SVProgressHUD.showErrorWithStatus("Profile switch failed")
                 }
@@ -228,7 +233,7 @@ class PIDViewController: StaticDataTableViewController {
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
             self.msp.sendMessage(.MSP_SET_RESET_CURR_PID, data: nil, retry: 3, callback: { success in
-                self.cancelAction(self)
+                self.fetchData()
             })
         }))
         alertController.popoverPresentationController?.sourceView = (sender as! UIView)

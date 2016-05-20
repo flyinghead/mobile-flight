@@ -20,12 +20,6 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     
     var previousModes = 0
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        initialFetch()
-    }
-    
     func tableViewTapped(recognizer: UITapGestureRecognizer) {
         if recognizer.state == .Began || recognizer.state == .Changed {
             dontReloadTable = true
@@ -116,6 +110,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        initialFetch()
         
         msp.addDataListener(self)
         
@@ -318,10 +314,6 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                 })
             }
         })
-    }
-    
-    @IBAction func cancelAction(sender: AnyObject) {
-        initialFetch()
     }
 }
 

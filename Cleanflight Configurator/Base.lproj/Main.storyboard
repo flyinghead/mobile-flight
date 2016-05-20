@@ -1915,11 +1915,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="PID Tuning" id="3o6-YK-wBJ">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="XoU-dL-Pkv">
-                            <connections>
-                                <action selector="cancelAction:" destination="Exb-KD-o8b" id="7ql-RO-B9d"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="pyP-BU-Cxc">
                             <connections>
                                 <action selector="saveAction:" destination="Exb-KD-o8b" id="OgI-lM-Wl8"/>
@@ -3283,11 +3278,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Modes" id="dIj-GF-8b5">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="5wu-V7-hNE">
-                            <connections>
-                                <action selector="cancelAction:" destination="bjK-r5-dLz" id="rqS-AW-6Sv"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="pXM-bQ-cVF">
                             <connections>
                                 <action selector="saveAction:" destination="bjK-r5-dLz" id="5Mp-rv-mOA"/>
