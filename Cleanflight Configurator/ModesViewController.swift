@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate, MSPCommandSender {
+class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
     var dontReloadTable = false
 
     var modeRanges: [ModeRange]?
@@ -40,19 +40,13 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
                     if success {
                         self.msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            appDelegate.startTimer()
-                                            let settings = Settings.theSettings
-                                            self.modeRanges = [ModeRange](settings.modeRanges!)
-                                            self.modeRangeSlots = settings.modeRangeSlots
-                                            self.dontReloadTable = false
-                                            self.tableView.reloadData()
-                                        })
-                                    } else {
-                                        self.refreshError()
-                                    }
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    appDelegate.startTimer()
+                                    let settings = Settings.theSettings
+                                    self.modeRanges = [ModeRange](settings.modeRanges!)
+                                    self.modeRangeSlots = settings.modeRangeSlots
+                                    self.dontReloadTable = false
+                                    self.tableView.reloadData()
                                 })
                             } else {
                                 self.refreshError()
@@ -114,24 +108,12 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         initialFetch()
         
         msp.addDataListener(self)
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
-    }
-    
-    func sendMSPCommands() {
-        if modeRanges != nil {
-            msp.sendMessage(.MSP_RC, data: nil)
-        }
     }
     
     func pickerDidBeginEditing() {

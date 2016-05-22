@@ -134,7 +134,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         msp.sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
         msp.sendMessage(.MSP_ANALOG, data: nil, flush: false)
         // WP #0 = home, WP #16 = poshold
-        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ])   // Altitude hold, mag hold
+        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ], flush: false)   // Altitude hold, mag hold
+        msp.sendMessage(.MSP_RC, data: nil)
         
         for sender in mspCommandSenders {
             sender.sendMSPCommands()

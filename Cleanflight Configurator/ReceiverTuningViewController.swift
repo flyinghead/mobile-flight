@@ -67,44 +67,38 @@ class ReceiverTuningViewController: UITableViewController {
                     if success {
                         self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        self.settings = Settings(copyOf: Settings.theSettings)
-                                        self.rcMap = Receiver.theReceiver.map
-                                        self.rssiChannel = Misc.theMisc.rssiChannel
-                                        
-                                        var rssiChannels = [ "Disabled" ]
-                                        for i in 0..<Receiver.theReceiver.activeChannels - 4 {
-                                            rssiChannels.append(String(format: "AUX %d", i + 1))
-                                        }
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            let rcMapString = self.getRcMapString()
-                                            switch rcMapString {
-                                            case self.DefaultRcMap:
-                                                self.channelMapPicker?.selectedIndex = 0
-                                            case self.SpektrumRcMap:
-                                                self.channelMapPicker?.selectedIndex = 1
-                                            default:
-                                                var choices = self.RcMapChoices
-                                                choices.append(rcMapString)
-                                                self.channelMapPicker!.setData(choices)
-                                                self.channelMapPicker?.selectedIndex = 2
-                                            }
-                                            self.rssiChannelPicker?.setData(rssiChannels)
-                                            
-                                            self.rssiChannelPicker?.selectedIndex = self.rssiChannel < 5 ? 0 : self.rssiChannel - 4
-                                            
-                                            self.throttleMid.value = self.settings!.throttleMid
-                                            self.throttleExpo.value = self.settings!.throttleExpo
-                                            
-                                            self.rcRate.value = self.settings!.rcRate
-                                            self.rcExpo.value = self.settings!.rcExpo
-                                            self.yawExpo.value = self.settings!.yawExpo
-                                            
-                                        })
-                                    } else {
-                                        self.fetchError()
+                                self.settings = Settings(copyOf: Settings.theSettings)
+                                self.rcMap = Receiver.theReceiver.map
+                                self.rssiChannel = Misc.theMisc.rssiChannel
+                                
+                                var rssiChannels = [ "Disabled" ]
+                                for i in 0..<Receiver.theReceiver.activeChannels - 4 {
+                                    rssiChannels.append(String(format: "AUX %d", i + 1))
+                                }
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    let rcMapString = self.getRcMapString()
+                                    switch rcMapString {
+                                    case self.DefaultRcMap:
+                                        self.channelMapPicker?.selectedIndex = 0
+                                    case self.SpektrumRcMap:
+                                        self.channelMapPicker?.selectedIndex = 1
+                                    default:
+                                        var choices = self.RcMapChoices
+                                        choices.append(rcMapString)
+                                        self.channelMapPicker!.setData(choices)
+                                        self.channelMapPicker?.selectedIndex = 2
                                     }
+                                    self.rssiChannelPicker?.setData(rssiChannels)
+                                    
+                                    self.rssiChannelPicker?.selectedIndex = self.rssiChannel < 5 ? 0 : self.rssiChannel - 4
+                                    
+                                    self.throttleMid.value = self.settings!.throttleMid
+                                    self.throttleExpo.value = self.settings!.throttleExpo
+                                    
+                                    self.rcRate.value = self.settings!.rcRate
+                                    self.rcExpo.value = self.settings!.rcExpo
+                                    self.yawExpo.value = self.settings!.yawExpo
+                                    
                                 })
                             } else {
                                 self.fetchError()

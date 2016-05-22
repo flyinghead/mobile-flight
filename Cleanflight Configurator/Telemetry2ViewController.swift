@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider, MSPCommandSender {
+class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -152,7 +152,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             tabBarController.tabBar.hidden = false
         }
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
         if showRCSticksButton.selected && actingRC {
             appDelegate.rcCommandsProvider = self
         }
@@ -203,7 +202,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
-        appDelegate.removeMSPCommandSender(self)
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
@@ -439,11 +437,5 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
-    }
-    
-    func sendMSPCommands() {
-        if showRCSticksButton.selected && !actingRC {
-            msp.sendMessage(.MSP_RC, data: nil)
-        }
     }
 }

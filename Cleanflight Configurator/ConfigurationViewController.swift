@@ -91,14 +91,8 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                                                         if success {
                                                             self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
                                                                 if success {
-                                                                    self.msp.sendMessage(.MSP_RC, data: nil, retry: 2, callback: { success in
-                                                                        if success {
-                                                                            // SUCCESS
-                                                                            self.fetchInformationSucceeded()
-                                                                        } else {
-                                                                            self.fetchInformationFailed()
-                                                                        }
-                                                                    })
+                                                                    // SUCCESS
+                                                                    self.fetchInformationSucceeded()
                                                                 } else {
                                                                     self.fetchInformationFailed()
                                                                 }

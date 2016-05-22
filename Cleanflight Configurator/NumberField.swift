@@ -150,14 +150,7 @@ class ThrottleField : NumberField {
     }
     
     func currentThrottle() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.msp.sendMessage(.MSP_RC, data: nil, retry: 0, callback: { success in
-            if success {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.value = Double(Receiver.theReceiver.channels[3])
-                })
-            }
-        })
+        self.value = Double(Receiver.theReceiver.channels[3])
     }
 }
 

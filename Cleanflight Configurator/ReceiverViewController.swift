@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ReceiverViewController: UITableViewController, FlightDataListener, MSPCommandSender {
+class ReceiverViewController: UITableViewController, FlightDataListener {
     
     var colors = [UIColor(hex6: 0xf1453d), UIColor(hex6: 0x673fb4), UIColor(hex6: 0x2b98f0), UIColor(hex6: 0x1fbcd2),
         UIColor(hex6: 0x159588), UIColor(hex6: 0x50ae55), UIColor(hex6: 0xcdda49), UIColor(hex6: 0xfdc02f),
@@ -22,8 +22,6 @@ class ReceiverViewController: UITableViewController, FlightDataListener, MSPComm
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.addMSPCommandSender(self)
         msp.addDataListener(self)
     }
     
@@ -31,13 +29,6 @@ class ReceiverViewController: UITableViewController, FlightDataListener, MSPComm
         super.viewWillDisappear(animated)
         
         msp.removeDataListener(self)
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.removeMSPCommandSender(self)
-    }
-    
-    func sendMSPCommands() {
-        msp.sendMessage(.MSP_RC, data: nil)
     }
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
