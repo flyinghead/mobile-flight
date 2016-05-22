@@ -46,6 +46,7 @@
 		AE3E465D1C58147500E33E9F /* SimpleVerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */; };
 		AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */; };
 		AE4432991CEF0A97003C0D81 /* MonospacedDigitFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4432981CEF0A97003C0D81 /* MonospacedDigitFont.swift */; };
+		AE44329B1CF212E2003C0D81 /* ArmedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE44329A1CF212E2003C0D81 /* ArmedTimer.swift */; };
 		AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */; };
 		AE59A1C31C4ECFB300837475 /* Telemetry2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */; };
 		AE5BB66D1C4E9C2100CF2A7C /* AttitudeIndicator2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */; };
@@ -252,6 +253,7 @@
 		AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleVerticalScale.swift; sourceTree = "<group>"; };
 		AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetarReportTest.swift; sourceTree = "<group>"; };
 		AE4432981CEF0A97003C0D81 /* MonospacedDigitFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonospacedDigitFont.swift; sourceTree = "<group>"; };
+		AE44329A1CF212E2003C0D81 /* ArmedTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedTimer.swift; sourceTree = "<group>"; };
 		AE48F6E01C1F5D6D004E949F /* ReceiverTuningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverTuningViewController.swift; sourceTree = "<group>"; };
 		AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Telemetry2ViewController.swift; sourceTree = "<group>"; };
 		AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttitudeIndicator2.swift; sourceTree = "<group>"; };
@@ -532,6 +534,7 @@
 				AECE8D821C1E14B500FB183E /* RangeSlider */,
 				AE1B12BC1C84F491007755C9 /* StaticDataTableViewController */,
 				AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */,
+				AE44329A1CF212E2003C0D81 /* ArmedTimer.swift */,
 				AE5BB66C1C4E9C2100CF2A7C /* AttitudeIndicator2.swift */,
 				AE3E465A1C5811F900E33E9F /* BaseVerticalScale.swift */,
 				AE26A1D21C414F78007498EF /* BatteryVoltageLabel.swift */,
@@ -1043,6 +1046,7 @@
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AE5BB66D1C4E9C2100CF2A7C /* AttitudeIndicator2.swift in Sources */,
 				AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */,
+				AE44329B1CF212E2003C0D81 /* ArmedTimer.swift in Sources */,
 				AE1EA9EB1CAEEED600C24E2A /* AppSettingsViewController.swift in Sources */,
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
 				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,

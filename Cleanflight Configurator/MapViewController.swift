@@ -10,7 +10,6 @@ import UIKit
 import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener, CLLocationManagerDelegate {
-    //var lat = 48.886212 // Debug
     var locationManager: CLLocationManager?
     var gpsPositions = 0
     
@@ -18,10 +17,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
     @IBOutlet weak var rssiLabel: RssiLabel!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
-    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var timeLabel: ArmedTimer!
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var altitudeLabel: UILabel!
-    @IBOutlet weak var headingLabel: UILabel!
     
     var annotationView: MKAnnotationView?
     
@@ -38,15 +36,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         batteryLabel.text = "?"
         rssiLabel.text = "?"
         gpsLabel.text = "?"
-        timeLabel.text = "00:00"
+
         speedLabel.text = "?"
         altitudeLabel.text = "?"
-        //headingLabel.text = "?"
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        timeLabel.appear()
         msp.addDataListener(self)
         receivedData()
         receivedAltitudeData()
@@ -77,6 +75,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        timeLabel.disappear()
         msp.removeDataListener(self)
     }
     
@@ -95,9 +94,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         if gpsData.lastKnownGoodLatitude == 0.0 && gpsData.lastKnownGoodLongitude == 0 {
             return nil
         }
-        // 48.886212, 2.305796
-        //let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: 2.305796)
-        //lat += 0.000002
         let coordinates = CLLocationCoordinate2D(latitude: gpsData.lastKnownGoodLatitude, longitude: gpsData.lastKnownGoodLongitude)
         
         return coordinates
@@ -109,10 +105,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         batteryLabel.voltage = config.voltage
         
         rssiLabel.rssi = config.rssi
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.totalArmedTime))
-        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
         
         if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
             mapView.removeAnnotation(posHoldLocation!)
@@ -151,18 +143,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 altitudeLabel.text = formatAltitude(Double(gpsData.altitude))
             }
             speedLabel.text = formatSpeed(gpsData.speed)
-            if !config.isMagnetometerActive() {
-                //headingLabel.text = String(format:"%@°", formatNumber(gpsData.headingOverGround, precision: 0))
-            }
         } else {
             if config.isGPSActive() {
                 gpsLabel.blinks = true
                 gpsLabel.textColor = UIColor.redColor()
             }
             speedLabel.text = ""
-            if !config.isMagnetometerActive() {
-                //headingLabel.text = ""
-            }
             if !config.isBarometerActive() && !config.isSonarActive() {
                 altitudeLabel.text = ""
             }

@@ -21,7 +21,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var turnRateIndicator: TurnRateIndicator!
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
     @IBOutlet weak var rssiLabel: RssiLabel!
-    @IBOutlet weak var timeLabel: BlinkingLabel!
+    @IBOutlet weak var timeLabel: ArmedTimer!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
     @IBOutlet weak var dthLabel: BlinkingLabel!
     @IBOutlet weak var actionsView: UIView!
@@ -89,7 +89,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         rssiLabel.text = "?"
         gpsLabel.text = "?"
-        timeLabel.text = "00:00"
         dthLabel.text = ""
         
         voltsValueLabel.displayUnit = false
@@ -137,6 +136,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        timeLabel.appear()
         msp.addDataListener(self)
         // For enabled features
         msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
@@ -198,6 +198,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         hideNavBarTimer?.invalidate()
         hideNavBarTimer = nil
         
+        timeLabel.disappear()
         msp.removeDataListener(self)
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -285,10 +286,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         rssiLabel.rssi = config.rssi
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let armedTime = Int(round(appDelegate.totalArmedTime))
-        timeLabel.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
-    
         armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
         
         if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
