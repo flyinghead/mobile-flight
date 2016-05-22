@@ -23,6 +23,13 @@ class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommand
         chartView.xAxis.enabled = false
         
         chartView.descriptionText = ""
+        
+        if msp.replaying {
+            chartView.infoFont = NSUIFont.systemFontOfSize(13) // NSUIFont(name: "HelveticaNeue", size: 14.0)
+            chartView.infoTextColor = UIColor.brownColor()
+            chartView.noDataText = "No recorded data"
+            chartView.noDataTextDescription = "Data is only recorded when the chart is visible."
+        }
     }
 
     override func viewWillAppear(animated: Bool) {
