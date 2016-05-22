@@ -180,9 +180,10 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
             midThrottleField.value = Double(newMisc!.midRC ?? 0)
             maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
             
-            boardPitchField.value = Double(newSettings!.boardAlignPitch ?? 0)
-            boardRollField.value = Double(newSettings!.boardAlignRoll ?? 0)
-            boardYawField.value = Double(newSettings!.boardAlignYaw ?? 0)
+            setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
+            setBoardAlignmentFieldValue(boardRollField, value: Double(newSettings!.boardAlignRoll ?? 0))
+            setBoardAlignmentFieldValue(boardYawField, value: Double(newSettings!.boardAlignYaw ?? 0))
+
             rssiSwitch.on = newSettings!.features.contains(BaseFlightFeature.RssiAdc)
             inFlightCalSwitch.on = newSettings!.features.contains(BaseFlightFeature.InflightCal)
             servoGimbalSwitch.on = newSettings!.features.contains(BaseFlightFeature.ServoTilt)
@@ -202,6 +203,18 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
         currentMeterField.text = (newSettings!.features.contains(BaseFlightFeature.CurrentMeter) ?? false) ? "On" : "Off"
         failsafeField.text = (newSettings!.features.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
+    }
+    
+    // iNav uses decidegrees instead of degrees for board alignment values. To avoid saving truncated values saving the config, we remove
+    // the min or max limits to not enforce them. Hacky but should work.
+    private func setBoardAlignmentFieldValue(field: NumberField, value: Double) {
+        if value < field.minimumValue {
+            field.minimumValue = value
+        }
+        if value > field.maximumValue {
+            field.maximumValue = value
+        }
+        field.value = value
     }
     
     @IBAction func saveAction(sender: AnyObject) {
