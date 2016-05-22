@@ -3164,7 +3164,7 @@
                             <outlet property="delegate" destination="SPb-lS-QeV" id="ZJi-Zs-PfS"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" tag="2" title="Preflight" image="calibrate" selectedImage="calibrate" id="2XK-Sf-b47"/>
+                    <tabBarItem key="tabBarItem" tag="2" title="Preflight" image="checklist" selectedImage="checklist" id="2XK-Sf-b47"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="accTrimPitchField" destination="hhn-Fo-euo" id="G7I-My-d7j"/>
@@ -3758,7 +3758,7 @@
         <image name="Motor" width="30" height="30"/>
         <image name="Receiver" width="30" height="30"/>
         <image name="about" width="30" height="30"/>
-        <image name="calibrate" width="30" height="31"/>
+        <image name="checklist" width="30" height="30"/>
         <image name="cli" width="30" height="30"/>
         <image name="dataflash" width="30" height="30"/>
         <image name="down-arrow" width="25" height="25"/>
