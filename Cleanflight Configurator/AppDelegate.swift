@@ -111,6 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         stayAliveTimer?.invalidate()
         stayAliveTimer = nil
+        UIApplication.sharedApplication().idleTimerDisabled = false
         
         lastDataReceived = nil
     }

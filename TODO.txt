@@ -1,6 +1,5 @@
 - BUG: ESP8266 lots of comm errors although latency is very low. Why?
 - BUG: Time counter not reset after disconnect: 147:18 ????
-- BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 - BUG CLI issue: buffer overrun?
 - Alarm: Altitude low and high alarms, RTH fence alarm, Amperage, mAh consumed, etc.
 - TCP/IP: Try UDP instead of TCP
@@ -161,5 +160,6 @@ Now running 1.9+ with Multiwii patches. Seems to work fine.
 - N/A. Telemetry-only mode (passive): MSP_BOXNAMES,MSP_STATUS,MSP_IDENT,MSP_RAW_IMU,MSP_ALTITUDE,MSP_RAW_GPS,MSP_RC,MSP_ATTITUDE,MSP_SERVO. "Almost nobody uses it...". Removed in 1.11?)
 - REMOVED Background mode: BLE supposedly only wakes up the app "if the peripheral delivers an update" (https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW54)
     Wi-Fi: must implement func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) in app delegate
+- BUG?: UIApplication.idleTimer not enabled when disconnected from vehicle: ?? Don't see how that would be possible
 
 
