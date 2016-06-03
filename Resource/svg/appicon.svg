@@ -73,7 +73,7 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="2560"
-     inkscape:window-height="1315"
+     inkscape:window-height="1319"
      inkscape:window-x="0"
      inkscape:window-y="1"
      inkscape:window-maximized="1" />
@@ -85,7 +85,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -108,12 +108,15 @@
        id="rect4405"
        width="1862.8572"
        height="234.28572"
-       x="-91.428574"
+       x="-123.42857"
        y="-394.78061"
        rx="158.711"
        ry="158.711" />
     <g
-       id="g4327">
+       id="g4327"
+       inkscape:export-filename="/Users/raph/Documents/Developement/mobile-flight/Resource/appicon-appstore.png"
+       inkscape:export-xdpi="63.34"
+       inkscape:export-ydpi="63.34">
       <rect
          ry="158.71117"
          rx="158.71117"
