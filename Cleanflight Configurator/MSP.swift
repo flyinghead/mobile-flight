@@ -56,7 +56,7 @@ class MSPParser {
     
     var cliViewController: CLIViewController?
     
-    var receiveStats = [(date: NSDate, size: Int)]()
+    private var receiveStats = [(date: NSDate, size: Int)]()
     private var sentDates = [MSP_code : NSDate]()
     private var msgLatencies = [MSP_code : Double]()
     
@@ -74,7 +74,9 @@ class MSPParser {
     }
     
     var latency: Double {
+        objc_sync_enter(self)
         if msgLatencies.isEmpty {
+            objc_sync_exit(self)
             return 0.2      // Unknown. Let's pretend it's 200ms
         }
         var latencies = [Double]()
@@ -85,6 +87,8 @@ class MSPParser {
             }
             latencies.append(min(latency, 1.0))
         }
+        objc_sync_exit(self)
+
         latencies.sortInPlace()
         if latencies.count % 2 == 1 {
             return latencies[latencies.count / 2]
@@ -118,10 +122,12 @@ class MSPParser {
         
         for b in data {
             if let (success, mspCode, message) = codec.decode(b) {
+                objc_sync_enter(self)
                 if let date = self.sentDates[mspCode] {
                     msgLatencies[mspCode] = -date.timeIntervalSinceNow
                     self.sentDates.removeValueForKey(mspCode)
                 }
+                objc_sync_exit(self)
                 if success {
                     if processMessage(mspCode, message: message) {
                         callSuccessCallback(mspCode, data: message)
@@ -1082,8 +1088,10 @@ class MSPParser {
         commChannel?.close()
         commChannel = nil
         FlightLogFile.close(self)
-        sentDates.removeAll()
-        msgLatencies.removeAll()
+        synchronized(self) {
+            self.sentDates.removeAll()
+            self.msgLatencies.removeAll()
+        }
         pingCommunicationStatusListeners(false)
     }
     
@@ -1106,7 +1114,6 @@ class MSPParser {
             return nil
         }
         let msg = outputQueue.removeFirst()
-        objc_sync_exit(self)
         
         if msg[0] == 36 {   // $
             if let mspCode = MSP_code(rawValue: Int(msg[4])) where latencyMsgs.contains(mspCode) {
@@ -1116,6 +1123,7 @@ class MSPParser {
                 }
             }
         }
+        objc_sync_exit(self)
         
         return msg
     }
