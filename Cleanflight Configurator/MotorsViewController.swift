@@ -124,14 +124,16 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        value1.font = value1.font.monospacedDigitFont
-        value2.font = value2.font.monospacedDigitFont
-        value3.font = value3.font.monospacedDigitFont
-        value4.font = value4.font.monospacedDigitFont
-        value5.font = value5.font.monospacedDigitFont
-        value6.font = value6.font.monospacedDigitFont
-        value7.font = value7.font.monospacedDigitFont
-        value8.font = value8.font.monospacedDigitFont
+        if #available(iOS 9.0, *) {
+            value1.font = UIFont.monospacedDigitSystemFontOfSize(value1.font.pointSize, weight: UIFontWeightRegular)
+            value2.font = UIFont.monospacedDigitSystemFontOfSize(value2.font.pointSize, weight: UIFontWeightRegular)
+            value3.font = UIFont.monospacedDigitSystemFontOfSize(value3.font.pointSize, weight: UIFontWeightRegular)
+            value4.font = UIFont.monospacedDigitSystemFontOfSize(value4.font.pointSize, weight: UIFontWeightRegular)
+            value5.font = UIFont.monospacedDigitSystemFontOfSize(value5.font.pointSize, weight: UIFontWeightRegular)
+            value6.font = UIFont.monospacedDigitSystemFontOfSize(value6.font.pointSize, weight: UIFontWeightRegular)
+            value7.font = UIFont.monospacedDigitSystemFontOfSize(value7.font.pointSize, weight: UIFontWeightRegular)
+            value8.font = UIFont.monospacedDigitSystemFontOfSize(value8.font.pointSize, weight: UIFontWeightRegular)
+        }
         
         modelView.image = MultiTypes.getImage(Configuration.theConfig.multiType)
         

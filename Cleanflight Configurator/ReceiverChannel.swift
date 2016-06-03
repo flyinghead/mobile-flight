@@ -26,7 +26,12 @@ class ReceiverChannel: UIView {
     @IBInspectable var fontSize: CGFloat = UIFont.systemFontSize() {
         didSet {
             labelControl?.font = UIFont.systemFontOfSize(fontSize)
-            valueLabel?.font = UIFont.systemFontOfSize(fontSize).monospacedDigitFont
+            if #available(iOS 9.0, *) {
+                valueLabel?.font = UIFont.monospacedDigitSystemFontOfSize(fontSize, weight: UIFontWeightRegular)
+            } else {
+                // Prior to iOS 9, system font had monospaced digits
+                valueLabel?.font = UIFont.systemFontOfSize(fontSize)
+            }
         }
     }
     
@@ -62,7 +67,12 @@ class ReceiverChannel: UIView {
             valueLabel = UILabel()
             valueLabel?.text = "8888"
             valueLabel?.textAlignment = .Right
-            valueLabel?.font = UIFont.systemFontOfSize(fontSize).monospacedDigitFont
+            if #available(iOS 9.0, *) {
+                valueLabel?.font = UIFont.monospacedDigitSystemFontOfSize(fontSize, weight: UIFontWeightRegular)
+            } else {
+                // Prior to iOS 9, system font had monospaced digits
+                valueLabel?.font = UIFont.systemFontOfSize(fontSize)
+            }
             valueLabel?.translatesAutoresizingMaskIntoConstraints = false
             addSubview(valueLabel!)
 
