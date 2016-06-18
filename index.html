@@ -35,7 +35,7 @@
         <h3>
 <a id="welcome-to-mobile-flight" class="anchor" href="#welcome-to-mobile-flight" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Mobile Flight support site</h3>
 
-<p>Mobile Flight is an application to configure and monitor aircrafts running <a href="http://cleanflight.com/">Cleanflight</a> and compatible forks such as <a href="https://github.com/iNavFlight/inav">iNAV</a> and <a href="https://github.com/betaflight/betaflight">Betaflight</a>. Mobile Flight runs on iPhone and iPad and connects to the aircraft using Wi-Fi or Bluetooth 4.0 (Bluetooth Low Energy.) See below for a list of supported modules.</p>
+<p><a href="https://itunes.apple.com/us/app/mobile-flight-configuration/id1079191425?ls=1&mt=8">Mobile Flight</a> is an iOS app to configure and monitor aircrafts running <a href="http://cleanflight.com/">Cleanflight</a> and compatible forks such as <a href="https://github.com/iNavFlight/inav">iNAV</a> and <a href="https://github.com/betaflight/betaflight">Betaflight</a>. Mobile Flight runs on iPhone and iPad and connects to the aircraft using Wi-Fi or Bluetooth 4.0 (Bluetooth Low Energy.) See below for a list of supported modules.</p>
 <p><img src="images/frsky.jpg" /></p>
 
 <h3>
@@ -62,7 +62,8 @@ The HM-10 is a readily available Bluetooth 4.0 module based on the Texas Instrum
 
 <p>To connect the Wi-Fi or Bluetooth module, you will need a free serial port on your flight controller. You can use any port including soft-serial ones. You can also use UART1 when it is shared with the USB port but you won't be able to use the app when a USB cable is plugged in (which is usually not a problem). Connect the module TX pin to the RX pin of the serial port on the flight controller, and connect the module RX pin to the TX serial port pin.</p>
 <p>You will also have to provide power to the module. Some modules require 3.3V and others require 5V. The ESP8266 and barebone (i.e. without breakboard) HM-10 modules need 3.3V. Modules with a breakboard and the RedBearLab BLE Mini need 5V. Refer to your module documentation for details. Note that it's OK to power a 3.3V bluetooth module with the 3.3V pin present on some flight controller boards but the ESP8266 draws too much current and needs its own voltage converter/regulator.</p>
-<p>Here is a very helpful <a href="https://www.youtube.com/watch?v=KloIY_uKNZM">tutorial video</a> showing how to connect a Bluetooth module to a Naze32. But note that the module used in the video (HC-05) will not work with an iPhone/iPad and the AT commands are slightly different (Use <code>AT+BAUD4</code> to set the speed, NOT <code>AT+BAUD8</code>)</p>
+<p>Below is a very helpful tutorial video showing how to connect a Bluetooth module to a Naze32. But note that the module used in the video (HC-06) will not work with an iPhone/iPad and the AT commands are slightly different (Use <code>AT+BAUD4</code> to set the speed, NOT <code>AT+BAUD8</code>)</p>
+<iframe width="640" height="360" src="https://www.youtube.com/embed/KloIY_uKNZM" frameborder="0" allowfullscreen></iframe>
 <p>Use Cleanflight Configurator to enable MSP DATA on the selected serial port. The selected baud rate MUST match the speed of the module. Note that speed over 19200 may cause buffer overruns and communication errors, especially in the Modes and CLI views.<img src="images/cf-config-ports.png"></p>
 
 <h3>
