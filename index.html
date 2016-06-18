@@ -16,8 +16,9 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/flyinghead/mobile-flight">View on GitHub</a>
+          <!--a id="forkme_banner" href="https://github.com/flyinghead/mobile-flight">View on GitHub</a-->
 
+          <img src="images/app-icon.jpg" style="float: left; margin-right: 20px;">
           <h1 id="project_title">Mobile Flight</h1>
           <h2 id="project_tagline">Configuration and Ground Control Station for Cleanflight aircrafts</h2>
 
@@ -32,29 +33,52 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a id="welcome-to-mobile-flight-support-site" class="anchor" href="#welcome-to-mobile-flight-support-site" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Mobile Flight support site</h3>
+<a id="welcome-to-mobile-flight" class="anchor" href="#welcome-to-mobile-flight" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Mobile Flight support site</h3>
 
-<p>Mobile Flight is an application to configure and monitor aircrafts running <a href="http://cleanflight.com/">Cleanflight</a> and compatible forks such as <a href="https://github.com/iNavFlight/inav">iNAV</a> and <a href="https://github.com/betaflight/betaflight">Betaflight</a>. Mobile flight runs an iPhone and iPad and connects to the aircraft using WiFi or Bluetooth 4.0 (Bluetooth Low Energy.) </p>
-
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
+<p>Mobile Flight is an application to configure and monitor aircrafts running <a href="http://cleanflight.com/">Cleanflight</a> and compatible forks such as <a href="https://github.com/iNavFlight/inav">iNAV</a> and <a href="https://github.com/betaflight/betaflight">Betaflight</a>. Mobile Flight runs on iPhone and iPad and connects to the aircraft using Wi-Fi or Bluetooth 4.0 (Bluetooth Low Energy.) See below for a list of supported modules.</p>
+<p><img src="images/frsky.jpg" /></p>
 
 <h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating pages manually</h3>
+<a id="bt-modules" class="anchor" href="#bt-modules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluetooth 4.0 Modules</h3>
+<h4>HM-10 and HM-11</h4>
+The HM-10 is a readily available Bluetooth 4.0 module based on the Texas Instruments CC2540 or CC2541 Bluetooth low energy (BLE) chip. The module design and firmware originated from the Jinan Huamao Technology Company (JNHuaMao), but is sold by <a href="https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=hm-10&rh=i%3Aaps%2Ck%3Ahm-10">various suppliers</a>. The HM-11 is a smaller variant of the HM-10 and is also supported.
+<p>The documentation for these modules can be found <a href="https://www.seeedstudio.com/wiki/images/c/cd/Bluetooth4_en.pdf">here</a>.</p>
+<p><img src="images/hm-10-2.jpg" /></p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h4>RedBearLab BLE Mini</h4>
+<p>The <a href="http://redbearlab.com/blemini/">BLE Mini from RedBearLab</a> is about half the size of a stick of gum and is based on the Texas Instruments CC2540 chip. The default firmware ("Biscuit") works fine with Mobile Flight.</p>
+<p><img src="images/BLE+mini.jpg" /></p>
+
+<h4>Team BlackSheep Crossfire</h4>
+<p>The <a href="http://team-blacksheep.com/products/prod:crossfire_tx">Team BlackSheep Crossfire</a> is a long range R/C link based on the newest RF technology, capable of self-healing two-way communications. With the release of firmware V1.20, a bi-directional serial modem was added to CH7 and CH8 of the Diversity receiver. Mobile Flight connects to the Crossfire TX using Bluetooth, and uses the bi-directional modem to communicate with the flight controller.</p>
+<p><img src="images/tbs-crossfire.jpg" /></p>
+
+<h3><a id="bt-modules" class="anchor" href="#bt-modules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wi-Fi ESP8266</h3>
+<p>The <a href="https://en.wikipedia.org/wiki/ESP8266">ESP8266</a> is a low-cost Wi-Fi chip with full TCP/IP stack and microcontroller capability produced by Shanghai-based Chinese manufacturer, Espressif. Any transparent TCP bridge firmware will work. <a href="https://github.com/flyinghead/ESP8266-transparent-bridge/tree/master/firmware">This firmware</a> is known to work fine and will allow you to access the Internet via the cellular network even when connected to the module's Wi-Fi network.</p>
+<p><img src="images/esp8266.jpg" /></p>
 
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a id="quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick Start</h3>
 
-<p>You can <a href="https://help.github.com/articles/basic-writing-and-formatting-syntax/#mentioning-users-and-teams" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>To connect the Wi-Fi or Bluetooth module, you will need a free serial port on your flight controller. You can use any port including soft-serial ones. You can also use UART1 when it is shared with the USB port but you won't be able to use the app when a USB cable is plugged in (which is usually not a problem). Connect the module TX pin to the RX pin of the serial port on the flight controller, and connect the module RX pin to the TX serial port pin.</p>
+<p>You will also have to provide power to the module. Some modules require 3.3V and others require 5V. The ESP8266 and barebone (i.e. without breakboard) HM-10 modules need 3.3V. Modules with a breakboard and the RedBearLab BLE Mini need 5V. Refer to your module documentation for details. Note that it's OK to power a 3.3V bluetooth module with the 3.3V pin present on some flight controller boards but the ESP8266 draws too much current and needs its own voltage converter/regulator.</p>
+<p>Here is a very helpful <a href="https://www.youtube.com/watch?v=KloIY_uKNZM">tutorial video</a> showing how to connect a Bluetooth module to a Naze32. But note that the module used in the video (HC-05) will not work with an iPhone/iPad and the AT commands are slightly different (Use <code>AT+BAUD4</code> to set the speed, NOT <code>AT+BAUD8</code>)</p>
+<p>Use Cleanflight Configurator to enable MSP DATA on the selected serial port. The selected baud rate MUST match the speed of the module. Note that speed over 19200 may cause buffer overruns and communication errors, especially in the Modes and CLI views.<img src="images/cf-config-ports.png"></p>
 
 <h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+    <a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Troubleshooting</h3>
 
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
+<ul>
+    <li>Handshake failed: This means that the Bluetooth or Wi-Fi module cannot communicate with the flight controller. Check the connections between the module and flight controller. Try to swap TX and RX. Verify that the module and flight controller serial port are using the same baud rate and that MSP DATA is enabled on the serial port. And don't forget to connect GND between FC and module.</li>
+    <li>The Bluetooth module is not visible in Mobile Flight, even after refreshing: It's likely that the module is not getting power. Modules with a breakboard usually have a LED to show the connection status. It should blink slowly when powered on but not connected, and should be steady on when connected to the iPhone.</li>
+</ul>
+
+<h3>
+
+<h3>
+<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contact</h3>
+
+<p>Having trouble with Mobile Flight? Contact me at <a href="mailto:mobileflightapp@gmail.com">mobileflightapp@gmail.com</a> and I’ll try to help.</p>
       </section>
     </div>
 
@@ -62,7 +86,6 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">Mobile Flight maintained by <a href="https://github.com/flyinghead">flyinghead</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
