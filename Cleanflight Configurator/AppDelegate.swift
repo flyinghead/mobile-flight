@@ -45,6 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     
     private var logTimer: NSTimer?      // DEBUG
     
+    var active = false                  // True if the app is active or recording telemetry in the background
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
@@ -60,6 +62,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
 
+        active = true
+
         return true
     }
 
@@ -72,6 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         // Keep the timers active if armed so we can continue to record telemetry
         if !armed || msp.replaying || !userDefaultEnabled(.RecordFlightlog) {
             stopTimer()
+            active = false
         } else {
             // This one however is useless while in background
             stayAliveTimer?.invalidate()
@@ -86,6 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         startTimer()
         startLocationManagerIfNeeded()
+        active = true
     }
     
     func startTimer() {
@@ -171,6 +177,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     }
 
     func applicationWillTerminate(application: UIApplication) {
+        active = false
         msp.closeCommChannel()
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)

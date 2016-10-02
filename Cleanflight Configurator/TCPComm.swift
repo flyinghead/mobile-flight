@@ -25,6 +25,10 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     var _reachabilityContext: SCNetworkReachabilityContext?
     var thread: NSThread!
     
+    var spaceAvailable = true           // Signals that the output stream has space available
+    var sendBuffer: [UInt8]?
+    var connecting = false
+    
     init(msp: MSPParser, host: String, port: Int?) {
         self.msp = msp
         self.host = host
@@ -34,6 +38,10 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     }
     
     func connect(callback: ((success: Bool) -> ())?) {
+        if connecting {
+            return
+        }
+        connecting = true
         NSLog("Connecting...")
         connectCallback = callback
         
@@ -51,7 +59,6 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
 
         let inStream = readStream!.takeRetainedValue() as NSInputStream
         let outStream = writeStream!.takeRetainedValue() as NSOutputStream
-        self.outStream = outStream
         
         inStream.delegate = self
         outStream.delegate = self
@@ -61,6 +68,8 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         
         inStream.open()
         outStream.open()
+        
+        self.outStream = outStream
         
         while true {
             NSRunLoop.currentRunLoop().runUntilDate(NSDate().dateByAddingTimeInterval(0.5))
@@ -112,37 +121,44 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
                 NSLog("Network restored")
             }
             if hadLostNetwork && !myself.networkLost && !myself._connected {
-                myself.connect({ success in
-                    if success {
-                        NSNotificationCenter.defaultCenter().removeObserver(myself, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
-                        SVProgressHUD.dismiss()
-                    }
-                })
+                myself.tryToReconnect()
             }
         }, &(_reachabilityContext!))
         SCNetworkReachabilityScheduleWithRunLoop(reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes)
     }
     
     private func sendIfAvailable() {
-        if (outStream == nil) {
-            // Probably a comm error
+        if !spaceAvailable {
             return
         }
-        while true {
-            let data = msp.nextOutputMessage()
-            if data == nil {
-                break
+        let data: [UInt8]
+        if sendBuffer != nil {
+            data = sendBuffer!
+        } else {
+            guard let msg = msp.nextOutputMessage() else {
+                return
             }
-            let len = outStream.write(data!, maxLength: data!.count);
-            if (len < 0) {
-                NSLog("Communication error")
-            } else if (len < data!.count) {
-                NSLog("Truncated TCP/IP write!!!")
-            }
-
+            data = msg
+        }
+        objc_sync_enter(self)
+        if (outStream == nil) {
+            // Probably a comm error
+            objc_sync_exit(self)
+            return
+        }
+        let len = outStream.write(data, maxLength: data.count);
+        objc_sync_exit(self)
+        spaceAvailable = false
+        
+        if (len < 0) {
+            NSLog("Communication error")
+        } else if (len < data.count) {
+            sendBuffer = Array(data.dropFirst(len))
+        } else {
+            sendBuffer = nil
         }
     }
-    
+
     func stream(stream: NSStream, handleEvent eventCode: NSStreamEvent) {
         switch eventCode {
         case NSStreamEvent.None:
@@ -156,6 +172,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         case NSStreamEvent.OpenCompleted:
             NSLog("NSStreamEvent.OpenCompleted")
             _connected = true
+            connecting = false
             dispatch_async(dispatch_get_main_queue(), {
                 self.connectCallback?(success: true)
                 self.connectCallback = nil
@@ -174,14 +191,15 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
             }
         
         case NSStreamEvent.HasSpaceAvailable:
-            // FIXME Let's assume that all writes complete in sendIfAvailable()
-            break
+            spaceAvailable = true
+            sendIfAvailable()
             
         case NSStreamEvent.ErrorOccurred,
              NSStreamEvent.EndEncountered:
             if stream is NSOutputStream {
+                connecting = false
                 NSLog("NSStreamEvent.ErrorOccurred: %@", stream)
-                close()
+                closeStreams()
                 if connectCallback != nil {
                     // Connection failed
                     dispatch_async(dispatch_get_main_queue(), {
@@ -196,19 +214,27 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
                         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection:", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                         SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
                     })
-                    if !networkLost {
-                        connect({ success in
-                            if success {
-                                NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
-                                SVProgressHUD.dismiss()
-                            }
-                        })
-                    }
+                    tryToReconnect()
                 }
             }
             
         default:
             break
+        }
+    }
+    
+    func tryToReconnect() {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        if !connected && msp.communicationEstablished && appDelegate.active && !networkLost {
+            connect({ success in
+                if success {
+                    NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                    SVProgressHUD.dismiss()
+                }
+                else {
+                    NSTimer.scheduledTimerWithTimeInterval(0.5, target:self, selector:"tryToReconnect", userInfo: nil, repeats: false)
+                }
+            })
         }
     }
     
@@ -230,9 +256,13 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
     }
     
     private func closeStreams() {
+        objc_sync_enter(self)
         _connected = false
         self.outStream = nil
-        thread.cancel()
+        if !thread.cancelled {
+            thread.cancel()
+        }
+        objc_sync_exit(self)
     }
 
     func flushOut() {
