@@ -44,11 +44,12 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func connectionTimedOut(timer: NSTimer) {
-        btManager.disconnect(selectedPeripheral!)
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus("Device is not responding", maskType: .None)
-        })
-
+        if selectedPeripheral != nil {
+            btManager.disconnect(selectedPeripheral!)
+            dispatch_async(dispatch_get_main_queue(), {
+                SVProgressHUD.showErrorWithStatus("Device is not responding", maskType: .None)
+            })
+        }
     }
 
     // MARK: BluetoothDelegate
