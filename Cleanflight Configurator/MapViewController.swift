@@ -20,6 +20,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var timeLabel: ArmedTimer!
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var altitudeLabel: UILabel!
+    @IBOutlet weak var rssiImg: UIImageView!
     
     var annotationView: MKAnnotationView?
     
@@ -70,6 +71,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
                 mapView.setCenterCoordinate(coordinate!, animated: true)
             }
         }
+        rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -104,7 +106,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         
         batteryLabel.voltage = config.voltage
         
-        rssiLabel.rssi = config.rssi
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
         
         if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
             mapView.removeAnnotation(posHoldLocation!)
@@ -272,6 +274,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             presentViewController(alertController, animated: true, completion: nil)
 
         }
+    }
+    @IBAction func rssiViewTapped(sender: AnyObject) {
+        appDelegate.showBtRssi = !appDelegate.showBtRssi
+        rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
+        let config = Configuration.theConfig
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
     }
 }
 

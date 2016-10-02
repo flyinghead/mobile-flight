@@ -208,6 +208,12 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         }
     }
     
+    func peripheral(peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: NSError?) {
+        //NSLog("BT RSSI=%@", RSSI)       // -104 -> -26 ?
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.msp.setRssi(RSSI.doubleValue)
+    }
+    
     // MARK:
     
     func connect(peripheral: BluetoothPeripheral) {
@@ -279,5 +285,14 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             string += " "
         }
         return string
+    }
+    
+    func readRssi(peripheral: BluetoothPeripheral) {
+        for p in peripherals {
+            if peripheral.uuid == p.identifier.UUIDString {
+                p.readRSSI()
+                return
+            }
+        }
     }
 }

@@ -110,4 +110,8 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     var connected: Bool { return _connected }
+    
+    func readRssi() {
+        btManager.readRssi(peripheral)
+    }
 }

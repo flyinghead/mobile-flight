@@ -1157,4 +1157,17 @@ class MSPParser {
             commChannel?.flushOut()
         }
     }
+    
+    func readBluetoothRssi() {
+        guard let btComm = commChannel as? BluetoothComm else {
+            return
+        }
+        btComm.readRssi()
+    }
+    
+    func setRssi(rssi: Double) {
+        Configuration.theConfig.btRssi = Int(round(constrain((104 + rssi) / 78 * 100, min: 0, max: 100)))
+        
+        pingDataListeners()
+    }
 }

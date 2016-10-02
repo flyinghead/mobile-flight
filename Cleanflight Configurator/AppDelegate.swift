@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     private var logTimer: NSTimer?      // DEBUG
     
     var active = false                  // True if the app is active or recording telemetry in the background
+    var showBtRssi = false
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let pageControl = UIPageControl.appearance()
@@ -148,6 +149,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
             sender.sendMSPCommands()
         }
         //NSLog("Status Requested")
+        
+        msp.readBluetoothRssi()
         
         if lastDataReceived != nil && -lastDataReceived!.timeIntervalSinceNow > max(0.75, statusTimerInterval) && msp.communicationHealthy {
             // Display warning if no data received for 0.75 sec (or last status interval if bigger)
@@ -404,9 +407,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
 }
 
 extension UIViewController {
+    var appDelegate: AppDelegate {
+        get {
+            return UIApplication.sharedApplication().delegate as! AppDelegate
+        }
+    }
     var msp: MSPParser {
         get {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             return appDelegate.msp
         }
     }

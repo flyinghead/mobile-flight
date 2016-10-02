@@ -709,6 +709,7 @@ class Configuration : AutoCoded {
     // Local
     var batteryCells = 0
     var maxAmperage = 0.0
+    var btRssi = 0          // %
     
     private var _localSNR = 0.0
     private var _remoteSNR = 0.0

@@ -20,6 +20,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     @IBOutlet weak var variometerScale: VerticalScale!
     @IBOutlet weak var turnRateIndicator: TurnRateIndicator!
     @IBOutlet weak var batteryLabel: BatteryVoltageLabel!
+    @IBOutlet weak var rssiImg: UIImageView!
     @IBOutlet weak var rssiLabel: RssiLabel!
     @IBOutlet weak var timeLabel: ArmedTimer!
     @IBOutlet weak var gpsLabel: BlinkingLabel!
@@ -162,6 +163,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         setInstrumentsUnitSystem()
         
         followMeButton.enabled = false
+        
+        rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssiw" : "signalw")
     }
     
     func userDefaultsDidChange(sender: AnyObject) {
@@ -284,7 +287,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", config.mAhDrawn)
         
-        rssiLabel.rssi = config.rssi
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
         
         armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
         
@@ -424,6 +427,14 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
             }
         }
     }
+    
+    @IBAction func rssiViewTapped(sender: AnyObject) {
+        appDelegate.showBtRssi = !appDelegate.showBtRssi
+        rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssiw" : "signalw")
+        let config = Configuration.theConfig
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
+    }
+    
     func receivedReceiverData() {
         let receiver = Receiver.theReceiver
         leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
