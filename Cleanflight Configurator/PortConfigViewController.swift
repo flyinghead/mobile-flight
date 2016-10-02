@@ -35,7 +35,7 @@ class PortConfigViewController: ConfigChildViewController {
         mspBaudratePicker.setPlaceholder("")
         blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: [ "19200", "38400", "57600", "115200", "230400", "250000" ])
         blackboxBaudratePicker.setPlaceholder("")
-        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", Configuration.theConfig.isApiVersionAtLeast("1.15") ? "LTM" : "MSP", "SmartPort" ])
+        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", Configuration.theConfig.isApiVersionAtLeast("1.15") ? "LTM" : "MSP", "SmartPort", "MAVLink" ])
         telemetryTypePicker.setPlaceholder("")
         telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: [ "Auto", "9600", "19200", "38400", "57600", "115200" ])
         telemetryBaudratePicker.setPlaceholder("")
@@ -62,6 +62,8 @@ class PortConfigViewController: ConfigChildViewController {
             telemetryTypePicker.selectedIndex = 3
         } else if port.functions.contains(.TelemetrySmartPort) {
             telemetryTypePicker.selectedIndex = 4
+        } else if port.functions.contains(.TelemetryMAVLink) {
+            telemetryTypePicker.selectedIndex = 5
         } else {
             telemetryTypePicker.selectedIndex = 0
         }
@@ -96,6 +98,7 @@ class PortConfigViewController: ConfigChildViewController {
         port.functions.remove(.TelemetryHott)
         port.functions.remove(.TelemetryLTM)
         port.functions.remove(.TelemetrySmartPort)
+        port.functions.remove(.TelemetryMAVLink)
         switch telemetryTypePicker.selectedIndex {
         case 1:
             port.functions.insert(.TelemetryFrsky)
@@ -105,6 +108,8 @@ class PortConfigViewController: ConfigChildViewController {
             port.functions.insert(.TelemetryLTM)
         case 4:
             port.functions.insert(.TelemetrySmartPort)
+        case 5:
+            port.functions.insert(.TelemetryMAVLink)
         default:
             break
         }

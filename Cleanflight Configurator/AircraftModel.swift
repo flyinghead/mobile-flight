@@ -254,6 +254,8 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     static let TelemetrySmartPort  = PortFunction(rawValue: 1 << 5)
     static let RxSerial  = PortFunction(rawValue: 1 << 6)
     static let Blackbox  = PortFunction(rawValue: 1 << 7)
+    static let TelemetryMAVLink  = PortFunction(rawValue: 1 << 8)
+    static let MSPClient  = PortFunction(rawValue: 1 << 9)
     
     init(rawValue: Int) {
         self.rawValue = rawValue

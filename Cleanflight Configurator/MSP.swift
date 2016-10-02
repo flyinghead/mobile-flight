@@ -1061,6 +1061,11 @@ class MSPParser {
     }
     
     func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
+        if settings.rxFailMode!.count == 0 {
+            // Happens when RX config is invalid
+            callback?(success: true)
+            return
+        }
         var data = [UInt8]()
         data.append(UInt8(index))
         data.append(UInt8(settings.rxFailMode![index]))
