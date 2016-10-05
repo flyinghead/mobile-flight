@@ -344,8 +344,12 @@ class MSPParser {
             settings.pidValues = [[Double]]()
             for i in 0..<message.count / 3 {
                 settings.pidValues!.append([Double]())
-                
-                if i <= 3 || i >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
+
+                if config.isBetaflight {
+                    settings.pidValues![i].append(Double(message[i*3]))
+                    settings.pidValues![i].append(Double(message[i*3 + 1]))
+                    settings.pidValues![i].append(Double(message[i*3 + 2]))
+                } else if i <= 3 || i >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
                     settings.pidValues![i].append(Double(message[i*3]) / 10)
                     settings.pidValues![i].append(Double(message[i*3 + 1]) / 1000)
                     settings.pidValues![i].append(Double(message[i*3 + 2]))
@@ -643,6 +647,13 @@ class MSPParser {
         case .MSP_DATAFLASH_READ:
             // Nothing to do. Handled by the callback
             break
+        
+        case .MSP_LOOP_TIME:
+            if message.count < 2 {
+                return false
+            }
+            settings.loopTime = readUInt16(message, index: 0)
+            pingSettingsListeners()
             
         case .MSP_SIKRADIO:
             if message.count < 9 {
@@ -656,6 +667,57 @@ class MSPParser {
             config.noise = Int(message[7])
             config.remoteNoise = Int(message[8])
             ping3drRssiListeners()
+        
+        // Betaflight
+        case .MSP_PID_ADVANCED_CONFIG:
+            if message.count < 6 {
+                return false
+            }
+            settings.gyroSyncDenom = Int(message[0])
+            settings.pidProcessDenom = Int(message[1])
+            settings.useUnsyncedPwm = message[2] != 0
+            settings.motorPwmProtocol = Int(message[3])
+            settings.motorPwmRate = readUInt16(message, index: 4)
+            pingSettingsListeners()
+            
+        case .MSP_FILTER_CONFIG:
+            if message.count < 13 {
+                return false
+            }
+            settings.gyroLowpassFrequency = Int(message[0])
+            settings.dTermLowpassFrequency = readUInt16(message, index: 1)
+            settings.yawLowpassFrequency = readUInt16(message, index: 3)
+            settings.gyroNotchFrequency = readUInt16(message, index: 5)
+            settings.gyroNotchCutoff = readUInt16(message, index: 7)
+            settings.dTermNotchFrequency = readUInt16(message, index: 9)
+            settings.dTermNotchCutoff = readUInt16(message, index: 11)
+            pingSettingsListeners()
+
+        case .MSP_ADVANCED_TUNING:
+            if message.count < 17 {
+                return false
+            }
+            settings.rollPitchItermIgnoreRate = readUInt16(message, index: 0)
+            settings.yawItermIgnoreRate = readUInt16(message, index: 2)
+            settings.yawPLimit = readUInt16(message, index: 4)
+            settings.deltaMethod = Int(message[6])
+            settings.vbatPidCompensation = message[7] != 0
+            settings.pTermSRateWeight = Int(message[8])
+ //           settings.setpointRelaxRatio = Int(message[8])
+            settings.dTermSetpointWeight = Int(message[9])
+            settings.iTermThrottleGain = Int(message[12])
+            settings.rateAccelLimit = readUInt16(message, index: 13)
+            settings.yawRateAccelLimit = readUInt16(message, index: 15)
+            pingSettingsListeners()
+        
+        case .MSP_SENSOR_CONFIG:
+            if message.count < 3 {
+                return false
+            }
+            settings.accelerometerDisabled = message[0] != 0
+            settings.barometerDisabled = message[1] != 0
+            settings.magnetometerDisabled = message[2] != 0
+            pingSettingsListeners()
             
         // ACKs for sent commands
         case .MSP_SET_MISC,
@@ -680,7 +742,10 @@ class MSPParser {
             .MSP_SET_RAW_RC,
             .MSP_SET_RX_CONFIG,
             .MSP_SET_FAILSAFE_CONFIG,
-            .MSP_SET_RXFAIL_CONFIG:
+            .MSP_SET_RXFAIL_CONFIG,
+            .MSP_SET_LOOP_TIME,
+            .MSP_SET_PID_ADVANCED_CONFIG,
+            .MSP_SET_SENSOR_CONFIG:
             break
             
         default:
@@ -953,7 +1018,11 @@ class MSPParser {
             let p = pid[0]
             let i = pid[1]
             let d = pid[2]
-            if idx <= 3 || idx >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
+            if Configuration.theConfig.isBetaflight {
+                data.append(UInt8(round(p)))
+                data.append(UInt8(round(i)))
+                data.append(UInt8(round(d)))
+            } else if idx <= 3 || idx >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
                 data.append(UInt8(round(p * 10)))
                 data.append(UInt8(round(i * 1000)))
                 data.append(UInt8(round(d)))
@@ -1082,7 +1151,33 @@ class MSPParser {
             }
         })
     }
+    
+    func sendLoopTime(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt16(settings.loopTime))
+        sendMessage(.MSP_SET_LOOP_TIME, data: data, retry: 2, callback: callback)
+    }
+    
+    // Betaflight
+    
+    func sendPidAdvancedConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.gyroSyncDenom))
+        data.append(UInt8(settings.pidProcessDenom))
+        data.append(UInt8(settings.useUnsyncedPwm ? 1 : 0))
+        data.append(UInt8(settings.motorPwmProtocol))
+        data.appendContentsOf(writeUInt16(settings.motorPwmRate))
+        sendMessage(.MSP_SET_PID_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
+    }
 
+    func sendSensorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.accelerometerDisabled ? 1 : 0))
+        data.append(UInt8(settings.barometerDisabled ? 1 : 0))
+        data.append(UInt8(settings.magnetometerDisabled ? 1 : 0))
+        sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
     func openCommChannel(commChannel: CommChannel) {
         self.commChannel = commChannel
         pingCommunicationStatusListeners(true)

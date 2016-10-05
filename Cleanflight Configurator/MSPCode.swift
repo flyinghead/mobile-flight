@@ -50,6 +50,16 @@ enum MSP_code : Int {
     case MSP_TRANSPONDER_CONFIG =     82
     case MSP_SET_TRANSPONDER_CONFIG = 83
     
+    // Betaflight Additional Commands
+    case MSP_PID_ADVANCED_CONFIG =    90    // aka MSP_ADVANCED_CONFIG in bf code
+    case MSP_SET_PID_ADVANCED_CONFIG = 91   // aka ...
+    case MSP_FILTER_CONFIG =          92
+    case MSP_SET_FILTER_CONFIG =      93
+    case MSP_ADVANCED_TUNING =        94    // aka MSP_PID_ADVANCED in bf code
+    case MSP_SET_ADVANCED_TUNING =    95    // aka ...
+    case MSP_SENSOR_CONFIG =          96
+    case MSP_SET_SENSOR_CONFIG =      97
+    
     // Multiwii MSP commands
     case MSP_IDENT =              100
     case MSP_STATUS =             101

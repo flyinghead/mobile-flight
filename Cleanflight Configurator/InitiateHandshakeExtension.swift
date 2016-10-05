@@ -28,8 +28,17 @@ extension UIViewController {
                                     SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
                                 })
                             } else {
-                                msp.sendMessage(.MSP_UID, data: nil, retry: 4, callback: { success in
+                                msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 4, callback: { success in
                                     if success {
+                                        /*
+                                        if Configuration.theConfig.fcIdentifier == "RCFL" {
+                                            dispatch_async(dispatch_get_main_queue(), {
+                                                callback(success: false)
+                                                SVProgressHUD.showErrorWithStatus("This firmware violates GPL licensing requirements and is not supported", maskType: .None)
+                                            })
+                                            return
+                                        }
+                                        */
                                         msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 4, callback: { success in
                                             if success {
                                                 dispatch_async(dispatch_get_main_queue(), {

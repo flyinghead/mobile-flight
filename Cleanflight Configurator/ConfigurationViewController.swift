@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
+class ConfigurationViewController: StaticDataTableViewController, UITextFieldDelegate {
     @IBOutlet weak var mixerTypeTextField: UITextField!
     @IBOutlet weak var mixerTypeView: UIImageView!
     @IBOutlet weak var motorStopField: UILabel!
@@ -39,7 +39,20 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var displaySwitch: UISwitch!
     @IBOutlet weak var blackboxSwitch: UISwitch!
     @IBOutlet weak var channelForwardingSwitch: UISwitch!
-
+    @IBOutlet weak var loopTimeField: NumberField!
+    @IBOutlet weak var cyclesPerSecLabel: UILabel!
+    
+    @IBOutlet var betaflightFeatures: [UITableViewCell]!
+    @IBOutlet var nonBetaflightFeatures: [UITableViewCell]!
+    @IBOutlet weak var gyroUpdateFreqField: UITextField!
+    @IBOutlet weak var pidLoopFreqField: UITextField!
+    @IBOutlet weak var enableAccelerometer: UISwitch!
+    @IBOutlet weak var enableBarometer: UISwitch!
+    @IBOutlet weak var enableMagnetometer: UISwitch!
+    
+    var gyroUpdateFredPicker: MyDownPicker?
+    var pidLoopFreqPicker: MyDownPicker?
+    
     var mixerTypePicker: MyDownPicker?
     
     var newSettings: Settings?
@@ -47,9 +60,30 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
     var childVisible = false
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
         mixerTypePicker!.addTarget(self, action: #selector(ConfigurationViewController.mixerTypeChanged(_:)), forControlEvents: .ValueChanged)
         mixerTypePicker!.setPlaceholder("")
+        
+        loopTimeField.changeCallback = { value in
+            if value == 0 {
+                self.cyclesPerSecLabel.text = ""
+            } else {
+                self.cyclesPerSecLabel.text = String(format:"%.0f", 1 / value * 1000 * 1000)
+            }
+        }
+        hideSectionsWithHiddenRows = true
+        let config = Configuration.theConfig
+        cells(betaflightFeatures, setHidden: !config.isBetaflight)
+        cells(nonBetaflightFeatures, setHidden: config.isBetaflight)
+
+        if config.isBetaflight {
+            gyroUpdateFredPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 KHz", "4 KHz", "2.67 KHz", "2 KHz", "1.6 KHz", "1.33 KHz", "1.14 KHz", "1 KHz" ])
+            gyroUpdateFredPicker!.setPlaceholder("")
+            pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 KHz", "1 KHz", "0.67 KHz", "0.5 KHz", "0.4 KHz", "0.33 KHz", "0.29 KHz", "0.25 KHz" ])
+            pidLoopFreqPicker!.setPlaceholder("")
+        }
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -84,31 +118,13 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                             if success {
                                 self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
-                                            self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
-                                                if success {
-                                                    self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
-                                                        if success {
-                                                            self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
-                                                                if success {
-                                                                    // SUCCESS
-                                                                    self.fetchInformationSucceeded()
-                                                                } else {
-                                                                    self.fetchInformationFailed()
-                                                                }
-                                                            })
-                                                        } else {
-                                                            self.fetchInformationFailed()
-                                                        }
-                                                    })
-                                                } else {
-                                                    self.fetchInformationFailed()
-                                                }
-                                            })
-                                        } else {
-                                            // SUCCESS
-                                            self.fetchInformationSucceeded()
-                                        }
+                                        self.msp.sendMessage(.MSP_LOOP_TIME, data: nil, retry: 2, callback: { success in
+                                            if success {
+                                                self.fetchFailsafeConfig()
+                                            } else {
+                                                self.fetchInformationFailed()
+                                            }
+                                        })
                                     } else {
                                         self.fetchInformationFailed()
                                     }
@@ -125,6 +141,54 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                 self.fetchInformationFailed()
             }
         })
+    }
+    
+    func fetchFailsafeConfig() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
+            self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
+                if success {
+                    self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
+                        if success {
+                            self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
+                                if success {
+                                    self.fetchBetaflightConfig()
+                                } else {
+                                    self.fetchInformationFailed()
+                                }
+                            })
+                        } else {
+                            self.fetchInformationFailed()
+                        }
+                    })
+                } else {
+                    self.fetchInformationFailed()
+                }
+            })
+        } else {
+            // SUCCESS
+            self.fetchBetaflightConfig()
+        }
+    }
+    
+    private func fetchBetaflightConfig() {
+        if !Configuration.theConfig.isBetaflight {
+            fetchInformationSucceeded()
+        } else {
+            msp.sendMessage(.MSP_PID_ADVANCED_CONFIG, data: nil, retry: 2, callback: { success in
+                if success {
+                    self.msp.sendMessage(.MSP_SENSOR_CONFIG, data: nil, retry: 2, callback: { success in
+                        if success {
+                            // SUCCESS
+                            self.fetchInformationSucceeded()
+                        } else {
+                            self.fetchInformationFailed()
+                        }
+                    })
+                } else {
+                    self.fetchInformationFailed()
+                }
+            })
+        }
     }
     
     private func fetchInformationFailed() {
@@ -189,6 +253,15 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
             displaySwitch.on = newSettings!.features.contains(BaseFlightFeature.Display)
             blackboxSwitch.on = newSettings!.features.contains(BaseFlightFeature.Blackbox)
             channelForwardingSwitch.on = newSettings!.features.contains(BaseFlightFeature.ChannelForwarding)
+            
+            loopTimeField.value = Double(newSettings!.loopTime)
+            
+            // Betaflight
+            gyroUpdateFredPicker?.selectedIndex = newSettings!.gyroSyncDenom - 1
+            pidLoopFreqPicker?.selectedIndex = newSettings!.pidProcessDenom - 1
+            enableAccelerometer.on = !newSettings!.accelerometerDisabled
+            enableBarometer.on = !newSettings!.barometerDisabled
+            enableMagnetometer.on = !newSettings!.magnetometerDisabled
         }
         motorStopField.text = (newSettings!.features.contains(BaseFlightFeature.MotorStop) ?? false) ? "On" : "Off"
         
@@ -243,6 +316,17 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
         saveFeatureSwitchValue(blackboxSwitch, feature: .Blackbox)
         saveFeatureSwitchValue(channelForwardingSwitch, feature: .ChannelForwarding)
         
+        newSettings!.loopTime = Int(loopTimeField.value)
+        
+        // Betaflight
+        if Configuration.theConfig.isBetaflight {
+            newSettings!.gyroSyncDenom = gyroUpdateFredPicker!.selectedIndex + 1
+            newSettings!.pidProcessDenom = pidLoopFreqPicker!.selectedIndex + 1
+            newSettings!.accelerometerDisabled = !enableAccelerometer.on
+            newSettings!.barometerDisabled = !enableBarometer.on
+            newSettings!.magnetometerDisabled = !enableMagnetometer.on
+        }
+        
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
         enableUserInteraction(false)
 
@@ -256,7 +340,13 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                             if success {
                                 self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
                                     if success {
-                                        self.saveNewFailsafeSettings()
+                                        self.msp.sendLoopTime(self.newSettings!, callback: { success in
+                                            if success {
+                                                self.saveNewFailsafeSettings()
+                                            } else {
+                                                self.saveConfigFailed()
+                                            }
+                                        })
                                     } else {
                                         self.saveConfigFailed()
                                     }
@@ -283,11 +373,31 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                         if success {
                             self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
                                 if success {
-                                    self.writeToEepromAndReboot()
+                                    self.saveBetaflightFeatures()
                                 } else {
                                     self.saveConfigFailed()
                                 }
                             })
+                        } else {
+                            self.saveConfigFailed()
+                        }
+                    })
+                } else {
+                    self.saveConfigFailed()
+                }
+            })
+        } else {
+            self.saveBetaflightFeatures()
+        }
+    }
+    
+    private func saveBetaflightFeatures() {
+        if Configuration.theConfig.isBetaflight {
+            self.msp.sendPidAdvancedConfig(self.newSettings!, callback: { success in
+                if success {
+                    self.msp.sendSensorConfig(self.newSettings!, callback: { success in
+                        if success {
+                            self.writeToEepromAndReboot()
                         } else {
                             self.saveConfigFailed()
                         }
@@ -347,6 +457,7 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        super.prepareForSegue(segue, sender: sender)
         (segue.destinationViewController as! ConfigChildViewController).setReference(self, newSettings: newSettings!, newMisc: newMisc!)
         childVisible = true
     }

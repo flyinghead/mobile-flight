@@ -11,6 +11,8 @@ import UIKit
 @IBDesignable
 class NumberField: UITextField {
     
+    typealias ChangeCallback = (value: Double) -> Void
+    
     @IBInspectable var decimalDigits: Int = 0 {
         didSet {
             updateFieldText()
@@ -26,6 +28,7 @@ class NumberField: UITextField {
             stepper.value = value
             _value = stepper.value
             updateFieldText()
+            changeCallback?(value: self._value)
         }
     }
     @IBInspectable var minimumValue: Double = 0.0 {
@@ -58,6 +61,8 @@ class NumberField: UITextField {
             stepper.wraps = wraps
         }
     }
+    
+    var changeCallback: ChangeCallback?
     
     let stepper = UIStepper()
     let toolbar = InputAccessoryToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
@@ -121,6 +126,7 @@ class NumberField: UITextField {
             if value != nil {
                 stepper.value = value!.doubleValue
                 self._value = stepper.value
+                changeCallback?(value: self._value)
             }
         }
     }

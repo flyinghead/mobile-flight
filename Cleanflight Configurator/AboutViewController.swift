@@ -13,7 +13,7 @@ class AboutViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 2, callback: { success in
+        msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
             self.msp.sendMessage(.MSP_FC_VERSION, data: nil, retry: 2, callback: { success in
                 self.msp.sendMessage(.MSP_BUILD_INFO, data: nil, retry: 2, callback: { success in
                     self.msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: 2, callback: { success in
