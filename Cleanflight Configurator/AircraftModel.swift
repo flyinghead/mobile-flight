@@ -39,6 +39,11 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     static let OneShot125  = BaseFlightFeature(rawValue: 1 << 18)
     static let Blackbox  = BaseFlightFeature(rawValue: 1 << 19)
     static let ChannelForwarding  = BaseFlightFeature(rawValue: 1 << 20)
+    static let Transponder  = BaseFlightFeature(rawValue: 1 << 21)
+
+    // Betaflight
+    static let OSD  = BaseFlightFeature(rawValue: 1 << 18)
+    static let AirMode  = BaseFlightFeature(rawValue: 1 << 22)
 
     init(rawValue: Int) {
         self.rawValue = rawValue
