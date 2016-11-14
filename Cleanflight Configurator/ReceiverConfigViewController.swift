@@ -97,9 +97,13 @@ class ReceiverConfigViewController: ConfigChildViewController {
             case 4:
                 return "SUMH"
             case 5:
-                return "XBUS"
+                return "SRXL"
             case 6:
                 return "XBUS RJ01"
+            case 7:
+                return "iBus"
+            case 8:
+                return "EX Bus"
             default:
                 return "Unknown Serial"
             }

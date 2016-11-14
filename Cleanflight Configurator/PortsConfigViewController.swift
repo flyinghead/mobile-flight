@@ -42,7 +42,7 @@ class PortsConfigViewController: ConfigChildViewController {
             if functions.contains(.MSP) {
                 detail = "Data"
             }
-            if functions.contains(.TelemetryFrsky) || functions.contains(.TelemetryHott) || functions.contains(.TelemetryLTM) || functions.contains(.TelemetrySmartPort) {
+            if functions.contains(.TelemetryFrsky) || functions.contains(.TelemetryHott) || functions.contains(.TelemetryLTM) || functions.contains(.TelemetrySmartPort) || functions.contains(.TelemetryMAVLink) {
                 if !detail.isEmpty {
                     detail += ", "
                 }
