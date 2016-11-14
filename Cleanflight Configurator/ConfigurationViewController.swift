@@ -75,40 +75,42 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
         
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
+        } else {
+            SVProgressHUD.showWithStatus("Fetching information", maskType: .Black)
         }
         msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: {success in
             if success {
-                self.msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
                     if success {
-                        self.msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2, callback: { success in
+                        self.msp.sendMessage(.MSP_MIXER, data: nil, retry: 2, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
+                                self.msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: { success in
                                     if success {
-                                        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
-                                            self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
-                                                if success {
-                                                    self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
-                                                        if success {
-                                                            self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
-                                                                if success {
-                                                                    // SUCCESS
-                                                                    self.fetchInformationSucceeded()
-                                                                } else {
-                                                                    self.fetchInformationFailed()
-                                                                }
-                                                            })
-                                                        } else {
-                                                            self.fetchInformationFailed()
-                                                        }
-                                                    })
-                                                } else {
-                                                    self.fetchInformationFailed()
-                                                }
-                                            })
-                                        } else {
-                                            // SUCCESS
-                                            self.fetchInformationSucceeded()
-                                        }
+                                        self.msp.sendMessage(.MSP_BOARD_ALIGNMENT, data: nil, retry: 2, callback: { success in
+                                            if success {
+                                                self.msp.sendMessage(.MSP_AMPERAGE_METER_CONFIG, data: nil, retry: 2, callback: { success in
+                                                    if success {
+                                                        self.msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2, callback: { success in
+                                                            if success {
+                                                                self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
+                                                                    if success {
+                                                                        self.fetchNewFailsafeConfig()
+                                                                    } else {
+                                                                        self.fetchInformationFailed()
+                                                                    }
+                                                                })
+                                                            } else {
+                                                                self.fetchInformationFailed()
+                                                            }
+                                                        })
+                                                    } else {
+                                                        self.fetchInformationFailed()
+                                                    }
+                                                })
+                                            } else {
+                                                self.fetchInformationFailed()
+                                            }
+                                        })
                                     } else {
                                         self.fetchInformationFailed()
                                     }
@@ -125,6 +127,49 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                 self.fetchInformationFailed()
             }
         })
+    }
+    
+    private func fetchNewFailsafeConfig() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
+            self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
+                if success {
+                    self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
+                        if success {
+                            self.fetchNewBatteryConfig()
+                        } else {
+                            self.fetchInformationFailed()
+                        }
+                    })
+                } else {
+                    self.fetchInformationFailed()
+                }
+            })
+        } else {
+            // SUCCESS
+            self.fetchInformationSucceeded()
+        }
+    }
+    
+    private func fetchNewBatteryConfig() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.22") {    // 1.14
+            msp.sendMessage(.MSP_BATTERY_CONFIG, data: nil, retry: 2, callback: { success in
+                if success {
+                    self.msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2, callback: { success in
+                        if success {
+                            // SUCCESS
+                            self.fetchInformationSucceeded()
+                        } else {
+                            self.fetchInformationFailed()
+                        }
+                    })
+                } else {
+                    self.fetchInformationFailed()
+                }
+            })
+        } else {
+            // SUCCESS
+            self.fetchInformationSucceeded()
+        }
     }
     
     private func fetchInformationFailed() {
@@ -252,11 +297,35 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
             if success {
                 self.msp.sendSetMisc(self.newMisc!, callback: { success in
                     if success {
-                        self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
+                        self.msp.sendMixerConfig(self.newSettings!, callback: { success in
                             if success {
-                                self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
+                                self.msp.sendFeatures(self.newSettings!, callback: { success in
                                     if success {
-                                        self.saveNewFailsafeSettings()
+                                        self.msp.sendRxConfig(self.newSettings!, midRc: self.newMisc!.midRC, callback: { success in
+                                            if success {
+                                                self.msp.sendBoardAlignment(self.newSettings!, callback: { success in
+                                                    if success {
+                                                        self.msp.sendAmperageMeterConfig(self.newSettings!, callback: { success in
+                                                            if success {
+                                                                self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
+                                                                    if success {
+                                                                        self.saveNewFailsafeSettings()
+                                                                    } else {
+                                                                        self.saveConfigFailed()
+                                                                    }
+                                                                })
+                                                            } else {
+                                                                self.saveConfigFailed()
+                                                            }
+                                                        })
+                                                    } else {
+                                                        self.saveConfigFailed()
+                                                    }
+                                                })
+                                            } else {
+                                                self.saveConfigFailed()
+                                            }
+                                        })
                                     } else {
                                         self.saveConfigFailed()
                                     }
@@ -283,11 +352,31 @@ class ConfigurationViewController: UITableViewController, UITextFieldDelegate {
                         if success {
                             self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
                                 if success {
-                                    self.writeToEepromAndReboot()
+                                    self.saveNewBatteryConfig()
                                 } else {
                                     self.saveConfigFailed()
                                 }
                             })
+                        } else {
+                            self.saveConfigFailed()
+                        }
+                    })
+                } else {
+                    self.saveConfigFailed()
+                }
+            })
+        } else {
+            self.writeToEepromAndReboot()
+        }
+    }
+    
+    private func saveNewBatteryConfig() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.22") {    // 1.14
+            self.msp.sendBatteryConfig(self.newMisc!, settings: self.newSettings!, callback: { success in
+                if success {
+                    self.msp.sendVoltageMeterConfig(self.newMisc!, settings: self.newSettings, callback: { success in
+                        if success {
+                            self.writeToEepromAndReboot()
                         } else {
                             self.saveConfigFailed()
                         }

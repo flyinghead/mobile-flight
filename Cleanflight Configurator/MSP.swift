@@ -369,8 +369,8 @@ class MSPParser {
             settings.disarmKillSwitch = message[1] != 0
             pingSettingsListeners()
             
-        case .MSP_MISC: // 22 bytes
-            if message.count < 22 {
+        case .MSP_MISC: // 22 bytes with CF < 1.14, 18 bytes with CF >= 1.14
+            if message.count < 18 {
                 return false
             }
             var offset = 0
@@ -397,16 +397,54 @@ class MSPParser {
             misc.placeholder2 = Int(message[offset])
             offset += 1
             misc.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
-            offset += 2;
-            misc.vbatScale = Int(message[offset]) // 10-200
-            offset += 1
-            misc.vbatMinCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
-            misc.vbatMaxCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
-            misc.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
+            if message.count >= 22 {    // CF < 1.14
+                offset += 2;
+                misc.vbatScale = Int(message[offset]) // 10-200
+                offset += 1
+                misc.vbatMinCellVoltage = Double(message[offset]) / 10 // 10-50
+                offset += 1
+                misc.vbatMaxCellVoltage = Double(message[offset]) / 10 // 10-50
+                offset += 1
+                misc.vbatWarningCellVoltage = Double(message[offset]) / 10 // 10-50
+                offset += 1
+            }
             pingDataListeners()
+            
+        case .MSP_BATTERY_CONFIG:
+            if message.count < 3 {
+                return false
+            }
+            misc.vbatMinCellVoltage = Double(message[0]) / 10 // 10-50
+            misc.vbatMaxCellVoltage = Double(message[1]) / 10 // 10-50
+            misc.vbatWarningCellVoltage = Double(message[2]) / 10 // 10-50
+            settings.batteryCapacity = readInt16(message, index: 3) // mAh
+            settings.currentMeterType = Int(message[5])       // 0: virtual, 1: ADC
+            pingDataListeners()
+            pingSettingsListeners()
+            
+        case .MSP_VOLTAGE_METER_CONFIG:
+            if message.count < 3 {
+                return false
+            }
+            misc.vbatScale = Int(message[0]) // 10-200
+            if message.count % 3 == 0 {
+                // CF 1.14
+                settings.vbatResDivider = Int(message[1])
+                settings.vbatResMultiplier = Int(message[2])
+                pingSettingsListeners()
+            } else {
+                misc.vbatMinCellVoltage = Double(message[1]) / 10 // 10-50
+                misc.vbatMaxCellVoltage = Double(message[2]) / 10 // 10-50
+                misc.vbatWarningCellVoltage = Double(message[3]) / 10 // 10-50
+                pingDataListeners()
+            }
+            
+        case .MSP_MIXER:
+            if message.count < 1 {
+                return false
+            }
+            settings.mixerConfiguration = Int(message[0])
+            pingSettingsListeners()
             
         case .MSP_MOTOR_PINS:
             // Unused
@@ -496,6 +534,13 @@ class MSPParser {
             }
             pingDataListeners()         // FIXME
             pingSettingsListeners()
+            
+        case .MSP_RSSI_CONFIG:
+            if message.count < 1 {
+                return false
+            }
+            misc.rssiChannel = Int(message[0])
+            pingDataListeners()
             
         case .MSP_FAILSAFE_CONFIG:
             if message.count < 8 {
@@ -643,6 +688,35 @@ class MSPParser {
         case .MSP_DATAFLASH_READ:
             // Nothing to do. Handled by the callback
             break
+        
+        case .MSP_FEATURE:
+            if message.count < 4 {
+                return false
+            }
+            settings.features = BaseFlightFeature(rawValue: readUInt32(message, index: 0))
+            pingSettingsListeners()
+        
+        case .MSP_BOARD_ALIGNMENT:
+            if message.count < 6 {
+                return false
+            }
+            settings.boardAlignRoll = Int(readInt16(message, index: 0))
+            settings.boardAlignPitch = Int(readInt16(message, index: 2))
+            settings.boardAlignYaw = Int(readInt16(message, index: 4))
+            pingSettingsListeners()
+            
+        case .MSP_AMPERAGE_METER_CONFIG:
+            if message.count < 4 {
+                return false
+            }
+            settings.currentScale = Int(readInt16(message, index: 0))
+            settings.currentOffset = Int(readInt16(message, index: 2))
+            if !Configuration.theConfig.isApiVersionAtLeast("1.22") && message.count >= 7 {   // In CF 1.14, multiple meters are returned here. Meter type and battery capacity are returned in MSP_BATTERY_CONFIG
+                settings.currentMeterType = Int(message[4])
+                settings.batteryCapacity = Int(readUInt16(message, index: 5))
+            }
+            pingSettingsListeners()
+
             
         case .MSP_SIKRADIO:
             if message.count < 9 {
@@ -680,7 +754,14 @@ class MSPParser {
             .MSP_SET_RAW_RC,
             .MSP_SET_RX_CONFIG,
             .MSP_SET_FAILSAFE_CONFIG,
-            .MSP_SET_RXFAIL_CONFIG:
+            .MSP_SET_RXFAIL_CONFIG,
+            .MSP_SET_VOLTAGE_METER_CONFIG,
+            .MSP_SET_BATTERY_CONFIG,
+            .MSP_SET_MIXER,
+            .MSP_SET_FEATURE,
+            .MSP_SET_BOARD_ALIGNMENT,
+            .MSP_SET_AMPERAGE_METER_CONFIG,
+            .MSP_SET_RSSI_CONFIG:
             break
             
         default:
@@ -879,7 +960,7 @@ class MSPParser {
         
         sendMessage(.MSP_SET_MISC, data: data, retry: 2, callback: callback)
     }
-    
+/*
     func sendSetBfConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.mixerConfiguration))
@@ -893,7 +974,7 @@ class MSPParser {
         
         sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: 2, callback: callback)
     }
-    
+*/
     func sendSetAccTrim(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.appendContentsOf(writeInt16(misc.accelerometerTrimPitch))
@@ -1076,6 +1157,69 @@ class MSPParser {
                 callback?(success: false)
             }
         })
+    }
+    
+    func sendBatteryConfig(misc: Misc, settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(round(misc.vbatMinCellVoltage * 10)))
+        data.append(UInt8(round(misc.vbatMaxCellVoltage * 10)))
+        data.append(UInt8(round(misc.vbatWarningCellVoltage * 10)))
+        data.appendContentsOf(writeUInt16(settings.batteryCapacity))
+        data.append(UInt8(settings.currentMeterType))
+        sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendVoltageMeterConfig(misc: Misc, settings: Settings?, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        if Configuration.theConfig.isApiVersionAtLeast("1.22") {    // 1.14
+            data.append(0)      // Index
+            data.append(UInt8(misc.vbatScale))
+            data.append(UInt8(settings!.vbatResDivider))
+            data.append(UInt8(settings!.vbatResMultiplier))
+        } else {
+            data.append(UInt8(misc.vbatScale))
+            data.append(UInt8(round(misc.vbatMinCellVoltage * 10)))
+            data.append(UInt8(round(misc.vbatMaxCellVoltage * 10)))
+            data.append(UInt8(round(misc.vbatWarningCellVoltage * 10)))
+        }
+        sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendMixerConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SET_MIXER, data: [UInt8(settings.mixerConfiguration)], retry: 2, callback: callback)
+    }
+    
+    func sendFeatures(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt32(settings.features.rawValue))
+        sendMessage(.MSP_SET_FEATURE, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendBoardAlignment(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeInt16(settings.boardAlignRoll))
+        data.appendContentsOf(writeInt16(settings.boardAlignPitch))
+        data.appendContentsOf(writeInt16(settings.boardAlignYaw))
+        sendMessage(.MSP_SET_BOARD_ALIGNMENT, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendAmperageMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        if Configuration.theConfig.isApiVersionAtLeast("1.22") {    // 1.14
+            data.append(0)      // index
+            data.appendContentsOf(writeInt16(settings.currentScale))
+            data.appendContentsOf(writeInt16(settings.currentOffset))
+        } else {
+            data.appendContentsOf(writeInt16(settings.currentScale))
+            data.appendContentsOf(writeInt16(settings.currentOffset))
+            data.append(UInt8(settings.currentMeterType))
+            data.appendContentsOf(writeInt16(settings.batteryCapacity))
+        }
+        sendMessage(.MSP_SET_AMPERAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRssiConfig(misc: Misc, callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SET_RSSI_CONFIG, data: [ UInt8(misc.rssiChannel) ], retry: 2, callback: callback)
     }
 
     func openCommChannel(commChannel: CommChannel) {

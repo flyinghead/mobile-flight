@@ -139,12 +139,19 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         timeLabel.appear()
         msp.addDataListener(self)
         // For enabled features
-        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: nil)
+        msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: { success in
+            if Configuration.theConfig.isApiVersionAtLeast("1.22") {    // 1.14
+                self.msp.sendMessage(.MSP_BATTERY_CONFIG, data: nil, retry: 2, callback: nil)
+            } else {
+                self.msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2, callback: { success in
+                    self.msp.sendMessage(.MSP_AMPERAGE_METER_CONFIG, data: nil, retry: 2, callback: nil)
+                })
+            }
         })
         receivedData()
         receivedSensorData()
         receivedGpsData()
+        receivedSettingsData()
         
         startNavBarTimer()
         
@@ -329,6 +336,16 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) || settings.isModeOn(Mode.AUTOTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
+    }
+    
+    func receivedSettingsData() {
+        let batteryCapacity = Settings.theSettings.batteryCapacity
+        if mAhGauge.ranges.isEmpty && batteryCapacity != 0 {
+            mAhGauge.maximum = Double(batteryCapacity) * 1.2
+            mAhGauge.ranges.append((min: 0, max: 0.8 * Double(batteryCapacity), color: UIColor.greenColor()))
+            mAhGauge.ranges.append((min: 0.8 * Double(batteryCapacity), max: Double(batteryCapacity), color: UIColor.yellowColor()))
+            mAhGauge.ranges.append((min: Double(batteryCapacity), max: 1.2 * Double(batteryCapacity), color: UIColor.redColor()))
+        }
     }
     
     func received3drRssiData() {

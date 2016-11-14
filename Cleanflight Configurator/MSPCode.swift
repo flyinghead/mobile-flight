@@ -18,18 +18,35 @@ enum MSP_code : Int {
     case MSP_BUILD_INFO =             5
     
     // MSP commands for Cleanflight original features
-    case MSP_CHANNEL_FORWARDING =     32
-    case MSP_SET_CHANNEL_FORWARDING = 33
+    case MSP_BATTERY_CONFIG =         32   // CF 1.14.1
+    case MSP_SET_BATTERY_CONFIG =     33   // CF 1.14.1
+    
     case MSP_MODE_RANGES =            34
     case MSP_SET_MODE_RANGE =         35
+    
+    case MSP_FEATURE =                36
+    case MSP_SET_FEATURE =            37
+    case MSP_BOARD_ALIGNMENT =        38
+    case MSP_SET_BOARD_ALIGNMENT =    39
+    case MSP_AMPERAGE_METER_CONFIG =  40    // was MSP_CURRENT_METER_CONFIG
+    case MSP_SET_AMPERAGE_METER_CONFIG = 41
+    case MSP_MIXER =                  42
+    case MSP_SET_MIXER =              43
+    
     case MSP_RX_CONFIG =              44
     case MSP_SET_RX_CONFIG =          45
     case MSP_LED_STRIP_CONFIG =       48
     case MSP_SET_LED_STRIP_CONFIG =   49
+    case MSP_RSSI_CONFIG =            50
+    case MSP_SET_RSSI_CONFIG =        51
     case MSP_ADJUSTMENT_RANGES =      52
     case MSP_SET_ADJUSTMENT_RANGE =   53
     case MSP_CF_SERIAL_CONFIG =       54
     case MSP_SET_CF_SERIAL_CONFIG =   55
+    
+    case MSP_VOLTAGE_METER_CONFIG =   56
+    case MSP_SET_VOLTAGE_METER_CONFIG = 57
+
     case MSP_SONAR =                  58
     case MSP_PID_CONTROLLER =         59
     case MSP_SET_PID_CONTROLLER =     60
@@ -73,6 +90,10 @@ enum MSP_code : Int {
     case MSP_BOXIDS =             119
     case MSP_SERVO_CONFIGURATIONS = 120
     
+    case MSP_VOLTAGE_METERS =     128   // CF 1.14.1
+    case MSP_AMPERAGE_METERS =    129
+    case MSP_BATTERY_STATE =      130
+    
     case MSP_SET_RAW_RC =         200
     case MSP_SET_RAW_GPS =        201
     case MSP_SET_PID =            202
@@ -105,8 +126,8 @@ enum MSP_code : Int {
     // Additional private MSP for baseflight configurator (yes thats us \o/)
     case MSP_RX_MAP =              64 // get channel map (also returns number of channels total)
     case MSP_SET_RX_MAP =          65 // set rc map numchannels to set comes from MSP_RX_MAP
-    case MSP_BF_CONFIG =             66 // baseflight-specific settings that aren't covered elsewhere
-    case MSP_SET_BF_CONFIG =         67 // baseflight-specific settings save
+    case MSP_BF_CONFIG =             66 // baseflight-specific settings that aren't covered elsewhere (Not in CF 1.14.1)
+    case MSP_SET_BF_CONFIG =         67 // baseflight-specific settings save (Not in CF 1.14.1)
     case MSP_SET_REBOOT =         68 // reboot settings
     case MSP_BF_BUILD_INFO =          69  // build date as well as some space for future expansion
     

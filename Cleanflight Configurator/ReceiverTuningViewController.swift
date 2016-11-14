@@ -65,7 +65,7 @@ class ReceiverTuningViewController: UITableViewController {
             if success {
                 self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
                     if success {
-                        self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: { success in
+                        self.msp.sendMessage(.MSP_RSSI_CONFIG, data: nil, retry: 2, callback: { success in
                             if success {
                                 self.settings = Settings(copyOf: Settings.theSettings)
                                 self.rcMap = Receiver.theReceiver.map
@@ -168,7 +168,7 @@ class ReceiverTuningViewController: UITableViewController {
         settings!.yawExpo = yawExpo.value
         
         if somethingChanged {
-            msp.sendSetMisc(misc, callback: { success in
+            msp.sendRssiConfig(misc, callback: { success in
                 if !success {
                     self.showSaveFailedError()
                 } else {

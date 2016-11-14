@@ -11,14 +11,17 @@ class ::Pod::Generator::Acknowledgements
   end
 end
 
-pod "DownPicker"
-pod "Charts"
-pod "SVProgressHUD"
-#pod "InAppSettingsKit"
+target 'Cleanflight Configurator' do
+    pod "DownPicker"
+    pod "Charts"
+    pod "SVProgressHUD"
+    #pod "InAppSettingsKit"
 
-target 'KIFTests', :exclusive => true do
-    pod 'KIF', '~> 3.0', :configurations => ['Debug']
-    pod 'KIF/IdentifierTests', :configurations => ['Debug']
+    target 'KIFTests' do
+        inherit! :search_paths
+        pod 'KIF', '~> 3.0', :configurations => ['Debug']
+        pod 'KIF/IdentifierTests', :configurations => ['Debug']
+    end
 end
 
 # Fix for "does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64"

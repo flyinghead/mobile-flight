@@ -333,7 +333,7 @@ struct PortConfig : DictionaryCoding {
 
 class Settings : AutoCoded {
     var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "minCheck", "spektrumSatBind", "rxMinUsec",
-        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue" ]
+        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "vbatResDivider", "vbatResMultiplier", "currentMeterType", "batteryCapacity" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -407,6 +407,14 @@ class Settings : AutoCoded {
     var rxFailMode: [Int]?          // 0: Auto, 1: Hold, 2: Set
     var rxFailValue: [Int]?         // For mode 2 (Set)
     
+    // MSP_VOLTAGE_METER_CONFIG / MSP_SET_VOLTAGE_METER_CONFIG
+    var vbatResDivider = 10
+    var vbatResMultiplier = 1
+    
+    // MSP_CURRENT_METER_CONFIG, MSP_BATTERY_CONFIG
+    var currentMeterType = 0
+    var batteryCapacity = 0
+    
     private override init() {
         super.init()
     }
@@ -461,6 +469,11 @@ class Settings : AutoCoded {
         
         self.rxFailMode = copyOf.rxFailMode
         self.rxFailValue = copyOf.rxFailValue
+        
+        self.vbatResDivider = copyOf.vbatResDivider
+        self.vbatResMultiplier = copyOf.vbatResMultiplier
+        self.currentMeterType = copyOf.currentMeterType
+        self.batteryCapacity = copyOf.batteryCapacity
         
         super.init()
     }
