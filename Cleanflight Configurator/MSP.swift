@@ -1142,6 +1142,11 @@ class MSPParser {
     }
     
     func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
+        if settings.rxFailMode!.count == 0 {
+            // Happens when RX config is invalid
+            callback?(success: true)
+            return
+        }
         var data = [UInt8]()
         data.append(UInt8(index))
         data.append(UInt8(settings.rxFailMode![index]))
@@ -1190,8 +1195,7 @@ class MSPParser {
     }
     
     func sendFeatures(settings: Settings, callback:((success:Bool) -> Void)?) {
-        var data = [UInt8]()
-        data.appendContentsOf(writeUInt32(settings.features.rawValue))
+        let data = writeUInt32(settings.features.rawValue)
         sendMessage(.MSP_SET_FEATURE, data: data, retry: 2, callback: callback)
     }
     
