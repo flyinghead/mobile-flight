@@ -349,10 +349,10 @@ struct PortConfig : DictionaryCoding {
 */
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "minCheck", "spektrumSatBind", "rxMinUsec",
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
         "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom", "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "rollPitchItermIgnoreRate", "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
-        "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled" ]
+        "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -408,7 +408,7 @@ class Settings : AutoCoded {
     // MSP_RX_CONFIG / MSP_SET_RX_CONFIG
     // serialRxType
     var maxCheck = 1100
-    // misc.midRC
+    var midRC = 1500
     var minCheck = 1900
     var spektrumSatBind = 0
     var rxMinUsec = 885
@@ -464,7 +464,10 @@ class Settings : AutoCoded {
     var accelerometerDisabled = false
     var barometerDisabled = true
     var magnetometerDisabled = true
-    
+
+    // MSP_RSSI_CONFIG / MSP_SET_RSSI_CONFIG
+    var rssiChannel = 0
+
     private override init() {
         super.init()
     }
@@ -506,6 +509,7 @@ class Settings : AutoCoded {
         self.portConfigs = copyOf.portConfigs
         
         self.maxCheck = copyOf.maxCheck
+        self.midRC = copyOf.midRC
         self.minCheck = copyOf.minCheck
         self.spektrumSatBind = copyOf.spektrumSatBind
         self.rxMinUsec = copyOf.rxMinUsec
@@ -549,6 +553,8 @@ class Settings : AutoCoded {
         self.accelerometerDisabled = copyOf.accelerometerDisabled
         self.barometerDisabled = copyOf.barometerDisabled
         self.magnetometerDisabled = copyOf.magnetometerDisabled
+        
+        self.rssiChannel = copyOf.rssiChannel
         
         super.init()
     }
@@ -636,11 +642,10 @@ class Settings : AutoCoded {
 }
 
 class Misc : AutoCoded {
-    var autoEncoding = [ "midRC", "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "rssiChannel", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
+    var autoEncoding = [ "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
-    var midRC = 1500            // rxConfig.midrc [1401 - 1599], also set by RX_CONFIG (but then no range is enforced...)
     var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed in !MOTOR_STOP
     var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
     var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
@@ -649,9 +654,11 @@ class Misc : AutoCoded {
     var gpsBaudRate = 0
     var gpsUbxSbas = 0
     var multiwiiCurrentOutput = 0       // FIXME This should be a boolean instead
-    var rssiChannel = 0
     var placeholder2 = 0
     var magDeclination = 0.0         // degree
+    
+    // MSP_SET_VOLTAGE_METER_CONFIG
+    // FIXME Move to Settings or BatteryConfig
     var vbatScale = 0
     var vbatMinCellVoltage = 0.0     // V
     var vbatMaxCellVoltage = 0.0     // V
@@ -666,7 +673,6 @@ class Misc : AutoCoded {
     }
     
     init(copyOf: Misc) {
-        self.midRC = copyOf.midRC
         self.minThrottle = copyOf.minThrottle
         self.maxThrottle = copyOf.maxThrottle
         self.minCommand = copyOf.minCommand
@@ -675,7 +681,6 @@ class Misc : AutoCoded {
         self.gpsBaudRate = copyOf.gpsBaudRate
         self.gpsUbxSbas = copyOf.gpsUbxSbas
         self.multiwiiCurrentOutput = copyOf.multiwiiCurrentOutput
-        self.rssiChannel = copyOf.rssiChannel
         self.placeholder2 = copyOf.placeholder2
         self.magDeclination = copyOf.magDeclination
         self.vbatScale = copyOf.vbatScale

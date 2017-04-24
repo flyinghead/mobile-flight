@@ -29,7 +29,6 @@ class ReceiverTuningViewController: UITableViewController {
     
     var settings: Settings?
     var rcMap: [Int]?
-    var rssiChannel = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,11 +64,10 @@ class ReceiverTuningViewController: UITableViewController {
             if success {
                 self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
                     if success {
-                        self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: { success in
+                        self.msp.sendMessage(.MSP_RSSI_CONFIG, data: nil, retry: 2, callback: { success in
                             if success {
                                 self.settings = Settings(copyOf: Settings.theSettings)
                                 self.rcMap = Receiver.theReceiver.map
-                                self.rssiChannel = Misc.theMisc.rssiChannel
                                 
                                 var rssiChannels = [ "Disabled" ]
                                 for i in 0..<Receiver.theReceiver.activeChannels - 4 {
@@ -90,7 +88,7 @@ class ReceiverTuningViewController: UITableViewController {
                                     }
                                     self.rssiChannelPicker?.setData(rssiChannels)
                                     
-                                    self.rssiChannelPicker?.selectedIndex = self.rssiChannel < 5 ? 0 : self.rssiChannel - 4
+                                    self.rssiChannelPicker?.selectedIndex = self.settings!.rssiChannel < 5 ? 0 : self.settings!.rssiChannel - 4
                                     
                                     self.throttleMid.value = self.settings!.throttleMid
                                     self.throttleExpo.value = self.settings!.throttleExpo
@@ -129,15 +127,13 @@ class ReceiverTuningViewController: UITableViewController {
         }
         var somethingChanged = false
         
-        let misc = Misc.theMisc
-
         if rssiChannelPicker!.selectedIndex >= 0 {
-            let previousRssi = misc.rssiChannel
-            misc.rssiChannel = rssiChannelPicker!.selectedIndex
-            if misc.rssiChannel > 0 {
-                misc.rssiChannel += 4
+            let previousRssi = settings!.rssiChannel
+            settings!.rssiChannel = rssiChannelPicker!.selectedIndex
+            if settings!.rssiChannel > 0 {
+                settings!.rssiChannel += 4
             }
-            somethingChanged = somethingChanged || previousRssi != misc.rssiChannel
+            somethingChanged = somethingChanged || previousRssi != settings!.rssiChannel
         }
         
         let receiver = Receiver.theReceiver
@@ -168,7 +164,7 @@ class ReceiverTuningViewController: UITableViewController {
         settings!.yawExpo = yawExpo.value
         
         if somethingChanged {
-            msp.sendSetMisc(misc, callback: { success in
+            msp.sendRssiConfig(settings!.rssiChannel, callback: { success in
                 if !success {
                     self.showSaveFailedError()
                 } else {

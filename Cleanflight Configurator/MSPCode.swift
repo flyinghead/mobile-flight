@@ -26,10 +26,14 @@ enum MSP_code : Int {
     case MSP_SET_RX_CONFIG =          45
     case MSP_LED_STRIP_CONFIG =       48
     case MSP_SET_LED_STRIP_CONFIG =   49
+    case MSP_RSSI_CONFIG =            50
+    case MSP_SET_RSSI_CONFIG =        51
     case MSP_ADJUSTMENT_RANGES =      52
     case MSP_SET_ADJUSTMENT_RANGE =   53
     case MSP_CF_SERIAL_CONFIG =       54
     case MSP_SET_CF_SERIAL_CONFIG =   55
+    case MSP_VOLTAGE_METER_CONFIG =   56
+    case MSP_SET_VOLTAGE_METER_CONFIG = 57
     case MSP_SONAR =                  58
     case MSP_PID_CONTROLLER =         59
     case MSP_SET_PID_CONTROLLER =     60

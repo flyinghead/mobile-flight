@@ -385,7 +385,7 @@ class MSPParser {
                 return false
             }
             var offset = 0
-            misc.midRC = readInt16(message, index: offset)
+            settings.midRC = readInt16(message, index: offset)
             offset += 2
             misc.minThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
@@ -403,7 +403,7 @@ class MSPParser {
             offset += 1
             misc.multiwiiCurrentOutput = Int(message[offset])
             offset += 1
-            misc.rssiChannel = Int(message[offset])
+            settings.rssiChannel = Int(message[offset])
             offset += 1
             misc.placeholder2 = Int(message[offset])
             offset += 1
@@ -419,6 +419,7 @@ class MSPParser {
                 misc.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
             }
             pingDataListeners()
+            pingSettingsListeners()
             
         case .MSP_MOTOR_PINS:
             // Unused
@@ -499,14 +500,13 @@ class MSPParser {
             }
             settings.serialRxType = Int(message[0])
             settings.maxCheck = readUInt16(message, index: 1)
-            misc.midRC = readUInt16(message, index: 3)
+            settings.midRC = readUInt16(message, index: 3)
             settings.minCheck = readUInt16(message, index: 5)
             settings.spektrumSatBind = Int(message[7])
             if message.count >= 12 {
                 settings.rxMinUsec = readUInt16(message, index: 8)
                 settings.rxMaxUsec = readUInt16(message, index: 10)
             }
-            pingDataListeners()         // FIXME
             pingSettingsListeners()
             
         case .MSP_FAILSAFE_CONFIG:
@@ -727,6 +727,19 @@ class MSPParser {
             settings.magnetometerDisabled = message[2] != 0
             pingSettingsListeners()
             
+        case .MSP_RSSI_CONFIG:
+            settings.rssiChannel = Int(message[0])
+            pingSettingsListeners()
+            
+        case .MSP_VOLTAGE_METER_CONFIG:
+            // FIXME This is invalid for CF 1.4 / 2.0 and BF 3.1.8
+            misc.vbatScale = Int(message[0]) // 10-200
+            misc.vbatMinCellVoltage = Double(message[1]) / 10; // 10-50
+            misc.vbatMaxCellVoltage = Double(message[2]) / 10; // 10-50
+            misc.vbatWarningCellVoltage = Double(message[3]) / 10; // 10-50
+            // BF 3.x batteryMeterType (1)
+            pingSettingsListeners()
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -753,7 +766,9 @@ class MSPParser {
             .MSP_SET_RXFAIL_CONFIG,
             .MSP_SET_LOOP_TIME,
             .MSP_SET_PID_ADVANCED_CONFIG,
-            .MSP_SET_SENSOR_CONFIG:
+            .MSP_SET_SENSOR_CONFIG,
+            .MSP_SET_RSSI_CONFIG,
+            .MSP_SET_VOLTAGE_METER_CONFIG:
             break
             
         default:
@@ -931,9 +946,9 @@ class MSPParser {
         }
     }
     
-    func sendSetMisc(misc: Misc, callback:((success:Bool) -> Void)?) {
+    func sendSetMisc(misc: Misc, settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeInt16(misc.midRC))
+        data.appendContentsOf(writeInt16(settings.midRC))
         data.appendContentsOf(writeInt16(misc.minThrottle))
         data.appendContentsOf(writeInt16(misc.maxThrottle))
         data.appendContentsOf(writeInt16(misc.minCommand))
@@ -942,7 +957,7 @@ class MSPParser {
         data.append(UInt8(misc.gpsBaudRate))
         data.append(UInt8(misc.gpsUbxSbas))
         data.append(UInt8(misc.multiwiiCurrentOutput))
-        data.append(UInt8(misc.rssiChannel))
+        data.append(UInt8(settings.rssiChannel))
         data.append(UInt8(misc.placeholder2))
         data.appendContentsOf(writeInt16(Int(round(misc.magDeclination * 10))))
         data.append(UInt8(misc.vbatScale))
@@ -1123,11 +1138,11 @@ class MSPParser {
         sendMessage(.MSP_SET_RAW_RC, data: data)
     }
     
-    func sendRxConfig(settings: Settings, midRc: Int, callback:((success:Bool) -> Void)?) {
+    func sendRxConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.serialRxType))
         data.appendContentsOf(writeUInt16(settings.maxCheck))
-        data.appendContentsOf(writeUInt16(midRc))
+        data.appendContentsOf(writeUInt16(settings.midRC))
         data.appendContentsOf(writeUInt16(settings.minCheck))
         data.append(UInt8(settings.spektrumSatBind))
         data.appendContentsOf(writeUInt16(settings.rxMinUsec))
@@ -1173,6 +1188,20 @@ class MSPParser {
         var data = [UInt8]()
         data.appendContentsOf(writeUInt16(settings.loopTime))
         sendMessage(.MSP_SET_LOOP_TIME, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRssiConfig(rssiChannel: Int, callback:((success: Bool) -> Void)?) {
+        let data = [UInt8(rssiChannel)]
+        sendMessage(.MSP_SET_RSSI_CONFIG, data: data, retry: 2, callback: callback)
+    }
+
+    func sendVoltageMeterConfig(misc: Misc, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(misc.vbatScale))
+        data.append(UInt8(misc.vbatMinCellVoltage))
+        data.append(UInt8(misc.vbatMaxCellVoltage))
+        data.append(UInt8(misc.vbatWarningCellVoltage))
+        sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     // Betaflight

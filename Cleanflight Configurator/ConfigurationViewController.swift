@@ -245,7 +245,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             
             minimumCommandField.value = Double(newMisc!.minCommand ?? 0)
             minimumThrottleField.value = Double(newMisc!.minThrottle ?? 0)
-            midThrottleField.value = Double(newMisc!.midRC ?? 0)
+            midThrottleField.value = Double(newSettings!.midRC ?? 0)
             maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
             
             setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
@@ -310,7 +310,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         newMisc!.minCommand = Int(minimumCommandField.value)
         newMisc!.minThrottle = Int(minimumThrottleField.value)
-        newMisc!.midRC = Int(midThrottleField.value)
+        newSettings!.midRC = Int(midThrottleField.value)
         newMisc!.maxThrottle = Int(maximumThrottleFIeld.value)
 
         newSettings!.boardAlignPitch = Int(boardPitchField.value)
@@ -351,7 +351,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         appDelegate.stopTimer()
         msp.sendSerialConfig(self.newSettings!, callback: { success in
             if success {
-                self.msp.sendSetMisc(self.newMisc!, callback: { success in
+                self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!, callback: { success in
                     if success {
                         self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
                             if success {
@@ -384,7 +384,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private func saveNewFailsafeSettings() {
         if Configuration.theConfig.isApiVersionAtLeast("1.16") {
-            self.msp.sendRxConfig(self.newSettings!, midRc: self.newMisc!.midRC, callback: { success in
+            self.msp.sendRxConfig(self.newSettings!, callback: { success in
                 if success {
                     self.msp.sendFailsafeConfig(self.newSettings!, failsafeThrottle: self.newMisc!.failsafeThrottle, callback: { success in
                         if success {

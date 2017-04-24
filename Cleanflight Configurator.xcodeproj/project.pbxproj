@@ -58,6 +58,7 @@
 		AE5BB66F1C4EA92A00CF2A7C /* HeadingStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB66E1C4EA92A00CF2A7C /* HeadingStrip.swift */; };
 		AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */; };
 		AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */; };
+		AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */; };
 		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
 		AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */; };
 		AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */; };
@@ -273,6 +274,7 @@
 		AE5BB66E1C4EA92A00CF2A7C /* HeadingStrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingStrip.swift; sourceTree = "<group>"; };
 		AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalScale.swift; sourceTree = "<group>"; };
 		AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnRateIndicator.swift; sourceTree = "<group>"; };
+		AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Cleanflight-versions.txt"; sourceTree = "<group>"; };
 		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
 		AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Sensors.storyboard; sourceTree = "<group>"; };
@@ -566,6 +568,7 @@
 		AE72AB4D1C0F3D230020C4B0 = {
 			isa = PBXGroup;
 			children = (
+				AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */,
 				AEA48A681C26BE6F006BC53E /* TODO.txt */,
 				AEDDD2781C1615C8004232AA /* Podfile */,
 				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
@@ -877,6 +880,7 @@
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
+				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
