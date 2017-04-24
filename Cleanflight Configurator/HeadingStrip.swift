@@ -48,7 +48,7 @@ class HeadingStrip: UIView {
     }
     
     override func drawRect(rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
         
         let font = UIFont(name: "Verdana", size: self.fontSize)!
         
@@ -119,7 +119,7 @@ class HeadingStrip: UIView {
         }
         
         for (value, color) in bugs {
-            drawBug(context!, value: value, color: color, fontSize: fontSize)
+            drawBug(context, value: value, color: color, fontSize: fontSize)
         }
         
         CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)

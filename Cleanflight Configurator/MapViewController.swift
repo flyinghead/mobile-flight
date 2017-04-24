@@ -290,14 +290,6 @@ class MKAircraftView : MKAnnotationView {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.frame.size.width = Size
-        self.frame.size.height = Size
-        
-        self.opaque = false
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.frame.size.width = Size
@@ -307,7 +299,7 @@ class MKAircraftView : MKAnnotationView {
     }
     
     override func drawRect(rect: CGRect) {
-        let ctx = UIGraphicsGetCurrentContext()
+        let ctx = UIGraphicsGetCurrentContext()!
         CGContextSaveGState(ctx)
         
         CGContextTranslateCTM(ctx, Size / 2, Size / 2)

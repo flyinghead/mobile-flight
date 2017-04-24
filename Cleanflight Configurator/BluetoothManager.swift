@@ -64,7 +64,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     func startScanning(duration: Double  = 5.0) {
         scanningRequested = true
         scanningDuration = duration
-        if (manager.state != CBCentralManagerState.PoweredOn) {
+        if (manager.centralManagerState != CBCentralManagerState.PoweredOn) {
             NSLog("CoreBluetooth powered off")
             return
         }
@@ -89,7 +89,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     
     func centralManagerDidUpdateState(central: CBCentralManager) {
         NSLog("centralManagerDidUpdateState: %d", central.state.rawValue)
-        if (central.state == CBCentralManagerState.PoweredOn) {
+        if (central.centralManagerState == CBCentralManagerState.PoweredOn) {
             startScanningIfNeeded()
         }
     }
@@ -293,6 +293,14 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 p.readRSSI()
                 return
             }
+        }
+    }
+}
+
+extension CBCentralManager {
+    internal var centralManagerState: CBCentralManagerState  {
+        get {
+            return CBCentralManagerState(rawValue: state.rawValue) ?? .Unknown
         }
     }
 }

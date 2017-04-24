@@ -31,8 +31,8 @@ enum UserDefault : String {
 func registerInitialUserDefaults(plistFile: String)  -> [String:AnyObject] {
     let baseUrl = NSBundle.mainBundle().bundleURL
     let settingsBundleUrl = baseUrl.URLByAppendingPathComponent("Settings.bundle")
-    let plistUrl = settingsBundleUrl.URLByAppendingPathComponent(plistFile)
-    let settingsDict = NSDictionary(contentsOfFile: plistUrl.path!)
+    let plistUrl = settingsBundleUrl!.URLByAppendingPathComponent(plistFile)
+    let settingsDict = NSDictionary(contentsOfFile: plistUrl!.path!)
     let prefSpecifierArray = settingsDict!.objectForKey("PreferenceSpecifiers") as! NSArray
     
     var defaults:[String:AnyObject] = [:]

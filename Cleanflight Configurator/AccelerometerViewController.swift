@@ -15,8 +15,8 @@ class AccelerometerViewController: XYZSensorViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis;
-        leftAxis.customAxisMax = 2.0;
-        leftAxis.customAxisMin = -2.0;
+        leftAxis.axisMaxValue = 2.0;
+        leftAxis.axisMinValue = -2.0;
         
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()

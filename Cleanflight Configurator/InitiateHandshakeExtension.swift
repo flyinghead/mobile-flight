@@ -18,48 +18,46 @@ extension UIViewController {
             SVProgressHUD.setStatus("Fetching information...")
             
             resetAircraftModel()
-            msp.sendMessage(.MSP_IDENT, data: nil, retry: 4, callback: { success in
+            msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 4, callback: { success in
                 if success {
-                    msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 4, callback: { success in
-                        if success {
-                            if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    callback(success: false)
-                                    SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
+                    if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            callback(success: false)
+                            SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
+                        })
+                    } else {
+                        msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 4, callback: { success in
+                            if success {
+                                /*
+                                 if Configuration.theConfig.fcIdentifier == "RCFL" {
+                                 dispatch_async(dispatch_get_main_queue(), {
+                                 callback(success: false)
+                                 SVProgressHUD.showErrorWithStatus("This firmware violates GPL licensing requirements and is not supported", maskType: .None)
+                                 })
+                                 return
+                                 }
+                                 */
+                                msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 4, callback: { success in
+                                    dispatch_async(dispatch_get_main_queue(), {
+                                        if success {
+                                            SVProgressHUD.dismiss()
+                                            callback(success: true)
+                                        } else {
+                                            callback(success: false)
+                                        }
+                                    })
                                 })
                             } else {
-                                msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 4, callback: { success in
-                                    if success {
-                                        /*
-                                        if Configuration.theConfig.fcIdentifier == "RCFL" {
-                                            dispatch_async(dispatch_get_main_queue(), {
-                                                callback(success: false)
-                                                SVProgressHUD.showErrorWithStatus("This firmware violates GPL licensing requirements and is not supported", maskType: .None)
-                                            })
-                                            return
-                                        }
-                                        */
-                                        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 4, callback: { success in
-                                            if success {
-                                                dispatch_async(dispatch_get_main_queue(), {
-                                                    SVProgressHUD.dismiss()
-                                                    callback(success: true)
-                                                })
-                                            } else {
-                                                callback(success: false)
-                                            }
-                                        })
-                                    } else {
-                                        callback(success: false)
-                                    }
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    callback(success: false)
                                 })
                             }
-                        } else {
-                            callback(success: false)
-                        }
-                    })
+                        })
+                    }
                 } else {
-                    callback(success: false)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        callback(success: false)
+                    })
                 }
             })
         })

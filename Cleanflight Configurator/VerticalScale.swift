@@ -144,7 +144,7 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         let colors: CFArray = [UIColor.blackColor().CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, UIColor.blackColor().CGColor]
         let colorspace = CGColorSpaceCreateDeviceRGB()
         let gradient = CGGradientCreateWithColors(colorspace, colors, locations)
-        CGContextDrawLinearGradient(ctx, gradient, CGPoint(x: maxX, y: minY), CGPoint(x: maxX, y: maxY), CGGradientDrawingOptions(rawValue: 0))
+        CGContextDrawLinearGradient(ctx, gradient!, CGPoint(x: maxX, y: minY), CGPoint(x: maxX, y: maxY), CGGradientDrawingOptions(rawValue: 0))
         
         CGContextRestoreGState(ctx)
     }

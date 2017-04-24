@@ -26,11 +26,11 @@ class BarometerViewController: BaseSensorViewController {
         leftAxis.setLabelCount(5, force: false)
 
         if selectedUnitSystem() != .Metric {
-            leftAxis.customAxisMax = 10.0
-            leftAxis.customAxisMin = 0.0
+            leftAxis.axisMaxValue = 10.0
+            leftAxis.axisMinValue = 0.0
         } else {
-            leftAxis.customAxisMax = 2.0
-            leftAxis.customAxisMin = 0.0
+            leftAxis.axisMaxValue = 2.0
+            leftAxis.axisMinValue = 0.0
         }
         
         let nf = NSNumberFormatter()
@@ -84,10 +84,10 @@ class BarometerViewController: BaseSensorViewController {
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.customAxisMax {
+        if value > leftAxis.axisMaxValue {
             leftAxis.resetCustomAxisMax()
         }
-        if value < leftAxis.customAxisMin {
+        if value < leftAxis.axisMinValue {
             leftAxis.resetCustomAxisMin()
         }
     }

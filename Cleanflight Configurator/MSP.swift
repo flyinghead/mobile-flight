@@ -381,7 +381,7 @@ class MSPParser {
             pingSettingsListeners()
             
         case .MSP_MISC: // 22 bytes
-            if message.count < 22 {
+            if message.count < 18 {
                 return false
             }
             var offset = 0
@@ -408,15 +408,16 @@ class MSPParser {
             misc.placeholder2 = Int(message[offset])
             offset += 1
             misc.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
-            offset += 2;
-            misc.vbatScale = Int(message[offset]) // 10-200
-            offset += 1
-            misc.vbatMinCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
-            misc.vbatMaxCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
-            misc.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
-            offset += 1
+            if message.count >= 22 {
+                offset += 2;
+                misc.vbatScale = Int(message[offset]) // 10-200
+                offset += 1
+                misc.vbatMinCellVoltage = Double(message[offset]) / 10; // 10-50
+                offset += 1
+                misc.vbatMaxCellVoltage = Double(message[offset]) / 10; // 10-50
+                offset += 1
+                misc.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
+            }
             pingDataListeners()
             
         case .MSP_MOTOR_PINS:

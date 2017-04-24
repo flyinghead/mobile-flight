@@ -33,8 +33,8 @@ class DataLinkChartViewController: UIViewController {
         let leftAxis = chartView.leftAxis
         leftAxis.startAtZeroEnabled = false
         
-        leftAxis.customAxisMax = 500
-        leftAxis.customAxisMin = 0
+        leftAxis.axisMaxValue = 500
+        leftAxis.axisMinValue = 0
         
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()
@@ -109,7 +109,7 @@ class DataLinkChartViewController: UIViewController {
         
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.customAxisMax || dataRate > leftAxis.customAxisMax {
+        if value > leftAxis.axisMaxValue || dataRate > leftAxis.axisMaxValue {
             leftAxis.resetCustomAxisMax()
         }
     }

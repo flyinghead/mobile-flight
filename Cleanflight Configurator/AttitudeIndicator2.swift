@@ -47,7 +47,7 @@ class AttitudeIndicator2: UIView {
     }
     
     override func drawRect(rect: CGRect) {
-        let ctx = UIGraphicsGetCurrentContext()
+        let ctx = UIGraphicsGetCurrentContext()!
         
         CGContextClipToRect(ctx, rect)
         

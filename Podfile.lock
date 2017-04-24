@@ -1,7 +1,7 @@
 PODS:
-  - Charts (2.2.3):
-    - Charts/Core (= 2.2.3)
-  - Charts/Core (2.2.3)
+  - Charts (2.3.1):
+    - Charts/Core (= 2.3.1)
+  - Charts/Core (2.3.1)
   - DownPicker (0.1.34)
   - KIF (3.4.1):
     - KIF/Core (= 3.4.1)
@@ -11,16 +11,18 @@ PODS:
   - SVProgressHUD (1.1.3)
 
 DEPENDENCIES:
-  - Charts
+  - Charts (= 2.3.1)
   - DownPicker
   - KIF (~> 3.0)
   - KIF/IdentifierTests
   - SVProgressHUD
 
 SPEC CHECKSUMS:
-  Charts: f54267bb3f0f0e74520c6f248517cf5074dfd6fc
+  Charts: f04119c743c6996ba67fb8016d3a4878a38ca13f
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   KIF: 2275c6d59c77e5e56f660f006b99d73780130540
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 48886724d1bf9d3be30f0bbb01982590b75dc96e
+
+COCOAPODS: 1.2.0.rc.1

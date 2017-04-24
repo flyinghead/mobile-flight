@@ -15,8 +15,8 @@ class SonarViewController: BarometerViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis
-        leftAxis.customAxisMax = selectedUnitSystem() != .Metric ? 50.0 : 100.0
-        leftAxis.customAxisMin =  0.0
+        leftAxis.axisMaxValue = selectedUnitSystem() != .Metric ? 50.0 : 100.0
+        leftAxis.axisMinValue =  0.0
 
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()
@@ -35,10 +35,10 @@ class SonarViewController: BarometerViewController {
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.customAxisMax {
+        if value > leftAxis.axisMaxValue {
             leftAxis.resetCustomAxisMax()
         }
-        if value < leftAxis.customAxisMin {
+        if value < leftAxis.axisMinValue {
             leftAxis.resetCustomAxisMin()
         }
     }

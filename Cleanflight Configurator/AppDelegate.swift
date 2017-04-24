@@ -283,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
         let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
         
-        FlightLogFile.openForWriting(fileURL, msp: msp)
+        FlightLogFile.openForWriting(fileURL!, msp: msp)
     }
 
     func stopFlightlogRecording() {

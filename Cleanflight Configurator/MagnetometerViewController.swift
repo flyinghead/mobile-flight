@@ -14,8 +14,8 @@ class MagnetometerViewController: XYZSensorViewController {
         super.viewDidLoad()
         
         let leftAxis = chartView.leftAxis;
-        leftAxis.customAxisMax = 1.0;
-        leftAxis.customAxisMin = -1.0;
+        leftAxis.axisMaxValue = 1.0;
+        leftAxis.axisMinValue = -1.0;
         
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()

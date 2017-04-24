@@ -15,8 +15,8 @@ class GyroscopeViewController: XYZSensorViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis;
-        leftAxis.customAxisMax = 2000;
-        leftAxis.customAxisMin = -2000;
+        leftAxis.axisMaxValue = 2000;
+        leftAxis.axisMinValue = -2000;
         
         let nf = NSNumberFormatter()
         nf.locale = NSLocale.currentLocale()
