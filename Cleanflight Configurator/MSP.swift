@@ -168,6 +168,13 @@ class MSPParser {
             config.activeSensors = readUInt16(message, index: 4)
             config.mode = readUInt32(message, index: 6)
             config.profile = Int(message[10])
+            if message.count >= 13 {
+                config.systemLoad = readUInt16(message, index: 11)
+                if message.count >= 15 {
+                    // Betaflight
+                    config.rateProfile = Int(message[14])
+                }
+            }
             pingDataListeners()
             
         case .MSP_RAW_IMU:
@@ -997,8 +1004,12 @@ class MSPParser {
         data.append(UInt8(round(settings.throttleMid * 100)))
         data.append(UInt8(round(settings.throttleExpo * 100)))
         data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
-        if Configuration.theConfig.isApiVersionAtLeast("1.10") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.10") {
             data.append(UInt8(round(settings.yawExpo * 100)))
+            if config.isBetaflight {
+                data.append(UInt8(round(settings.yawRate * 100)))
+            }
         }
         
         sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
@@ -1040,9 +1051,14 @@ class MSPParser {
         sendMessage(.MSP_SET_PID, data: data, retry: 2, callback: callback)
     }
     
-    func sendSelectProfile(profile: Int,callback:((success:Bool) -> Void)?) {
+    func sendSelectProfile(profile: Int, callback:((success:Bool) -> Void)?) {
         // Note: this call includes a write eeprom
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
+    }
+    
+    // Betaflight
+    func sendSelectRateProfile(rateProfile: Int, callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile & 0x80) ], retry: 2, callback: callback)
     }
     
     func sendDataflashRead(address: Int, callback:(data: [UInt8]?) -> Void) {

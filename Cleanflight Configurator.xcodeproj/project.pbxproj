@@ -519,12 +519,12 @@
 				AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */,
 				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
 				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
+				AE93FA911DA5870C00F2E947 /* MotorPWMViewController.swift */,
 				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
 				AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */,
 				AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */,
 				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
 				AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */,
-				AE93FA911DA5870C00F2E947 /* MotorPWMViewController.swift */,
 			);
 			name = Configuration;
 			sourceTree = "<group>";

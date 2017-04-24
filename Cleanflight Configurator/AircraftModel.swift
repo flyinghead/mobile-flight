@@ -382,9 +382,9 @@ class Settings : AutoCoded {
     var rcExpo = 0.0        // pitch & roll expo curve
     var yawExpo = 0.0       // yaw expo curve
     var rcRate = 0.0        // pitch & roll expo curve
-    var rollRate = 0.0
-    var pitchRate = 0.0
-    var yawRate = 0.0
+    var rollRate = 0.0      // FIXME This should be rollSuperRate?
+    var pitchRate = 0.0     // FIXME This should be pitchSuperRate?
+    var yawRate = 0.0       // FIXME This should be yawSuperRate?
     var throttleMid = 0.0
     var throttleExpo = 0.0
     var tpaRate = 0.0
@@ -723,7 +723,7 @@ class Configuration : AutoCoded {
     // MSP_UID
     var uid: String?
 
-    // MSP_STATUS
+    // MSP_STATUS[_EX]
     var cycleTime = 0     // microsecond?
     var i2cError = 0
     var activeSensors = 0
@@ -763,6 +763,8 @@ class Configuration : AutoCoded {
         }
     }
     var profile = 0
+    var systemLoad = 0      // 0-100% in MSP_STATUS_EX
+    var rateProfile = 0     // Only exposed (MSP_STATUS_EX) and settable (MSP_SELECT_SETTING) with betaflight
 
     // MSP_ANALOG
     var voltage = 0.0 {      // V
@@ -895,7 +897,7 @@ class Configuration : AutoCoded {
     }
     
     var isBetaflight: Bool {
-        return fcIdentifier == "BTFL"
+        return fcIdentifier == "BTFL" // || isApiVersionAtLeast("2.0")
     }
 }
 
