@@ -24,6 +24,10 @@ enum MSP_code : Int {
     case MSP_SET_MODE_RANGE =         35
     case MSP_FEATURE =                36
     case MSP_SET_FEATURE =            37
+    case MSP_BOARD_ALIGNMENT =        38
+    case MSP_SET_BOARD_ALIGNMENT =    39
+    case MSP_CURRENT_METER_CONFIG =   40
+    case MSP_SET_CURRENT_METER_CONFIG = 41
     case MSP_MIXER_CONFIG =           42
     case MSP_SET_MIXER_CONFIG =       43
     case MSP_RX_CONFIG =              44

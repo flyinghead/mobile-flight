@@ -140,7 +140,8 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         timeLabel.appear()
         msp.addDataListener(self)
         // For enabled features
-        msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+        msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: { success in
+            // FIXME Get rid of MSP_MISC
             self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: nil)
         })
         receivedData()

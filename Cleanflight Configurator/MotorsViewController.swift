@@ -145,12 +145,13 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.addMSPCommandSender(self)
         
-        self.msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
+        self.msp.sendMessage(.MSP_MIXER_CONFIG, data: nil, retry: 2, callback: { success in
             if success {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.modelView.image = MultiTypes.getImage(Settings.theSettings.mixerConfiguration)
                 })
-                self.msp.sendMessage(.MSP_MISC, data: nil)
+                // FIXME Get rid of MSP_MISC
+                self.msp.sendMessage(.MSP_MISC, data: nil)      // For minCommand and maxThrottle
             }
         })
     }

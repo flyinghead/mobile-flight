@@ -349,12 +349,12 @@ struct PortConfig : DictionaryCoding {
 */
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
         "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom", "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "rollPitchItermIgnoreRate", "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
         "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
-        "voltageMeterSource", "currentMeterSource" ]
+        "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -365,11 +365,11 @@ class Settings : AutoCoded {
     var mixerConfiguration = 3              // Quad X by default
     var features = BaseFlightFeature.None
     var serialRxType = 0
+    
+    // MSP_BOARD_ALIGNMENT
     var boardAlignRoll = 0
     var boardAlignPitch = 0
     var boardAlignYaw = 0
-    var currentScale = 400
-    var currentOffset = 0
 
     // MSP_BOXNAMES
     var boxNames: [String]?
@@ -484,6 +484,12 @@ class Settings : AutoCoded {
     var voltageMeterSource = 0
     var currentMeterSource = 0
     
+    // MSP_CURRENT_METER_CONFIG
+    var currentMeterId = 0
+    var currentMeterType = 0
+    var currentScale = 400
+    var currentOffset = 0
+
     private override init() {
         super.init()
     }
@@ -498,8 +504,6 @@ class Settings : AutoCoded {
         self.boardAlignRoll = copyOf.boardAlignRoll
         self.boardAlignPitch = copyOf.boardAlignPitch
         self.boardAlignYaw = copyOf.boardAlignYaw
-        self.currentScale = copyOf.currentScale
-        self.currentOffset = copyOf.currentOffset
         
         self.boxNames = copyOf.boxNames
         self.boxIds = copyOf.boxIds
@@ -584,7 +588,12 @@ class Settings : AutoCoded {
         self.batteryCapacity = copyOf.batteryCapacity
         self.voltageMeterSource = copyOf.voltageMeterSource
         self.currentMeterSource = copyOf.currentMeterSource
-        
+
+        self.currentMeterId = copyOf.currentMeterId
+        self.currentMeterType = copyOf.currentMeterType
+        self.currentScale = copyOf.currentScale
+        self.currentOffset = copyOf.currentOffset
+
         super.init()
     }
     

@@ -779,6 +779,34 @@ class MSPParser {
             settings.currentMeterSource = Int(message[6])
             pingSettingsListeners()
             
+        case .MSP_BOARD_ALIGNMENT:
+            if message.count < 6 {
+                return false
+            }
+            settings.boardAlignRoll = Int(readInt16(message, index: 0))
+            settings.boardAlignPitch = Int(readInt16(message, index: 2))
+            settings.boardAlignYaw = Int(readInt16(message, index: 4))
+            pingSettingsListeners()
+        
+        case .MSP_CURRENT_METER_CONFIG:
+            if message.count < 7 {
+                return false
+            }
+            if message.count == 7 {
+                settings.currentScale = Int(readInt16(message, index: 0))
+                settings.currentOffset = Int(readInt16(message, index: 2))
+                settings.currentMeterType = Int(message[4])
+                settings.batteryCapacity = Int(readInt16(message, index: 5))
+            } else {
+                // CF 2.0
+                settings.currentMeterId = Int(message[3])
+                settings.currentMeterType = Int(message[4])
+                settings.currentScale = Int(readInt16(message, index: 5))
+                settings.currentOffset = Int(readInt16(message, index: 7))
+            }
+            pingSettingsListeners()
+        
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -810,7 +838,9 @@ class MSPParser {
             .MSP_SET_VOLTAGE_METER_CONFIG,
             .MSP_SET_MIXER_CONFIG,
             .MSP_SET_FEATURE,
-            .MSP_SET_BATTERY_CONFIG:
+            .MSP_SET_BATTERY_CONFIG,
+            .MSP_SET_BOARD_ALIGNMENT,
+            .MSP_SET_CURRENT_METER_CONFIG:
             break
             
         default:
@@ -850,6 +880,7 @@ class MSPParser {
     }
     
     func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, flush: Bool = true, callback: ((success: Bool) -> Void)?) {
+        //NSLog("sendMessage %d", code.rawValue)
         if retry > 0 || callback != nil {
             let messageRetry = MessageRetryHandler(code: code, data: data, maxTries: retry, callback: callback)
             makeSendMessageTimer(messageRetry)
@@ -1277,6 +1308,37 @@ class MSPParser {
         data.append(UInt8(settings.currentMeterSource))
 
         sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendBoardAlignment(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt16(settings.boardAlignRoll))
+        data.appendContentsOf(writeUInt16(settings.boardAlignPitch))
+        data.appendContentsOf(writeUInt16(settings.boardAlignYaw))
+        
+        sendMessage(.MSP_SET_BOARD_ALIGNMENT, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendCurrentMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            // CF 2 / BF 3.1.8
+            if settings.currentMeterType == 1 {     // CURRENT_METER_ADC
+                // regular
+                data.append(UInt8(10))  // CURRENT_METER_ID_BATTERY_1
+            } else {
+                data.append(UInt8(80))  // CURRENT_METER_ID_VIRTUAL_1
+            }
+            data.appendContentsOf(writeUInt16(settings.currentScale))
+            data.appendContentsOf(writeUInt16(settings.currentOffset))
+        } else {
+            data.appendContentsOf(writeUInt16(settings.currentScale))
+            data.appendContentsOf(writeUInt16(settings.currentOffset))
+            data.append(UInt8(settings.currentMeterType))
+            data.appendContentsOf(writeUInt16(settings.batteryCapacity))
+        }
+    
+        sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     // Betaflight

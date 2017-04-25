@@ -110,7 +110,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     func fetchInformation() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
         
         enableUserInteraction(false)
@@ -118,60 +117,25 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
         }
-        msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: {success in
+        // FIXME Get rid of MSP_MISC
+        chainMspCalls(msp, calls: [.MSP_MISC, .MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_LOOP_TIME]) { success in
             if success {
-                self.msp.sendMessage(.MSP_BF_CONFIG, data: nil, retry: 2, callback: { success in
-                    if success {
-                        self.msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2, callback: { success in
-                            if success {
-                                self.msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        self.msp.sendMessage(.MSP_LOOP_TIME, data: nil, retry: 2, callback: { success in
-                                            if success {
-                                                self.fetchFailsafeConfig()
-                                            } else {
-                                                self.fetchInformationFailed()
-                                            }
-                                        })
-                                    } else {
-                                        self.fetchInformationFailed()
-                                    }
-                                })
-                            } else {
-                                self.fetchInformationFailed()
-                            }
-                        })
-                    } else {
-                        self.fetchInformationFailed()
-                    }
-                })
+                self.fetchFailsafeConfig()
             } else {
                 self.fetchInformationFailed()
             }
-        })
+        }
     }
-    
+        
     func fetchFailsafeConfig() {
         if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
-            self.msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2, callback: { success in
+            chainMspCalls(msp, calls: [.MSP_FAILSAFE_CONFIG, .MSP_RXFAIL_CONFIG]) { success in
                 if success {
-                    self.msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2, callback: { success in
-                        if success {
-                            self.msp.sendMessage(.MSP_RXFAIL_CONFIG, data: nil, retry: 2, callback: { success in
-                                if success {
-                                    self.fetchBetaflightConfig()
-                                } else {
-                                    self.fetchInformationFailed()
-                                }
-                            })
-                        } else {
-                            self.fetchInformationFailed()
-                        }
-                    })
+                    self.fetchBetaflightConfig()
                 } else {
                     self.fetchInformationFailed()
                 }
-            })
+            }
         } else {
             // SUCCESS
             self.fetchBetaflightConfig()
@@ -182,27 +146,20 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if !isBetaflight {
             fetchInformationSucceeded()
         } else {
-            msp.sendMessage(.MSP_PID_ADVANCED_CONFIG, data: nil, retry: 2, callback: { success in
+            chainMspCalls(msp, calls: [.MSP_PID_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
                 if success {
-                    self.msp.sendMessage(.MSP_SENSOR_CONFIG, data: nil, retry: 2, callback: { success in
-                        if success {
-                            // SUCCESS
-                            self.fetchInformationSucceeded()
-                        } else {
-                            self.fetchInformationFailed()
-                        }
-                    })
+                    // SUCCESS
+                    self.fetchInformationSucceeded()
                 } else {
                     self.fetchInformationFailed()
                 }
-            })
+            }
         }
     }
     
     private func fetchInformationFailed() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.appDelegate.startTimer()
             self.tableView.userInteractionEnabled = true
             self.showError("Communication error")
             
@@ -214,8 +171,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private func fetchInformationSucceeded() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.appDelegate.startTimer()
             self.enableUserInteraction(true)
             SVProgressHUD.dismiss()
             
@@ -347,39 +303,63 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
         enableUserInteraction(false)
 
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
-        msp.sendSerialConfig(self.newSettings!, callback: { success in
+        msp.sendSerialConfig(self.newSettings!) { success in
             if success {
-                self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!, callback: { success in
+                // FIXME Get rid of MSP_MISC
+                self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!) { success in
                     if success {
-                        self.msp.sendSetBfConfig(self.newSettings!, callback: { success in
+                        self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
                             if success {
-                                self.msp.sendSetArmingConfig(self.newSettings!, callback: { success in
+                                self.msp.sendSetFeature(self.newSettings!.features) { success in
                                     if success {
-                                        self.msp.sendLoopTime(self.newSettings!, callback: { success in
+                                        self.msp.sendRxConfig(self.newSettings!) { success in
                                             if success {
-                                                self.saveNewFailsafeSettings()
+                                                self.msp.sendBoardAlignment(self.newSettings!) { success in
+                                                    if success {
+                                                        self.msp.sendCurrentMeterConfig(self.newSettings!) { success in
+                                                            if success {
+                                                                self.msp.sendSetArmingConfig(self.newSettings!) { success in
+                                                                    if success {
+                                                                        self.msp.sendLoopTime(self.newSettings!) { success in
+                                                                            if success {
+                                                                                self.saveNewFailsafeSettings()
+                                                                            } else {
+                                                                                self.saveConfigFailed()
+                                                                            }
+                                                                        }
+                                                                    } else {
+                                                                        self.saveConfigFailed()
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                self.saveConfigFailed()
+                                                            }
+                                                        }
+                                                    } else {
+                                                        self.saveConfigFailed()
+                                                    }
+                                                }
                                             } else {
                                                 self.saveConfigFailed()
                                             }
-                                        })
+                                        }
                                     } else {
                                         self.saveConfigFailed()
                                     }
-                                })
+                                }
                             } else {
                                 self.saveConfigFailed()
                             }
-                        })
+                        }
                     } else {
                         self.saveConfigFailed()
                     }
-                })
+                }
             } else {
                 self.saveConfigFailed()
             }
-        })
+        }
     }
     
     private func saveNewFailsafeSettings() {
@@ -453,8 +433,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private func saveConfigFailed() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.appDelegate.startTimer()
             self.showError("Save failed")
             self.enableUserInteraction(true)
         })
