@@ -350,9 +350,11 @@ struct PortConfig : DictionaryCoding {
 
 class Settings : AutoCoded {
     var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "currentScale", "currentOffset", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
-        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom", "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "gyroLowpassFrequency",
+        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom", "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "rollPitchItermIgnoreRate", "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
-        "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel" ]
+        "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
+        "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
+        "voltageMeterSource", "currentMeterSource" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -418,7 +420,7 @@ class Settings : AutoCoded {
     var failsafeDelay = 0.0         // Guard time for failsafe activation after signal loss (0 - 20 secs)
     var failsafeOffDelay = 0.0      // Time for landing before motor stop (0 - 20 secs)
     var failsafeThrottleLowDelay = 0.0  // If throtlle has been below minCheck for that much time, just disarm (0 - 30 secs)
-    // misc.failsafeThrottle
+    var failsafeThrottle = 0
     var failsafeKillSwitch = false  // If true, failsafe switch will disarm aircraft instantly instead of doing the failsafe procedure
     var failsafeProcedure = 0       // 0: land, 1: drop
     
@@ -468,6 +470,20 @@ class Settings : AutoCoded {
     // MSP_RSSI_CONFIG / MSP_SET_RSSI_CONFIG
     var rssiChannel = 0
 
+    // MSP_VOLTAGE_METER_CONFIG / MSP_BATTERY_CONFIG
+    var vbatScale = 110
+    var vbatMinCellVoltage = 0.0     // V
+    var vbatMaxCellVoltage = 0.0     // V
+    var vbatWarningCellVoltage = 0.0 // V
+    var vbatMeterType = 0
+    
+    var vbatMeterId = 0
+    var vbatResistorDividerValue = 10
+    var vbatResistorDividerMultiplier = 1
+    var batteryCapacity = 0
+    var voltageMeterSource = 0
+    var currentMeterSource = 0
+    
     private override init() {
         super.init()
     }
@@ -518,6 +534,7 @@ class Settings : AutoCoded {
         self.failsafeDelay = copyOf.failsafeDelay
         self.failsafeOffDelay = copyOf.failsafeOffDelay
         self.failsafeThrottleLowDelay = copyOf.failsafeThrottleLowDelay
+        self.failsafeThrottle = copyOf.failsafeThrottle
         self.failsafeKillSwitch = copyOf.failsafeKillSwitch
         self.failsafeProcedure = copyOf.failsafeProcedure
         
@@ -555,6 +572,18 @@ class Settings : AutoCoded {
         self.magnetometerDisabled = copyOf.magnetometerDisabled
         
         self.rssiChannel = copyOf.rssiChannel
+        
+        self.vbatScale = copyOf.vbatScale
+        self.vbatMinCellVoltage = copyOf.vbatMinCellVoltage
+        self.vbatMaxCellVoltage = copyOf.vbatMaxCellVoltage
+        self.vbatWarningCellVoltage = copyOf.vbatWarningCellVoltage
+        self.vbatMeterType = copyOf.vbatMeterType
+        self.vbatMeterId = copyOf.vbatMeterId
+        self.vbatResistorDividerValue = copyOf.vbatResistorDividerValue
+        self.vbatResistorDividerMultiplier = copyOf.vbatResistorDividerMultiplier
+        self.batteryCapacity = copyOf.batteryCapacity
+        self.voltageMeterSource = copyOf.voltageMeterSource
+        self.currentMeterSource = copyOf.currentMeterSource
         
         super.init()
     }
@@ -642,27 +671,18 @@ class Settings : AutoCoded {
 }
 
 class Misc : AutoCoded {
-    var autoEncoding = [ "minThrottle", "maxThrottle", "minCommand", "failsafeThrottle", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "placeholder2", "magDeclination", "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
+    var autoEncoding = [ "minThrottle", "maxThrottle", "minCommand", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "magDeclination", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
     var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed in !MOTOR_STOP
     var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
     var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
-    var failsafeThrottle = 0
     var gpsType = 0
     var gpsBaudRate = 0
     var gpsUbxSbas = 0
     var multiwiiCurrentOutput = 0       // FIXME This should be a boolean instead
-    var placeholder2 = 0
     var magDeclination = 0.0         // degree
-    
-    // MSP_SET_VOLTAGE_METER_CONFIG
-    // FIXME Move to Settings or BatteryConfig
-    var vbatScale = 0
-    var vbatMinCellVoltage = 0.0     // V
-    var vbatMaxCellVoltage = 0.0     // V
-    var vbatWarningCellVoltage = 0.0 // V
     
     // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
     var accelerometerTrimPitch = 0
@@ -676,17 +696,11 @@ class Misc : AutoCoded {
         self.minThrottle = copyOf.minThrottle
         self.maxThrottle = copyOf.maxThrottle
         self.minCommand = copyOf.minCommand
-        self.failsafeThrottle = copyOf.failsafeThrottle
         self.gpsType = copyOf.gpsType
         self.gpsBaudRate = copyOf.gpsBaudRate
         self.gpsUbxSbas = copyOf.gpsUbxSbas
         self.multiwiiCurrentOutput = copyOf.multiwiiCurrentOutput
-        self.placeholder2 = copyOf.placeholder2
         self.magDeclination = copyOf.magDeclination
-        self.vbatScale = copyOf.vbatScale
-        self.vbatMinCellVoltage = copyOf.vbatMinCellVoltage
-        self.vbatMaxCellVoltage = copyOf.vbatMaxCellVoltage
-        self.vbatWarningCellVoltage = copyOf.vbatWarningCellVoltage
         self.accelerometerTrimPitch = copyOf.accelerometerTrimPitch
         self.accelerometerTrimRoll = copyOf.accelerometerTrimRoll
         
@@ -700,12 +714,11 @@ class Misc : AutoCoded {
 }
 
 class Configuration : AutoCoded {
-    var autoEncoding = [ "version", "multiType", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
+    var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
     static var theConfig = Configuration()
     
     // MSP_IDENT
     var version: String?
-    var multiType = 3      // Quad X by default
     var mspVersion = 0
     var capability = 0
     
@@ -775,7 +788,7 @@ class Configuration : AutoCoded {
     var voltage = 0.0 {      // V
         didSet {
             if voltage > 0 && batteryCells == 0 && Settings.theSettings.features.contains(.VBat) ?? false {
-                let vbatMaxCellVoltage = Misc.theMisc.vbatMaxCellVoltage
+                let vbatMaxCellVoltage = Settings.theSettings.vbatMaxCellVoltage
                 if vbatMaxCellVoltage > 0 {
                     batteryCells = Int(voltage / vbatMaxCellVoltage + 1)
                 }
@@ -848,7 +861,7 @@ class Configuration : AutoCoded {
         }
         let currentVersion = apiVersion!.componentsSeparatedByString(".")
         let refVersion = version.componentsSeparatedByString(".")
-        for var i = 0; ;i++ {
+        for var i = 0; ; i++ {
             if i >= currentVersion.count {
                 if i >= refVersion.count {
                     // Same version

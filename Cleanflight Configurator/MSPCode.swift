@@ -18,10 +18,14 @@ enum MSP_code : Int {
     case MSP_BUILD_INFO =             5
     
     // MSP commands for Cleanflight original features
-    case MSP_CHANNEL_FORWARDING =     32
-    case MSP_SET_CHANNEL_FORWARDING = 33
+    case MSP_BATTERY_CONFIG =         32
+    case MSP_SET_BATTERY_CONFIG =     33
     case MSP_MODE_RANGES =            34
     case MSP_SET_MODE_RANGE =         35
+    case MSP_FEATURE =                36
+    case MSP_SET_FEATURE =            37
+    case MSP_MIXER_CONFIG =           42
+    case MSP_SET_MIXER_CONFIG =       43
     case MSP_RX_CONFIG =              44
     case MSP_SET_RX_CONFIG =          45
     case MSP_LED_STRIP_CONFIG =       48

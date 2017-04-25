@@ -270,12 +270,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         let settings = Settings.theSettings
 
         if voltsGauge.ranges.isEmpty && config.batteryCells != 0 {
-            let misc = Misc.theMisc
-            voltsGauge.minimum = misc.vbatMinCellVoltage * Double(config.batteryCells) * 0.9
-            voltsGauge.maximum = misc.vbatMaxCellVoltage * Double(config.batteryCells)
-            voltsGauge.ranges.append((min: voltsGauge.minimum, max: misc.vbatMinCellVoltage * Double(config.batteryCells), UIColor.redColor()))
-            voltsGauge.ranges.append((min: misc.vbatMinCellVoltage * Double(config.batteryCells), max: misc.vbatWarningCellVoltage * Double(config.batteryCells), UIColor.yellowColor()))
-            voltsGauge.ranges.append((min: misc.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
+            voltsGauge.minimum = settings.vbatMinCellVoltage * Double(config.batteryCells) * 0.9
+            voltsGauge.maximum = settings.vbatMaxCellVoltage * Double(config.batteryCells)
+            voltsGauge.ranges.append((min: voltsGauge.minimum, max: settings.vbatMinCellVoltage * Double(config.batteryCells), UIColor.redColor()))
+            voltsGauge.ranges.append((min: settings.vbatMinCellVoltage * Double(config.batteryCells), max: settings.vbatWarningCellVoltage * Double(config.batteryCells), UIColor.yellowColor()))
+            voltsGauge.ranges.append((min: settings.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
         }
 
         voltsValueLabel.voltage = config.voltage

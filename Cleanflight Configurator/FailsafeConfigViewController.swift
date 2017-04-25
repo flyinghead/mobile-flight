@@ -82,7 +82,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
         } else {
             settings!.features.remove(.Failsafe)
         }
-        misc!.failsafeThrottle = Int(throttleField.value)
+        settings.failsafeThrottle = Int(throttleField.value)
         settings.rxMinUsec = Int(minimumPulseField.value)
         settings.rxMaxUsec = Int(maximumPulseField.value)
         settings.failsafeKillSwitch = killSwitch.on
@@ -112,7 +112,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
         super.viewWillAppear(animated)
         
         failsafeSwitch.on = settings!.features.contains(.Failsafe)
-        throttleField.value = Double(misc!.failsafeThrottle)
+        throttleField.value = Double(settings!.failsafeThrottle)
         
         if post112 {
             minimumPulseField.value = Double(settings.rxMinUsec)

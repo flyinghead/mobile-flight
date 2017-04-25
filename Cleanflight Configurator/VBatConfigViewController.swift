@@ -40,10 +40,10 @@ class VBatConfigViewController: ConfigChildViewController {
         super.viewWillAppear(animated)
         
         vbatSwitch.on = settings!.features.contains(.VBat)
-        minVoltage.value = misc!.vbatMinCellVoltage
-        warningVoltage.value = misc!.vbatWarningCellVoltage
-        maxVoltage.value = misc!.vbatMaxCellVoltage
-        voltageScale.value = Double(misc!.vbatScale)
+        minVoltage.value = settings!.vbatMinCellVoltage
+        warningVoltage.value = settings!.vbatWarningCellVoltage
+        maxVoltage.value = settings!.vbatMaxCellVoltage
+        voltageScale.value = Double(settings!.vbatScale)
         cells(hideableCells, setHidden: !vbatSwitch.on)
         reloadDataAnimated(false)
     }
@@ -51,10 +51,10 @@ class VBatConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
 
-        misc?.vbatMinCellVoltage = minVoltage.value
-        misc?.vbatWarningCellVoltage = warningVoltage.value
-        misc?.vbatMaxCellVoltage = maxVoltage.value
-        misc?.vbatScale = Int(voltageScale.value)
+        settings?.vbatMinCellVoltage = minVoltage.value
+        settings?.vbatWarningCellVoltage = warningVoltage.value
+        settings?.vbatMaxCellVoltage = maxVoltage.value
+        settings?.vbatScale = Int(voltageScale.value)
         configViewController?.refreshUI()
     }
 }

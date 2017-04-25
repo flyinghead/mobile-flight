@@ -386,7 +386,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if Configuration.theConfig.isApiVersionAtLeast("1.16") {
             self.msp.sendRxConfig(self.newSettings!, callback: { success in
                 if success {
-                    self.msp.sendFailsafeConfig(self.newSettings!, failsafeThrottle: self.newMisc!.failsafeThrottle, callback: { success in
+                    self.msp.sendFailsafeConfig(self.newSettings!, callback: { success in
                         if success {
                             self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
                                 if success {

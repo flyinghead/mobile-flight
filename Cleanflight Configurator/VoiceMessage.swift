@@ -116,15 +116,14 @@ class BatteryLowAlarm : VoiceAlarm {
         }
         let settings = Settings.theSettings
         let config = Configuration.theConfig
-        let misc = Misc.theMisc
         
         if settings.features.contains(.VBat) ?? false
             && config.batteryCells > 0
             && config.voltage > 0 {
             let voltsPerCell = config.voltage / Double(config.batteryCells)
-            if voltsPerCell <= misc.vbatMinCellVoltage {
+            if voltsPerCell <= settings.vbatMinCellVoltage {
                 return .Critical
-            } else if voltsPerCell <= misc.vbatWarningCellVoltage {
+            } else if voltsPerCell <= settings.vbatWarningCellVoltage {
                 return .Warning
             }
         }
