@@ -87,7 +87,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         cells(nonBetaflightFeatures, setHidden: isBetaflight)
 
         if isBetaflight {
-            escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: [ "PWM", "OneShot125", "OneShot42", "MultiShot", "Brushed" ])
+            escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: [ "PWM", "OneShot125", "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600" ])
             escProtocolPicker?.setPlaceholder("")
             gyroUpdateFredPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 KHz", "4 KHz", "2.67 KHz", "2 KHz", "1.6 KHz", "1.33 KHz", "1.14 KHz", "1 KHz" ])
             gyroUpdateFredPicker!.setPlaceholder("")
@@ -119,7 +119,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
         }
-        var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG]
+        var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_VOLTAGE_METER_CONFIG]
         
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {    // CF 2.0
             mspCalls.appendContentsOf([.MSP_MOTOR_CONFIG, /* .MSP_GPS_CONFIG, */ .MSP_COMPASS_CONFIG])      // FIXME CF 2.0 not compiled with GPS
@@ -237,6 +237,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             enableMagnetometer.on = !newSettings!.magnetometerDisabled
             airModeSwitch.on = newSettings!.features.contains(BaseFlightFeature.AirMode)
             osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
+            vtxSwitch.on = newSettings!.features.contains(BaseFlightFeature.VTX)
+            escSensor.on = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
         }
         motorStopField.text = (newSettings!.features.contains(BaseFlightFeature.MotorStop) ?? false) ? "On" : "Off"
         
@@ -323,9 +325,16 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                                             if success {
                                                 self.msp.sendSetArmingConfig(self.newSettings!) { success in
                                                     if success {
+                                                        // FIXME removed in CF2 / BF 3.1.8
                                                         self.msp.sendLoopTime(self.newSettings!) { success in
                                                             if success {
-                                                                self.saveMiscOrEquivalent()
+                                                                self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
+                                                                    if success {
+                                                                        self.saveMiscOrEquivalent()
+                                                                    } else {
+                                                                        self.saveConfigFailed()
+                                                                    }
+                                                                }
                                                             } else {
                                                                 self.saveConfigFailed()
                                                             }

@@ -15,9 +15,15 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBOutlet weak var maxVoltage: NumberField!
     @IBOutlet weak var voltageScale: NumberField!
     @IBOutlet var hideableCells: [UITableViewCell]!
+    @IBOutlet weak var meterTypeFIeld: UITextField!
     
+    var meterTypePicker: MyDownPicker!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        meterTypePicker = MyDownPicker(textField: meterTypeFIeld, withData: [ "Onboard ADC", "ESC Sensor" ])
+        meterTypePicker.setPlaceholder("")
 
         minVoltage.delegate = self
         warningVoltage.delegate = self
@@ -44,6 +50,7 @@ class VBatConfigViewController: ConfigChildViewController {
         warningVoltage.value = settings!.vbatWarningCellVoltage
         maxVoltage.value = settings!.vbatMaxCellVoltage
         voltageScale.value = Double(settings!.vbatScale)
+        meterTypePicker.selectedIndex = settings.vbatMeterType
         cells(hideableCells, setHidden: !vbatSwitch.on)
         reloadDataAnimated(false)
     }
@@ -55,6 +62,7 @@ class VBatConfigViewController: ConfigChildViewController {
         settings?.vbatWarningCellVoltage = warningVoltage.value
         settings?.vbatMaxCellVoltage = maxVoltage.value
         settings?.vbatScale = Int(voltageScale.value)
+        settings?.vbatMeterType = meterTypePicker.selectedIndex
         configViewController?.refreshUI()
     }
 }

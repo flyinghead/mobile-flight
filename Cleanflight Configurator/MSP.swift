@@ -158,7 +158,6 @@ class MSPParser {
             config.mspVersion = Int(message[2])
             config.capability = readUInt32(message, index: 3)
             pingDataListeners()
-            pingSettingsListeners()
             
         case .MSP_STATUS, .MSP_STATUS_EX:
             if message.count < 11 {
@@ -231,7 +230,6 @@ class MSPParser {
                 return false
             }
             settings.servoConfigs = servoConfigs
-            pingSettingsListeners()
         
         case .MSP_MOTOR:
             if message.count < 16 {
@@ -347,7 +345,6 @@ class MSPParser {
             if message.count >= 12 {
                 settings.yawRate = Double(message[11]) / 100
             }
-            pingSettingsListeners()
             
         case .MSP_PID:
             settings.pidValues = [[Double]]()
@@ -372,7 +369,6 @@ class MSPParser {
                     settings.pidValues![i].append(Double(message[i*3 + 2]) / 1000)
                 }
             }
-            pingSettingsListeners()
             
         case .MSP_ARMING_CONFIG:
             if message.count < 2 {
@@ -380,7 +376,6 @@ class MSPParser {
             }
             settings.autoDisarmDelay = Int(message[0])
             settings.disarmKillSwitch = message[1] != 0
-            pingSettingsListeners()
             
         case .MSP_MISC: // 22 bytes
             if message.count < 18 {
@@ -415,7 +410,6 @@ class MSPParser {
                 settings.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
             }
             pingDataListeners()
-            pingSettingsListeners()
             
         case .MSP_MOTOR_PINS:
             // Unused
@@ -435,7 +429,6 @@ class MSPParser {
                     buf.append(message[i])
                 }
             }
-            pingSettingsListeners()
             
         case .MSP_PIDNAMES:
             settings.pidNames = [String]()
@@ -448,7 +441,6 @@ class MSPParser {
                     buf.append(message[i])
                 }
             }
-            pingSettingsListeners()
             
         case .MSP_WP:
             if message.count < 18 {
@@ -472,7 +464,6 @@ class MSPParser {
             for i in 0..<message.count {
                 settings.boxIds?.append(Int(message[i]))
             }
-            pingSettingsListeners()
             
         case .MSP_GPSSVINFO:
             if message.count < 1 {
@@ -503,7 +494,6 @@ class MSPParser {
                 settings.rxMinUsec = readUInt16(message, index: 8)
                 settings.rxMaxUsec = readUInt16(message, index: 10)
             }
-            pingSettingsListeners()
             
         case .MSP_FAILSAFE_CONFIG:
             if message.count < 8 {
@@ -515,7 +505,6 @@ class MSPParser {
             settings.failsafeKillSwitch = message[4] != 0
             settings.failsafeThrottleLowDelay = Double(readUInt16(message, index: 5)) / 10
             settings.failsafeProcedure = Int(message[7])
-            pingSettingsListeners()
             
         case .MSP_RXFAIL_CONFIG:
             if message.count % 3 != 0 {
@@ -527,7 +516,6 @@ class MSPParser {
                 settings.rxFailMode!.append(Int(message[i * 3]))
                 settings.rxFailValue!.append(readUInt16(message, index: i * 3 + 1))
             }
-            pingSettingsListeners()
             
         case .MSP_RX_MAP:
             for (i, b) in message.enumerate() {
@@ -551,7 +539,6 @@ class MSPParser {
             settings.boardAlignYaw = Int(readInt16(message, index: 10))
             settings.currentScale = Int(readInt16(message, index: 12))
             settings.currentOffset = Int(readInt16(message, index: 14))
-            pingSettingsListeners()
 
         // Cleanflight-specific
         case .MSP_API_VERSION:
@@ -616,7 +603,6 @@ class MSPParser {
             }
             settings.modeRanges = modeRanges
             settings.modeRangeSlots = nRanges
-            pingSettingsListeners()
             
         case .MSP_CF_SERIAL_CONFIG:
             let nPorts = message.count / 7
@@ -628,14 +614,12 @@ class MSPParser {
                 let offset = i * 7
                 settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(rawValue: Int(message[offset]))!, functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(rawValue: Int(message[offset+3]))!, gpsBaudRate: BaudRate(rawValue: Int(message[offset+4]))!, telemetryBaudRate: BaudRate(rawValue: Int(message[offset+5]))!, blackboxBaudRate: BaudRate(rawValue: Int(message[offset+6]))!))
             }
-            pingSettingsListeners()
             
         case .MSP_PID_CONTROLLER:
             if message.count < 1 {
                 return false
             }
             settings.pidController = Int(message[0])
-            pingSettingsListeners()
 
         case .MSP_DATAFLASH_SUMMARY:    // FIXME This is just a test
             if message.count < 13 {
@@ -656,7 +640,6 @@ class MSPParser {
                 return false
             }
             settings.loopTime = readUInt16(message, index: 0)
-            pingSettingsListeners()
             
         case .MSP_SIKRADIO:
             if message.count < 9 {
@@ -687,7 +670,6 @@ class MSPParser {
                     settings.gyroUses32KHz = message[8] != 0
                 }
             }
-            pingSettingsListeners()
             
         case .MSP_FILTER_CONFIG:
             if message.count < 13 {
@@ -706,7 +688,6 @@ class MSPParser {
                     settings.gyroNotchCutoff2 = readUInt16(message, index: 15)
                 }
             }
-            pingSettingsListeners()
 
         case .MSP_ADVANCED_TUNING:
             if message.count < 17 {
@@ -723,7 +704,6 @@ class MSPParser {
             settings.iTermThrottleGain = Int(message[12])
             settings.rateAccelLimit = readUInt16(message, index: 13)
             settings.yawRateAccelLimit = readUInt16(message, index: 15)
-            pingSettingsListeners()
         
         case .MSP_SENSOR_CONFIG:
             if message.count < 3 {
@@ -732,14 +712,12 @@ class MSPParser {
             settings.accelerometerDisabled = message[0] != 0
             settings.barometerDisabled = message[1] != 0
             settings.magnetometerDisabled = message[2] != 0
-            pingSettingsListeners()
             
         case .MSP_RSSI_CONFIG:
             if message.count < 1 {
                 return false
             }
             settings.rssiChannel = Int(message[0])
-            pingSettingsListeners()
             
         case .MSP_VOLTAGE_METER_CONFIG:
             if message.count < 4 {
@@ -757,24 +735,21 @@ class MSPParser {
                 settings.vbatMaxCellVoltage = Double(message[2]) / 10; // 10-50
                 settings.vbatWarningCellVoltage = Double(message[3]) / 10; // 10-50
                 if message.count > 4 {
-                    settings.vbatMeterType = Int(message[0])
+                    settings.vbatMeterType = Int(message[4])
                 }
             }
-            pingSettingsListeners()
         
         case .MSP_MIXER_CONFIG:
             if message.count < 1 {
                 return false
             }
             settings.mixerConfiguration = Int(message[0])
-            pingSettingsListeners()
             
         case .MSP_FEATURE:
             if message.count < 4 {
                 return false
             }
             settings.features = BaseFlightFeature(rawValue: readUInt32(message, index: 0))
-            pingSettingsListeners()
             
         case .MSP_BATTERY_CONFIG:
             if message.count < 7 {
@@ -786,7 +761,6 @@ class MSPParser {
             settings.batteryCapacity = readUInt16(message, index: 3)
             settings.voltageMeterSource = Int(message[5])
             settings.currentMeterSource = Int(message[6])
-            pingSettingsListeners()
             
         case .MSP_BOARD_ALIGNMENT:
             if message.count < 6 {
@@ -795,7 +769,6 @@ class MSPParser {
             settings.boardAlignRoll = Int(readInt16(message, index: 0))
             settings.boardAlignPitch = Int(readInt16(message, index: 2))
             settings.boardAlignYaw = Int(readInt16(message, index: 4))
-            pingSettingsListeners()
         
         case .MSP_CURRENT_METER_CONFIG:
             if message.count < 7 {
@@ -813,7 +786,6 @@ class MSPParser {
                 settings.currentScale = Int(readInt16(message, index: 4))
                 settings.currentOffset = Int(readInt16(message, index: 6))
             }
-            pingSettingsListeners()
         
         case .MSP_MOTOR_CONFIG:     // CF 2.0
             if message.count < 6 {
@@ -822,14 +794,12 @@ class MSPParser {
             settings.minThrottle = readInt16(message, index: 0) // 0-2000
             settings.maxThrottle = readInt16(message, index: 2) // 0-2000
             settings.minCommand = readInt16(message, index: 4) // 0-2000
-            pingSettingsListeners()
             
         case .MSP_COMPASS_CONFIG:   // CF 2.0
             if message.count < 1 {
                 return false
             }
             settings.magDeclination = Double(message[0]) / 10 // -18000-18000
-            pingSettingsListeners()
             
         case .MSP_GPS_CONFIG:       // CF 2.0
             if message.count < 4 {
@@ -839,8 +809,7 @@ class MSPParser {
             settings.gpsUbxSbas = Int(message[1])
             settings.gpsAutoConfig = message[2] != 0
             settings.gpsAutoBaud = message[3] != 0
-            pingSettingsListeners()
-
+ 
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -1023,11 +992,6 @@ class MSPParser {
     func pingMotorListeners() {
         pingListeners { (listener) -> Void in
             listener.receivedMotorData?()
-        }
-    }
-    func pingSettingsListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedSettingsData?()
         }
     }
     func pingCommunicationStatusListeners(status: Bool) {

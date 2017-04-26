@@ -104,6 +104,10 @@ class ReceiverConfigViewController: ConfigChildViewController {
                 return "iBus"
             case 8:
                 return "EX Bus"
+            case 9:
+                return "CRSF"
+            case 10:
+                return "SRXL"
             default:
                 return "Unknown Serial"
             }

@@ -42,7 +42,8 @@ class PortsConfigViewController: ConfigChildViewController {
             if functions.contains(.MSP) {
                 detail = "Data"
             }
-            if functions.contains(.TelemetryFrsky) || functions.contains(.TelemetryHott) || functions.contains(.TelemetryLTM) || functions.contains(.TelemetrySmartPort) || functions.contains(.TelemetryMAVLink) {
+            if functions.contains(.TelemetryFrsky) || functions.contains(.TelemetryHott) || functions.contains(.TelemetryLTM) || functions.contains(.TelemetrySmartPort)
+                    || functions.contains(.TelemetryMAVLink) || functions.contains(.TelemetryMAVLinkOld) {
                 if !detail.isEmpty {
                     detail += ", "
                 }
@@ -60,11 +61,23 @@ class PortsConfigViewController: ConfigChildViewController {
                 }
                 detail += "GPS"
             }
+            if functions.contains(.ESCSensor) {
+                if !detail.isEmpty {
+                    detail += ", "
+                }
+                detail += "ESC"
+            }
             if functions.contains(.Blackbox) {
                 if !detail.isEmpty {
                     detail += ", "
                 }
-                detail += "Logging"
+                detail += "Blackbox"
+            }
+            if functions.contains(.VTXSmartAudio) || functions.contains(.VTXTramp) {
+                if !detail.isEmpty {
+                    detail += ", "
+                }
+                detail += "VTX"
             }
             if detail.isEmpty {
                 detail = " "        // iOS8 bug

@@ -14,7 +14,6 @@ import Foundation
     optional func receivedReceiverData()
     optional func receivedSensorData()
     optional func receivedMotorData()
-    optional func receivedSettingsData()
     optional func communicationStatus(status: Bool)     // true: communication established, false: communication closed permanently
     optional func receivedRawIMUData()
     optional func receivedAltitudeData()

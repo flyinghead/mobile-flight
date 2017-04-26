@@ -265,8 +265,13 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     static let TelemetrySmartPort  = PortFunction(rawValue: 1 << 5)
     static let RxSerial  = PortFunction(rawValue: 1 << 6)
     static let Blackbox  = PortFunction(rawValue: 1 << 7)
-    static let TelemetryMAVLink  = PortFunction(rawValue: 1 << 8)
+    static let TelemetryMAVLinkOld  = PortFunction(rawValue: 1 << 8)
+    static let TelemetryMAVLink  = PortFunction(rawValue: 1 << 9)
     static let MSPClient  = PortFunction(rawValue: 1 << 9)
+    static let ESCSensor = PortFunction(rawValue: 1 << 10)
+    static let VTXSmartAudio = PortFunction(rawValue: 1 << 11)
+    static let TelemetryIBus  = PortFunction(rawValue: 1 << 12)
+    static let VTXTramp  = PortFunction(rawValue: 1 << 13)
     
     init(rawValue: Int) {
         self.rawValue = rawValue
