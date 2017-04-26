@@ -331,7 +331,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         telemetryMode.tintColor = settings.isModeOn(Mode.TELEMETRY, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) || settings.isModeOn(Mode.AUTOTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
+        autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
     }
     
     func received3drRssiData() {

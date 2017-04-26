@@ -18,6 +18,7 @@ class ReceiverTuningViewController: UITableViewController {
     @IBOutlet weak var throttleExpo: NumberField!
     @IBOutlet weak var rcRate: NumberField!
     @IBOutlet weak var rcExpo: NumberField!
+    @IBOutlet weak var yawRate: NumberField!
     @IBOutlet weak var yawExpo: NumberField!
     
     let DefaultRcMap = "AETR1234"
@@ -95,6 +96,7 @@ class ReceiverTuningViewController: UITableViewController {
                                     
                                     self.rcRate.value = self.settings!.rcRate
                                     self.rcExpo.value = self.settings!.rcExpo
+                                    self.yawRate.value = self.settings!.yawRate
                                     self.yawExpo.value = self.settings!.yawExpo
                                     
                                 })
@@ -162,6 +164,8 @@ class ReceiverTuningViewController: UITableViewController {
         settings!.rcExpo = rcExpo.value
         somethingChanged = somethingChanged || settings!.yawExpo != yawExpo.value
         settings!.yawExpo = yawExpo.value
+        somethingChanged = somethingChanged || settings!.yawRate != yawRate.value
+        settings!.yawRate = yawRate.value
         
         if somethingChanged {
             msp.sendRssiConfig(settings!.rssiChannel, callback: { success in

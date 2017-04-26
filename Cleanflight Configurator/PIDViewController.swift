@@ -109,9 +109,9 @@ class PIDViewController: StaticDataTableViewController {
                                             self.pidControllerPicker?.selectedIndex = settings.pidController
                                             self.profilePicker?.selectedIndex = self.profile!
                                             
-                                            self.rollRate.value = settings.rollRate
-                                            self.pitchRate.value = settings.pitchRate
-                                            self.yawRate.value = settings.yawRate
+                                            self.rollRate.value = settings.rollSuperRate
+                                            self.pitchRate.value = settings.pitchSuperRate
+                                            self.yawRate.value = settings.yawSuperRate
                                             
                                             self.tpaRate.value = settings.tpaRate
                                             self.tpaBreakpoint.value = Double(settings.tpaBreakpoint)
@@ -169,9 +169,9 @@ class PIDViewController: StaticDataTableViewController {
         }
         profile = profilePicker!.selectedIndex
         
-        settings?.rollRate = rollRate.value
-        settings?.pitchRate = pitchRate.value
-        settings?.yawRate = yawRate.value
+        settings?.rollSuperRate = rollRate.value
+        settings?.pitchSuperRate = pitchRate.value
+        settings?.yawSuperRate = yawRate.value
         settings?.tpaRate = tpaRate.value
         settings?.tpaBreakpoint = Int(tpaBreakpoint.value)
 

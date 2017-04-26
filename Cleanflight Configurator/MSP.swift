@@ -334,9 +334,9 @@ class MSPParser {
             }
             settings.rcRate = Double(message[0]) / 100
             settings.rcExpo = Double(message[1]) / 100
-            settings.rollRate = Double(message[2]) / 100
-            settings.pitchRate = Double(message[3]) / 100
-            settings.yawRate = Double(message[4]) / 100
+            settings.rollSuperRate = Double(message[2]) / 100
+            settings.pitchSuperRate = Double(message[3]) / 100
+            settings.yawSuperRate = Double(message[4]) / 100
             settings.tpaRate = Double(message[5]) / 100
             settings.throttleMid = Double(message[6]) / 100
             settings.throttleExpo = Double(message[7]) / 100
@@ -689,22 +689,26 @@ class MSPParser {
                 }
             }
 
-        case .MSP_ADVANCED_TUNING:
+        case .MSP_ADVANCED_TUNING:      // aka MSP_PID_ADVANCED subject to change A LOT
             if message.count < 17 {
                 return false
             }
-            settings.rollPitchItermIgnoreRate = readUInt16(message, index: 0)
-            settings.yawItermIgnoreRate = readUInt16(message, index: 2)
-            settings.yawPLimit = readUInt16(message, index: 4)
-            settings.deltaMethod = Int(message[6])
+            //settings.rollPitchItermIgnoreRate = readUInt16(message, index: 0)
+            //settings.yawItermIgnoreRate = readUInt16(message, index: 2)
+            //settings.yawPLimit = readUInt16(message, index: 4)
+            //settings.deltaMethod = Int(message[6])
             settings.vbatPidCompensation = message[7] != 0
-            settings.pTermSRateWeight = Int(message[8])
- //           settings.setpointRelaxRatio = Int(message[8])
+            //settings.pTermSRateWeight = Int(message[8])
+            settings.setpointRelaxRatio = Int(message[8])
             settings.dTermSetpointWeight = Int(message[9])
-            settings.iTermThrottleGain = Int(message[12])
+            //settings.iTermThrottleGain = Int(message[12])
             settings.rateAccelLimit = readUInt16(message, index: 13)
             settings.yawRateAccelLimit = readUInt16(message, index: 15)
-        
+            if message.count >= 19 {
+                settings.levelAngleLimit = Int(message[17])
+                settings.levelSensitivity = Int(message[18])
+            }
+            
         case .MSP_SENSOR_CONFIG:
             if message.count < 3 {
                 return false
@@ -1087,9 +1091,9 @@ class MSPParser {
         var data = [UInt8]()
         data.append(UInt8(round(settings.rcRate * 100)))
         data.append(UInt8(round(settings.rcExpo * 100)))
-        data.append(UInt8(round(settings.rollRate * 100)))
-        data.append(UInt8(round(settings.pitchRate * 100)))
-        data.append(UInt8(round(settings.yawRate * 100)))
+        data.append(UInt8(round(settings.rollSuperRate * 100)))
+        data.append(UInt8(round(settings.pitchSuperRate * 100)))
+        data.append(UInt8(round(settings.yawSuperRate * 100)))
         data.append(UInt8(round(settings.tpaRate * 100)))
         data.append(UInt8(round(settings.throttleMid * 100)))
         data.append(UInt8(round(settings.throttleExpo * 100)))

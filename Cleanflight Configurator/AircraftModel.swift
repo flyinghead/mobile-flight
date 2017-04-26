@@ -89,7 +89,6 @@ enum Mode : String {
     case GOVERNOR = "GOVERNOR"
     case OSDSW = "OSD SW"
     case TELEMETRY = "TELEMETRY"
-    case AUTOTUNE = "AUTOTUNE"
     case GTUNE = "GTUNE"
     case SONAR = "SONAR"
     case SERVO1 = "SERVO1"
@@ -98,6 +97,10 @@ enum Mode : String {
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
     case AIR = "AIR MODE"
+    case ANTIGRAVITY = "ANTI GRAVITY"
+    case DISABLE3DSWITCH = "DISABLE 3D SWITCH"
+    case FPVANGLEMIX = "FPV ANGLE MIX"
+    case BLACKBOXERASE = "BLACKBOX ERASE (>30s)"
     
     var spokenName: String {
         switch self {
@@ -141,8 +144,6 @@ enum Mode : String {
             return "on-screen display"
         case .TELEMETRY:
             return "telemetry"
-        case .AUTOTUNE:
-            return "auto-tune mode"
         case .GTUNE:
             return "g-tune mode"
         case .SONAR:
@@ -159,6 +160,14 @@ enum Mode : String {
             return "failsafe mode"
         case .AIR:
             return "air mode"
+        case .ANTIGRAVITY:
+            return "anti gravity"
+        case .DISABLE3DSWITCH:
+            return "disable 3D switch"
+        case .FPVANGLEMIX:
+            return "FPV angle mix"
+        case .BLACKBOXERASE:
+            return "blackbox erase"
         }
     }
 }
@@ -360,12 +369,12 @@ struct PortConfig : DictionaryCoding {
 */
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "yawRate",
+        "rollSuperRate", "pitchSuperRate", "yawSuperRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
         "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
-        "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "rollPitchItermIgnoreRate",
-        "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
-        "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
+        "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
+        "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
         "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
         "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud"]
@@ -397,10 +406,11 @@ class Settings : AutoCoded {
     // MSP_RC_TUNING / MSP_SET_RC_TUNING
     var rcExpo = 0.0        // pitch & roll expo curve
     var yawExpo = 0.0       // yaw expo curve
-    var rcRate = 0.0        // pitch & roll expo curve
-    var rollRate = 0.0      // FIXME This should be rollSuperRate?
-    var pitchRate = 0.0     // FIXME This should be pitchSuperRate?
-    var yawRate = 0.0       // FIXME This should be yawSuperRate?
+    var rcRate = 0.0        // pitch & roll rate
+    var yawRate = 0.0       // yaw rate
+    var rollSuperRate = 0.0
+    var pitchSuperRate = 0.0
+    var yawSuperRate = 0.0
     var throttleMid = 0.0
     var throttleExpo = 0.0
     var tpaRate = 0.0
@@ -468,17 +478,13 @@ class Settings : AutoCoded {
     var gyroNotchCutoff2 = 0
     
     // MSP_PID_ADVANCED / MSP_SET_PID_ADVANCED
-    var rollPitchItermIgnoreRate = 0
-    var yawItermIgnoreRate = 0
-    var yawPLimit = 0
-    var deltaMethod = 0
     var vbatPidCompensation = false
-    var pTermSRateWeight = 0
     var setpointRelaxRatio = 0
     var dTermSetpointWeight = 0
-    var iTermThrottleGain = 0
     var rateAccelLimit = 0
     var yawRateAccelLimit = 0
+    var levelAngleLimit = 0
+    var levelSensitivity = 0
     
     // MSP_SENSOR_CONFIG / MSP_SET_SENSOR_CONFIG
     var accelerometerDisabled = false
@@ -544,10 +550,11 @@ class Settings : AutoCoded {
         
         self.rcExpo = copyOf.rcExpo
         self.yawExpo = copyOf.yawExpo
-        self.rcRate = copyOf.rcRate
-        self.rollRate = copyOf.rollRate
-        self.pitchRate = copyOf.pitchRate
         self.yawRate = copyOf.yawRate
+        self.rcRate = copyOf.rcRate
+        self.rollSuperRate = copyOf.rollSuperRate
+        self.pitchSuperRate = copyOf.pitchSuperRate
+        self.yawSuperRate = copyOf.yawSuperRate
         self.tpaRate = copyOf.tpaRate
         self.throttleMid = copyOf.throttleMid
         self.throttleExpo = copyOf.throttleExpo
@@ -596,16 +603,12 @@ class Settings : AutoCoded {
         self.gyroNotchFrequency2 = copyOf.gyroNotchFrequency2
         self.gyroNotchCutoff2 = copyOf.gyroNotchCutoff2
         
-        self.rollPitchItermIgnoreRate = copyOf.rollPitchItermIgnoreRate
-        self.yawItermIgnoreRate = copyOf.yawItermIgnoreRate
-        self.yawPLimit = copyOf.yawPLimit
-        self.deltaMethod = copyOf.deltaMethod
         self.vbatPidCompensation = copyOf.vbatPidCompensation
-        self.pTermSRateWeight = copyOf.pTermSRateWeight
         self.setpointRelaxRatio = copyOf.setpointRelaxRatio
-        self.iTermThrottleGain = copyOf.iTermThrottleGain
         self.rateAccelLimit = copyOf.rateAccelLimit
         self.yawRateAccelLimit = copyOf.yawRateAccelLimit
+        self.levelAngleLimit = copyOf.levelAngleLimit
+        self.levelSensitivity = copyOf.levelSensitivity
 
         self.accelerometerDisabled = copyOf.accelerometerDisabled
         self.barometerDisabled = copyOf.barometerDisabled
