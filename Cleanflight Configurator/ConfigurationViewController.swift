@@ -54,6 +54,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var motorPWMFreqLabel: UILabel!
     @IBOutlet weak var airModeSwitch: UISwitch!
     @IBOutlet weak var osdSwitch: UISwitch!
+    @IBOutlet weak var vtxSwitch: UISwitch!
+    @IBOutlet weak var escSensor: UISwitch!
     
     var gyroUpdateFredPicker: MyDownPicker?
     var pidLoopFreqPicker: MyDownPicker?
@@ -117,8 +119,16 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
         }
-        // FIXME Get rid of MSP_MISC
-        chainMspCalls(msp, calls: [.MSP_MISC, .MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_LOOP_TIME]) { success in
+        var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG]
+        
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {    // CF 2.0
+            mspCalls.appendContentsOf([.MSP_MOTOR_CONFIG, /* .MSP_GPS_CONFIG, */ .MSP_COMPASS_CONFIG])      // FIXME CF 2.0 not compiled with GPS
+        } else {
+            mspCalls.append(.MSP_MISC)
+            mspCalls.append(.MSP_LOOP_TIME)
+        }
+        
+        chainMspCalls(msp, calls: mspCalls) { success in
             if success {
                 self.fetchFailsafeConfig()
             } else {
@@ -293,6 +303,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             newSettings!.magnetometerDisabled = !enableMagnetometer.on
             saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
             saveFeatureSwitchValue(osdSwitch, feature: .OSD)
+            saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
+            saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
         }
         
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
@@ -301,32 +313,19 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         appDelegate.stopTimer()
         msp.sendSerialConfig(self.newSettings!) { success in
             if success {
-                // FIXME Get rid of MSP_MISC
-                self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!) { success in
+                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
                     if success {
-                        self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
+                        self.msp.sendSetFeature(self.newSettings!.features) { success in
                             if success {
-                                self.msp.sendSetFeature(self.newSettings!.features) { success in
+                                self.msp.sendBoardAlignment(self.newSettings!) { success in
                                     if success {
-                                        self.msp.sendRxConfig(self.newSettings!) { success in
+                                        self.msp.sendCurrentMeterConfig(self.newSettings!) { success in
                                             if success {
-                                                self.msp.sendBoardAlignment(self.newSettings!) { success in
+                                                self.msp.sendSetArmingConfig(self.newSettings!) { success in
                                                     if success {
-                                                        self.msp.sendCurrentMeterConfig(self.newSettings!) { success in
+                                                        self.msp.sendLoopTime(self.newSettings!) { success in
                                                             if success {
-                                                                self.msp.sendSetArmingConfig(self.newSettings!) { success in
-                                                                    if success {
-                                                                        self.msp.sendLoopTime(self.newSettings!) { success in
-                                                                            if success {
-                                                                                self.saveNewFailsafeSettings()
-                                                                            } else {
-                                                                                self.saveConfigFailed()
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        self.saveConfigFailed()
-                                                                    }
-                                                                }
+                                                                self.saveMiscOrEquivalent()
                                                             } else {
                                                                 self.saveConfigFailed()
                                                             }
@@ -353,6 +352,56 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 }
             } else {
                 self.saveConfigFailed()
+            }
+        }
+    }
+
+    private func saveMiscOrEquivalent() {
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            msp.sendMotorConfig(self.newSettings!) { success in
+                if success {
+//                    self.msp.sendGpsConfig(self.newSettings!) { success in    // FIXME CF 2.0 not compiled with GPS
+//                        if success {
+                            self.msp.sendRssiConfig(self.newSettings!.rssiChannel) { success in
+                                if success {
+                                    self.msp.sendCompassConfig(self.newSettings!.magDeclination) { success in
+                                        if success {
+                                            self.msp.sendBatteryConfig(self.newSettings!) { success in
+                                                if success {
+                                                    self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
+                                                        if success {
+                                                            self.saveNewFailsafeSettings()
+                                                        } else {
+                                                            self.saveConfigFailed()
+                                                        }
+                                                    }
+                                                } else {
+                                                    self.saveConfigFailed()
+                                                }
+                                            }
+                                        } else {
+                                            self.saveConfigFailed()
+                                        }
+                                    }
+                                } else {
+                                    self.saveConfigFailed()
+                                }
+                            }
+//                        } else {
+//                            self.saveConfigFailed()
+//                        }
+//                    }
+                } else {
+                    self.saveConfigFailed()
+                }
+            }
+        } else {
+            msp.sendSetMisc(self.newMisc!, settings: self.newSettings!) { success in
+                if success {
+                    self.saveNewFailsafeSettings()
+                } else {
+                    self.saveConfigFailed()
+                }
             }
         }
     }

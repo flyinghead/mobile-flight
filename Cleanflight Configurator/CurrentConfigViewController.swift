@@ -12,7 +12,6 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBOutlet weak var currentMeterSwitch: UISwitch!
     @IBOutlet weak var meterScaleField: NumberField!
     @IBOutlet weak var meterOffsetField: NumberField!
-    @IBOutlet weak var legacyMultiwiiSwitch: UISwitch!
     @IBOutlet var hideableCells: [UITableViewCell]!
 
     override func viewDidLoad() {
@@ -39,7 +38,6 @@ class CurrentConfigViewController: ConfigChildViewController {
         currentMeterSwitch.on = settings!.features.contains(.CurrentMeter)
         meterScaleField.value = Double(settings!.currentScale)
         meterOffsetField.value = Double(settings!.currentOffset)
-        legacyMultiwiiSwitch.on = misc!.multiwiiCurrentOutput == 1
         cells(hideableCells, setHidden: !currentMeterSwitch.on)
         reloadDataAnimated(true)
     }
@@ -49,7 +47,6 @@ class CurrentConfigViewController: ConfigChildViewController {
         
         settings!.currentScale = Int(meterScaleField.value)
         settings!.currentOffset = Int(meterOffsetField.value)
-        misc!.multiwiiCurrentOutput = legacyMultiwiiSwitch.on ? 1 : 0
         configViewController?.refreshUI()
     }
 }

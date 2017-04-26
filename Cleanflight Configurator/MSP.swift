@@ -331,7 +331,7 @@ class MSPParser {
             pingDataListeners()
             
         case .MSP_RC_TUNING:
-            if message.count < 10 {
+            if message.count < 11 {
                 return false
             }
             settings.rcRate = Double(message[0]) / 100
@@ -343,8 +343,9 @@ class MSPParser {
             settings.throttleMid = Double(message[6]) / 100
             settings.throttleExpo = Double(message[7]) / 100
             settings.tpaBreakpoint = readUInt16(message, index: 8)
-            if message.count >= 11 {
-                settings.yawExpo = Double(message[10]) / 100
+            settings.yawExpo = Double(message[10]) / 100
+            if message.count >= 12 {
+                settings.yawRate = Double(message[11]) / 100
             }
             pingSettingsListeners()
             
@@ -399,9 +400,7 @@ class MSPParser {
             settings.gpsType = Int(message[offset])
             offset += 2
             settings.gpsUbxSbas = Int(message[offset])
-            offset += 1
-            misc.multiwiiCurrentOutput = Int(message[offset])
-            offset += 1
+            offset += 2
             settings.rssiChannel = Int(message[offset])
             offset += 2
             settings.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
@@ -682,6 +681,12 @@ class MSPParser {
             settings.useUnsyncedPwm = message[2] != 0
             settings.motorPwmProtocol = Int(message[3])
             settings.motorPwmRate = readUInt16(message, index: 4)
+            if message.count >= 8 {
+                settings.digitalIdleOffsetPercent = Double(readUInt16(message, index: 6)) / 100
+                if message.count >= 9 {
+                    settings.gyroUses32KHz = message[8] != 0
+                }
+            }
             pingSettingsListeners()
             
         case .MSP_FILTER_CONFIG:
@@ -695,6 +700,12 @@ class MSPParser {
             settings.gyroNotchCutoff = readUInt16(message, index: 7)
             settings.dTermNotchFrequency = readUInt16(message, index: 9)
             settings.dTermNotchCutoff = readUInt16(message, index: 11)
+            if message.count >= 15 {
+                settings.gyroNotchFrequency2 = readUInt16(message, index: 13)
+                if message.count >= 17 {
+                    settings.gyroNotchCutoff2 = readUInt16(message, index: 15)
+                }
+            }
             pingSettingsListeners()
 
         case .MSP_ADVANCED_TUNING:
@@ -797,10 +808,10 @@ class MSPParser {
                 settings.batteryCapacity = Int(readInt16(message, index: 5))
             } else {
                 // CF 2.0
-                settings.currentMeterId = Int(message[3])
-                settings.currentMeterType = Int(message[4])
-                settings.currentScale = Int(readInt16(message, index: 5))
-                settings.currentOffset = Int(readInt16(message, index: 7))
+                settings.currentMeterId = Int(message[2])
+                settings.currentMeterType = Int(message[3])
+                settings.currentScale = Int(readInt16(message, index: 4))
+                settings.currentOffset = Int(readInt16(message, index: 6))
             }
             pingSettingsListeners()
         
@@ -1055,7 +1066,7 @@ class MSPParser {
         data.append(UInt8(settings.gpsType))
         data.append(UInt8(0))
         data.append(UInt8(settings.gpsUbxSbas))
-        data.append(UInt8(misc.multiwiiCurrentOutput))
+        data.append(UInt8(0))    // multiwiiCurrentOuput
         data.append(UInt8(settings.rssiChannel))
         data.append(UInt8(0))
         data.appendContentsOf(writeInt16(Int(round(settings.magDeclination * 10))))
@@ -1120,9 +1131,7 @@ class MSPParser {
         data.append(UInt8(round(settings.throttleExpo * 100)))
         data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
         data.append(UInt8(round(settings.yawExpo * 100)))
-        if Configuration.theConfig.isBetaflight {
-            data.append(UInt8(round(settings.yawRate * 100)))
-        }
+        data.append(UInt8(round(settings.yawRate * 100)))       // BF and CF 2.0 only
     
         sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
     }
@@ -1166,11 +1175,6 @@ class MSPParser {
     func sendSelectProfile(profile: Int, callback:((success:Bool) -> Void)?) {
         // Note: this call includes a write eeprom
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
-    }
-    
-    // Betaflight
-    func sendSelectRateProfile(rateProfile: Int, callback:((success:Bool) -> Void)?) {
-        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile & 0x80) ], retry: 2, callback: callback)
     }
     
     func sendDataflashRead(address: Int, callback:(data: [UInt8]?) -> Void) {
@@ -1398,6 +1402,8 @@ class MSPParser {
         data.append(UInt8(settings.useUnsyncedPwm ? 1 : 0))
         data.append(UInt8(settings.motorPwmProtocol))
         data.appendContentsOf(writeUInt16(settings.motorPwmRate))
+        data.appendContentsOf(writeUInt16(Int(round(settings.digitalIdleOffsetPercent * 100))))
+        data.append(UInt8(settings.gyroUses32KHz ? 1 : 0))
         sendMessage(.MSP_SET_PID_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
     }
 
@@ -1407,6 +1413,24 @@ class MSPParser {
         data.append(UInt8(settings.barometerDisabled ? 1 : 0))
         data.append(UInt8(settings.magnetometerDisabled ? 1 : 0))
         sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendSelectRateProfile(rateProfile: Int, callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile & 0x80) ], retry: 2, callback: callback)
+    }
+    
+    func sendFilterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.gyroLowpassFrequency))
+        data.appendContentsOf(writeUInt16(settings.dTermLowpassFrequency))
+        data.appendContentsOf(writeUInt16(settings.yawLowpassFrequency))
+        data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency))
+        data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff))
+        data.appendContentsOf(writeUInt16(settings.dTermNotchFrequency))
+        data.appendContentsOf(writeUInt16(settings.dTermNotchCutoff))
+        data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
+        data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
+        sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     func openCommChannel(commChannel: CommChannel) {

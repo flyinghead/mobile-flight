@@ -41,9 +41,15 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     static let ChannelForwarding  = BaseFlightFeature(rawValue: 1 << 20)
     static let Transponder  = BaseFlightFeature(rawValue: 1 << 21)
 
-    // Betaflight
+    // Betaflight / CF 2.0
     static let OSD  = BaseFlightFeature(rawValue: 1 << 18)
     static let AirMode  = BaseFlightFeature(rawValue: 1 << 22)
+    static let SDCard  = BaseFlightFeature(rawValue: 1 << 23)
+    static let VTX  = BaseFlightFeature(rawValue: 1 << 24)      // Not exposed in BF?
+    static let RxSpi = BaseFlightFeature(rawValue: 1 << 25)     // Not exposed?
+    static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)   // Not exposed?
+    static let ESCSensor = BaseFlightFeature(rawValue: 1 << 27)
+    static let AntiGravity = BaseFlightFeature(rawValue: 1 << 28) // Not exposed?
 
     init(rawValue: Int) {
         self.rawValue = rawValue
@@ -350,8 +356,10 @@ struct PortConfig : DictionaryCoding {
 
 class Settings : AutoCoded {
     var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "rollRate", "pitchRate", "yawRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
-        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom", "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "gyroLowpassFrequency",
-        "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "rollPitchItermIgnoreRate", "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
+        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
+        "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
+        "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "rollPitchItermIgnoreRate",
+        "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
         "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
         "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
@@ -440,6 +448,8 @@ class Settings : AutoCoded {
     var useUnsyncedPwm = false
     var motorPwmProtocol = 1        // PWM = 0, Oneshot125 = 1, Oneshot42 = 2, Multishot = 3, Brushed = 4
     var motorPwmRate = 0
+    var digitalIdleOffsetPercent = 0.0
+    var gyroUses32KHz = false
     
     // MSP_FILTER_CONFIG / MSP_SET_FILTER_CONFIG
     var gyroLowpassFrequency = 0
@@ -449,6 +459,8 @@ class Settings : AutoCoded {
     var gyroNotchCutoff = 0
     var dTermNotchFrequency = 0
     var dTermNotchCutoff = 0
+    var gyroNotchFrequency2 = 0
+    var gyroNotchCutoff2 = 0
     
     // MSP_PID_ADVANCED / MSP_SET_PID_ADVANCED
     var rollPitchItermIgnoreRate = 0
@@ -566,6 +578,8 @@ class Settings : AutoCoded {
         self.useUnsyncedPwm = copyOf.useUnsyncedPwm
         self.motorPwmProtocol = copyOf.motorPwmProtocol
         self.motorPwmRate = copyOf.motorPwmRate
+        self.digitalIdleOffsetPercent = copyOf.digitalIdleOffsetPercent
+        self.gyroUses32KHz = copyOf.gyroUses32KHz
         
         self.gyroLowpassFrequency = copyOf.gyroLowpassFrequency
         self.dTermLowpassFrequency = copyOf.dTermLowpassFrequency
@@ -574,6 +588,8 @@ class Settings : AutoCoded {
         self.gyroNotchCutoff = copyOf.gyroNotchCutoff
         self.dTermNotchFrequency = copyOf.dTermNotchFrequency
         self.dTermNotchCutoff = copyOf.dTermNotchCutoff
+        self.gyroNotchFrequency2 = copyOf.gyroNotchFrequency2
+        self.gyroNotchCutoff2 = copyOf.gyroNotchCutoff2
         
         self.rollPitchItermIgnoreRate = copyOf.rollPitchItermIgnoreRate
         self.yawItermIgnoreRate = copyOf.yawItermIgnoreRate
@@ -706,11 +722,8 @@ class Settings : AutoCoded {
 }
 
 class Misc : AutoCoded {
-    var autoEncoding = [ "multiwiiCurrentOutput", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
+    var autoEncoding = [ "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theMisc = Misc()
-    
-    // MSP_MISC / MSP_SET_MISC
-    var multiwiiCurrentOutput = 0       // FIXME This should be a boolean instead
     
     // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
     var accelerometerTrimPitch = 0
@@ -721,7 +734,6 @@ class Misc : AutoCoded {
     }
     
     init(copyOf: Misc) {
-        self.multiwiiCurrentOutput = copyOf.multiwiiCurrentOutput
         self.accelerometerTrimPitch = copyOf.accelerometerTrimPitch
         self.accelerometerTrimRoll = copyOf.accelerometerTrimRoll
         

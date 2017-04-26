@@ -150,8 +150,33 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
                 dispatch_async(dispatch_get_main_queue(), {
                     self.modelView.image = MultiTypes.getImage(Settings.theSettings.mixerConfiguration)
                 })
-                // FIXME Get rid of MSP_MISC
-                self.msp.sendMessage(.MSP_MISC, data: nil)      // For minCommand and maxThrottle
+                // For minCommand and maxThrottle
+                let callback: (Bool) -> Void = { success in
+                    let settings = Settings.theSettings
+                    self.masterSlider.minimumValue = Float(settings.minCommand)
+                    self.masterSlider.maximumValue = Float(settings.maxThrottle)
+                    self.slider1.minimumValue = Float(settings.minCommand)
+                    self.slider1.maximumValue = Float(settings.maxThrottle)
+                    self.slider2.minimumValue = Float(settings.minCommand)
+                    self.slider2.maximumValue = Float(settings.maxThrottle)
+                    self.slider3.minimumValue = Float(settings.minCommand)
+                    self.slider3.maximumValue = Float(settings.maxThrottle)
+                    self.slider4.minimumValue = Float(settings.minCommand)
+                    self.slider4.maximumValue = Float(settings.maxThrottle)
+                    self.slider5.minimumValue = Float(settings.minCommand)
+                    self.slider5.maximumValue = Float(settings.maxThrottle)
+                    self.slider6.minimumValue = Float(settings.minCommand)
+                    self.slider6.maximumValue = Float(settings.maxThrottle)
+                    self.slider7.minimumValue = Float(settings.minCommand)
+                    self.slider7.maximumValue = Float(settings.maxThrottle)
+                    self.slider8.minimumValue = Float(settings.minCommand)
+                    self.slider8.maximumValue = Float(settings.maxThrottle)
+                }
+                if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                    self.msp.sendMessage(.MSP_MOTOR_CONFIG, data: nil, retry: 2, callback: callback)
+                } else {
+                    self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: callback)
+                }
             }
         })
     }
@@ -182,28 +207,6 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
         value6.text = String(format: "%d", motorData.throttle[5])
         value7.text = String(format: "%d", motorData.throttle[6])
         value8.text = String(format: "%d", motorData.throttle[7])
-    }
-
-    func receivedData() {
-        let settings = Settings.theSettings
-        masterSlider.minimumValue = Float(settings.minCommand)
-        masterSlider.maximumValue = Float(settings.maxThrottle)
-        slider1.minimumValue = Float(settings.minCommand)
-        slider1.maximumValue = Float(settings.maxThrottle)
-        slider2.minimumValue = Float(settings.minCommand)
-        slider2.maximumValue = Float(settings.maxThrottle)
-        slider3.minimumValue = Float(settings.minCommand)
-        slider3.maximumValue = Float(settings.maxThrottle)
-        slider4.minimumValue = Float(settings.minCommand)
-        slider4.maximumValue = Float(settings.maxThrottle)
-        slider5.minimumValue = Float(settings.minCommand)
-        slider5.maximumValue = Float(settings.maxThrottle)
-        slider6.minimumValue = Float(settings.minCommand)
-        slider6.maximumValue = Float(settings.maxThrottle)
-        slider7.minimumValue = Float(settings.minCommand)
-        slider7.maximumValue = Float(settings.maxThrottle)
-        slider8.minimumValue = Float(settings.minCommand)
-        slider8.maximumValue = Float(settings.maxThrottle)
     }
     
     func sendMotorData() {
