@@ -354,7 +354,8 @@ class Settings : AutoCoded {
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "rollPitchItermIgnoreRate", "yawItermIgnoreRate", "yawPLimit", "deltaMethod", "vbatPidCompensation",
         "pTermSRateWeight", "setpointRelaxRatio", "dTermSetpointWeight", "iTermThrottleGain", "rateAccelLimit", "yawRateAccelLimit", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
-        "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset" ]
+        "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
+        "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud"]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -490,6 +491,20 @@ class Settings : AutoCoded {
     var currentScale = 400
     var currentOffset = 0
 
+    // MSP_MOTOR_CONFIG (CF 2.0) or MSP_MISC
+    var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed in !MOTOR_STOP
+    var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
+    var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
+
+    // MSP_COMPASS_CONFIG (CF 2.0) or MSP_MISC
+    var magDeclination = 0.0         // degree
+
+    // MSP_GPS_CONFIG (CF 2.0) or MSP_MISC
+    var gpsType = 0
+    var gpsUbxSbas = 0
+    var gpsAutoConfig = false
+    var gpsAutoBaud = false
+
     private override init() {
         super.init()
     }
@@ -594,6 +609,17 @@ class Settings : AutoCoded {
         self.currentScale = copyOf.currentScale
         self.currentOffset = copyOf.currentOffset
 
+        self.minThrottle = copyOf.minThrottle
+        self.maxThrottle = copyOf.maxThrottle
+        self.minCommand = copyOf.minCommand
+
+        self.magDeclination = copyOf.magDeclination
+        
+        self.gpsType = copyOf.gpsType
+        self.gpsUbxSbas = copyOf.gpsUbxSbas
+        self.gpsAutoConfig = copyOf.gpsAutoConfig
+        self.gpsAutoBaud = copyOf.gpsAutoBaud
+        
         super.init()
     }
     
@@ -680,18 +706,11 @@ class Settings : AutoCoded {
 }
 
 class Misc : AutoCoded {
-    var autoEncoding = [ "minThrottle", "maxThrottle", "minCommand", "gpsType", "gpsBaudRate", "gpsUbxSbas", "multiwiiCurrentOutput", "magDeclination", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
+    var autoEncoding = [ "multiwiiCurrentOutput", "accelerometerTrimPitch", "accelerometerTrimRoll" ]
     static var theMisc = Misc()
     
     // MSP_MISC / MSP_SET_MISC
-    var minThrottle = 1150      // escAndServoConfig.minthrottle    // Used when motors are armed in !MOTOR_STOP
-    var maxThrottle = 1850      // escAndServoConfig.maxthrottle    // Motor output always constrained by this limit. Will reduce other motors if one is above limit
-    var minCommand = 1000       // escAndServoConfig.mincommand     // Used to disarm motors
-    var gpsType = 0
-    var gpsBaudRate = 0
-    var gpsUbxSbas = 0
     var multiwiiCurrentOutput = 0       // FIXME This should be a boolean instead
-    var magDeclination = 0.0         // degree
     
     // MSP_ACC_TRIM / MSP_SET_ACC_TRIM
     var accelerometerTrimPitch = 0
@@ -702,14 +721,7 @@ class Misc : AutoCoded {
     }
     
     init(copyOf: Misc) {
-        self.minThrottle = copyOf.minThrottle
-        self.maxThrottle = copyOf.maxThrottle
-        self.minCommand = copyOf.minCommand
-        self.gpsType = copyOf.gpsType
-        self.gpsBaudRate = copyOf.gpsBaudRate
-        self.gpsUbxSbas = copyOf.gpsUbxSbas
         self.multiwiiCurrentOutput = copyOf.multiwiiCurrentOutput
-        self.magDeclination = copyOf.magDeclination
         self.accelerometerTrimPitch = copyOf.accelerometerTrimPitch
         self.accelerometerTrimRoll = copyOf.accelerometerTrimRoll
         
@@ -924,7 +936,7 @@ class Configuration : AutoCoded {
     }
     
     var isBetaflight: Bool {
-        return fcIdentifier == "BTFL" // || isApiVersionAtLeast("2.0")
+        return fcIdentifier == "BTFL"
     }
 }
 

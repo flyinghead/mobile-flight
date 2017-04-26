@@ -388,25 +388,23 @@ class MSPParser {
             var offset = 0
             settings.midRC = readInt16(message, index: offset)
             offset += 2
-            misc.minThrottle = readInt16(message, index: offset) // 0-2000
+            settings.minThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.maxThrottle = readInt16(message, index: offset) // 0-2000
+            settings.maxThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.minCommand = readInt16(message, index: offset) // 0-2000
+            settings.minCommand = readInt16(message, index: offset) // 0-2000
             offset += 2
             settings.failsafeThrottle = readInt16(message, index: offset) // 0-2000
             offset += 2
-            misc.gpsType = Int(message[offset])
-            offset += 1
-            misc.gpsBaudRate = Int(message[offset])
-            offset += 1
-            misc.gpsUbxSbas = Int(message[offset])
+            settings.gpsType = Int(message[offset])
+            offset += 2
+            settings.gpsUbxSbas = Int(message[offset])
             offset += 1
             misc.multiwiiCurrentOutput = Int(message[offset])
             offset += 1
             settings.rssiChannel = Int(message[offset])
             offset += 2
-            misc.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
+            settings.magDeclination = Double(readInt16(message, index: offset)) / 10 // -18000-18000
             if message.count >= 22 {
                 offset += 2;
                 settings.vbatScale = Int(message[offset]) // 10-200
@@ -806,7 +804,32 @@ class MSPParser {
             }
             pingSettingsListeners()
         
+        case .MSP_MOTOR_CONFIG:     // CF 2.0
+            if message.count < 6 {
+                return false
+            }
+            settings.minThrottle = readInt16(message, index: 0) // 0-2000
+            settings.maxThrottle = readInt16(message, index: 2) // 0-2000
+            settings.minCommand = readInt16(message, index: 4) // 0-2000
+            pingSettingsListeners()
             
+        case .MSP_COMPASS_CONFIG:   // CF 2.0
+            if message.count < 1 {
+                return false
+            }
+            settings.magDeclination = Double(message[0]) / 10 // -18000-18000
+            pingSettingsListeners()
+            
+        case .MSP_GPS_CONFIG:       // CF 2.0
+            if message.count < 4 {
+                return false
+            }
+            settings.gpsType = Int(message[0])
+            settings.gpsUbxSbas = Int(message[1])
+            settings.gpsAutoConfig = message[2] != 0
+            settings.gpsAutoBaud = message[3] != 0
+            pingSettingsListeners()
+
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -840,7 +863,10 @@ class MSPParser {
             .MSP_SET_FEATURE,
             .MSP_SET_BATTERY_CONFIG,
             .MSP_SET_BOARD_ALIGNMENT,
-            .MSP_SET_CURRENT_METER_CONFIG:
+            .MSP_SET_CURRENT_METER_CONFIG,
+            .MSP_SET_MOTOR_CONFIG,
+            .MSP_SET_COMPASS_CONFIG,
+            .MSP_SET_GPS_CONFIG:
             break
             
         default:
@@ -1022,17 +1048,17 @@ class MSPParser {
     func sendSetMisc(misc: Misc, settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.appendContentsOf(writeInt16(settings.midRC))
-        data.appendContentsOf(writeInt16(misc.minThrottle))
-        data.appendContentsOf(writeInt16(misc.maxThrottle))
-        data.appendContentsOf(writeInt16(misc.minCommand))
+        data.appendContentsOf(writeInt16(settings.minThrottle))
+        data.appendContentsOf(writeInt16(settings.maxThrottle))
+        data.appendContentsOf(writeInt16(settings.minCommand))
         data.appendContentsOf(writeInt16(settings.failsafeThrottle))
-        data.append(UInt8(misc.gpsType))
-        data.append(UInt8(misc.gpsBaudRate))
-        data.append(UInt8(misc.gpsUbxSbas))
+        data.append(UInt8(settings.gpsType))
+        data.append(UInt8(0))
+        data.append(UInt8(settings.gpsUbxSbas))
         data.append(UInt8(misc.multiwiiCurrentOutput))
         data.append(UInt8(settings.rssiChannel))
         data.append(UInt8(0))
-        data.appendContentsOf(writeInt16(Int(round(misc.magDeclination * 10))))
+        data.appendContentsOf(writeInt16(Int(round(settings.magDeclination * 10))))
         data.append(UInt8(settings.vbatScale))
         data.append(UInt8(round(settings.vbatMinCellVoltage * 10)))
         data.append(UInt8(round(settings.vbatMaxCellVoltage * 10)))
@@ -1093,14 +1119,11 @@ class MSPParser {
         data.append(UInt8(round(settings.throttleMid * 100)))
         data.append(UInt8(round(settings.throttleExpo * 100)))
         data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
-        let config = Configuration.theConfig
-        if config.isApiVersionAtLeast("1.10") {
-            data.append(UInt8(round(settings.yawExpo * 100)))
-            if config.isBetaflight {
-                data.append(UInt8(round(settings.yawRate * 100)))
-            }
+        data.append(UInt8(round(settings.yawExpo * 100)))
+        if Configuration.theConfig.isBetaflight {
+            data.append(UInt8(round(settings.yawRate * 100)))
         }
-        
+    
         sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
     }
     
@@ -1339,6 +1362,31 @@ class MSPParser {
         }
     
         sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2, callback: callback)
+    }
+
+    // Cleanflight 2.0
+    
+    func sendMotorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt16(settings.minThrottle))
+        data.appendContentsOf(writeUInt16(settings.maxThrottle))
+        data.appendContentsOf(writeUInt16(settings.minCommand))
+        sendMessage(.MSP_SET_MOTOR_CONFIG, data: data, retry: 2, callback: callback)
+    }
+
+    func sendCompassConfig(magDeclination: Double, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeInt16(Int(round(magDeclination * 10))))
+        sendMessage(.MSP_SET_COMPASS_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendGpsConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.gpsType))
+        data.append(UInt8(settings.gpsUbxSbas))
+        data.append(UInt8(settings.gpsAutoConfig ? 1 : 0))
+        data.append(UInt8(settings.gpsAutoBaud ? 1 : 0))
+        sendMessage(.MSP_SET_GPS_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     // Betaflight

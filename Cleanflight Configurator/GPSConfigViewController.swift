@@ -38,21 +38,21 @@ class GPSConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         if gpsProtocolPicker!.selectedIndex >= 0 {
-            misc?.gpsType = gpsProtocolPicker!.selectedIndex
+            settings?.gpsType = gpsProtocolPicker!.selectedIndex
         }
         if gpsRegionPicker!.selectedIndex >= 0 {
-            misc?.gpsUbxSbas = gpsRegionPicker!.selectedIndex
+            settings?.gpsUbxSbas = gpsRegionPicker!.selectedIndex
         }
-        misc?.magDeclination = magDeclinationField.value
+        settings?.magDeclination = magDeclinationField.value
         configViewController?.refreshUI()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         gpsSwitch.on = settings!.features.contains(BaseFlightFeature.GPS) ?? false
-        gpsProtocolPicker?.selectedIndex = misc!.gpsType
-        gpsRegionPicker?.selectedIndex = misc!.gpsUbxSbas
-        magDeclinationField.value = misc!.magDeclination
+        gpsProtocolPicker?.selectedIndex = settings!.gpsType
+        gpsRegionPicker?.selectedIndex = settings!.gpsUbxSbas
+        magDeclinationField.value = settings!.magDeclination
         cells(hideableCells, setHidden: !gpsSwitch.on)
         reloadDataAnimated(false)
     }

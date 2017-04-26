@@ -20,10 +20,10 @@ extension UIViewController {
             resetAircraftModel()
             msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 4, callback: { success in
                 if success {
-                    if !Configuration.theConfig.isApiVersionAtLeast("1.7") {
+                    if !Configuration.theConfig.isApiVersionAtLeast("1.16") {
                         dispatch_async(dispatch_get_main_queue(), {
                             callback(success: false)
-                            SVProgressHUD.showErrorWithStatus("This version of the API is not supported", maskType: .None)
+                            SVProgressHUD.showErrorWithStatus("This firmware version is not supported. Please upgrade", maskType: .None)
                         })
                     } else {
                         msp.sendMessage(.MSP_FC_VARIANT, data: nil, retry: 4, callback: { success in

@@ -47,16 +47,16 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
             alertController.popoverPresentationController?.sourceView = sender as? UIView
             presentViewController(alertController, animated: true, completion: nil)
         } else  {
-            let miscData = Misc.theMisc
-            masterSlider.value = Float(miscData.minCommand)
-            slider1.value = Float(miscData.minCommand)
-            slider2.value = Float(miscData.minCommand)
-            slider3.value = Float(miscData.minCommand)
-            slider4.value = Float(miscData.minCommand)
-            slider5.value = Float(miscData.minCommand)
-            slider6.value = Float(miscData.minCommand)
-            slider7.value = Float(miscData.minCommand)
-            slider8.value = Float(miscData.minCommand)
+            let settings = Settings.theSettings
+            masterSlider.value = Float(settings.minCommand)
+            slider1.value = Float(settings.minCommand)
+            slider2.value = Float(settings.minCommand)
+            slider3.value = Float(settings.minCommand)
+            slider4.value = Float(settings.minCommand)
+            slider5.value = Float(settings.minCommand)
+            slider6.value = Float(settings.minCommand)
+            slider7.value = Float(settings.minCommand)
+            slider8.value = Float(settings.minCommand)
             sendMotorData()
             
             enableSliders(false)
@@ -185,25 +185,25 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
     }
 
     func receivedData() {
-        let miscData = Misc.theMisc
-        masterSlider.minimumValue = Float(miscData.minCommand)
-        masterSlider.maximumValue = Float(miscData.maxThrottle)
-        slider1.minimumValue = Float(miscData.minCommand)
-        slider1.maximumValue = Float(miscData.maxThrottle)
-        slider2.minimumValue = Float(miscData.minCommand)
-        slider2.maximumValue = Float(miscData.maxThrottle)
-        slider3.minimumValue = Float(miscData.minCommand)
-        slider3.maximumValue = Float(miscData.maxThrottle)
-        slider4.minimumValue = Float(miscData.minCommand)
-        slider4.maximumValue = Float(miscData.maxThrottle)
-        slider5.minimumValue = Float(miscData.minCommand)
-        slider5.maximumValue = Float(miscData.maxThrottle)
-        slider6.minimumValue = Float(miscData.minCommand)
-        slider6.maximumValue = Float(miscData.maxThrottle)
-        slider7.minimumValue = Float(miscData.minCommand)
-        slider7.maximumValue = Float(miscData.maxThrottle)
-        slider8.minimumValue = Float(miscData.minCommand)
-        slider8.maximumValue = Float(miscData.maxThrottle)
+        let settings = Settings.theSettings
+        masterSlider.minimumValue = Float(settings.minCommand)
+        masterSlider.maximumValue = Float(settings.maxThrottle)
+        slider1.minimumValue = Float(settings.minCommand)
+        slider1.maximumValue = Float(settings.maxThrottle)
+        slider2.minimumValue = Float(settings.minCommand)
+        slider2.maximumValue = Float(settings.maxThrottle)
+        slider3.minimumValue = Float(settings.minCommand)
+        slider3.maximumValue = Float(settings.maxThrottle)
+        slider4.minimumValue = Float(settings.minCommand)
+        slider4.maximumValue = Float(settings.maxThrottle)
+        slider5.minimumValue = Float(settings.minCommand)
+        slider5.maximumValue = Float(settings.maxThrottle)
+        slider6.minimumValue = Float(settings.minCommand)
+        slider6.maximumValue = Float(settings.maxThrottle)
+        slider7.minimumValue = Float(settings.minCommand)
+        slider7.maximumValue = Float(settings.maxThrottle)
+        slider8.minimumValue = Float(settings.minCommand)
+        slider8.maximumValue = Float(settings.maxThrottle)
     }
     
     func sendMotorData() {

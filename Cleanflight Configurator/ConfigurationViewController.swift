@@ -128,17 +128,12 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
         
     func fetchFailsafeConfig() {
-        if Configuration.theConfig.isApiVersionAtLeast("1.16") {    // 1.12
-            chainMspCalls(msp, calls: [.MSP_FAILSAFE_CONFIG, .MSP_RXFAIL_CONFIG]) { success in
-                if success {
-                    self.fetchBetaflightConfig()
-                } else {
-                    self.fetchInformationFailed()
-                }
+        chainMspCalls(msp, calls: [.MSP_FAILSAFE_CONFIG, .MSP_RXFAIL_CONFIG]) { success in
+            if success {
+                self.fetchBetaflightConfig()
+            } else {
+                self.fetchInformationFailed()
             }
-        } else {
-            // SUCCESS
-            self.fetchBetaflightConfig()
         }
     }
     
@@ -199,10 +194,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             }
             disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
             
-            minimumCommandField.value = Double(newMisc!.minCommand ?? 0)
-            minimumThrottleField.value = Double(newMisc!.minThrottle ?? 0)
+            minimumCommandField.value = Double(newSettings!.minCommand ?? 0)
+            minimumThrottleField.value = Double(newSettings!.minThrottle ?? 0)
             midThrottleField.value = Double(newSettings!.midRC ?? 0)
-            maximumThrottleFIeld.value = Double(newMisc!.maxThrottle ?? 0)
+            maximumThrottleFIeld.value = Double(newSettings!.maxThrottle ?? 0)
             
             setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
             setBoardAlignmentFieldValue(boardRollField, value: Double(newSettings!.boardAlignRoll ?? 0))
@@ -264,10 +259,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
         newSettings!.disarmKillSwitch = disarmMotorsSwitch.on
         
-        newMisc!.minCommand = Int(minimumCommandField.value)
-        newMisc!.minThrottle = Int(minimumThrottleField.value)
+        newSettings!.minCommand = Int(minimumCommandField.value)
+        newSettings!.minThrottle = Int(minimumThrottleField.value)
         newSettings!.midRC = Int(midThrottleField.value)
-        newMisc!.maxThrottle = Int(maximumThrottleFIeld.value)
+        newSettings!.maxThrottle = Int(maximumThrottleFIeld.value)
 
         newSettings!.boardAlignPitch = Int(boardPitchField.value)
         newSettings!.boardAlignRoll = Int(boardRollField.value)
@@ -363,31 +358,27 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func saveNewFailsafeSettings() {
-        if Configuration.theConfig.isApiVersionAtLeast("1.16") {
-            self.msp.sendRxConfig(self.newSettings!, callback: { success in
-                if success {
-                    self.msp.sendFailsafeConfig(self.newSettings!, callback: { success in
-                        if success {
-                            self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
-                                if success {
-                                    self.saveBetaflightFeatures()
-                                } else {
-                                    self.saveConfigFailed()
-                                }
-                            })
-                        } else {
-                            self.saveConfigFailed()
-                        }
-                    })
-                } else {
-                    self.saveConfigFailed()
-                }
-            })
-        } else {
-            self.saveBetaflightFeatures()
-        }
+        self.msp.sendRxConfig(self.newSettings!, callback: { success in
+            if success {
+                self.msp.sendFailsafeConfig(self.newSettings!, callback: { success in
+                    if success {
+                        self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
+                            if success {
+                                self.saveBetaflightFeatures()
+                            } else {
+                                self.saveConfigFailed()
+                            }
+                        })
+                    } else {
+                        self.saveConfigFailed()
+                    }
+                })
+            } else {
+                self.saveConfigFailed()
+            }
+        })
     }
-    
+
     private func saveBetaflightFeatures() {
         if isBetaflight {
             self.msp.sendPidAdvancedConfig(self.newSettings!, callback: { success in

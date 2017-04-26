@@ -70,17 +70,11 @@ class PIDViewController: StaticDataTableViewController {
         let pidControllers: [String]
         if config.isBetaflight {
             pidControllers = [ "Legacy", "Betaflight" ]
-        } else if config.isApiVersionAtLeast("1.14") {    // 1.10
-            pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
         } else {
-            pidControllers = [ "MultiWii (Old)", "MultiWii (rewrite)", "LuxFloat", "MultiWii (2.3 - latest)", "MultiWii (2.3 - hybrid)", "Harakiri" ]
+            pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
         }
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
         pidControllerPicker?.setPlaceholder("")     // To keep width down
-        
-        if !config.isApiVersionAtLeast("1.16") {   // 1.12
-            cell(resetPIDValuesCell, setHidden: true)
-        }
         
         if config.isBetaflight {
             for c in [ rollP, rollI, pitchP, pitchI, yawP, yawI, altP, varioP, varioI, magP, posP, posI, posRP, posRI, posRD, navRP, navRI, navRD, angleLevel, horizonLevel ] {

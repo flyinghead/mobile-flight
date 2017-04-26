@@ -12,10 +12,6 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet weak var failsafeSwitch: UISwitch!
     @IBOutlet weak var throttleField: ThrottleField!
     
-    @IBOutlet weak var pre112ThrottleCell: UITableViewCell!
-    @IBOutlet var pre112Config: [UITableViewCell]!
-    
-    @IBOutlet var post112Cells: [UITableViewCell]!
     @IBOutlet var channelCells: [UITableViewCell]!
     @IBOutlet weak var dropCell: UITableViewCell!
     @IBOutlet weak var landCell: UITableViewCell!
@@ -31,8 +27,6 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet var channelsSettings: [UISegmentedControl]!
     @IBOutlet var auxChannelsValueFields: [NumberField]!
 
-    var post112 = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,29 +41,18 @@ class FailsafeConfigViewController: ConfigChildViewController {
             field.delegate = self
         }
         
-        post112 = Configuration.theConfig.isApiVersionAtLeast("1.16")    // 1.12
-        if post112 {
-            cells(pre112Config, setHidden: true)
-            cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
-        } else {
-            cells(post112Cells, setHidden: true)
-            cells(channelCells, setHidden: true)
-        }
+        cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
     }
     
     @IBAction func failsafeSwitchChanged(sender: AnyObject) {
-        if post112 {
-            if failsafeSwitch.on {
-                if dropCell.accessoryType == .Checkmark {
-                    cells(Array(Set(stage2ActiveCells).subtract(Set(landCells))), setHidden: !failsafeSwitch.on)
-                } else {
-                    cells(stage2ActiveCells, setHidden: false)
-                }
+        if failsafeSwitch.on {
+            if dropCell.accessoryType == .Checkmark {
+                cells(Array(Set(stage2ActiveCells).subtract(Set(landCells))), setHidden: false)
             } else {
-                cells(stage2ActiveCells, setHidden: true)
+                cells(stage2ActiveCells, setHidden: false)
             }
         } else {
-            cell(pre112ThrottleCell, setHidden: !failsafeSwitch.on)
+            cells(stage2ActiveCells, setHidden: true)
         }
         reloadDataAnimated(sender as? FailsafeConfigViewController != self)
     }
@@ -114,36 +97,35 @@ class FailsafeConfigViewController: ConfigChildViewController {
         failsafeSwitch.on = settings!.features.contains(.Failsafe)
         throttleField.value = Double(settings!.failsafeThrottle)
         
-        if post112 {
-            minimumPulseField.value = Double(settings.rxMinUsec)
-            maximumPulseField.value = Double(settings.rxMaxUsec)
-            killSwitch.on = settings.failsafeKillSwitch
-            guardTimeField.value = settings.failsafeDelay
-            throttleLowDelayField.value = settings.failsafeThrottleLowDelay
-            motorsOffDelayField.value = settings.failsafeOffDelay
-            
-            if settings.failsafeProcedure == 0 {    // Land
-                landCell.accessoryType = .Checkmark
-                dropCell.accessoryType = .None
-                cells(landCells, setHidden: false)
-            } else {                                // Drop
-                landCell.accessoryType = .None
-                dropCell.accessoryType = .Checkmark
-                cells(landCells, setHidden: true)
-            }
-            for var i = 0; i < settings.rxFailMode?.count; i++ {
-                channelsSettings[i].selectedSegmentIndex = settings.rxFailMode![i] % 2
-                if i >= 4 {
-                    auxChannelsValueFields[i - 4].value = Double(settings.rxFailValue![i])
-                    if channelsSettings[i].selectedSegmentIndex != 0 {
-                        auxChannelsValueFields[i - 4].enabled = false
-                    }
+        minimumPulseField.value = Double(settings.rxMinUsec)
+        maximumPulseField.value = Double(settings.rxMaxUsec)
+        killSwitch.on = settings.failsafeKillSwitch
+        guardTimeField.value = settings.failsafeDelay
+        throttleLowDelayField.value = settings.failsafeThrottleLowDelay
+        motorsOffDelayField.value = settings.failsafeOffDelay
+        
+        if settings.failsafeProcedure == 0 {    // Land
+            landCell.accessoryType = .Checkmark
+            dropCell.accessoryType = .None
+            cells(landCells, setHidden: false)
+        } else {                                // Drop
+            landCell.accessoryType = .None
+            dropCell.accessoryType = .Checkmark
+            cells(landCells, setHidden: true)
+        }
+        for var i = 0; i < settings.rxFailMode?.count; i++ {
+            channelsSettings[i].selectedSegmentIndex = settings.rxFailMode![i] % 2
+            if i >= 4 {
+                auxChannelsValueFields[i - 4].value = Double(settings.rxFailValue![i])
+                if channelsSettings[i].selectedSegmentIndex != 0 {
+                    auxChannelsValueFields[i - 4].enabled = false
                 }
             }
         }
+
         failsafeSwitchChanged(self)
     }
-    
+
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let selectedCell = tableView.cellForRowAtIndexPath(indexPath)!
         if selectedCell == dropCell {
