@@ -14,6 +14,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBOutlet weak var meterOffsetField: NumberField!
     @IBOutlet weak var meterTypeField: UITextField!
     @IBOutlet var hideableCells: [UITableViewCell]!
+    @IBOutlet var currentScaleCells: [UITableViewCell]!
 
     var meterTypePicker: MyDownPicker!
     
@@ -22,19 +23,32 @@ class CurrentConfigViewController: ConfigChildViewController {
 
         meterTypePicker = MyDownPicker(textField: meterTypeField, withData: [ "None", "Onboard ADC", "Virtual", "ESC Sensor" ])
         meterTypePicker.setPlaceholder("")
-        
+        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
+
         meterScaleField.delegate = self
         meterOffsetField.delegate = self
     }
 
+    private func hideCellsAsNeeded() {
+        if currentMeterSwitch.on {
+            var cellsToShow = hideableCells
+            if meterTypePicker.selectedIndex < 1 || meterTypePicker.selectedIndex > 2 {
+                cellsToShow = Array(Set(cellsToShow).subtract(Set(currentScaleCells)))
+                cells(currentScaleCells, setHidden: true)
+            }
+            cells(cellsToShow, setHidden: false)
+        } else {
+            cells(hideableCells, setHidden: true)
+        }
+    }
+    
     @IBAction func currentMeterSwitchChanged(sender: AnyObject) {
         if currentMeterSwitch.on {
             settings?.features.insert(.CurrentMeter)
-            cells(hideableCells, setHidden: false)
         } else {
             settings?.features.remove(.CurrentMeter)
-            cells(hideableCells, setHidden: true)
         }
+        hideCellsAsNeeded()
         reloadDataAnimated(true)
     }
 
@@ -45,8 +59,8 @@ class CurrentConfigViewController: ConfigChildViewController {
         meterScaleField.value = Double(settings!.currentScale)
         meterOffsetField.value = Double(settings!.currentOffset)
         meterTypePicker.selectedIndex = settings.currentMeterType
-        cells(hideableCells, setHidden: !currentMeterSwitch.on)
-        reloadDataAnimated(true)
+        hideCellsAsNeeded()
+        reloadDataAnimated(false)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -56,5 +70,10 @@ class CurrentConfigViewController: ConfigChildViewController {
         settings!.currentOffset = Int(meterOffsetField.value)
         settings.currentMeterType = meterTypePicker.selectedIndex
         configViewController?.refreshUI()
+    }
+    
+    @IBAction func meterTypeChanged(sender: AnyObject) {
+        hideCellsAsNeeded()
+        reloadDataAnimated(true)
     }
 }

@@ -34,6 +34,8 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     @IBOutlet weak var metarDescription: UILabel!
     @IBOutlet weak var metarWeatherImage: UIImageView!
     
+    @IBOutlet weak var accTrimCell: UITableViewCell!
+    
     var metarTimer: NSTimer?
     var reportIndex = 0
     
@@ -45,32 +47,39 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hideSectionsWithHiddenRows = true
+        let config = Configuration.theConfig
+        
+        if config.isINav {
+            cell(accTrimCell, setHidden: true)
+            reloadDataAnimated(true)
+        } else {
+            accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
+        
+            accTrimPitchStepper.minimumValue = -100
+            accTrimRollStepper.minimumValue = -100
+        }
         calAccView.layer.borderColor = calAccView.tintColor.CGColor
         calMagView.layer.borderColor = calMagView.tintColor.CGColor
-        accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
-        
-        let config = Configuration.theConfig
         enableAccCalibration(config.isGyroAndAccActive())
-        
         enableMagCalibration(config.isMagnetometerActive())
-        
-        accTrimPitchStepper.minimumValue = -100
-        accTrimRollStepper.minimumValue = -100
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.sendMessage(.MSP_ACC_TRIM, data: nil, retry: 2) { success in
-            dispatch_async(dispatch_get_main_queue()) {
-                let misc = Misc.theMisc
-                self.accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
-                self.accTrimPitchChanged(self.accTrimPitchStepper)
-                self.accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
-                self.accTrimRollChanged(self.accTrimRollStepper)
+        if !Configuration.theConfig.isINav {
+            msp.sendMessage(.MSP_ACC_TRIM, data: nil, retry: 2) { success in
+                dispatch_async(dispatch_get_main_queue()) {
+                    let misc = Misc.theMisc
+                    self.accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
+                    self.accTrimPitchChanged(self.accTrimPitchStepper)
+                    self.accTrimRollStepper.value = Double(misc.accelerometerTrimRoll)
+                    self.accTrimRollChanged(self.accTrimRollStepper)
+                }
             }
         }
-
+        
         msp.addDataListener(self)
         
         MetarManager.instance.addObserver(self, selector: #selector(metarUpdated))

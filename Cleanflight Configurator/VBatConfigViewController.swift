@@ -16,6 +16,7 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBOutlet weak var voltageScale: NumberField!
     @IBOutlet var hideableCells: [UITableViewCell]!
     @IBOutlet weak var meterTypeFIeld: UITextField!
+    @IBOutlet weak var voltageScaleCell: UITableViewCell!
     
     var meterTypePicker: MyDownPicker!
 
@@ -24,21 +25,35 @@ class VBatConfigViewController: ConfigChildViewController {
 
         meterTypePicker = MyDownPicker(textField: meterTypeFIeld, withData: [ "Onboard ADC", "ESC Sensor" ])
         meterTypePicker.setPlaceholder("")
+        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
 
         minVoltage.delegate = self
         warningVoltage.delegate = self
         maxVoltage.delegate = self
         voltageScale.delegate = self
+
     }
 
+    private func hideCellsAsNeeded() {
+        if vbatSwitch.on {
+            var cellsToShow = hideableCells
+            if meterTypePicker.selectedIndex > 0 {
+                cellsToShow = Array(Set(cellsToShow).subtract(Set([ voltageScaleCell ])))
+                cell(voltageScaleCell, setHidden: true)
+            }
+            cells(cellsToShow, setHidden: false)
+        } else {
+            cells(hideableCells, setHidden: true)
+        }
+    }
+    
     @IBAction func vbatSwitchChanged(sender: AnyObject) {
         if vbatSwitch.on {
             settings?.features.insert(.VBat)
-            cells(hideableCells, setHidden: false)
         } else {
             settings?.features.remove(.VBat)
-            cells(hideableCells, setHidden: true)
         }
+        hideCellsAsNeeded()
         reloadDataAnimated(true)
     }
     
@@ -52,6 +67,7 @@ class VBatConfigViewController: ConfigChildViewController {
         voltageScale.value = Double(settings!.vbatScale)
         meterTypePicker.selectedIndex = settings.vbatMeterType
         cells(hideableCells, setHidden: !vbatSwitch.on)
+        hideCellsAsNeeded()
         reloadDataAnimated(false)
     }
     
@@ -64,5 +80,10 @@ class VBatConfigViewController: ConfigChildViewController {
         settings?.vbatScale = Int(voltageScale.value)
         settings?.vbatMeterType = meterTypePicker.selectedIndex
         configViewController?.refreshUI()
+    }
+    
+    @IBAction func meterTypeChanged(sender: AnyObject) {
+        hideCellsAsNeeded()
+        reloadDataAnimated(true)
     }
 }

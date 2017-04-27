@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ReceiverTuningViewController: UITableViewController {
+class ReceiverTuningViewController: StaticDataTableViewController {
     @IBOutlet weak var channelMapField: UITextField!
     @IBOutlet weak var rssiChannelField: UITextField!
 
@@ -20,6 +20,13 @@ class ReceiverTuningViewController: UITableViewController {
     @IBOutlet weak var rcExpo: NumberField!
     @IBOutlet weak var yawRate: NumberField!
     @IBOutlet weak var yawExpo: NumberField!
+    @IBOutlet weak var midRC: NumberField!
+    @IBOutlet weak var rcDeadband: NumberField!
+    @IBOutlet weak var yawDeadband: NumberField!
+    @IBOutlet weak var interpolationTypeField: UITextField!
+    @IBOutlet weak var interpolationInterval: NumberField!
+    @IBOutlet var interpolationCells: [UITableViewCell]!
+    @IBOutlet weak var interpolationValueCell: UITableViewCell!
     
     let DefaultRcMap = "AETR1234"
     let SpektrumRcMap = "TAER1234"
@@ -27,6 +34,7 @@ class ReceiverTuningViewController: UITableViewController {
     
     var channelMapPicker: MyDownPicker?
     var rssiChannelPicker: MyDownPicker?
+    var interpolationPicker: MyDownPicker?
     
     var settings: Settings?
     var rcMap: [Int]?
@@ -34,11 +42,21 @@ class ReceiverTuningViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hideSectionsWithHiddenRows = true
+
         channelMapPicker = MyDownPicker(textField: channelMapField, withData: RcMapChoices)
         channelMapPicker!.setPlaceholder("")
         
         rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
         rssiChannelPicker!.setPlaceholder("")
+
+        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+            interpolationPicker = MyDownPicker(textField: interpolationTypeField, withData: ["Off", "Preset", "Auto", "Manual"])
+            interpolationPicker!.setPlaceholder("")
+        } else {
+            cells(interpolationCells, setHidden: true)
+            reloadDataAnimated(false)
+        }
         
         refreshAction(self)
     }
@@ -61,65 +79,61 @@ class ReceiverTuningViewController: UITableViewController {
     }
     
     @IBAction func refreshAction(sender: AnyObject) {
-        msp.sendMessage(.MSP_RX_MAP, data: nil, retry: 2, callback: { success in
+        chainMspCalls(msp, calls: [.MSP_RX_MAP, .MSP_RX_CONFIG, .MSP_RC_TUNING, .MSP_RSSI_CONFIG, .MSP_RC_DEADBAND]) { success in
             if success {
-                self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
-                    if success {
-                        self.msp.sendMessage(.MSP_RSSI_CONFIG, data: nil, retry: 2, callback: { success in
-                            if success {
-                                self.settings = Settings(copyOf: Settings.theSettings)
-                                self.rcMap = Receiver.theReceiver.map
-                                
-                                var rssiChannels = [ "Disabled" ]
-                                for i in 0..<Receiver.theReceiver.activeChannels - 4 {
-                                    rssiChannels.append(String(format: "AUX %d", i + 1))
-                                }
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    let rcMapString = self.getRcMapString()
-                                    switch rcMapString {
-                                    case self.DefaultRcMap:
-                                        self.channelMapPicker?.selectedIndex = 0
-                                    case self.SpektrumRcMap:
-                                        self.channelMapPicker?.selectedIndex = 1
-                                    default:
-                                        var choices = self.RcMapChoices
-                                        choices.append(rcMapString)
-                                        self.channelMapPicker!.setData(choices)
-                                        self.channelMapPicker?.selectedIndex = 2
-                                    }
-                                    self.rssiChannelPicker?.setData(rssiChannels)
-                                    
-                                    self.rssiChannelPicker?.selectedIndex = self.settings!.rssiChannel < 5 ? 0 : self.settings!.rssiChannel - 4
-                                    
-                                    self.throttleMid.value = self.settings!.throttleMid
-                                    self.throttleExpo.value = self.settings!.throttleExpo
-                                    
-                                    self.rcRate.value = self.settings!.rcRate
-                                    self.rcExpo.value = self.settings!.rcExpo
-                                    self.yawRate.value = self.settings!.yawRate
-                                    self.yawExpo.value = self.settings!.yawExpo
-                                    
-                                })
-                            } else {
-                                self.fetchError()
-                            }
-                        })
-                    } else {
-                        self.fetchError()
+                self.settings = Settings(copyOf: Settings.theSettings)
+                self.rcMap = Receiver.theReceiver.map
+                
+                var rssiChannels = [ "Disabled" ]
+                for i in 0..<Receiver.theReceiver.activeChannels - 4 {
+                    rssiChannels.append(String(format: "AUX %d", i + 1))
+                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    let rcMapString = self.getRcMapString()
+                    switch rcMapString {
+                    case self.DefaultRcMap:
+                        self.channelMapPicker?.selectedIndex = 0
+                    case self.SpektrumRcMap:
+                        self.channelMapPicker?.selectedIndex = 1
+                    default:
+                        var choices = self.RcMapChoices
+                        choices.append(rcMapString)
+                        self.channelMapPicker!.setData(choices)
+                        self.channelMapPicker?.selectedIndex = 2
                     }
+                    self.rssiChannelPicker?.setData(rssiChannels)
+                    
+                    self.rssiChannelPicker?.selectedIndex = self.settings!.rssiChannel < 5 ? 0 : self.settings!.rssiChannel - 4
+                    
+                    self.throttleMid.value = self.settings!.throttleMid
+                    self.throttleExpo.value = self.settings!.throttleExpo
+                    
+                    self.rcRate.value = self.settings!.rcRate
+                    self.rcExpo.value = self.settings!.rcExpo
+                    self.yawRate.value = self.settings!.yawRate
+                    self.yawExpo.value = self.settings!.yawExpo
+                    
+                    self.midRC.value = Double(self.settings!.midRC)
+                    self.rcDeadband.value = Double(self.settings!.rcDeadband)
+                    self.yawDeadband.value = Double(self.settings!.yawDeadband)
+                    
+                    self.interpolationPicker?.selectedIndex = self.settings!.rcInterpolation
+                    self.interpolationInterval.value = Double(self.settings!.rcInterpolationInterval)
+                    self.cell(self.interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
+                    self.reloadDataAnimated(false)
                 })
             } else {
                 self.fetchError()
             }
-        })
+        }
     }
-    
+
     private func fetchError() {
         dispatch_async(dispatch_get_main_queue()) {
             SVProgressHUD.showErrorWithStatus("Communication error")
         }
     }
-    
+
     func saveIfNeeded() {
         // Save settings
         
@@ -167,6 +181,20 @@ class ReceiverTuningViewController: UITableViewController {
         somethingChanged = somethingChanged || settings!.yawRate != yawRate.value
         settings!.yawRate = yawRate.value
         
+        somethingChanged = somethingChanged || settings!.midRC != Int(midRC.value)
+        settings!.midRC = Int(midRC.value)
+        somethingChanged = somethingChanged || settings!.rcDeadband != Int(rcDeadband.value)
+        settings!.rcDeadband = Int(rcDeadband.value)
+        somethingChanged = somethingChanged || settings!.yawDeadband != Int(yawDeadband.value)
+        settings!.yawDeadband = Int(yawDeadband.value)
+
+        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+            somethingChanged = somethingChanged || settings!.rcInterpolation != interpolationPicker!.selectedIndex
+            settings!.rcInterpolation = interpolationPicker!.selectedIndex
+            somethingChanged = somethingChanged || settings!.rcInterpolationInterval != Int(interpolationInterval.value)
+            settings!.rcInterpolationInterval = Int(interpolationInterval.value)
+        }
+        
         if somethingChanged {
             msp.sendRssiConfig(settings!.rssiChannel, callback: { success in
                 if !success {
@@ -180,15 +208,27 @@ class ReceiverTuningViewController: UITableViewController {
                         if !success {
                             self.showSaveFailedError()
                         } else {
-                            self.msp.sendSetRcTuning(self.settings!, callback: { success in
+                            self.msp.sendRxConfig(self.settings!, callback: { success in
                                 if !success {
                                     self.showSaveFailedError()
                                 } else {
-                                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                    self.msp.sendSetRcTuning(self.settings!, callback: { success in
                                         if !success {
                                             self.showSaveFailedError()
                                         } else {
-                                            self.showSuccess("Settings saved")
+                                            self.msp.sendRcDeadband(self.settings!, callback: { success in
+                                                if !success {
+                                                    self.showSaveFailedError()
+                                                } else {
+                                                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                                        if !success {
+                                                            self.showSaveFailedError()
+                                                        } else {
+                                                            self.showSuccess("Settings saved")
+                                                        }
+                                                    })
+                                                }
+                                            })
                                         }
                                     })
                                 }
@@ -209,5 +249,9 @@ class ReceiverTuningViewController: UITableViewController {
         dispatch_async(dispatch_get_main_queue(), {
             SVProgressHUD.showSuccessWithStatus(msg)
         })
+    }
+    @IBAction func interpolationTypeChanged(sender: AnyObject) {
+        self.cell(interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
+        self.reloadDataAnimated(true)
     }
 }

@@ -94,6 +94,7 @@ enum MSP_code : Int {
     case MSP_WP =                 118
     case MSP_BOXIDS =             119
     case MSP_SERVO_CONFIGURATIONS = 120
+    case MSP_RC_DEADBAND =        125
     case MSP_MOTOR_CONFIG =       131
     case MSP_GPS_CONFIG =         132
     case MSP_COMPASS_CONFIG =     133
@@ -112,6 +113,7 @@ enum MSP_code : Int {
     case MSP_SET_HEAD =           211
     case MSP_SET_SERVO_CONFIGURATION = 212
     case MSP_SET_MOTOR =          214
+    case MSP_SET_RC_DEADBAND =    218
     case MSP_SET_RESET_CURR_PID = 219
     case MSP_SET_MOTOR_CONFIG =   222
     case MSP_SET_GPS_CONFIG =     223

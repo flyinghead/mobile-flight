@@ -41,7 +41,11 @@ class FailsafeConfigViewController: ConfigChildViewController {
             field.delegate = self
         }
         
-        cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
+        if Configuration.theConfig.isINav {
+            cells(channelCells, setHidden: true)
+        } else {
+            cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
+        }
     }
     
     @IBAction func failsafeSwitchChanged(sender: AnyObject) {

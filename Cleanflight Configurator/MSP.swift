@@ -149,7 +149,7 @@ class MSPParser {
         let motorData = MotorData.theMotorData
         
         switch code {
-        case .MSP_IDENT:
+        case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.1.8
             if message.count < 4 {
                 return false
             }
@@ -173,6 +173,9 @@ class MSPParser {
                 if message.count >= 15 {
                     // Betaflight
                     config.rateProfile = Int(message[14])
+                    // iNav
+                    // armingFlags (2) (flags for arming blockers: OK_TO_ARM, UAV_NOT_LEVEL, sensors calibrating, system overload, nav safety, compass not calib, acc not calib, hardware failure)
+                    // acc calibration axis flags (1)
                 }
             }
             pingDataListeners()
@@ -309,6 +312,7 @@ class MSPParser {
             }
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0      // cm
             sensorData.variometer = Double(readInt16(message, index: 4)) / 100.0    // cm/s
+            // iNAV baro latest alt (4)
             pingAltitudeListeners()
             
         case .MSP_SONAR:
@@ -351,7 +355,7 @@ class MSPParser {
             for i in 0..<message.count / 3 {
                 settings.pidValues!.append([Double]())
 
-                if config.isBetaflight {
+                if config.isBetaflight {        // iNAV too? CF 2?
                     settings.pidValues![i].append(Double(message[i*3]))
                     settings.pidValues![i].append(Double(message[i*3 + 1]))
                     settings.pidValues![i].append(Double(message[i*3 + 2]))
@@ -493,6 +497,21 @@ class MSPParser {
             if message.count >= 12 {
                 settings.rxMinUsec = readUInt16(message, index: 8)
                 settings.rxMaxUsec = readUInt16(message, index: 10)
+                if message.count >= 14 {
+                    settings.rcInterpolation = Int(message[12])
+                    settings.rcInterpolationInterval = Int(message[13])
+                    if message.count >= 16 {
+                        settings.airmodeActivateThreshold = readUInt16(message, index: 14)
+                        if message.count >= 22 {
+                            settings.rxSpiProtocol = Int(message[16])
+                            settings.rxSpiId = readInt32(message, index: 17)
+                            settings.rxSpiChannelCount = Int(message[21])
+                            if message.count >= 23 {
+                                settings.fpvCamAngleDegrees = Int(message[22])
+                            }
+                        }
+                    }
+                }
             }
             
         case .MSP_FAILSAFE_CONFIG:
@@ -505,6 +524,7 @@ class MSPParser {
             settings.failsafeKillSwitch = message[4] != 0
             settings.failsafeThrottleLowDelay = Double(readUInt16(message, index: 5)) / 10
             settings.failsafeProcedure = Int(message[7])
+            // INAV failsafe_recovery_delay (1)
             
         case .MSP_RXFAIL_CONFIG:
             if message.count % 3 != 0 {
@@ -527,7 +547,7 @@ class MSPParser {
             }
             pingReceiverListeners()
             
-        case .MSP_BF_CONFIG:
+        case .MSP_BF_CONFIG:        // Deprecated, removed in CF 1.14+
             if message.count < 16 {
                 return false
             }
@@ -813,7 +833,18 @@ class MSPParser {
             settings.gpsUbxSbas = Int(message[1])
             settings.gpsAutoConfig = message[2] != 0
             settings.gpsAutoBaud = message[3] != 0
- 
+            
+        case .MSP_RC_DEADBAND:
+            if message.count < 3 {
+                return false
+            }
+            settings.rcDeadband = Int(message[0])
+            settings.yawDeadband = Int(message[1])
+            settings.altHoldDeadband = Int(message[2])
+            if message.count >= 5 {
+                settings.throttle3dDeadband = Int(readInt16(message, index: 3))
+            }
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -850,7 +881,8 @@ class MSPParser {
             .MSP_SET_CURRENT_METER_CONFIG,
             .MSP_SET_MOTOR_CONFIG,
             .MSP_SET_COMPASS_CONFIG,
-            .MSP_SET_GPS_CONFIG:
+            .MSP_SET_GPS_CONFIG,
+            .MSP_SET_RC_DEADBAND:
             break
             
         default:
@@ -1215,6 +1247,14 @@ class MSPParser {
         data.append(UInt8(settings.spektrumSatBind))
         data.appendContentsOf(writeUInt16(settings.rxMinUsec))
         data.appendContentsOf(writeUInt16(settings.rxMaxUsec))
+        data.append(UInt8(settings.rcInterpolation))
+        data.append(UInt8(settings.rcInterpolationInterval))
+        data.appendContentsOf(writeUInt16(settings.airmodeActivateThreshold))
+        data.append(UInt8(settings.rxSpiProtocol))
+        data.appendContentsOf(writeUInt32(settings.rxSpiId))
+        data.append(UInt8(settings.rxSpiChannelCount))
+        data.append(UInt8(settings.fpvCamAngleDegrees))
+
         sendMessage(.MSP_SET_RX_CONFIG, data: data, retry: 2, callback: callback)
     }
     
@@ -1359,6 +1399,15 @@ class MSPParser {
         data.append(UInt8(settings.gpsAutoConfig ? 1 : 0))
         data.append(UInt8(settings.gpsAutoBaud ? 1 : 0))
         sendMessage(.MSP_SET_GPS_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRcDeadband(settings: Settings, callback:((success: Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(settings.rcDeadband))
+        data.append(UInt8(settings.yawDeadband))
+        data.append(UInt8(settings.altHoldDeadband))
+        data.appendContentsOf(writeUInt16(settings.throttle3dDeadband))
+        sendMessage(.MSP_SET_RC_DEADBAND, data: data, retry: 2, callback: callback)
     }
 
     // Betaflight

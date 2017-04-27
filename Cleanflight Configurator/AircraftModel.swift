@@ -369,9 +369,11 @@ struct PortConfig : DictionaryCoding {
 */
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "serialRxType", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "yawRate",
-        "rollSuperRate", "pitchSuperRate", "yawSuperRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "maxCheck", "midRC", "minCheck", "spektrumSatBind", "rxMinUsec",
-        "rxMaxUsec", "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "yawRate",
+        "rollSuperRate", "pitchSuperRate", "yawSuperRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "serialRxType", "maxCheck", "midRC", "minCheck",
+        "spektrumSatBind",
+        "rxMinUsec", "rxMaxUsec", "rcInterpolation", "rcInterpolationInterval", "airmodeActivateThreshold", "rxSpiProtocol", "rxSpiId", "rxSpiChannelCount", "fpvCamAngleDegrees",
+        "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
         "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
@@ -384,10 +386,11 @@ class Settings : AutoCoded {
     var autoDisarmDelay = 5       // sec
     var disarmKillSwitch = false
     
-    // MSP_BF_CONFIG / MSP_SET_BF_CONFIG
+    // MSP_MIXER_CONFIG
     var mixerConfiguration = 3              // Quad X by default
+    
+    // MSP_FEATURE
     var features = BaseFlightFeature.None
-    var serialRxType = 0
     
     // MSP_BOARD_ALIGNMENT
     var boardAlignRoll = 0
@@ -432,13 +435,21 @@ class Settings : AutoCoded {
     var portConfigs: [PortConfig]?
     
     // MSP_RX_CONFIG / MSP_SET_RX_CONFIG
-    // serialRxType
+    var serialRxType = 0
     var maxCheck = 1100
     var midRC = 1500
     var minCheck = 1900
     var spektrumSatBind = 0
     var rxMinUsec = 885
     var rxMaxUsec = 2115
+    // betaflight
+    var rcInterpolation = 0
+    var rcInterpolationInterval = 0
+    var airmodeActivateThreshold = 0
+    var rxSpiProtocol = 0
+    var rxSpiId = 0
+    var rxSpiChannelCount = 0
+    var fpvCamAngleDegrees = 0
     
     // MSP_FAILSAFE_CONFIG / MSP_SET_FAILSAFE_CONFIG
     var failsafeDelay = 0.0         // Guard time for failsafe activation after signal loss (0 - 20 secs)
@@ -528,6 +539,12 @@ class Settings : AutoCoded {
     var gpsAutoConfig = false
     var gpsAutoBaud = false
 
+    // MSP_RC_DEADBAND
+    var rcDeadband = 0
+    var yawDeadband = 0
+    var altHoldDeadband = 0
+    var throttle3dDeadband = 0
+    
     private override init() {
         super.init()
     }
@@ -573,7 +590,14 @@ class Settings : AutoCoded {
         self.spektrumSatBind = copyOf.spektrumSatBind
         self.rxMinUsec = copyOf.rxMinUsec
         self.rxMaxUsec = copyOf.rxMaxUsec
-        
+        self.rcInterpolation = copyOf.rcInterpolation
+        self.rcInterpolationInterval = copyOf.rcInterpolationInterval
+        self.airmodeActivateThreshold = copyOf.airmodeActivateThreshold
+        self.rxSpiProtocol = copyOf.rxSpiProtocol
+        self.rxSpiId = copyOf.rxSpiId
+        self.rxSpiChannelCount = copyOf.rxSpiChannelCount
+        self.fpvCamAngleDegrees = copyOf.fpvCamAngleDegrees
+
         self.failsafeDelay = copyOf.failsafeDelay
         self.failsafeOffDelay = copyOf.failsafeOffDelay
         self.failsafeThrottleLowDelay = copyOf.failsafeThrottleLowDelay
@@ -644,6 +668,11 @@ class Settings : AutoCoded {
         self.gpsAutoConfig = copyOf.gpsAutoConfig
         self.gpsAutoBaud = copyOf.gpsAutoBaud
         
+        self.rcDeadband = copyOf.rcDeadband
+        self.yawDeadband = copyOf.yawDeadband
+        self.altHoldDeadband = copyOf.altHoldDeadband
+        self.throttle3dDeadband = copyOf.throttle3dDeadband
+
         super.init()
     }
     
@@ -957,6 +986,10 @@ class Configuration : AutoCoded {
     
     var isBetaflight: Bool {
         return fcIdentifier == "BTFL"
+    }
+    
+    var isINav: Bool {
+        return fcIdentifier == "INAV"
     }
 }
 

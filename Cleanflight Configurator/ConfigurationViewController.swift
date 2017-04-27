@@ -18,7 +18,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var disarmMotorsSwitch: UISwitch!
     @IBOutlet weak var minimumCommandField: ThrottleField!
     @IBOutlet weak var minimumThrottleField: ThrottleField!
-    @IBOutlet weak var midThrottleField: ThrottleField!
     @IBOutlet weak var maximumThrottleFIeld: ThrottleField!
     @IBOutlet weak var boardRollField: NumberField!
     @IBOutlet weak var boardPitchField: NumberField!
@@ -138,7 +137,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
         
     func fetchFailsafeConfig() {
-        chainMspCalls(msp, calls: [.MSP_FAILSAFE_CONFIG, .MSP_RXFAIL_CONFIG]) { success in
+        var mspCalls: [MSP_code] = [.MSP_FAILSAFE_CONFIG]
+        if !Configuration.theConfig.isINav {
+            mspCalls.append(.MSP_RXFAIL_CONFIG)
+        }
+        chainMspCalls(msp, calls: mspCalls) { success in
             if success {
                 self.fetchBetaflightConfig()
             } else {
@@ -206,7 +209,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             
             minimumCommandField.value = Double(newSettings!.minCommand ?? 0)
             minimumThrottleField.value = Double(newSettings!.minThrottle ?? 0)
-            midThrottleField.value = Double(newSettings!.midRC ?? 0)
             maximumThrottleFIeld.value = Double(newSettings!.maxThrottle ?? 0)
             
             setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
@@ -273,7 +275,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         newSettings!.minCommand = Int(minimumCommandField.value)
         newSettings!.minThrottle = Int(minimumThrottleField.value)
-        newSettings!.midRC = Int(midThrottleField.value)
         newSettings!.maxThrottle = Int(maximumThrottleFIeld.value)
 
         newSettings!.boardAlignPitch = Int(boardPitchField.value)
@@ -420,13 +421,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             if success {
                 self.msp.sendFailsafeConfig(self.newSettings!, callback: { success in
                     if success {
-                        self.msp.sendRxFailConfig(self.newSettings!, callback: { success in
-                            if success {
-                                self.saveBetaflightFeatures()
-                            } else {
-                                self.saveConfigFailed()
-                            }
-                        })
+                        self.saveINavFeatures()
                     } else {
                         self.saveConfigFailed()
                     }
@@ -437,6 +432,20 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         })
     }
 
+    private func saveINavFeatures() {
+        if isINav {
+            saveBetaflightFeatures()
+        } else {
+            self.msp.sendRxFailConfig(self.newSettings!) { success in
+                if success {
+                    self.saveBetaflightFeatures()
+                } else {
+                    self.saveConfigFailed()
+                }
+            }
+        }
+    }
+    
     private func saveBetaflightFeatures() {
         if isBetaflight {
             self.msp.sendPidAdvancedConfig(self.newSettings!, callback: { success in
@@ -509,5 +518,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private var isBetaflight: Bool {
         return Configuration.theConfig.isBetaflight
+    }
+    
+    private var isINav: Bool {
+        return Configuration.theConfig.isINav
     }
 }
