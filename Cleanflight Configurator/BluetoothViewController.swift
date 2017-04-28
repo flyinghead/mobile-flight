@@ -157,7 +157,7 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
             selectedPeripheral = btPeripherals[indexPath.row]
             let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
             SVProgressHUD.showWithStatus(msg, maskType: .Black)
-            timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: nil, repeats: false)
+            timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(BluetoothViewController.connectionTimedOut(_:)), userInfo: nil, repeats: false)
             btManager.connect(selectedPeripheral!)
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             
@@ -186,7 +186,7 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
             
             if (refreshBluetoothButton == nil) {
                 refreshBluetoothButton = UIButton(type: .System)
-                refreshBluetoothButton!.addTarget(self, action: "refreshBluetooth", forControlEvents: .TouchDown)
+                refreshBluetoothButton!.addTarget(self, action: #selector(BluetoothViewController.refreshBluetooth), forControlEvents: .TouchDown)
                 refreshBluetoothButton!.setTitle("Refresh", forState: .Normal)
                 refreshBluetoothButton!.setTitle("Refreshing...", forState: .Disabled)
                 refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, screenRect.size.width, 44.0)

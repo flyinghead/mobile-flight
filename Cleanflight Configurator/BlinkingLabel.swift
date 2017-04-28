@@ -39,7 +39,7 @@ class BlinkingLabel: UILabel {
     
     private func createTimer() {
         savedAlpha = self.alpha
-        timer = NSTimer.scheduledTimerWithTimeInterval(blinkingPeriod, target: self, selector: "timerDidFire", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(blinkingPeriod, target: self, selector: #selector(BlinkingLabel.timerDidFire), userInfo: nil, repeats: true)
     }
     
     override func didMoveToSuperview() {

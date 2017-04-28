@@ -76,7 +76,7 @@ class ReplayComm : NSObject, CommChannel {
             })
             return
         }
-        _ = NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: "processData:", userInfo: nil, repeats: false)
+        _ = NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: #selector(ReplayComm.processData(_:)), userInfo: nil, repeats: false)
     }
     
     func processData(timer: NSTimer?) {

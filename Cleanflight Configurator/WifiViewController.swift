@@ -49,7 +49,7 @@ class WifiViewController: UIViewController {
         let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
         
-        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "connectionTimedOut:", userInfo: tcpComm, repeats: false)
+        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(WifiViewController.connectionTimedOut(_:)), userInfo: tcpComm, repeats: false)
 
         tcpComm.connect({ success in
             timeOutTimer.invalidate()

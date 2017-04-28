@@ -27,7 +27,7 @@ class ServoConfigViewController: UITableViewController {
 
         // FIXME Get MSP_RC to get number of RC channels
         var channels = ["(None)"]
-        for var i = 0 ; i < 12 ; i++ {
+        for i in 0 ..< 12  {
             channels.append(ReceiverViewController.channelLabel(i))
         }
         rcChannelPicker = DownPicker(textField: rcChannelField, withData: channels)

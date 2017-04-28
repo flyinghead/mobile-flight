@@ -55,7 +55,7 @@ class RCStick: UIView {
         super.layoutSubviews()
         
         if gestureRecognizers?.isEmpty ?? true {
-            let panRecognizer = UIPanGestureRecognizer(target: self, action: "panAction:")
+            let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(RCStick.panAction(_:)))
             panRecognizer.minimumNumberOfTouches = 1
             panRecognizer.maximumNumberOfTouches = 1
             addGestureRecognizer(panRecognizer)

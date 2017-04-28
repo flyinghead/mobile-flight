@@ -102,7 +102,7 @@ class DataflashController: UIViewController {
             self.msp.sendMessage(.MSP_DATAFLASH_ERASE, data: nil, retry: 0, callback: { success in
                 dispatch_async(dispatch_get_main_queue(), {
                     if success {
-                        NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "eraseTimer:", userInfo: nil, repeats: true)
+                        NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(DataflashController.eraseTimer(_:)), userInfo: nil, repeats: true)
                     } else {
                         SVProgressHUD.showErrorWithStatus("Erase failed");
                         self.updateSummary()

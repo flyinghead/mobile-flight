@@ -23,7 +23,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
         
         if (slowTimer == nil) {
             // Cleanflight configurator uses 75ms interval. Cleanflight firmware polls every second with ublox GPS.
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "slowTimerDidFire:", userInfo: nil, repeats: true)
+            slowTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(GPSViewController.slowTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
     }
     

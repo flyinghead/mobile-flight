@@ -76,7 +76,7 @@ class PIDViewController: StaticDataTableViewController {
         super.viewDidLoad()
 
         profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
-        profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
+        profilePicker?.addTarget(self, action: #selector(PIDViewController.profileChanged(_:)), forControlEvents: .ValueChanged)
         profilePicker?.setPlaceholder("")           // To keep width down
         
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])

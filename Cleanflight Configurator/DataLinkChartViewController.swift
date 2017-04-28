@@ -31,7 +31,6 @@ class DataLinkChartViewController: UIViewController {
         chartView.descriptionText = ""
         
         let leftAxis = chartView.leftAxis
-        leftAxis.startAtZeroEnabled = false
         
         leftAxis.axisMaxValue = 500
         leftAxis.axisMinValue = 0
@@ -64,7 +63,7 @@ class DataLinkChartViewController: UIViewController {
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.drawCubicEnabled = false
+        dataSet.mode = .CubicBezier
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)

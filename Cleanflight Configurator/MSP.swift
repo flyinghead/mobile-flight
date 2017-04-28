@@ -1139,7 +1139,7 @@ class MSPParser {
     
     func sendPid(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        for (idx,pid) in settings.pidValues!.enumerate() {
+        for pid in settings.pidValues! {
             let p = pid[0]
             let i = pid[1]
             let d = pid[2]

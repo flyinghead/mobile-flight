@@ -14,7 +14,7 @@ class ServosViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refreshServoConfig", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(ServosViewController.refreshServoConfig), forControlEvents: .ValueChanged)
     }
 
     @objc

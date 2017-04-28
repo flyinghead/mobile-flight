@@ -183,7 +183,7 @@ class ReplayViewController: UITableViewController {
                     if detailedRow == indexPath.row {
                         detailedRow = -1
                     } else if detailedRow > indexPath.row {
-                        detailedRow--
+                        detailedRow -= 1
                         tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: detailedRow, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Middle)
                     }
                 } catch let error as NSError {

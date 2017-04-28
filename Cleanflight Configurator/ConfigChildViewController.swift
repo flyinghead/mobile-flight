@@ -33,8 +33,8 @@ class ConfigChildViewController: StaticDataTableViewController, UITextFieldDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConfigChildViewController.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConfigChildViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
 
     override func viewWillDisappear(animated: Bool) {

@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Cleanflight Configurator/MSP.swift"
-            timestampString = "514909389.051496"
+            filePath = "Cleanflight Configurator/CalibrationViewController.swift"
+            timestampString = "514984696.202446"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1353"
-            endingLineNumber = "1353"
-            landmarkName = "sendCurrentMeterConfig(_:callback:)"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
+            landmarkName = "metarTimerFired(timer:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -56,7 +56,7 @@ class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommand
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.drawCubicEnabled = false
+        dataSet.mode = .CubicBezier
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)

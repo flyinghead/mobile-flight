@@ -81,14 +81,14 @@ class NumberField: UITextField {
     
     func customInit() {
         self.keyboardType = .DecimalPad
-        self.addTarget(self, action: "fieldChanged", forControlEvents: .AllEditingEvents)
-        self.addTarget(self, action: "fieldEditingEnded", forControlEvents: [.EditingDidEnd, .EditingDidEndOnExit])
+        self.addTarget(self, action: #selector(NumberField.fieldChanged), forControlEvents: .AllEditingEvents)
+        self.addTarget(self, action: #selector(NumberField.fieldEditingEnded), forControlEvents: [.EditingDidEnd, .EditingDidEndOnExit])
         
-        stepper.addTarget(self, action: "stepperChanged", forControlEvents: .ValueChanged)
+        stepper.addTarget(self, action: #selector(NumberField.stepperChanged), forControlEvents: .ValueChanged)
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: stepper),
-            UIBarButtonItem(title: "Done", style: .Done, target: self, action: "doneWithNumberPad")
+            UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(NumberField.doneWithNumberPad))
         ]
         toolbar.sizeToFit()
         self.inputAccessoryView = toolbar
@@ -150,7 +150,7 @@ class ThrottleField : NumberField {
         super.customInit()
         
         // Current throttle
-        let current = UIBarButtonItem(title: "Current", style: .Plain, target: self, action: "currentThrottle")
+        let current = UIBarButtonItem(title: "Current", style: .Plain, target: self, action: #selector(ThrottleField.currentThrottle))
         toolbar.items?.insert(current, atIndex: 1)
         toolbar.sizeToFit()
     }

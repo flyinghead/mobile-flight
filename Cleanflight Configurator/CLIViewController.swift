@@ -39,8 +39,8 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CLIViewController.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CLIViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(200) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
             self.msp.cliViewController = self
@@ -131,12 +131,14 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
             historyIndex = commandHistory.count - 1
         }
         if historyIndex > 0 {
-            commandField.text! = commandHistory[--historyIndex]
+            historyIndex -= 1
+            commandField.text! = commandHistory[historyIndex]
         }
     }
     @IBAction func historyDownAction(sender: AnyObject) {
         if historyIndex != -1 && historyIndex < commandHistory.count - 1 {
-            commandField.text! = commandHistory[++historyIndex]
+            historyIndex += 1
+            commandField.text! = commandHistory[historyIndex]
         }
     }
 }

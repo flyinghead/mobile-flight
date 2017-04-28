@@ -90,7 +90,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
             _connected = false
             dispatch_async(dispatch_get_main_queue(), {
                 VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection:", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BluetoothComm.userCancelledReconnection(_:)), name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                 SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
             })
             btManager.connect(peripheral)

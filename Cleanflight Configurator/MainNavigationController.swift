@@ -39,7 +39,7 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         if let tabOrder = NSUserDefaults.standardUserDefaults().objectForKey("MainTabBarOrder") as? [Int] {
             if tabOrder.count == viewControllers?.count {
                 var tagIndexes = [Int : Int]()
-                for var i = 0; i < viewControllers!.count; i++ {
+                for i in 0 ..< viewControllers!.count {
                     tagIndexes[viewControllers![i].tabBarItem.tag] = i
                 }
                 var newOrder = [UIViewController]()

@@ -47,7 +47,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
         
         startReachabilityNotifier()
         
-        thread = NSThread(target: self, selector: "threadRun", object: nil)
+        thread = NSThread(target: self, selector: #selector(TCPComm.threadRun), object: nil)
         thread.start()
     }
     
@@ -211,7 +211,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
                     // Connection was lost. Try to reconnect.
                     dispatch_async(dispatch_get_main_queue(), {
                         VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCancelledReconnection:", name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TCPComm.userCancelledReconnection(_:)), name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
                         SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
                     })
                     tryToReconnect()
@@ -232,7 +232,7 @@ class TCPComm : NSObject, NSStreamDelegate, CommChannel {
                     SVProgressHUD.dismiss()
                 }
                 else {
-                    NSTimer.scheduledTimerWithTimeInterval(0.5, target:self, selector:"tryToReconnect", userInfo: nil, repeats: false)
+                    NSTimer.scheduledTimerWithTimeInterval(0.5, target:self, selector:#selector(TCPComm.tryToReconnect), userInfo: nil, repeats: false)
                 }
             })
         }

@@ -22,7 +22,6 @@ class BarometerViewController: BaseSensorViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis
-        leftAxis.startAtZeroEnabled = false
         leftAxis.setLabelCount(5, force: false)
 
         if selectedUnitSystem() != .Metric {

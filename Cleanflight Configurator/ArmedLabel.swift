@@ -20,7 +20,7 @@ class ArmedLabel: BlinkingLabel {
                     text = "ARMED"
                     blinks = true
                     textColor = UIColor.redColor()
-                    NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "stopBlinking:", userInfo: nil, repeats: false)
+                    NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ArmedLabel.stopBlinking(_:)), userInfo: nil, repeats: false)
                 }
             }
         }

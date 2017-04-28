@@ -177,17 +177,17 @@ class RangeSlider: UIControl {
         return lowerThumbLayer.highlighted || upperThumbLayer.highlighted
     }
 
-    func boundValue(var value: Double, toLowerValue lowerValue: Double, upperValue: Double) -> Double {
-        value = min(max(value, lowerValue), upperValue)
-        if interval != 0 && value != maximumValue {
-            let lowerMark = Double(Int64((value - minimumValue) / interval)) * interval + minimumValue
-            if value - lowerMark >= interval / 2 {
-                value = lowerMark + interval
+    func boundValue(value: Double, toLowerValue lowerValue: Double, upperValue: Double) -> Double {
+        var boundValue = min(max(value, lowerValue), upperValue)
+        if interval != 0 && boundValue != maximumValue {
+            let lowerMark = Double(Int64((boundValue - minimumValue) / interval)) * interval + minimumValue
+            if boundValue - lowerMark >= interval / 2 {
+                boundValue = lowerMark + interval
             } else {
-                value = lowerMark
+                boundValue = lowerMark
             }
         }
-        return value
+        return boundValue
     }
 
     override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {

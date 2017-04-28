@@ -178,7 +178,7 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
                 break
             }
             commonPrefix.append(char!)
-            index++
+            index += 1
         }
         
         return commonPrefix
@@ -191,7 +191,7 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         if length != refChars.count {
             return string
         }
-        for var index = 0; index < length; index++ {
+        for index in 0 ..< length {
             let charIndex = chars.startIndex.advancedBy(index)
             if chars[charIndex] != refChars[refChars.startIndex.advancedBy(index)] {
                 return string.substringFromIndex(charIndex)

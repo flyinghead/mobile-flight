@@ -943,7 +943,8 @@ class Configuration : AutoCoded {
         }
         let currentVersion = apiVersion!.componentsSeparatedByString(".")
         let refVersion = version.componentsSeparatedByString(".")
-        for var i = 0; ; i++ {
+        var i = 0
+        while true {
             if i >= currentVersion.count {
                 if i >= refVersion.count {
                     // Same version
@@ -963,6 +964,7 @@ class Configuration : AutoCoded {
             if curVersionPart < refVersionPart {
                 return false
             }
+            i += 1
         }
     }
     

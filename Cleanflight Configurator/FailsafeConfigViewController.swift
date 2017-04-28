@@ -78,18 +78,20 @@ class FailsafeConfigViewController: ConfigChildViewController {
         settings.failsafeProcedure = landCell.accessoryType == .Checkmark ? 0 : 1
         settings.failsafeOffDelay = motorsOffDelayField.value
         
-        for var i = 0; i < settings.rxFailMode?.count; i++ {
-            if channelsSettings[i].selectedSegmentIndex == 0 {
-                if i >= 4 {
-                    settings.rxFailMode![i] = 2     // Set
+        if settings.rxFailMode != nil {
+            for i in 0 ..< settings.rxFailMode!.count {
+                if channelsSettings[i].selectedSegmentIndex == 0 {
+                    if i >= 4 {
+                        settings.rxFailMode![i] = 2     // Set
+                    } else {
+                        settings.rxFailMode![i] = 0     // Auto
+                    }
                 } else {
-                    settings.rxFailMode![i] = 0     // Auto
+                    settings.rxFailMode![i] = 1     // Hold
                 }
-            } else {
-                settings.rxFailMode![i] = 1     // Hold
-            }
-            if i >= 4 {
-                settings.rxFailValue![i] = Int(auxChannelsValueFields[i - 4].value)
+                if i >= 4 {
+                    settings.rxFailValue![i] = Int(auxChannelsValueFields[i - 4].value)
+                }
             }
         }
         configViewController?.refreshUI()
@@ -117,16 +119,18 @@ class FailsafeConfigViewController: ConfigChildViewController {
             dropCell.accessoryType = .Checkmark
             cells(landCells, setHidden: true)
         }
-        for var i = 0; i < settings.rxFailMode?.count; i++ {
-            channelsSettings[i].selectedSegmentIndex = settings.rxFailMode![i] % 2
-            if i >= 4 {
-                auxChannelsValueFields[i - 4].value = Double(settings.rxFailValue![i])
-                if channelsSettings[i].selectedSegmentIndex != 0 {
-                    auxChannelsValueFields[i - 4].enabled = false
+        if settings.rxFailMode != nil {
+            for i in 0 ..< settings.rxFailMode!.count {
+                channelsSettings[i].selectedSegmentIndex = settings.rxFailMode![i] % 2
+                if i >= 4 {
+                    auxChannelsValueFields[i - 4].value = Double(settings.rxFailValue![i])
+                    if channelsSettings[i].selectedSegmentIndex != 0 {
+                        auxChannelsValueFields[i - 4].enabled = false
+                    }
                 }
             }
         }
-
+        
         failsafeSwitchChanged(self)
     }
 

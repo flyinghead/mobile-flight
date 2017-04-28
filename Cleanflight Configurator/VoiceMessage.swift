@@ -28,7 +28,7 @@ class VoiceAlert: NSObject {
     }
     
     func startSpeaking() {
-        timer = NSTimer.scheduledTimerWithTimeInterval(repeatInterval, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(repeatInterval, target: self, selector: #selector(VoiceAlert.timerDidFire(_:)), userInfo: nil, repeats: true)
         timerDidFire(timer!)
     }
     

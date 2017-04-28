@@ -74,7 +74,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     private func startScanningIfNeeded() {
         if (scanningRequested) {
             scanningRequested = false
-            NSTimer.scheduledTimerWithTimeInterval(scanningDuration, target:self, selector:"scanTimer", userInfo: nil, repeats: false)
+            NSTimer.scheduledTimerWithTimeInterval(scanningDuration, target:self, selector:#selector(BluetoothManager.scanTimer), userInfo: nil, repeats: false)
             
             manager.scanForPeripheralsWithServices(serviceUUIDs, options: nil)
         }
@@ -264,13 +264,15 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         
         //NSLog("Writing %@", beautifyData(data))
         let nsdata = NSData(bytes: data, length: data.count)
-        for (var i = 0; i < nsdata.length; i += 20) {
+        var i = 0
+        while i < nsdata.length {
             let datarange = nsdata.subdataWithRange(NSRange(location: i, length: min(nsdata.length - i, 20)))
             if characteristic.properties.contains(.WriteWithoutResponse) {
                 activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithoutResponse)
             } else {
                 activePeripheral!.writeValue(datarange, forCharacteristic: characteristic, type: .WithResponse)
             }
+            i += 20
         }
     }
     

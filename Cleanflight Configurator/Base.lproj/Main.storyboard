@@ -882,7 +882,7 @@
                                                             <real key="value" value="255"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="increment">
-                                                            <real key="value" value="0.0"/>
+                                                            <real key="value" value="1"/>
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </textField>
@@ -2307,7 +2307,7 @@
                                                             <real key="value" value="500"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="increment">
-                                                            <real key="value" value="0.0"/>
+                                                            <real key="value" value="1"/>
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </textField>
@@ -2442,8 +2442,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WCb-MN-AWA" userLabel="receiverlChannel" customClass="ReceiverChannel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                            <rect key="frame" x="16" y="3" width="572" height="37"/>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WCb-MN-AWA" userLabel="receiverlChannel" customClass="ReceiverChannel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <rect key="frame" x="16" y="3" width="292" height="37"/>
                                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="string" keyPath="label" value="A"/>
@@ -3479,8 +3479,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" horizontalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wCO-H7-Uv4" userLabel="CalAccView">
-                                                    <rect key="frame" x="16" y="12" width="160" height="46"/>
+                                                <view contentMode="scaleToFill" horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wCO-H7-Uv4" userLabel="CalAccView">
+                                                    <rect key="frame" x="16" y="12" width="140" height="46"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fm1-gC-p8Q">
                                                             <rect key="frame" x="4" y="3" width="40" height="40"/>
@@ -3522,11 +3522,11 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </view>
-                                                <view contentMode="scaleToFill" horizontalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uK8-lj-MZe" userLabel="CalMagView">
-                                                    <rect key="frame" x="184" y="12" width="160" height="46"/>
+                                                <view contentMode="scaleToFill" horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uK8-lj-MZe" userLabel="CalMagView">
+                                                    <rect key="frame" x="164" y="12" width="140" height="46"/>
                                                     <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="251" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="9Vk-bL-uFl">
-                                                            <rect key="frame" x="44" y="8" width="100" height="30"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="251" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="9Vk-bL-uFl">
+                                                            <rect key="frame" x="44" y="8" width="64" height="30"/>
                                                             <state key="normal" title="Compass"/>
                                                             <connections>
                                                                 <action selector="calibrateMagnetometer:" destination="SPb-lS-QeV" eventType="touchUpInside" id="jWs-SF-Pys"/>
@@ -3855,8 +3855,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3LN-OG-GnP" customClass="RangeSlider" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                            <rect key="frame" x="109" y="12" width="483" height="30"/>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3LN-OG-GnP" customClass="RangeSlider" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <rect key="frame" x="109" y="12" width="203" height="29"/>
                                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
@@ -3882,8 +3882,8 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddE-Ht-SDl">
-                                            <rect key="frame" x="558" y="46" width="35" height="17"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ddE-Ht-SDl">
+                                            <rect key="frame" x="277" y="45" width="35" height="17"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -3947,8 +3947,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FnV-6e-GtS">
-                                <rect key="frame" x="487" y="129" width="93" height="30"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FnV-6e-GtS">
+                                <rect key="frame" x="211" y="129" width="93" height="30"/>
                                 <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
                                 <state key="normal" title="Download"/>
                                 <userDefinedRuntimeAttributes>
@@ -3963,8 +3963,8 @@
                                     <action selector="downloadAction:" destination="h5o-Xs-W7R" eventType="touchUpInside" id="tS7-P1-CEQ"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V0G-ar-bId" customClass="LinearGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                <rect key="frame" x="20" y="57" width="560" height="30"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V0G-ar-bId" customClass="LinearGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                <rect key="frame" x="16" y="57" width="288" height="30"/>
                                 <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="xGj-MD-Qdo"/>
@@ -3988,20 +3988,20 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="printValue" value="NO"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Dataflash Contents" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Oa-cl-ymJ">
-                                <rect key="frame" x="20" y="28" width="147" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dataflash Contents" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Oa-cl-ymJ">
+                                <rect key="frame" x="16" y="28" width="147" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Free: 2.8MB" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aBc-kO-QrH">
-                                <rect key="frame" x="497" y="95" width="83" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Free: 2.8MB" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aBc-kO-QrH">
+                                <rect key="frame" x="221" y="95" width="83" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RAT-qu-3hH">
-                                <rect key="frame" x="20" y="129" width="93" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RAT-qu-3hH">
+                                <rect key="frame" x="16" y="129" width="93" height="30"/>
                                 <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
                                 <state key="normal" title="Erase"/>
                                 <userDefinedRuntimeAttributes>
@@ -4016,8 +4016,8 @@
                                     <action selector="eraseAction:" destination="h5o-Xs-W7R" eventType="touchUpInside" id="W6i-Rf-xhU"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Used: 742kb" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cgc-1F-rhM">
-                                <rect key="frame" x="20" y="95" width="87" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Used: 742kb" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cgc-1F-rhM">
+                                <rect key="frame" x="16" y="95" width="87" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -4068,8 +4068,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" editable="NO" text="Unknown command, try 'help'" translatesAutoresizingMaskIntoConstraints="NO" id="ans-cn-BCm">
-                                <rect key="frame" x="0.0" y="64" width="600" height="517"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Unknown command, try 'help'" translatesAutoresizingMaskIntoConstraints="NO" id="ans-cn-BCm">
+                                <rect key="frame" x="0.0" y="64" width="320" height="485"/>
                                 <color key="backgroundColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="tintColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -4081,11 +4081,11 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </textView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iz6-Sm-7e0" userLabel="Command View">
-                                <rect key="frame" x="0.0" y="581" width="600" height="19"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iz6-Sm-7e0" userLabel="Command View">
+                                <rect key="frame" x="0.0" y="549" width="320" height="19"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type a command, or 'help'..." minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="yGy-bm-Epr" customClass="InsetTextField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="526" height="19"/>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type a command, or 'help'..." minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="yGy-bm-Epr" customClass="InsetTextField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="19"/>
                                         <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="send" enablesReturnKeyAutomatically="YES"/>
@@ -4093,8 +4093,8 @@
                                             <action selector="sendAction:" destination="B4e-8j-xLV" eventType="editingDidEndOnExit" id="gfA-G4-0yA"/>
                                         </connections>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w60-ia-5u3" userLabel="Up">
-                                        <rect key="frame" x="571" y="-5" width="29" height="29"/>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w60-ia-5u3" userLabel="Up">
+                                        <rect key="frame" x="291" y="-5" width="29" height="29"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="w60-ia-5u3" secondAttribute="height" multiplier="1:1" id="Wt6-Gt-S1q"/>
                                         </constraints>
@@ -4107,8 +4107,8 @@
                                             <action selector="historyUpAction:" destination="B4e-8j-xLV" eventType="touchUpInside" id="TI6-N5-PpO"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dn7-yL-ZKc" userLabel="Down">
-                                        <rect key="frame" x="534" y="-5" width="29" height="29"/>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dn7-yL-ZKc" userLabel="Down">
+                                        <rect key="frame" x="254" y="-5" width="29" height="29"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Dn7-yL-ZKc" secondAttribute="height" multiplier="1:1" id="WNb-lT-qpe"/>
                                         </constraints>
@@ -4140,8 +4140,8 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TKe-4y-YX5" userLabel="Separator">
-                                <rect key="frame" x="0.0" y="581" width="600" height="1"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TKe-4y-YX5" userLabel="Separator">
+                                <rect key="frame" x="0.0" y="549" width="320" height="1"/>
                                 <color key="backgroundColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="8nC-us-N8q"/>
@@ -4231,8 +4231,8 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5US-IR-jWx" customClass="LinearGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                            <rect key="frame" x="492" y="11" width="100" height="20"/>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5US-IR-jWx" customClass="LinearGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <rect key="frame" x="212" y="11" width="100" height="20"/>
                                             <color key="backgroundColor" red="0.90196079015731812" green="0.90196079015731812" blue="0.90196079015731812" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="100" id="C4K-1u-kNx"/>
