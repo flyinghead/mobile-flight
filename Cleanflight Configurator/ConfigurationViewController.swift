@@ -50,7 +50,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var osdSwitch: UISwitch!
     @IBOutlet weak var vtxSwitch: UISwitch!
     @IBOutlet weak var escSensor: UISwitch!
-    @IBOutlet weak var pitotTubeCell: UITableViewCell!
     
     var gyroUpdateFreqPicker: MyDownPicker?
     var pidLoopFreqPicker: MyDownPicker?
@@ -93,8 +92,13 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 KHz", "1 KHz", "0.67 KHz", "0.5 KHz", "0.4 KHz", "0.33 KHz", "0.29 KHz", "0.25 KHz" ])
         pidLoopFreqPicker!.setPlaceholder("")
 
-        if !Configuration.theConfig.isINav {
-            cell(pitotTubeCell, setHidden: true)
+        if Configuration.theConfig.isINav {
+            boardRollField.increment = 0.1
+            boardRollField.decimalDigits = 1
+            boardPitchField.increment = 0.1
+            boardPitchField.decimalDigits = 1
+            boardYawField.increment = 0.1
+            boardYawField.decimalDigits = 1
         }
     }
 
@@ -205,9 +209,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
             mixerTypeChanged(self)
             
-            setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
-            setBoardAlignmentFieldValue(boardRollField, value: Double(newSettings!.boardAlignRoll ?? 0))
-            setBoardAlignmentFieldValue(boardYawField, value: Double(newSettings!.boardAlignYaw ?? 0))
+            boardPitchField.value = Double(isINav ? newSettings!.boardAlignPitch / 10 : newSettings!.boardAlignPitch)
+            boardRollField.value = Double(isINav ? newSettings!.boardAlignRoll / 10 : newSettings!.boardAlignRoll)
+            boardYawField.value = Double(isINav ? newSettings!.boardAlignYaw / 10 : newSettings!.boardAlignYaw)
 
             rssiSwitch.on = newSettings!.features.contains(BaseFlightFeature.RssiAdc)
             inFlightCalSwitch.on = newSettings!.features.contains(BaseFlightFeature.InflightCal)
@@ -252,26 +256,14 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
     }
     
-    // iNav uses decidegrees instead of degrees for board alignment values. To avoid saving truncated values saving the config, we remove
-    // the min or max limits to not enforce them. Hacky but should work.
-    private func setBoardAlignmentFieldValue(field: NumberField, value: Double) {
-        if value < field.minimumValue {
-            field.minimumValue = value
-        }
-        if value > field.maximumValue {
-            field.maximumValue = value
-        }
-        field.value = value
-    }
-    
     @IBAction func saveAction(sender: AnyObject) {
         if mixerTypePicker!.selectedIndex >= 0 {
             newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
         }
 
-        newSettings!.boardAlignPitch = Int(boardPitchField.value)
-        newSettings!.boardAlignRoll = Int(boardRollField.value)
-        newSettings!.boardAlignYaw = Int(boardYawField.value)
+        newSettings!.boardAlignPitch = Int(round(isINav ? boardPitchField.value * 10 : boardPitchField.value))
+        newSettings!.boardAlignRoll = Int(round(isINav ? boardRollField.value * 10 : boardRollField.value))
+        newSettings!.boardAlignYaw = Int(round(isINav ? boardYawField.value * 10 : boardYawField.value))
         
         saveFeatureSwitchValue(rssiSwitch, feature: .RssiAdc)
         saveFeatureSwitchValue(inFlightCalSwitch, feature: .InflightCal)

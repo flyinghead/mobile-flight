@@ -1883,7 +1883,6 @@
                         <outlet property="mixerTypeView" destination="6XH-Z9-nfU" id="ibi-rq-ewC"/>
                         <outlet property="osdSwitch" destination="haM-3i-geR" id="aHH-C6-ZdO"/>
                         <outlet property="pidLoopFreqField" destination="SUc-kx-yYz" id="JYZ-Ns-fZX"/>
-                        <outlet property="pitotTubeCell" destination="VCg-ch-nUs" id="5es-8U-CgR"/>
                         <outlet property="receiverTypeField" destination="nXs-Zb-FPh" id="6xk-h4-DQh"/>
                         <outlet property="rssiSwitch" destination="wfe-X5-bK4" id="jf3-lR-K1s"/>
                         <outlet property="servoGimbalSwitch" destination="hQx-XX-7tJ" id="O34-YN-hfc"/>
