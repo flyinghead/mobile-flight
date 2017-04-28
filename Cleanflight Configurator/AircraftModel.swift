@@ -382,7 +382,8 @@ class Settings : AutoCoded {
         "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
-        "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "rssiChannel",
+        "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "pitotDisabled",
+        "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
         "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
         "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud"]
@@ -507,6 +508,7 @@ class Settings : AutoCoded {
     var accelerometerDisabled = false
     var barometerDisabled = true
     var magnetometerDisabled = true
+    var pitotDisabled = false
 
     // MSP_RSSI_CONFIG / MSP_SET_RSSI_CONFIG
     var rssiChannel = 0
@@ -643,6 +645,7 @@ class Settings : AutoCoded {
         self.accelerometerDisabled = copyOf.accelerometerDisabled
         self.barometerDisabled = copyOf.barometerDisabled
         self.magnetometerDisabled = copyOf.magnetometerDisabled
+        self.pitotDisabled = copyOf.pitotDisabled
         
         self.rssiChannel = copyOf.rssiChannel
         
@@ -790,7 +793,7 @@ class Misc : AutoCoded {
 }
 
 class Configuration : AutoCoded {
-    var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
+    var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "systemLoad", "rateProfile", "armingFlags", "accCalibAxis", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
     static var theConfig = Configuration()
     
     // MSP_IDENT
@@ -859,6 +862,9 @@ class Configuration : AutoCoded {
     var profile = 0
     var systemLoad = 0      // 0-100% in MSP_STATUS_EX
     var rateProfile = 0     // Only exposed (MSP_STATUS_EX) and settable (MSP_SELECT_SETTING) with betaflight
+    // INav
+    var armingFlags = 0
+    var accCalibAxis = 0
 
     // MSP_ANALOG
     var voltage = 0.0 {      // V

@@ -171,11 +171,12 @@ class MSPParser {
             if message.count >= 13 {
                 config.systemLoad = readUInt16(message, index: 11)
                 if message.count >= 15 {
-                    // Betaflight
-                    config.rateProfile = Int(message[14])
-                    // iNav
-                    // armingFlags (2) (flags for arming blockers: OK_TO_ARM, UAV_NOT_LEVEL, sensors calibrating, system overload, nav safety, compass not calib, acc not calib, hardware failure)
-                    // acc calibration axis flags (1)
+                    if config.isINav {
+                        config.armingFlags = readUInt16(message, index: 14)
+                        config.accCalibAxis = Int(message[16])
+                    } else if config.isINav {
+                        config.rateProfile = Int(message[14])
+                    }
                 }
             }
             pingDataListeners()
@@ -721,11 +722,11 @@ class MSPParser {
             if message.count < 3 {
                 return false
             }
-            settings.accelerometerDisabled = message[0] != 0
-            settings.barometerDisabled = message[1] != 0
-            settings.magnetometerDisabled = message[2] != 0
+            settings.accelerometerDisabled = config.isINav ? message[0] == 0 : message[0] != 0
+            settings.barometerDisabled = config.isINav ? message[1] == 0 : message[1] != 0
+            settings.magnetometerDisabled = config.isINav ? message[2] == 0 : message[2] != 0
             if message.count >= 4 {
-                // INav pitot (1)
+                settings.pitotDisabled = config.isINav ? message[3] == 0 : message[3] != 0
                 // INav rangefinder (1)
                 // INav optical flow (1) (future)
             }
@@ -1402,10 +1403,12 @@ class MSPParser {
     }
 
     func sendSensorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+        let config = Configuration.theConfig
         var data = [UInt8]()
-        data.append(UInt8(settings.accelerometerDisabled ? 1 : 0))
-        data.append(UInt8(settings.barometerDisabled ? 1 : 0))
-        data.append(UInt8(settings.magnetometerDisabled ? 1 : 0))
+        data.append(UInt8(settings.accelerometerDisabled != config.isINav ? 1 : 0))
+        data.append(UInt8(settings.barometerDisabled != config.isINav ? 1 : 0))
+        data.append(UInt8(settings.magnetometerDisabled != config.isINav ? 1 : 0))
+        data.append(UInt8(settings.pitotDisabled != config.isINav ? 1 : 0))
         sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
     }
     

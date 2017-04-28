@@ -241,6 +241,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             airModeSwitch.on = newSettings!.features.contains(BaseFlightFeature.AirMode)
             if isINav {
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
+                enablePitotSwitch.on = !newSettings!.pitotDisabled
             } else {
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
             }
@@ -295,7 +296,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             newSettings!.gyroUses32KHz = enable32kHzSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD)
         } else if isINav {
-            // FIXME newSettings!.pitotDisabled = !enablePitotSwitch.on
+            newSettings!.pitotDisabled = !enablePitotSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
         }
         
@@ -463,8 +464,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 })
                 self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
                     if success {
-                        // Wait 3 sec
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(3000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                        // Wait 4 sec
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
                             // Refetch information from FC
                             self.fetchInformation()
                         })
