@@ -117,10 +117,12 @@ class ReceiverTuningViewController: StaticDataTableViewController {
                     self.rcDeadband.value = Double(self.settings!.rcDeadband)
                     self.yawDeadband.value = Double(self.settings!.yawDeadband)
                     
-                    self.interpolationPicker?.selectedIndex = self.settings!.rcInterpolation
-                    self.interpolationInterval.value = Double(self.settings!.rcInterpolationInterval)
-                    self.cell(self.interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
-                    self.reloadDataAnimated(false)
+                    if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+                        self.interpolationPicker?.selectedIndex = self.settings!.rcInterpolation
+                        self.interpolationInterval.value = Double(self.settings!.rcInterpolationInterval)
+                        self.cell(self.interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
+                        self.reloadDataAnimated(false)
+                    }
                 })
             } else {
                 self.fetchError()

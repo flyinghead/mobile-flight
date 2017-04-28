@@ -355,23 +355,9 @@ class MSPParser {
             for i in 0..<message.count / 3 {
                 settings.pidValues!.append([Double]())
 
-                if config.isBetaflight {        // iNAV too? CF 2?
-                    settings.pidValues![i].append(Double(message[i*3]))
-                    settings.pidValues![i].append(Double(message[i*3 + 1]))
-                    settings.pidValues![i].append(Double(message[i*3 + 2]))
-                } else if i <= 3 || i >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
-                    settings.pidValues![i].append(Double(message[i*3]) / 10)
-                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 1000)
-                    settings.pidValues![i].append(Double(message[i*3 + 2]))
-                } else if i == 4 {      // Pos
-                    settings.pidValues![i].append(Double(message[i*3]) / 100)
-                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 100)
-                    settings.pidValues![i].append(Double(message[i*3 + 2]) / 1000)
-                } else {                // PosR, NavR
-                    settings.pidValues![i].append(Double(message[i*3]) / 10)
-                    settings.pidValues![i].append(Double(message[i*3 + 1]) / 100)
-                    settings.pidValues![i].append(Double(message[i*3 + 2]) / 1000)
-                }
+                settings.pidValues![i].append(Double(message[i*3]))
+                settings.pidValues![i].append(Double(message[i*3 + 1]))
+                settings.pidValues![i].append(Double(message[i*3 + 2]))
             }
             
         case .MSP_ARMING_CONFIG:
@@ -1156,24 +1142,9 @@ class MSPParser {
             let p = pid[0]
             let i = pid[1]
             let d = pid[2]
-            if Configuration.theConfig.isBetaflight {
-                data.append(UInt8(round(p)))
-                data.append(UInt8(round(i)))
-                data.append(UInt8(round(d)))
-            } else if idx <= 3 || idx >= 7 {   // ROLL, PITCH, YAW, ALT, LEVEL, MAG, VEL
-                data.append(UInt8(round(p * 10)))
-                data.append(UInt8(round(i * 1000)))
-                data.append(UInt8(round(d)))
-            } else if idx == 4 {        // Pos
-                data.append(UInt8(round(p * 100)))
-                data.append(UInt8(round(i * 100)))
-                data.append(UInt8(round(d * 1000)))
-            } else {                    // PosR, NavR
-                data.append(UInt8(round(p * 10)))
-                data.append(UInt8(round(i * 100)))
-                data.append(UInt8(round(d * 1000)))
-            }
-
+            data.append(UInt8(round(p)))
+            data.append(UInt8(round(i)))
+            data.append(UInt8(round(d)))
         }
         sendMessage(.MSP_SET_PID, data: data, retry: 2, callback: callback)
     }

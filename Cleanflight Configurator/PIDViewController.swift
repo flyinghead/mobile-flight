@@ -54,6 +54,20 @@ class PIDViewController: StaticDataTableViewController {
     // TPA
     @IBOutlet weak var tpaRate: NumberField!
     @IBOutlet weak var tpaBreakpoint: ThrottleField!
+    // GYRO FILTERS
+    @IBOutlet weak var gyroLowpassFrequency: NumberField!
+    @IBOutlet weak var gyroNotchFrequency: NumberField!
+    @IBOutlet weak var gyroNotchCutoff: NumberField!
+    @IBOutlet weak var gyroNotchFrequency2: NumberField!
+    @IBOutlet weak var gyroNotchCutoff2: NumberField!
+    // PID FILTERS
+    @IBOutlet weak var dTermLowpassFrequency: NumberField!
+    @IBOutlet weak var dTermNotchFrequency: NumberField!
+    @IBOutlet weak var dTermNotchCutoff: NumberField!
+    @IBOutlet weak var yawLowpassFrequency: NumberField!
+    
+    @IBOutlet weak var pidControllerCell: UITableViewCell!
+    @IBOutlet var betaflightCells: [UITableViewCell]!
     
     var settings: Settings?
     var profile: Int?
@@ -65,24 +79,14 @@ class PIDViewController: StaticDataTableViewController {
         profilePicker?.addTarget(self, action: "profileChanged:", forControlEvents: .ValueChanged)
         profilePicker?.setPlaceholder("")           // To keep width down
         
-        let config = Configuration.theConfig
-
-        let pidControllers: [String]
-        if config.isBetaflight {
-            pidControllers = [ "Legacy", "Betaflight" ]
-        } else {
-            pidControllers = [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ]
-        }
-        pidControllerPicker = MyDownPicker(textField: pidControllerField, withData: pidControllers)
+        pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])
         pidControllerPicker?.setPlaceholder("")     // To keep width down
         
-        if config.isBetaflight {
-            for c in [ rollP, rollI, pitchP, pitchI, yawP, yawI, altP, varioP, varioI, magP, posP, posI, posRP, posRI, posRD, navRP, navRI, navRD, angleLevel, horizonLevel ] {
-                c.minimumValue = 0
-                c.maximumValue = 255
-                c.increment = 1
-                c.decimalDigits = 0
-            }
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") || config.isINav {
+            cell(pidControllerCell, setHidden: true)
+        } else {
+            cells(betaflightCells, setHidden: true)
         }
     }
     
@@ -93,75 +97,79 @@ class PIDViewController: StaticDataTableViewController {
     }
 
     private func fetchData() {
-        self.msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2, callback: { success in
+        var calls:[MSP_code] = [.MSP_RC_TUNING, .MSP_PIDNAMES, .MSP_PID_CONTROLLER, .MSP_PID]
+
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") || config.isINav {
+            calls.append(.MSP_FILTER_CONFIG)
+        }
+        
+        chainMspCalls(msp, calls: calls) { success in
             if success {
-                self.msp.sendMessage(.MSP_PIDNAMES, data: nil, retry: 2, callback: { success in
-                    if success {
-                        self.msp.sendMessage(.MSP_PID_CONTROLLER, data: nil, retry: 2, callback: { success in
-                            if success {
-                                self.msp.sendMessage(.MSP_PID, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            let settings = Settings.theSettings
-                                            self.settings = settings
-                                            self.profile = Configuration.theConfig.profile ?? 0
-                                            
-                                            self.pidControllerPicker?.selectedIndex = settings.pidController
-                                            self.profilePicker?.selectedIndex = self.profile!
-                                            
-                                            self.rollRate.value = settings.rollSuperRate
-                                            self.pitchRate.value = settings.pitchSuperRate
-                                            self.yawRate.value = settings.yawSuperRate
-                                            
-                                            self.tpaRate.value = settings.tpaRate
-                                            self.tpaBreakpoint.value = Double(settings.tpaBreakpoint)
-                                            
-                                            var pid = settings.getPID(.Pitch)!
-                                            self.pitchP.value = pid[0]
-                                            self.pitchI.value = pid[1]
-                                            self.pitchD.value = pid[2]
-                                            pid = settings.getPID(.Roll)!
-                                            self.rollP.value = pid[0]
-                                            self.rollI.value = pid[1]
-                                            self.rollD.value = pid[2]
-                                            pid = settings.getPID(.Yaw)!
-                                            self.yawP.value = pid[0]
-                                            self.yawI.value = pid[1]
-                                            self.yawD.value = pid[2]
-                                            pid = settings.getPID(.Alt)!
-                                            self.altP.value = pid[0]
-                                            pid = settings.getPID(.Vel)!
-                                            self.varioP.value = pid[0]
-                                            self.varioI.value = pid[1]
-                                            self.varioD.value = pid[2]
-                                            pid = settings.getPID(.Mag)!
-                                            self.magP.value = pid[0]
-                                            pid = settings.getPID(.Pos)!
-                                            self.posP.value = pid[0]
-                                            self.posI.value = pid[1]
-                                            pid = settings.getPID(.PosR)!
-                                            self.posRP.value = pid[0]
-                                            self.posRI.value = pid[1]
-                                            self.posRD.value = pid[2]
-                                            pid = settings.getPID(.NavR)!
-                                            self.navRP.value = pid[0]
-                                            self.navRI.value = pid[1]
-                                            self.navRD.value = pid[2]
-                                            pid = settings.getPID(.Level)!
-                                            self.angleLevel.value = pid[0]
-                                            self.horizonLevel.value = pid[1]
-                                            self.horizonTransition.value = pid[2]
-                                            
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    }
+                dispatch_async(dispatch_get_main_queue(), {
+                    let settings = Settings.theSettings
+                    self.settings = settings
+                    self.profile = Configuration.theConfig.profile ?? 0
+                    
+                    self.pidControllerPicker?.selectedIndex = settings.pidController
+                    self.profilePicker?.selectedIndex = self.profile!
+                    
+                    self.rollRate.value = settings.rollSuperRate
+                    self.pitchRate.value = settings.pitchSuperRate
+                    self.yawRate.value = settings.yawSuperRate
+                    
+                    self.tpaRate.value = settings.tpaRate
+                    self.tpaBreakpoint.value = Double(settings.tpaBreakpoint)
+                    
+                    var pid = settings.getPID(.Pitch)!
+                    self.pitchP.value = pid[0]
+                    self.pitchI.value = pid[1]
+                    self.pitchD.value = pid[2]
+                    pid = settings.getPID(.Roll)!
+                    self.rollP.value = pid[0]
+                    self.rollI.value = pid[1]
+                    self.rollD.value = pid[2]
+                    pid = settings.getPID(.Yaw)!
+                    self.yawP.value = pid[0]
+                    self.yawI.value = pid[1]
+                    self.yawD.value = pid[2]
+                    pid = settings.getPID(.Alt)!
+                    self.altP.value = pid[0]
+                    pid = settings.getPID(.Vel)!
+                    self.varioP.value = pid[0]
+                    self.varioI.value = pid[1]
+                    self.varioD.value = pid[2]
+                    pid = settings.getPID(.Mag)!
+                    self.magP.value = pid[0]
+                    pid = settings.getPID(.Pos)!
+                    self.posP.value = pid[0]
+                    self.posI.value = pid[1]
+                    pid = settings.getPID(.PosR)!
+                    self.posRP.value = pid[0]
+                    self.posRI.value = pid[1]
+                    self.posRD.value = pid[2]
+                    pid = settings.getPID(.NavR)!
+                    self.navRP.value = pid[0]   
+                    self.navRI.value = pid[1]
+                    self.navRD.value = pid[2]
+                    pid = settings.getPID(.Level)!
+                    self.angleLevel.value = pid[0]
+                    self.horizonLevel.value = pid[1]
+                    self.horizonTransition.value = pid[2]
+                    
+                    self.gyroLowpassFrequency.value = Double(settings.gyroLowpassFrequency)
+                    self.gyroNotchFrequency.value = Double(settings.gyroNotchFrequency)
+                    self.gyroNotchCutoff.value = Double(settings.gyroNotchCutoff)
+                    self.gyroNotchFrequency2.value = Double(settings.gyroNotchFrequency2)
+                    self.gyroNotchCutoff2.value = Double(settings.gyroNotchCutoff2)
+                    self.dTermLowpassFrequency.value = Double(settings.dTermLowpassFrequency)
+                    self.dTermNotchFrequency.value = Double(settings.dTermNotchFrequency)
+                    self.dTermNotchCutoff.value = Double(settings.dTermNotchCutoff)
+                    self.yawLowpassFrequency.value = Double(settings.yawLowpassFrequency)
                 })
             }
-        })
-    }
+        }
+     }
 
     @IBAction func saveAction(sender: AnyObject) {
         if pidControllerPicker!.selectedIndex >= 0 {
@@ -188,22 +196,34 @@ class PIDViewController: StaticDataTableViewController {
         pids.append([ varioP.value, varioI.value, varioD.value ])
         settings?.pidValues = pids
 
+        settings?.gyroLowpassFrequency = Int(round(gyroLowpassFrequency.value))
+        settings?.gyroNotchFrequency = Int(round(gyroNotchFrequency.value))
+        settings?.gyroNotchCutoff = Int(round(gyroNotchCutoff.value))
+        settings?.gyroNotchFrequency2 = Int(round(gyroNotchFrequency2.value))
+        settings?.gyroNotchCutoff2 = Int(round(gyroNotchCutoff2.value))
+        settings?.dTermLowpassFrequency = Int(round(dTermLowpassFrequency.value))
+        settings?.dTermNotchFrequency = Int(round(dTermNotchFrequency.value))
+        settings?.dTermNotchCutoff = Int(round(dTermNotchCutoff.value))
+        settings?.yawLowpassFrequency = Int(round(yawLowpassFrequency.value))
+        
         msp.sendSetRcTuning(settings!, callback: { success in
             if success {
                 self.msp.sendPid(self.settings!, callback: { success in
                     if success {
                         self.msp.sendPidController(self.settings!.pidController, callback: { success in
                             if success {
-                                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-                                    if success {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            SVProgressHUD.showSuccessWithStatus("Settings saved")
-                                            self.fetchData()
-                                        })
-                                    } else {
-                                        self.saveFailedAlert()
+                                let config = Configuration.theConfig
+                                if config.isApiVersionAtLeast("1.31") || config.isINav {
+                                    self.msp.sendFilterConfig(self.settings!) { success in
+                                        if success {
+                                            self.saveToEeprom()
+                                        } else {
+                                            self.saveFailedAlert()
+                                        }
                                     }
-                                })
+                                } else {
+                                    self.saveToEeprom()
+                                }
                             } else {
                                 self.saveFailedAlert()
                             }
@@ -221,6 +241,19 @@ class PIDViewController: StaticDataTableViewController {
     func saveFailedAlert() {
         dispatch_async(dispatch_get_main_queue(), {
             SVProgressHUD.showErrorWithStatus("Save failed")
+        })
+    }
+    
+    func saveToEeprom() {
+        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+            if success {
+                dispatch_async(dispatch_get_main_queue(), {
+                    SVProgressHUD.showSuccessWithStatus("Settings saved")
+                    self.fetchData()
+                })
+            } else {
+                self.saveFailedAlert()
+            }
         })
     }
     
