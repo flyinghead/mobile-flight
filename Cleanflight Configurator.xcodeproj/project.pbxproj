@@ -59,6 +59,7 @@
 		AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */; };
 		AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */; };
 		AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */; };
+		AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */; };
 		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
 		AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */; };
 		AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */; };
@@ -78,7 +79,6 @@
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
-		AE93FA921DA5870C00F2E947 /* MotorPWMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE93FA911DA5870C00F2E947 /* MotorPWMViewController.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -119,7 +119,6 @@
 		AEDDD2731C159B9A004232AA /* MotorsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2721C159B9A004232AA /* MotorsViewController.swift */; };
 		AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2741C15EBBF004232AA /* MultiTypes.swift */; };
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
-		AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
 		AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */; };
@@ -275,6 +274,7 @@
 		AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalScale.swift; sourceTree = "<group>"; };
 		AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnRateIndicator.swift; sourceTree = "<group>"; };
 		AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Cleanflight-versions.txt"; sourceTree = "<group>"; };
+		AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorConfigViewController.swift; sourceTree = "<group>"; };
 		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
 		AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Sensors.storyboard; sourceTree = "<group>"; };
@@ -300,7 +300,6 @@
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
-		AE93FA911DA5870C00F2E947 /* MotorPWMViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorPWMViewController.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -339,7 +338,6 @@
 		AEDDD2741C15EBBF004232AA /* MultiTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiTypes.swift; sourceTree = "<group>"; };
 		AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationViewController.swift; sourceTree = "<group>"; };
 		AEDDD2781C1615C8004232AA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorStopConfigViewController.swift; sourceTree = "<group>"; };
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
 		AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearGauge.swift; sourceTree = "<group>"; };
@@ -528,8 +526,7 @@
 				AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */,
 				AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */,
 				AE1F73DF1C18A84E0029C330 /* GPSConfigViewController.swift */,
-				AE93FA911DA5870C00F2E947 /* MotorPWMViewController.swift */,
-				AEDDD27A1C176433004232AA /* MotorStopConfigViewController.swift */,
+				AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */,
 				AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */,
 				AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */,
 				AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */,
@@ -1024,14 +1021,12 @@
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
 				AEDDD2411C10C852004232AA /* CommChannel.swift in Sources */,
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,
-				AEDDD27B1C176433004232AA /* MotorStopConfigViewController.swift in Sources */,
 				AE1EAA2C1CB0174500C24E2A /* IASKSettingsStoreUserDefaults.m in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AE1EAA2F1CB0174500C24E2A /* IASKPSSliderSpecifierViewCell.m in Sources */,
-				AE93FA921DA5870C00F2E947 /* MotorPWMViewController.swift in Sources */,
 				AE1EAA291CB0174500C24E2A /* IASKSettingsReader.m in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
@@ -1089,6 +1084,7 @@
 				AE1EAA261CB0174500C24E2A /* IASKAppSettingsWebViewController.m in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
+				AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */,
 				AE1EAA311CB0174500C24E2A /* IASKSlider.m in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
 				AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */,

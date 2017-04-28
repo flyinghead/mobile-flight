@@ -13,12 +13,6 @@ import SVProgressHUD
 class ConfigurationViewController: StaticDataTableViewController, UITextFieldDelegate {
     @IBOutlet weak var mixerTypeTextField: UITextField!
     @IBOutlet weak var mixerTypeView: UIImageView!
-    @IBOutlet weak var motorStopField: UILabel!
-    @IBOutlet weak var oneShotEscSwitch: UISwitch!
-    @IBOutlet weak var disarmMotorsSwitch: UISwitch!
-    @IBOutlet weak var minimumCommandField: ThrottleField!
-    @IBOutlet weak var minimumThrottleField: ThrottleField!
-    @IBOutlet weak var maximumThrottleFIeld: ThrottleField!
     @IBOutlet weak var boardRollField: NumberField!
     @IBOutlet weak var boardPitchField: NumberField!
     @IBOutlet weak var boardYawField: NumberField!
@@ -44,21 +38,22 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     @IBOutlet var betaflightFeatures: [UITableViewCell]!
     @IBOutlet var nonBetaflightFeatures: [UITableViewCell]!
+    @IBOutlet var iNavFeatures: [UITableViewCell]!
+    @IBOutlet weak var enable32kHzSwitch: UISwitch!
     @IBOutlet weak var gyroUpdateFreqField: UITextField!
     @IBOutlet weak var pidLoopFreqField: UITextField!
     @IBOutlet weak var enableAccelerometer: UISwitch!
     @IBOutlet weak var enableBarometer: UISwitch!
     @IBOutlet weak var enableMagnetometer: UISwitch!
-    @IBOutlet weak var escProtocolField: UITextField!
-    @IBOutlet weak var motorPWMFreqLabel: UILabel!
+    @IBOutlet weak var enablePitotSwitch: UISwitch!
     @IBOutlet weak var airModeSwitch: UISwitch!
     @IBOutlet weak var osdSwitch: UISwitch!
     @IBOutlet weak var vtxSwitch: UISwitch!
     @IBOutlet weak var escSensor: UISwitch!
+    @IBOutlet weak var pitotTubeCell: UITableViewCell!
     
-    var gyroUpdateFredPicker: MyDownPicker?
+    var gyroUpdateFreqPicker: MyDownPicker?
     var pidLoopFreqPicker: MyDownPicker?
-    var escProtocolPicker: MyDownPicker?
     
     var mixerTypePicker: MyDownPicker?
     
@@ -82,16 +77,24 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
         hideSectionsWithHiddenRows = true
 
-        cells(betaflightFeatures, setHidden: !isBetaflight)
-        cells(nonBetaflightFeatures, setHidden: isBetaflight)
-
         if isBetaflight {
-            escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: [ "PWM", "OneShot125", "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600" ])
-            escProtocolPicker?.setPlaceholder("")
-            gyroUpdateFredPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 KHz", "4 KHz", "2.67 KHz", "2 KHz", "1.6 KHz", "1.33 KHz", "1.14 KHz", "1 KHz" ])
-            gyroUpdateFredPicker!.setPlaceholder("")
-            pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 KHz", "1 KHz", "0.67 KHz", "0.5 KHz", "0.4 KHz", "0.33 KHz", "0.29 KHz", "0.25 KHz" ])
-            pidLoopFreqPicker!.setPlaceholder("")
+            cells(nonBetaflightFeatures, setHidden: true)
+            cells(Array(Set(iNavFeatures).subtract(Set(betaflightFeatures))), setHidden: true)
+        } else if isINav {
+            cells(nonBetaflightFeatures, setHidden: true)
+            cells(Array(Set(betaflightFeatures).subtract(Set(iNavFeatures))), setHidden: true)
+        } else {
+            cells(Array(Set(betaflightFeatures).union(Set(iNavFeatures))), setHidden: true)
+        }
+
+        gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 KHz", "4 KHz", "2.67 KHz", "2 KHz", "1.6 KHz", "1.33 KHz", "1.14 KHz", "1 KHz" ])
+        gyroUpdateFreqPicker!.setPlaceholder("")
+        gyroUpdateFreqPicker!.addTarget(self, action: #selector(ConfigurationViewController.enable32kHzChanged(_:)), forControlEvents: .ValueChanged)
+        pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 KHz", "1 KHz", "0.67 KHz", "0.5 KHz", "0.4 KHz", "0.33 KHz", "0.29 KHz", "0.25 KHz" ])
+        pidLoopFreqPicker!.setPlaceholder("")
+
+        if !Configuration.theConfig.isINav {
+            cell(pitotTubeCell, setHidden: true)
         }
     }
 
@@ -151,7 +154,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func fetchBetaflightConfig() {
-        if !isBetaflight {
+        if !isBetaflight && !Configuration.theConfig.isINav {
             fetchInformationSucceeded()
         } else {
             chainMspCalls(msp, calls: [.MSP_PID_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
@@ -202,15 +205,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
             mixerTypeChanged(self)
             
-            if !isBetaflight {
-                oneShotEscSwitch.on = newSettings!.features.contains(BaseFlightFeature.OneShot125) ?? false
-            }
-            disarmMotorsSwitch.on = newSettings!.disarmKillSwitch
-            
-            minimumCommandField.value = Double(newSettings!.minCommand ?? 0)
-            minimumThrottleField.value = Double(newSettings!.minThrottle ?? 0)
-            maximumThrottleFIeld.value = Double(newSettings!.maxThrottle ?? 0)
-            
             setBoardAlignmentFieldValue(boardPitchField, value: Double(newSettings!.boardAlignPitch ?? 0))
             setBoardAlignmentFieldValue(boardRollField, value: Double(newSettings!.boardAlignRoll ?? 0))
             setBoardAlignmentFieldValue(boardYawField, value: Double(newSettings!.boardAlignYaw ?? 0))
@@ -231,25 +225,31 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             loopTimeField.value = Double(newSettings!.loopTime)
             
             // Betaflight
-            escProtocolPicker?.selectedIndex = newSettings!.motorPwmProtocol
-            gyroUpdateFredPicker?.selectedIndex = newSettings!.gyroSyncDenom - 1
+            enable32kHzSwitch.on = newSettings!.gyroUses32KHz
+            enable32kHzChanged(enable32kHzSwitch)
+            gyroUpdateFreqPicker?.selectedIndex = newSettings!.gyroSyncDenom - 1
+            enable32kHzChanged(enable32kHzSwitch)
             pidLoopFreqPicker?.selectedIndex = newSettings!.pidProcessDenom - 1
+
             enableAccelerometer.on = !newSettings!.accelerometerDisabled
             enableBarometer.on = !newSettings!.barometerDisabled
             enableMagnetometer.on = !newSettings!.magnetometerDisabled
             airModeSwitch.on = newSettings!.features.contains(BaseFlightFeature.AirMode)
-            osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
+            if isINav {
+                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
+            } else {
+                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
+            }
+
             vtxSwitch.on = newSettings!.features.contains(BaseFlightFeature.VTX)
             escSensor.on = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
         }
-        motorStopField.text = (newSettings!.features.contains(BaseFlightFeature.MotorStop) ?? false) ? "On" : "Off"
         
         gpsField.text = (newSettings!.features.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
         vbatField.text = (newSettings!.features.contains(BaseFlightFeature.VBat) ?? false) ? "On" : "Off"
         currentMeterField.text = (newSettings!.features.contains(BaseFlightFeature.CurrentMeter) ?? false) ? "On" : "Off"
         failsafeField.text = (newSettings!.features.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
-        motorPWMFreqLabel.text = MotorPWMViewController.motorPWMLabel(newSettings!)
     }
     
     // iNav uses decidegrees instead of degrees for board alignment values. To avoid saving truncated values saving the config, we remove
@@ -268,14 +268,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if mixerTypePicker!.selectedIndex >= 0 {
             newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
         }
-        if !isBetaflight {
-            saveFeatureSwitchValue(oneShotEscSwitch, feature: .OneShot125)
-        }
-        newSettings!.disarmKillSwitch = disarmMotorsSwitch.on
-        
-        newSettings!.minCommand = Int(minimumCommandField.value)
-        newSettings!.minThrottle = Int(minimumThrottleField.value)
-        newSettings!.maxThrottle = Int(maximumThrottleFIeld.value)
 
         newSettings!.boardAlignPitch = Int(boardPitchField.value)
         newSettings!.boardAlignRoll = Int(boardRollField.value)
@@ -296,18 +288,23 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         newSettings!.loopTime = Int(loopTimeField.value)
         
-        // Betaflight
-        if isBetaflight {
-            newSettings!.motorPwmProtocol = escProtocolPicker!.selectedIndex
-            newSettings!.gyroSyncDenom = gyroUpdateFredPicker!.selectedIndex + 1
+        // Betaflight, INav, CF 2
+        newSettings!.accelerometerDisabled = !enableAccelerometer.on
+        newSettings!.barometerDisabled = !enableBarometer.on
+        newSettings!.magnetometerDisabled = !enableMagnetometer.on
+        saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
+        saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
+        saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
+        if isBetaflight || isINav {
+            newSettings!.gyroSyncDenom = gyroUpdateFreqPicker!.selectedIndex + 1
             newSettings!.pidProcessDenom = pidLoopFreqPicker!.selectedIndex + 1
-            newSettings!.accelerometerDisabled = !enableAccelerometer.on
-            newSettings!.barometerDisabled = !enableBarometer.on
-            newSettings!.magnetometerDisabled = !enableMagnetometer.on
-            saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
+        }
+        if isBetaflight {
+            newSettings!.gyroUses32KHz = enable32kHzSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD)
-            saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
-            saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
+        } else if isINav {
+            // FIXME newSettings!.pitotDisabled = !enablePitotSwitch.on
+            saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
         }
         
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
@@ -447,7 +444,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func saveBetaflightFeatures() {
-        if isBetaflight {
+        if isBetaflight || Configuration.theConfig.isINav {
             self.msp.sendPidAdvancedConfig(self.newSettings!, callback: { success in
                 if success {
                     self.msp.sendSensorConfig(self.newSettings!, callback: { success in
@@ -508,6 +505,26 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @objc
     private func mixerTypeChanged(sender: AnyObject) {
         mixerTypeView.image = MultiTypes.getImage(mixerTypePicker!.selectedIndex + 1)
+    }
+    
+    @IBAction func enable32kHzChanged(sender: AnyObject) {
+        newSettings!.gyroUses32KHz = enable32kHzSwitch.on
+        let maxFreq = isINav ? 1.0 : newSettings!.gyroUses32KHz ? 32.0 : 8.0
+        var gyroFreqs = [String]()
+        let currentFreq = maxFreq / Double(gyroUpdateFreqPicker!.selectedIndex + 1)
+        let gyroIndex = gyroUpdateFreqPicker!.selectedIndex
+        for i in 1..<33 {
+            gyroFreqs.append(String(format: "%.2f kHz", maxFreq / Double(i)))
+        }
+        let pidIndex = pidLoopFreqPicker!.selectedIndex
+        var pidFreqs = [String]()
+        for i in 1..<17 {
+            pidFreqs.append(String(format: "%.2f kHz", currentFreq / Double(i)))
+        }
+        gyroUpdateFreqPicker!.setData(gyroFreqs)
+        pidLoopFreqPicker!.setData(pidFreqs)
+        gyroUpdateFreqPicker!.selectedIndex = gyroIndex
+        pidLoopFreqPicker!.selectedIndex = pidIndex
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

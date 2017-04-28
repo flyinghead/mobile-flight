@@ -680,13 +680,15 @@ class MSPParser {
                 return false
             }
             settings.gyroSyncDenom = Int(message[0])
-            settings.pidProcessDenom = Int(message[1])
-            settings.useUnsyncedPwm = message[2] != 0
+            settings.pidProcessDenom = Int(message[1])  // not in INav
+            settings.useUnsyncedPwm = message[2] != 0   // Not in INav
             settings.motorPwmProtocol = Int(message[3])
             settings.motorPwmRate = readUInt16(message, index: 4)
             if message.count >= 8 {
+                // INav servoPwmRate (2)
                 settings.digitalIdleOffsetPercent = Double(readUInt16(message, index: 6)) / 100
-                if message.count >= 9 {
+                if message.count >= 9 && !config.isINav {
+                    // INav gyroSync (1)
                     settings.gyroUses32KHz = message[8] != 0
                 }
             }
@@ -736,7 +738,11 @@ class MSPParser {
             settings.accelerometerDisabled = message[0] != 0
             settings.barometerDisabled = message[1] != 0
             settings.magnetometerDisabled = message[2] != 0
-            
+            if message.count >= 4 {
+                // INav pitot (1)
+                // INav rangefinder (1)
+                // INav optical flow (1) (future)
+            }
         case .MSP_RSSI_CONFIG:
             if message.count < 1 {
                 return false

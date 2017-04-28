@@ -47,10 +47,16 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     static let SDCard  = BaseFlightFeature(rawValue: 1 << 23)
     static let VTX  = BaseFlightFeature(rawValue: 1 << 24)      // Not exposed in BF?
     static let RxSpi = BaseFlightFeature(rawValue: 1 << 25)     // Not exposed?
-    static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)   // Not exposed?
+    static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)   // exposed in INAV only?
     static let ESCSensor = BaseFlightFeature(rawValue: 1 << 27)
     static let AntiGravity = BaseFlightFeature(rawValue: 1 << 28) // Not exposed?
 
+    // INav
+    static let SuperExpoRates  = BaseFlightFeature(rawValue: 1 << 23)   // Not exposed?
+    static let PwmServoDriver  = BaseFlightFeature(rawValue: 1 << 27)
+    static let PwmOutputEnable  = BaseFlightFeature(rawValue: 1 << 27)
+    static let OSD_INav = BaseFlightFeature(rawValue: 1 << 29)
+    
     init(rawValue: Int) {
         self.rawValue = rawValue
     }
@@ -472,7 +478,7 @@ class Settings : AutoCoded {
     var gyroSyncDenom = 0
     var pidProcessDenom = 0
     var useUnsyncedPwm = false
-    var motorPwmProtocol = 1        // PWM = 0, Oneshot125 = 1, Oneshot42 = 2, Multishot = 3, Brushed = 4
+    var motorPwmProtocol = 0        // PWM = 0, Oneshot125 = 1, Oneshot42 = 2, Multishot = 3, Brushed = 4, DShot150 = 5, DShot 300 = 6, DShot 600 = 7
     var motorPwmRate = 0
     var digitalIdleOffsetPercent = 0.0
     var gyroUses32KHz = false
