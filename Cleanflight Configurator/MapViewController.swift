@@ -72,6 +72,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
         }
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
+        
+        //msp.fetchINavWaypoints(GPSData.theGPSData) { success in
+        //    NSLog("%d waypoints fetched", GPSData.theGPSData.waypoints.count)
+        //}
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -268,7 +272,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
             alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in
                 // TODO allow to set altitude
-                self.msp.sendWaypoint(16, latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
+                self.msp.setGPSHoldPosition(latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
             }))
             alertController.popoverPresentationController?.sourceView = mapView
             presentViewController(alertController, animated: true, completion: nil)

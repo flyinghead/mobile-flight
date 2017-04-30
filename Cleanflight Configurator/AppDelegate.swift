@@ -356,13 +356,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
                 let longitude = location.coordinate.longitude
                 let latitude = location.coordinate.latitude
                 NSLog("Sending follow me location %.4f / %.4f", latitude, longitude)
-                msp.sendWaypoint(16, latitude: latitude, longitude: longitude, altitude: 0, callback: { success in
+                msp.setGPSHoldPosition(latitude: latitude, longitude: longitude, altitude: 0) { success in
                     if !success {
                         self.lastFollowMeUpdate = nil
                     } else {
                         
                     }
-                })
+                }
             }
             for callback in currentLocationCallbacks {
                 callback(GPSLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))

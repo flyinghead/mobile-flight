@@ -434,21 +434,52 @@ class MSPParser {
             }
             
         case .MSP_WP:
-            if message.count < 18 {
-                return false
+            if config.isINav {
+                if message.count < 15 {
+                    return false
+                }
+            } else {
+                if message.count < 21 {
+                    return false
+                }
             }
-            let wpNum = message[0]
-            let position = GPSLocation(latitude: Double(readInt32(message, index: 1)) / 10000000, longitude: Double(readInt32(message, index: 5)) / 10000000)
-            if wpNum == 0 {
+            var offset = 0
+            let wpNum = Int(message[offset])
+            offset += 1
+            var action: WaypointAction?
+            if config.isINav {
+                // 1: waypoint, 4: RTH
+                action = message[offset] == 1 ? .Waypoint : .ReturnToHome
+                offset += 1
+            }
+            let position = GPSLocation(latitude: Double(readInt32(message, index: offset)) / 10000000, longitude: Double(readInt32(message, index: offset + 4)) / 10000000)
+            offset += 8
+            let altitude = Double(readInt32(message, index: offset)) / 100    // cm
+            offset += 4
+            if wpNum == 0 {     // Special waypoint: Home position
                 gpsData.homePosition = position
                 pingGpsListeners()
-            } else if wpNum == 16 {
-                gpsData.posHoldPosition = position
-                pingGpsListeners()
             }
-            sensorData.altitudeHold = Double(readInt32(message, index: 9)) / 100    // cm
-            sensorData.headingHold = Double(readInt16(message, index: 13))          // degrees - Custom firmware by Raph
-            pingSensorListeners()
+            else if wpNum == 16 || wpNum == 255 {     // Cleanflight: 16, INav: 255
+                // FIXME Not sure this is the desired position/alt in INav and not the current pos/alt
+                gpsData.posHoldPosition = position
+                sensorData.altitudeHold = altitude
+                sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph, INav
+                offset += 2
+                pingGpsListeners()
+                pingSensorListeners()
+            }
+            else if config.isINav && wpNum >= 1 && wpNum <= 15 {
+                let p1 = Int(readInt16(message, index: offset))
+                offset += 2
+                let p2 = Int(readInt16(message, index: offset))
+                offset += 2
+                let p3 = Int(readInt16(message, index: offset))
+                offset += 2
+                let last = Int(message[offset]) != 0
+                let waypoint = Waypoint(number: wpNum, action: action!, position: position, altitude: altitude, param1: p1, param2: p2, param3: p3, last: last)
+                gpsData.setWaypoint(waypoint)
+            }
             
         case .MSP_BOXIDS:
             settings.boxIds = [Int]()
@@ -491,7 +522,7 @@ class MSPParser {
                         settings.airmodeActivateThreshold = readUInt16(message, index: 14)
                         if message.count >= 22 {
                             settings.rxSpiProtocol = Int(message[16])
-                            settings.rxSpiId = readInt32(message, index: 17)
+                            settings.rxSpiId = readUInt32(message, index: 17)
                             settings.rxSpiChannelCount = Int(message[21])
                             if message.count >= 23 {
                                 settings.fpvCamAngleDegrees = Int(message[22])
@@ -1166,7 +1197,7 @@ class MSPParser {
         sendMessage(.MSP_DATAFLASH_READ, data: data, retry: 0, callback: nil)
     }
     
-    // Waypoint number 0 is GPS Home location, waypoint number 16 is GPS Hold location, other values are ignored
+    // Waypoint number 0 is GPS Home location, waypoint number 16 is GPS Hold location, other values are ignored in CF
     // Pass altitude=0 to keep current AltHold value
     func sendWaypoint(number: Int, latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
@@ -1177,6 +1208,61 @@ class MSPParser {
         data.appendContentsOf([0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
         
         sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
+    }
+
+    // INav: wp#0 is home, wp#255 is GPS Hold location and wp#1 to wp#15 are regular waypoints (must be set in sequence)
+    func sendINavWaypoint(waypoint: Waypoint, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(waypoint.number))
+        data.append(UInt8(waypoint.action == .Waypoint ? 1 : 4))
+        data.appendContentsOf(writeInt32(Int(waypoint.position.latitude * 10000000.0)))
+        data.appendContentsOf(writeInt32(Int(waypoint.position.longitude * 10000000.0)))
+        data.appendContentsOf(writeInt32(Int(waypoint.altitude)))
+        data.appendContentsOf(writeInt16(waypoint.param1))
+        data.appendContentsOf(writeInt16(waypoint.param2))
+        data.appendContentsOf(writeInt16(waypoint.param3))
+        data.append(UInt8(waypoint.last ? 0xA5 : 0))
+        
+        sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendINavWaypoints(gpsData: GPSData, callback:((success:Bool) -> Void)?) {
+        sendINavWaypointsRecursive(gpsData, wpNumber: 0, callback: callback)
+    }
+    private func sendINavWaypointsRecursive(gpsData: GPSData, wpNumber: Int, callback:((success:Bool) -> Void)?) {
+        if wpNumber >= gpsData.waypoints.count {
+            callback?(success: true)
+        } else {
+            var waypoint = gpsData.waypoints[wpNumber]
+            waypoint.last = wpNumber == gpsData.waypoints.count - 1
+            sendINavWaypoint(waypoint) { success in
+                if success {
+                    self.sendINavWaypointsRecursive(gpsData, wpNumber: wpNumber + 1, callback: callback)
+                } else {
+                    callback?(success: false)
+                }
+            }
+        }
+    }
+    
+    func setGPSHoldPosition(latitude latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
+        let wpNumber = Configuration.theConfig.isINav ? 255 : 16
+        sendWaypoint(wpNumber, latitude: latitude, longitude: longitude, altitude: altitude, callback: callback)
+    }
+    
+    // Clear gpsData.waypoints before calling this function
+    func fetchINavWaypoints(gpsData: GPSData,  callback:((success:Bool) -> Void)?) {
+        if let waypoint = gpsData.waypoints.last where waypoint.last {
+            callback?(success: true)
+        } else {
+            sendMessage(.MSP_WP, data: [ UInt8(gpsData.waypoints.count + 1) ], retry: 2) { success in
+                if success {
+                    self.fetchINavWaypoints(gpsData, callback: callback)
+                } else {
+                    callback?(success: false)
+                }
+            }
+        }
     }
     
     func setServoConfig(servoIdx: Int, servoConfig: ServoConfig, callback:((success:Bool) -> Void)?) {

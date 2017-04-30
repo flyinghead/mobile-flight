@@ -1097,6 +1097,33 @@ struct GPSLocation : DictionaryCoding {
     }
 }
 
+enum WaypointAction {
+    case Waypoint
+    case ReturnToHome
+}
+
+struct Waypoint {
+    var number: Int
+    var action: WaypointAction
+    var position: GPSLocation
+    var altitude: Double = 0.0
+    var param1: Int
+    var param2: Int
+    var param3: Int
+    var last: Bool
+    
+    init(number: Int, action: WaypointAction, position: GPSLocation, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
+        self.number = number
+        self.action = action
+        self.position = position
+        self.altitude = altitude
+        self.param1 = param1
+        self.param2 = param2
+        self.param3 = param3
+        self.last = last
+    }
+}
+
 class GPSData : AutoCoded {
     var autoEncoding = [ "fix", "latitude", "longitude", "altitude", "speed", "headingOverGround", "numSat", "distanceToHome", "directionToHome", "update", "lastKnownGoodLatitude", "lastKnownGoodLongitude", "lastKnownGoodAltitude", "lastKnownGoodTimestamp" ]
     static var theGPSData = GPSData()
@@ -1171,6 +1198,7 @@ class GPSData : AutoCoded {
     // MSP_WP
     var homePosition: GPSLocation?
     var posHoldPosition: GPSLocation?
+    var waypoints = [Waypoint]()
 
     // Local
     var lastKnownGoodLatitude = 0.0
@@ -1236,6 +1264,16 @@ class GPSData : AutoCoded {
         if posHoldPosition != nil {
             aCoder.encodeObject(posHoldPosition!.toDict(), forKey: "posHoldPosition")
         }
+    }
+    
+    func setWaypoint(waypoint: Waypoint) {
+        for (idx, wp) in waypoints.enumerate() {
+            if wp.number == waypoint.number {
+                waypoints[idx] = waypoint
+                return
+            }
+        }
+        waypoints.append(waypoint)
     }
 }
 
