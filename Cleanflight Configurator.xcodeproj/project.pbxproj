@@ -27,6 +27,8 @@
 		AE1BBA341EC37C9A0081E068 /* WaypointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA331EC37C9A0081E068 /* WaypointDetailViewController.swift */; };
 		AE1BBA361EC37CAD0081E068 /* RTHDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA351EC37CAD0081E068 /* RTHDetailViewController.swift */; };
 		AE1BBA381EC39CA10081E068 /* BaseWaypointDetailCiewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */; };
+		AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */ = {isa = PBXBuildFile; fileRef = AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */; };
+		AE1BBA3F1EC3B5E20081E068 /* MKHomeLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
@@ -220,6 +222,8 @@
 		AE1BBA331EC37C9A0081E068 /* WaypointDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaypointDetailViewController.swift; sourceTree = "<group>"; };
 		AE1BBA351EC37CAD0081E068 /* RTHDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTHDetailViewController.swift; sourceTree = "<group>"; };
 		AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWaypointDetailCiewController.swift; sourceTree = "<group>"; };
+		AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "home-waypoint.svg"; sourceTree = "<group>"; };
+		AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKHomeLocationView.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -438,6 +442,14 @@
 			name = StaticDataTableViewController;
 			sourceTree = "<group>";
 		};
+		AE1BBA391EC3B55D0081E068 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
 		AE1DD67E1C7E23F300861248 /* KIFTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -589,6 +601,7 @@
 			children = (
 				AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */,
 				AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */,
+				AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */,
 				AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */,
 				AE1BBA2F1EC329BB0081E068 /* MKWaypointList.swift */,
 				AE62AAE01EB8941500D0DEF2 /* MKWaypointView.swift */,
@@ -635,6 +648,7 @@
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
 				AE62AADD1EB8902400D0DEF2 /* Mission */,
+				AE1BBA391EC3B55D0081E068 /* Resource */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
@@ -921,6 +935,7 @@
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
+				AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
@@ -1088,6 +1103,7 @@
 				AE1EAA291CB0174500C24E2A /* IASKSettingsReader.m in Sources */,
 				AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
+				AE1BBA3F1EC3B5E20081E068 /* MKHomeLocationView.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
 				AE1BBA2C1EC315250081E068 /* WaypointViewController.swift in Sources */,
 				AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */,

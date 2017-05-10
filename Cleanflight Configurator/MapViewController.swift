@@ -156,12 +156,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     }
     
     func waypointAdded(data: MKWaypoint) {
-        mapView.addAnnotation(data)
+        if !data.returnToHome {
+            mapView.addAnnotation(data)
+        }
         addWaypointsOverlay()
     }
 
     func waypointDeleted(data: MKWaypoint) {
-        mapView.removeAnnotation(data)
+        if !data.returnToHome {
+            mapView.removeAnnotation(data)
+        }
         addWaypointsOverlay()
     }
     
@@ -299,9 +303,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             annotationView = MKAircraftView(annotation: annotation, reuseIdentifier: nil)
             return annotationView
         } else if annotation === homeLocation {
-            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "homeAnnotationView")
-            view.canShowCallout = true
-            view.pinColor = MKPinAnnotationColor.Green
+            let view = MKHomeLocationView(annotation: annotation, reuseIdentifier: nil)
             return view
         } else if annotation === posHoldLocation {
             let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "posHoldAnnotationView")
