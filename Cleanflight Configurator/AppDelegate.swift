@@ -249,14 +249,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
     // MARK:
 
     func checkArmedStatus() {
-        if Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && !armed {
+        if Settings.theSettings.armed && !armed {
             armed = true
             lastArming = NSDate()
             if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
                 startFlightlogRecording()
             }
         }
-        else if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) && armed {
+        else if !Settings.theSettings.armed && armed {
             armed = false
             _lastArmedTime = -lastArming!.timeIntervalSinceNow
             _totalArmedTime += _lastArmedTime

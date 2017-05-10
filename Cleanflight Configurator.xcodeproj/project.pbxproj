@@ -20,6 +20,13 @@
 		AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */; };
 		AE17C1BE1C1DE02400D48D64 /* CalibrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */; };
 		AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */; };
+		AE1BBA2C1EC315250081E068 /* WaypointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA2B1EC315250081E068 /* WaypointViewController.swift */; };
+		AE1BBA2E1EC3154B0081E068 /* WaypointPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA2D1EC3154B0081E068 /* WaypointPageViewController.swift */; };
+		AE1BBA301EC329BB0081E068 /* MKWaypointList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA2F1EC329BB0081E068 /* MKWaypointList.swift */; };
+		AE1BBA321EC3348B0081E068 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA311EC3348B0081E068 /* Event.swift */; };
+		AE1BBA341EC37C9A0081E068 /* WaypointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA331EC37C9A0081E068 /* WaypointDetailViewController.swift */; };
+		AE1BBA361EC37CAD0081E068 /* RTHDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA351EC37CAD0081E068 /* RTHDetailViewController.swift */; };
+		AE1BBA381EC39CA10081E068 /* BaseWaypointDetailCiewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
@@ -60,10 +67,14 @@
 		AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */; };
 		AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */; };
 		AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */; };
+		AE62AADC1EB5DED900D0DEF2 /* MessageStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */; };
+		AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */; };
+		AE62AAE11EB8941500D0DEF2 /* MKWaypointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AAE01EB8941500D0DEF2 /* MKWaypointView.swift */; };
 		AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */; };
 		AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */; };
 		AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */; };
 		AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */; };
+		AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */; };
 		AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71D8201C3596C800CC0AEB /* ServosViewController.swift */; };
 		AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */; };
 		AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */; };
@@ -202,6 +213,13 @@
 		AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalibrationViewController.swift; sourceTree = "<group>"; };
 		AE1B12BD1C84F4E1007755C9 /* StaticDataTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StaticDataTableViewController.h; sourceTree = "<group>"; };
 		AE1B12BE1C84F527007755C9 /* StaticDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticDataTableViewController.m; sourceTree = "<group>"; };
+		AE1BBA2B1EC315250081E068 /* WaypointViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaypointViewController.swift; sourceTree = "<group>"; };
+		AE1BBA2D1EC3154B0081E068 /* WaypointPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaypointPageViewController.swift; sourceTree = "<group>"; };
+		AE1BBA2F1EC329BB0081E068 /* MKWaypointList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKWaypointList.swift; sourceTree = "<group>"; };
+		AE1BBA311EC3348B0081E068 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		AE1BBA331EC37C9A0081E068 /* WaypointDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaypointDetailViewController.swift; sourceTree = "<group>"; };
+		AE1BBA351EC37CAD0081E068 /* RTHDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTHDetailViewController.swift; sourceTree = "<group>"; };
+		AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWaypointDetailCiewController.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -275,10 +293,14 @@
 		AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnRateIndicator.swift; sourceTree = "<group>"; };
 		AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Cleanflight-versions.txt"; sourceTree = "<group>"; };
 		AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorConfigViewController.swift; sourceTree = "<group>"; };
+		AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageStream.swift; sourceTree = "<group>"; };
+		AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKWaypoint.swift; sourceTree = "<group>"; };
+		AE62AAE01EB8941500D0DEF2 /* MKWaypointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKWaypointView.swift; sourceTree = "<group>"; };
 		AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Configuration.storyboard; sourceTree = "<group>"; };
 		AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		AE63D5F01C216DC90070D1D2 /* Sensors.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Sensors.storyboard; sourceTree = "<group>"; };
 		AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataflashController.swift; sourceTree = "<group>"; };
+		AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Mission.storyboard; sourceTree = "<group>"; };
 		AE71D8201C3596C800CC0AEB /* ServosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServosViewController.swift; sourceTree = "<group>"; };
 		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -562,6 +584,22 @@
 			name = Controls;
 			sourceTree = "<group>";
 		};
+		AE62AADD1EB8902400D0DEF2 /* Mission */ = {
+			isa = PBXGroup;
+			children = (
+				AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */,
+				AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */,
+				AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */,
+				AE1BBA2F1EC329BB0081E068 /* MKWaypointList.swift */,
+				AE62AAE01EB8941500D0DEF2 /* MKWaypointView.swift */,
+				AE1BBA351EC37CAD0081E068 /* RTHDetailViewController.swift */,
+				AE1BBA331EC37C9A0081E068 /* WaypointDetailViewController.swift */,
+				AE1BBA2D1EC3154B0081E068 /* WaypointPageViewController.swift */,
+				AE1BBA2B1EC315250081E068 /* WaypointViewController.swift */,
+			);
+			name = Mission;
+			sourceTree = "<group>";
+		};
 		AE72AB4D1C0F3D230020C4B0 = {
 			isa = PBXGroup;
 			children = (
@@ -596,6 +634,7 @@
 				AEA48A671C25CFDD006BC53E /* Communication */,
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
+				AE62AADD1EB8902400D0DEF2 /* Mission */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
@@ -606,11 +645,13 @@
 				AE17C1BD1C1DE02400D48D64 /* CalibrationViewController.swift */,
 				AE1CB4821C70A71A003DB117 /* CLIViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
+				AE1BBA311EC3348B0081E068 /* Event.swift */,
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
+				AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */,
 				AEAB37151CB16F330097DC9A /* MetarManager.swift */,
 				AECE8D831C1E187700FB183E /* ModesViewController.swift */,
 				AEDDD2721C159B9A004232AA /* MotorsViewController.swift */,
@@ -742,6 +783,7 @@
 				AEDDD25F1C120342004232AA /* Embed Frameworks */,
 				E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */,
 				806F9F3538A6C197599F5C14 /* [CP] Copy Pods Resources */,
+				AE62AAD81EB3DE0300D0DEF2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -871,6 +913,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
+				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
@@ -978,6 +1021,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		AE62AAD81EB3DE0300D0DEF2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO|FIXME\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
+		};
 		E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1014,6 +1070,7 @@
 				AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */,
 				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
+				AE1BBA2E1EC3154B0081E068 /* WaypointPageViewController.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
 				AE1EAA321CB0174500C24E2A /* IASKSwitch.m in Sources */,
 				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
@@ -1023,13 +1080,16 @@
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,
 				AE1EAA2C1CB0174500C24E2A /* IASKSettingsStoreUserDefaults.m in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
+				AE1BBA301EC329BB0081E068 /* MKWaypointList.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
 				AE1EAA2F1CB0174500C24E2A /* IASKPSSliderSpecifierViewCell.m in Sources */,
 				AE1EAA291CB0174500C24E2A /* IASKSettingsReader.m in Sources */,
+				AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
+				AE1BBA2C1EC315250081E068 /* WaypointViewController.swift in Sources */,
 				AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */,
 				AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */,
 				AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */,
@@ -1061,6 +1121,7 @@
 				AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */,
 				AE1EAA2A1CB0174500C24E2A /* IASKSettingsStore.m in Sources */,
 				AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */,
+				AE1BBA361EC37CAD0081E068 /* RTHDetailViewController.swift in Sources */,
 				AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */,
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
 				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,
@@ -1081,25 +1142,30 @@
 				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,
 				AE1EAA331CB0174500C24E2A /* IASKTextField.m in Sources */,
 				AE1EAA341CB0174500C24E2A /* IASKTextView.m in Sources */,
+				AE1BBA321EC3348B0081E068 /* Event.swift in Sources */,
 				AE1EAA261CB0174500C24E2A /* IASKAppSettingsWebViewController.m in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,
 				AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */,
+				AE1BBA381EC39CA10081E068 /* BaseWaypointDetailCiewController.swift in Sources */,
 				AE1EAA311CB0174500C24E2A /* IASKSlider.m in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
 				AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */,
 				AE5BB66F1C4EA92A00CF2A7C /* HeadingStrip.swift in Sources */,
 				AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */,
 				AE1EAA281CB0174500C24E2A /* IASKSpecifierValuesViewController.m in Sources */,
+				AE62AADC1EB5DED900D0DEF2 /* MessageStream.swift in Sources */,
 				AECE8D881C1EBE3E00FB183E /* MyDownPicker.swift in Sources */,
 				AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */,
 				AE1EAA251CB0174500C24E2A /* IASKAppSettingsViewController.m in Sources */,
+				AE1BBA341EC37C9A0081E068 /* WaypointDetailViewController.swift in Sources */,
 				AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */,
 				AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */,
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
 				AE1EAA271CB0174500C24E2A /* IASKMultipleValueSelection.m in Sources */,
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
 				AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */,
+				AE62AAE11EB8941500D0DEF2 /* MKWaypointView.swift in Sources */,
 				AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */,
 				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
 				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
@@ -1337,7 +1403,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks /Applications/Xcode.app/Contents/Developer/Toolchains/Swift_2.3.xctoolchain/usr/lib/swift/iphonesimulator";
 				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileCleanflight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

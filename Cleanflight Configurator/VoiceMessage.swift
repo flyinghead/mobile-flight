@@ -54,7 +54,7 @@ class VoiceAlarm {
 class CommunicationLostAlarm : VoiceAlarm {
     override var on: Bool {
         
-        if !Settings.theSettings.isModeOn(.ARM, forStatus: Configuration.theConfig.mode) {
+        if !Settings.theSettings.armed {
             return false
         }
         let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
@@ -80,7 +80,7 @@ class GPSFixLostAlarm : VoiceAlarm {
         let mode = Configuration.theConfig.mode
         
         // Only alert if armed and in GPS Hold or Home mode
-        if !settings.isModeOn(.ARM, forStatus: mode)
+        if !settings.armed
             || (!settings.isModeOn(.GPSHOLD, forStatus: mode) && !settings.isModeOn(.GPSHOME, forStatus: mode)) {
                 return false
         }
@@ -144,7 +144,7 @@ class RSSILowAlarm : VoiceAlarm {
         }
         let config = Configuration.theConfig
         
-        return Settings.theSettings.isModeOn(.ARM, forStatus: config.mode) && config.rssi <= userDefaultAsInt(.RSSIAlarmLow)
+        return Settings.theSettings.armed && config.rssi <= userDefaultAsInt(.RSSIAlarmLow)
     }
     override var enabled: Bool {
         return userDefaultEnabled(.RSSIAlarm)

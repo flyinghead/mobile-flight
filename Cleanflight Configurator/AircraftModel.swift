@@ -697,6 +697,10 @@ class Settings : AutoCoded {
         return false
     }
     
+    var armed: Bool {
+        return isModeOn(.ARM, forStatus: Configuration.theConfig.mode)
+    }
+    
     func getPID(name: PIDName) -> [Double]? {
         if let index = pidNames?.indexOf(name.rawValue) {
             return pidValues?[index]
@@ -1067,7 +1071,7 @@ struct Satellite : DictionaryCoding {
     }
 }
 
-struct GPSLocation : DictionaryCoding {
+struct GPSLocation : DictionaryCoding, Equatable  {
     var latitude: Double
     var longitude: Double
     
@@ -1096,6 +1100,11 @@ struct GPSLocation : DictionaryCoding {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }
+func ==(lhs: GPSLocation, rhs: GPSLocation) -> Bool {
+    return lhs.latitude == rhs.latitude &&
+        lhs.longitude == rhs.longitude
+}
+
 
 enum WaypointAction {
     case Waypoint
@@ -1112,15 +1121,23 @@ struct Waypoint {
     var param3: Int
     var last: Bool
     
-    init(number: Int, action: WaypointAction, position: GPSLocation, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
+    init(number: Int, action: WaypointAction, position: GPSLocation?, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
         self.number = number
         self.action = action
-        self.position = position
+        self.position = position ?? GPSLocation(latitude: 0, longitude: 0)
         self.altitude = altitude
         self.param1 = param1
         self.param2 = param2
         self.param3 = param3
         self.last = last
+    }
+    
+    init(position: GPSLocation, altitude: Double, speed: Int) {
+        self.init(number: 0, action: .Waypoint, position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
+    }
+    
+    static func rthWaypoint() -> Waypoint {
+        return Waypoint(number: 0, action: .ReturnToHome, position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
     }
 }
 

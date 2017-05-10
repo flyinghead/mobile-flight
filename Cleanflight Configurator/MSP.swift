@@ -457,7 +457,12 @@ class MSPParser {
             let altitude = Double(readInt32(message, index: offset)) / 100    // cm
             offset += 4
             if wpNum == 0 {     // Special waypoint: Home position
-                gpsData.homePosition = position
+                if position.latitude == 0 && position.longitude == 0 {
+                    // No home position
+                    gpsData.homePosition = nil
+                } else {
+                    gpsData.homePosition = position
+                }
                 pingGpsListeners()
             }
             else if wpNum == 16 || wpNum == 255 {     // Cleanflight: 16, INav: 255
@@ -470,7 +475,7 @@ class MSPParser {
                 pingSensorListeners()
             }
             else if config.isINav && wpNum >= 1 && wpNum <= 15 {
-                let p1 = Int(readInt16(message, index: offset))
+                let p1 = Int(readInt16(message, index: offset))     // Speed for .Waypoint action in cm/s (must be > 0.5 m/s and < general.max_speed (3 m/s by default))
                 offset += 2
                 let p2 = Int(readInt16(message, index: offset))
                 offset += 2
@@ -1204,7 +1209,7 @@ class MSPParser {
         data.append(UInt8(number))
         data.appendContentsOf(writeInt32(Int(latitude * 10000000.0)))
         data.appendContentsOf(writeInt32(Int(longitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(altitude)))
+        data.appendContentsOf(writeInt32(Int(altitude * 100)))
         data.appendContentsOf([0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
         
         sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
@@ -1217,7 +1222,7 @@ class MSPParser {
         data.append(UInt8(waypoint.action == .Waypoint ? 1 : 4))
         data.appendContentsOf(writeInt32(Int(waypoint.position.latitude * 10000000.0)))
         data.appendContentsOf(writeInt32(Int(waypoint.position.longitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(waypoint.altitude)))
+        data.appendContentsOf(writeInt32(Int(waypoint.altitude * 100)))
         data.appendContentsOf(writeInt16(waypoint.param1))
         data.appendContentsOf(writeInt16(waypoint.param2))
         data.appendContentsOf(writeInt16(waypoint.param3))

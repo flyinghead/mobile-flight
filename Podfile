@@ -24,6 +24,7 @@ target 'Cleanflight Configurator' do
   pod "Charts", "2.3.1"
   pod "SVProgressHUD"
   #pod "InAppSettingsKit"
+  pod "SwiftSVG"
 
   target 'KIFTests' do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']

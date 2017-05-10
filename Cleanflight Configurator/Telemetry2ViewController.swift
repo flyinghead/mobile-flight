@@ -289,7 +289,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         
         rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
         
-        armedLabel.armed = settings.isModeOn(Mode.ARM, forStatus: config.mode)
+        armedLabel.armed = settings.armed
         
         if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
             accroModeLabel.text = "ANGL"

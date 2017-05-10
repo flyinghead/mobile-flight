@@ -103,7 +103,7 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     func receivedData() {
         let config = Configuration.theConfig
         
-        let armed = Settings.theSettings.isModeOn(.ARM, forStatus: config.mode)
+        let armed = Settings.theSettings.armed
         self.enableAccCalibration(!armed && config.isGyroAndAccActive())
         self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }

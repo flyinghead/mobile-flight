@@ -9,6 +9,7 @@ PODS:
   - KIF/IdentifierTests (3.4.1):
     - KIF/Core
   - SVProgressHUD (1.1.3)
+  - SwiftSVG (1.1.5)
 
 DEPENDENCIES:
   - Charts (= 2.3.1)
@@ -16,13 +17,15 @@ DEPENDENCIES:
   - KIF (~> 3.0)
   - KIF/IdentifierTests
   - SVProgressHUD
+  - SwiftSVG
 
 SPEC CHECKSUMS:
   Charts: f04119c743c6996ba67fb8016d3a4878a38ca13f
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   KIF: 2275c6d59c77e5e56f660f006b99d73780130540
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
+  SwiftSVG: 79d3c15af0899d05bffc927e902e0d0738326511
 
-PODFILE CHECKSUM: 48886724d1bf9d3be30f0bbb01982590b75dc96e
+PODFILE CHECKSUM: 2979e55eea6afe509b965124b3cb9b2a414f2c80
 
 COCOAPODS: 1.2.0.rc.1

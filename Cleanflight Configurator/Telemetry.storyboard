@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="A7r-Ac-rau">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="A7r-Ac-rau">
+    <device id="retina4_0" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Map-->
@@ -16,16 +20,16 @@
                         <viewControllerLayoutGuide type="bottom" id="ubb-Lq-gqh"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="h0E-f4-1lm">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vxu-7w-poj">
-                                <rect key="frame" x="0.0" y="20" width="600" height="531"/>
+                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="zN8-5v-rhl" appends="YES" id="oWh-dg-q5W"/>
                                 </connections>
                             </mapView>
-                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0oz-VT-H27">
+                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0oz-VT-H27">
                                 <rect key="frame" x="8" y="28" width="79" height="77"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="battery" translatesAutoresizingMaskIntoConstraints="NO" id="g9M-qu-4Fy">
@@ -34,35 +38,32 @@
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gps_small" translatesAutoresizingMaskIntoConstraints="NO" id="5HP-v7-I65">
                                         <rect key="frame" x="8" y="54" width="15" height="15"/>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="12.1V" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GAi-C0-F6k" customClass="BatteryVoltageLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12.1V" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GAi-C0-F6k" customClass="BatteryVoltageLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="31" y="7" width="40" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
-                                        <variation key="heightClass=compact" ambiguous="YES">
-                                            <rect key="frame" x="31" y="7" width="39.5" height="18"/>
-                                        </variation>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="OK" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKy-HN-tIO" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OK" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKy-HN-tIO" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="49" y="53" width="22" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0AG-vS-HA4" userLabel="RSSI">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0AG-vS-HA4" userLabel="RSSI">
                                         <rect key="frame" x="8" y="31" width="71" height="17"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="signal" translatesAutoresizingMaskIntoConstraints="NO" id="elJ-6m-GJk">
-                                                <rect key="frame" x="-1" y="1" width="15" height="15"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signal" translatesAutoresizingMaskIntoConstraints="NO" id="elJ-6m-GJk">
+                                                <rect key="frame" x="0.0" y="1" width="15" height="15"/>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEz-Uy-RIY" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEz-Uy-RIY" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="33" y="0.0" width="32" height="18"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="elJ-6m-GJk" firstAttribute="centerY" secondItem="vEz-Uy-RIY" secondAttribute="centerY" id="AYi-ep-QsK"/>
                                             <constraint firstItem="elJ-6m-GJk" firstAttribute="leading" secondItem="0AG-vS-HA4" secondAttribute="leading" id="HAZ-rO-h5A"/>
@@ -76,7 +77,7 @@
                                         </connections>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="0AG-vS-HA4" firstAttribute="top" secondItem="GAi-C0-F6k" secondAttribute="bottom" constant="5" id="2Qq-Uj-Wqe"/>
                                     <constraint firstItem="GAi-C0-F6k" firstAttribute="centerY" secondItem="g9M-qu-4Fy" secondAttribute="centerY" id="2Vd-8L-PSU"/>
@@ -99,38 +100,38 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mh4-oO-Iou">
+                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mh4-oO-Iou">
                                 <rect key="frame" x="491" y="28" width="101" height="77"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="time" translatesAutoresizingMaskIntoConstraints="NO" id="WpA-Pl-viC">
+                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="time" translatesAutoresizingMaskIntoConstraints="NO" id="WpA-Pl-viC">
                                         <rect key="frame" x="8" y="8" width="15" height="15"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="height" translatesAutoresizingMaskIntoConstraints="NO" id="e6F-HP-GFQ">
+                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="height" translatesAutoresizingMaskIntoConstraints="NO" id="e6F-HP-GFQ">
                                         <rect key="frame" x="8" y="31" width="15" height="15"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="speed" translatesAutoresizingMaskIntoConstraints="NO" id="RVH-YT-5f9">
+                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="speed" translatesAutoresizingMaskIntoConstraints="NO" id="RVH-YT-5f9">
                                         <rect key="frame" x="8" y="54" width="15" height="15"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="37m" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIo-4b-ZbY">
                                         <rect key="frame" x="60" y="30" width="33" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9,8km/h" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VE8-Vl-r5k">
                                         <rect key="frame" x="31" y="53" width="62" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09:05" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6O8-wL-tWb" customClass="ArmedTimer" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="48" y="7" width="45" height="18"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="WpA-Pl-viC" firstAttribute="top" secondItem="mh4-oO-Iou" secondAttribute="top" constant="8" id="2i5-GZ-CfK"/>
                                     <constraint firstAttribute="bottom" secondItem="RVH-YT-5f9" secondAttribute="bottom" constant="8" id="5fB-zh-XpR"/>
@@ -155,14 +156,23 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="69j-7S-5bL">
+                                <rect key="frame" x="12" y="467" width="40" height="40"/>
+                                <state key="normal" image="upload"/>
+                                <connections>
+                                    <action selector="uploadWaypoints:" destination="HAc-Jz-dH5" eventType="touchUpInside" id="p9E-Vv-XhL"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="0oz-VT-H27" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" constant="8" id="0DD-pd-sw8"/>
                             <constraint firstItem="mh4-oO-Iou" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" constant="8" id="1oR-hX-gWb"/>
+                            <constraint firstItem="ubb-Lq-gqh" firstAttribute="top" secondItem="69j-7S-5bL" secondAttribute="bottom" constant="12" id="GHp-d1-hnd"/>
                             <constraint firstAttribute="trailing" secondItem="vxu-7w-poj" secondAttribute="trailing" id="Mg1-6D-tHD"/>
                             <constraint firstItem="vxu-7w-poj" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" id="QOy-Sc-Drh"/>
                             <constraint firstItem="mh4-oO-Iou" firstAttribute="trailing" secondItem="h0E-f4-1lm" secondAttribute="trailing" constant="-8" id="S8J-u7-dfo"/>
+                            <constraint firstItem="69j-7S-5bL" firstAttribute="leading" secondItem="h0E-f4-1lm" secondAttribute="leading" constant="12" id="Sc2-aX-BSv"/>
                             <constraint firstItem="vxu-7w-poj" firstAttribute="top" secondItem="h0E-f4-1lm" secondAttribute="topMargin" constant="20" id="Xx1-r3-wvn"/>
                             <constraint firstItem="0oz-VT-H27" firstAttribute="leading" secondItem="h0E-f4-1lm" secondAttribute="leading" constant="8" id="evL-3n-LOu"/>
                             <constraint firstItem="ubb-Lq-gqh" firstAttribute="top" secondItem="vxu-7w-poj" secondAttribute="bottom" constant="-49" id="rYQ-PC-Dmu"/>
@@ -187,6 +197,7 @@
                         <outlet property="rssiLabel" destination="vEz-Uy-RIY" id="9Mh-wc-Qsi"/>
                         <outlet property="speedLabel" destination="VE8-Vl-r5k" id="fg6-vV-m1D"/>
                         <outlet property="timeLabel" destination="6O8-wL-tWb" id="leN-vq-LMf"/>
+                        <outlet property="uploadButton" destination="69j-7S-5bL" id="UZX-mC-IqB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n7f-Po-I7r" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -212,14 +223,14 @@
                         <viewControllerLayoutGuide type="bottom" id="M1T-3r-vMj"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="J0N-0c-q5t">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xEV-c8-epc" userLabel="TopBar">
-                                <rect key="frame" x="0.0" y="20" width="375" height="39"/>
+                                <rect key="frame" x="0.0" y="20" width="320" height="39"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KMu-1b-BFg">
-                                        <rect key="frame" x="50" y="0.0" width="81" height="39"/>
+                                        <rect key="frame" x="50" y="0.0" width="67.5" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signalw" translatesAutoresizingMaskIntoConstraints="NO" id="Kcm-cx-xuh">
                                                 <rect key="frame" x="4" y="12" width="15" height="15"/>
@@ -228,7 +239,7 @@
                                                 <rect key="frame" x="23" y="11" width="33" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="rssi"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -244,7 +255,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vPt-Fk-iKy">
-                                        <rect key="frame" x="213" y="0.0" width="81" height="39"/>
+                                        <rect key="frame" x="185" y="0.0" width="67.5" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="satellitew" translatesAutoresizingMaskIntoConstraints="NO" id="IYG-hy-uB7">
                                                 <rect key="frame" x="12" y="12" width="15" height="15"/>
@@ -253,7 +264,7 @@
                                                 <rect key="frame" x="31" y="11" width="18" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="gpsSats"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -266,13 +277,13 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yfp-Jq-MD8">
-                                        <rect key="frame" x="294" y="0.0" width="81" height="39"/>
+                                        <rect key="frame" x="252.5" y="0.0" width="67.5" height="39"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="74m" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H7F-1x-aIU" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="23" y="11" width="32" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="dth"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9k-8a-xrv">
@@ -281,7 +292,7 @@
                                                     <constraint firstAttribute="width" constant="15" id="aYc-Tu-s8X"/>
                                                     <constraint firstAttribute="height" constant="15" id="bfu-rN-p6g"/>
                                                 </constraints>
-                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="RTH"/>
                                             </button>
                                         </subviews>
@@ -294,7 +305,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pzb-Ho-2cr">
-                                        <rect key="frame" x="131" y="0.0" width="82" height="39"/>
+                                        <rect key="frame" x="117.5" y="0.0" width="67.5" height="39"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timew" translatesAutoresizingMaskIntoConstraints="NO" id="Fks-Mf-6Z3">
                                                 <rect key="frame" x="4" y="12" width="15" height="15"/>
@@ -303,7 +314,7 @@
                                                 <rect key="frame" x="23" y="11" width="42" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="timer"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -326,7 +337,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="Pzb-Ho-2cr" firstAttribute="height" secondItem="xEV-c8-epc" secondAttribute="height" id="4En-PR-pJv"/>
                                     <constraint firstItem="vPt-Fk-iKy" firstAttribute="height" secondItem="xEV-c8-epc" secondAttribute="height" id="7LK-EF-8dh"/>
@@ -352,20 +363,20 @@
                                 </constraints>
                             </view>
                             <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="TE5-wJ-hyb" customClass="AttitudeIndicator2" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="59" width="375" height="543"/>
+                                <rect key="frame" x="0.0" y="59" width="320" height="444"/>
                                 <subviews>
                                     <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-fW-yIn" customClass="HeadingStrip" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
                                         <subviews>
                                             <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="stf-M2-qLQ" customClass="TurnRateIndicator" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="3" width="375" height="8"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <rect key="frame" x="0.0" y="3" width="320" height="8"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="8" id="QnK-dw-14Q"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="headingIndicator">
                                             <bool key="isElement" value="YES"/>
                                         </accessibility>
@@ -377,8 +388,8 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="6wj-AC-YrA" customClass="SimpleVerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="352" y="40" width="24" height="503"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="297" y="40" width="24" height="404"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="variometerIndicator">
                                             <bool key="isElement" value="YES"/>
                                         </accessibility>
@@ -408,8 +419,8 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="7CG-RW-afA" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="298" y="61" width="55" height="465"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="243" y="61" width="55" height="366"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="altitudeIndicator">
                                             <bool key="isElement" value="YES"/>
                                         </accessibility>
@@ -443,8 +454,8 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-zT-X9L" customClass="VerticalScale" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="-1" y="40" width="55" height="486"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="-1" y="40" width="55" height="387"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="speedIndicator">
                                             <bool key="isElement" value="YES"/>
                                         </accessibility>
@@ -474,18 +485,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dc0-c2-I9K" userLabel="Rx Fail View">
-                                        <rect key="frame" x="213" y="65" width="76" height="18"/>
+                                        <rect key="frame" x="167" y="65" width="76" height="18"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RX FAIL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5l5-9x-x4P">
                                                 <rect key="frame" x="10" y="0.0" width="56" height="18"/>
-                                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="failsafeMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="5l5-9x-x4P" secondAttribute="trailing" constant="10" id="Clh-fT-Ghj"/>
                                             <constraint firstAttribute="bottom" secondItem="5l5-9x-x4P" secondAttribute="bottom" id="KKF-hD-Ugx"/>
@@ -494,18 +505,18 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RU2-NR-WVd" userLabel="FlightModesIcons">
-                                        <rect key="frame" x="115" y="525" width="146" height="18"/>
+                                        <rect key="frame" x="87.5" y="426" width="146" height="18"/>
                                         <subviews>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v6n-wQ-f23">
                                                 <rect key="frame" x="77" y="0.0" width="15" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="sonarMode"/>
-                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="sonar"/>
                                             </button>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dZK-HA-eST">
                                                 <rect key="frame" x="54" y="0.0" width="15" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="telemetryMode"/>
-                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="telemetry"/>
                                             </button>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cCI-We-Eez">
@@ -515,13 +526,13 @@
                                                     <constraint firstAttribute="height" constant="15" id="Tq6-En-zQe"/>
                                                     <constraint firstAttribute="width" constant="15" id="izr-na-D46"/>
                                                 </constraints>
-                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="calibrate"/>
                                             </button>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="947-jM-r2J">
                                                 <rect key="frame" x="100" y="0.0" width="15" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="blackboxMode"/>
-                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="recorder"/>
                                             </button>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oqQ-0h-fJh">
@@ -531,17 +542,17 @@
                                                     <constraint firstAttribute="height" constant="15" id="0DX-Fz-BdV"/>
                                                     <constraint firstAttribute="width" constant="15" id="cyj-LI-rLb"/>
                                                 </constraints>
-                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="tuning"/>
                                             </button>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GWm-ae-uRM">
                                                 <rect key="frame" x="8" y="0.0" width="15" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="camstabMode"/>
-                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" image="camera"/>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="GWm-ae-uRM" firstAttribute="top" secondItem="RU2-NR-WVd" secondAttribute="top" id="3ss-PM-OOY"/>
                                             <constraint firstItem="dZK-HA-eST" firstAttribute="leading" secondItem="cCI-We-Eez" secondAttribute="trailing" constant="8" id="7xF-TK-Vvo"/>
@@ -561,9 +572,9 @@
                                         </constraints>
                                     </view>
                                     <view hidden="YES" opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Mtp-oQ-T8O" userLabel="LeftStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="12" y="364" width="155" height="155"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="12" y="274" width="146" height="146"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Mtp-oQ-T8O" secondAttribute="height" multiplier="1:1" id="hwU-Sf-Foz"/>
@@ -573,9 +584,9 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view hidden="YES" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="GWn-1s-XVz" userLabel="RightStick" customClass="RCStick" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="208" y="364" width="155" height="155"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="162" y="274" width="146" height="146"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="tintColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="GWn-1s-XVz" secondAttribute="height" multiplier="1:1" id="Acn-Lr-Ioz"/>
@@ -583,10 +594,10 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DISARMED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfk-J1-JAa" customClass="ArmedLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="148" y="71" width="79" height="18"/>
+                                        <rect key="frame" x="120.5" y="71" width="79" height="18"/>
                                         <accessibility key="accessibilityConfiguration" identifier="armedMode"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="blinkingPeriod">
@@ -596,10 +607,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="km/h" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="heO-K5-2mC">
-                                        <rect key="frame" x="-1" y="525" width="55" height="18"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="-1" y="426" width="55" height="18"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
@@ -608,10 +619,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="m" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H83-Ai-eZf">
-                                        <rect key="frame" x="298" y="525" width="55" height="18"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <rect key="frame" x="243" y="426" width="55" height="18"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
@@ -620,7 +631,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ROZ-BS-nyT" userLabel="Alt Hold View">
-                                        <rect key="frame" x="298" y="40" width="55" height="22"/>
+                                        <rect key="frame" x="243" y="40" width="55" height="22"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" image="scalebug" translatesAutoresizingMaskIntoConstraints="NO" id="gEH-nk-qCW">
                                                 <rect key="frame" x="-3" y="2" width="18" height="18"/>
@@ -628,11 +639,11 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2.6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EMM-IT-9Jt">
                                                 <rect key="frame" x="15" y="2" width="35" height="18"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="EMM-IT-9Jt" firstAttribute="leading" secondItem="gEH-nk-qCW" secondAttribute="trailing" id="FAQ-eW-URa"/>
                                             <constraint firstItem="gEH-nk-qCW" firstAttribute="leading" secondItem="ROZ-BS-nyT" secondAttribute="leading" constant="-3" id="Kyi-F3-Kb3"/>
@@ -651,45 +662,45 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cyG-w5-80j" userLabel="FlightModes">
-                                        <rect key="frame" x="87" y="40" width="202" height="25"/>
+                                        <rect key="frame" x="54" y="40" width="189" height="25"/>
                                         <subviews>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="HDG" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lDM-8A-Y3g">
                                                 <rect key="frame" x="124" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="headingMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="ANGL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1V-ct-DJt">
                                                 <rect key="frame" x="4" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="acroMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="ALT" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Wi-Nv-Bji">
                                                 <rect key="frame" x="85" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="altMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="AIR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U98-D1-U4F">
                                                 <rect key="frame" x="46" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="airMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="POS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="czI-ry-928">
                                                 <rect key="frame" x="163" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="posMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="A1V-ct-DJt" firstAttribute="top" secondItem="cyG-w5-80j" secondAttribute="top" constant="4" id="7ji-LL-8uV"/>
                                             <constraint firstItem="lDM-8A-Y3g" firstAttribute="leading" secondItem="6Wi-Nv-Bji" secondAttribute="trailing" id="8br-RJ-biB"/>
@@ -711,7 +722,7 @@
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="attitudeIndicator">
                                     <bool key="isElement" value="YES"/>
                                 </accessibility>
@@ -776,15 +787,15 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xJu-44-E55">
                                         <rect key="frame" x="8" y="8" width="108" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="Follow Me">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <state key="disabled">
-                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <state key="selected">
-                                            <color key="titleColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="followMeAction:" destination="A7r-Ac-rau" eventType="touchUpInside" id="hzo-bU-dFy"/>
@@ -792,12 +803,12 @@
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2W-Cf-NJl">
                                         <rect key="frame" x="8" y="46" width="108" height="30"/>
-                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="Show RC Sticks">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <state key="selected">
-                                            <color key="titleColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="showRCSticksAction:" destination="A7r-Ac-rau" eventType="touchUpInside" id="ery-QM-lFy"/>
@@ -806,14 +817,14 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qNd-fg-Roc">
                                         <rect key="frame" x="8" y="96" width="108" height="30"/>
                                         <state key="normal" title="Disconnect">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="disconnectAction:" destination="A7r-Ac-rau" eventType="touchUpInside" id="ZkR-ac-oMI"/>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="qNd-fg-Roc" secondAttribute="bottom" constant="8" id="A34-Wc-Luo"/>
                                     <constraint firstItem="qNd-fg-Roc" firstAttribute="leading" secondItem="xJu-44-E55" secondAttribute="leading" id="Aqp-9R-3pT"/>
@@ -829,7 +840,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j13-Ao-QcT" userLabel="Bottom instruments">
-                                <rect key="frame" x="-4" y="602" width="379" height="65"/>
+                                <rect key="frame" x="-4" y="503" width="324" height="65"/>
                                 <subviews>
                                     <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="vrA-Q3-v25" userLabel="Volts Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                         <rect key="frame" x="18" y="4" width="60" height="60"/>
@@ -837,18 +848,18 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VOLTS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ZV-y8g" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="24" y="31" width="36" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11.7" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nc4-kZ-EnL" customClass="BatteryVoltageLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="27" y="44" width="33" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="batteryVolts"/>
                                                 <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="13"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="Nc4-kZ-EnL" secondAttribute="bottom" id="AEA-lz-Ye2"/>
                                             <constraint firstItem="Nc4-kZ-EnL" firstAttribute="top" secondItem="UKU-ZV-y8g" secondAttribute="bottom" constant="-1" id="EbH-2Q-ge1"/>
@@ -866,23 +877,23 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="KU3-Qm-2Go" userLabel="Amps Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="160" y="3" width="60" height="60"/>
+                                        <rect key="frame" x="132.5" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AMPS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfQ-z5-fZv" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="29" y="31" width="31" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cwm-EC-RXa" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="41" y="44" width="19" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="batteryAmps"/>
                                                 <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="13"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="Cwm-EC-RXa" secondAttribute="bottom" id="5Id-hm-8aK"/>
                                             <constraint firstItem="Cwm-EC-RXa" firstAttribute="top" secondItem="WfQ-z5-fZv" secondAttribute="bottom" constant="-1" id="FfX-36-x2q"/>
@@ -900,23 +911,23 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="wuh-Hv-O2R" userLabel="mAh Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="301" y="3" width="60" height="60"/>
+                                        <rect key="frame" x="246" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mAh" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bB6-7o-dtq" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="34" y="31" width="26" height="14"/>
                                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="11"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1100" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Ms-Gz-n4I" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="23" y="44" width="37" height="16"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="batterymAh"/>
                                                 <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="13"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="6Ms-Gz-n4I" secondAttribute="trailing" id="0xr-0v-yT2"/>
                                             <constraint firstAttribute="trailing" secondItem="bB6-7o-dtq" secondAttribute="trailing" id="5tQ-TZ-MGI"/>
@@ -934,7 +945,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="KU3-Qm-2Go" firstAttribute="centerX" secondItem="j13-Ao-QcT" secondAttribute="centerX" id="3FU-7E-PNo"/>
                                     <constraint firstAttribute="height" constant="65" id="64S-75-qzc"/>
@@ -982,7 +993,7 @@
                                 </connections>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="TE5-wJ-hyb" secondAttribute="trailing" id="0Em-v1-CUw"/>
                             <constraint firstItem="j13-Ao-QcT" firstAttribute="leading" secondItem="J0N-0c-q5t" secondAttribute="leadingMargin" constant="-20" id="7ia-hy-nNc"/>
@@ -1020,8 +1031,6 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Telemetry" image="Quad" selectedImage="Quad" id="2eP-Gf-GFL"/>
                     <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="accroModeLabel" destination="A1V-ct-DJt" id="dir-Ti-k0p"/>
                         <outlet property="actionsView" destination="UiZ-RE-5Xc" id="Uwu-gA-ZVS"/>
@@ -1088,7 +1097,7 @@
         <image name="Quad" width="30" height="30"/>
         <image name="RTH" width="15" height="15"/>
         <image name="battery" width="15" height="15"/>
-        <image name="calibrate" width="30" height="31"/>
+        <image name="calibrate" width="30" height="30"/>
         <image name="camera" width="15" height="15"/>
         <image name="gps_small" width="15" height="15"/>
         <image name="height" width="15" height="15"/>
@@ -1105,5 +1114,6 @@
         <image name="time" width="15" height="15"/>
         <image name="timew" width="15" height="15"/>
         <image name="tuning" width="30" height="30"/>
+        <image name="upload" width="40" height="40"/>
     </resources>
 </document>
