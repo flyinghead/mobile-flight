@@ -142,5 +142,10 @@ enum MSP_code : Int {
     
     // 3DR Radio RSSI (SIK-multiwii firmware)
     case MSP_SIKRADIO =            199
+    
+    // INav
+    case MSP_NAV_POSHOLD =          12
+    case MSP_SET_NAV_POSHOLD =      13
+    case MSP_NAV_STATUS =          121
 }
 

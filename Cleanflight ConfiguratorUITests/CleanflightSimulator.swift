@@ -29,7 +29,7 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     var speed = 0.0
     var distanceToHome = 0
     
-    private var boxnames: [Mode] = [ .ANGLE, .ARM, .AUTOTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPSHOLD, .GPSHOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSDSW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY, .AIR ]
+    private var boxnames: [Mode] = [ .ANGLE, .ARM, .GTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPSHOLD, .GPSHOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSDSW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY, .AIR ]
     
     private var thread: NSThread!
 

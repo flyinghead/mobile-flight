@@ -59,7 +59,7 @@ class MKWaypointList : SequenceType {
     
     func append(waypoint: Waypoint) {
         let wpAnnot = createWaypointAnnotation(waypoint)
-        if waypoint.action == .ReturnToHome || waypoints.isEmpty || !waypoints.last!.returnToHome {
+        if waypoint.action == INavWaypointAction.Known(.ReturnToHome) || waypoints.isEmpty || !waypoints.last!.returnToHome {
             wpAnnot.number = waypoints.count + 1
             waypoints.append(wpAnnot)
         } else {

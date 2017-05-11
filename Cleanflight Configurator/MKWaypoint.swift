@@ -54,7 +54,7 @@ class MKWaypoint : NSObject, MKAnnotation {
     }
     
     var returnToHome: Bool {
-        return waypoint.action == .ReturnToHome
+        return waypoint.action == .Known(.ReturnToHome)
     }
     
     var number: Int {

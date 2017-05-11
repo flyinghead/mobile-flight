@@ -305,36 +305,103 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     }
 }
 
-enum PortIdentifier : Int {
-    case None = -1
-    case USART1 = 0
-    case USART2 = 1
-    case USART3 = 2
-    case USART4 = 3
-    case USB_VCP = 20
-    case SoftSerial1 = 30
-    case SoftSerial2 = 31
+enum PortIdentifier {
+    enum Internal : Int {
+        case None = -1
+        case USART1 = 0
+        case USART2 = 1
+        case USART3 = 2
+        case USART4 = 3
+        case USB_VCP = 20
+        case SoftSerial1 = 30
+        case SoftSerial2 = 31
+    }
+    case Known(Internal)
+    case Unknown(Int)
+    
+    init(value: Int) {
+        if let intern = Internal(rawValue: value) {
+            self = .Known(intern)
+        } else {
+            self = .Unknown(value)
+        }
+    }
+    
+    var intValue: Int {
+        switch self {
+        case .Known(let intern):
+            return intern.rawValue
+        case .Unknown(let value):
+            return value
+        }
+    }
+
+    var name: String {
+        switch self {
+        case .Known(let intern):
+            switch intern {
+            case .None:
+                return "None"
+            case .USART1:
+                return "UART1"
+            case .USART2:
+                return "UART2"
+            case .USART3:
+                return "UART3"
+            case .USART4:
+                return "UART4"
+            case .USB_VCP:
+                return "USB"
+            case .SoftSerial1:
+                return "SOFTSERIAL1"
+            case .SoftSerial2:
+                return "SOFTSERIAL2"
+            }
+        case .Unknown(let value):
+            return String(format: "PORT %d", value)
+        }
+    }
 }
 
-enum BaudRate : Int {
-    case Auto = 0
-    case Baud9600 = 1
-    case Baud19200 = 2
-    case Baud38400 = 3
-    case Baud57600 = 4
-    case Baud115200 = 5
-    case Baud230400 = 6
-    case Baud250000 = 7
+enum BaudRate {
+    enum Internal : Int {
+        case Auto = 0
+        case Baud9600 = 1
+        case Baud19200 = 2
+        case Baud38400 = 3
+        case Baud57600 = 4
+        case Baud115200 = 5
+        case Baud230400 = 6
+        case Baud250000 = 7
+    }
+    case Known(Internal)
+    case Unknown(Int)
     
+    init(value: Int) {
+        if let intern = Internal(rawValue: value) {
+            self = .Known(intern)
+        } else {
+            self = .Unknown(value)
+        }
+    }
+    
+    var intValue: Int {
+        switch self {
+        case .Known(let intern):
+            return intern.rawValue
+        case .Unknown(let value):
+            return value
+        }
+    }
 }
 
 struct PortConfig : DictionaryCoding {
-    var portIdentifier = PortIdentifier.None
+    var portIdentifier = PortIdentifier.Known(.None)
     var functions = PortFunction.None
-    var mspBaudRate = BaudRate.Auto
-    var gpsBaudRate = BaudRate.Auto
-    var telemetryBaudRate = BaudRate.Auto
-    var blackboxBaudRate = BaudRate.Auto
+    var mspBaudRate = BaudRate.Known(.Auto)
+    var gpsBaudRate = BaudRate.Known(.Auto)
+    var telemetryBaudRate = BaudRate.Known(.Auto)
+    var blackboxBaudRate = BaudRate.Known(.Auto)
     
     init(portIdentifier: PortIdentifier, functions: PortFunction, mspBaudRate: BaudRate, gpsBaudRate: BaudRate, telemetryBaudRate: BaudRate, blackboxBaudRate: BaudRate) {
         self.portIdentifier = portIdentifier
@@ -356,11 +423,11 @@ struct PortConfig : DictionaryCoding {
             let blackboxBaudRate = dict["blackboxBaudRate"] as? Int
             else { return nil }
         
-        self.init(portIdentifier: PortIdentifier(rawValue: portIdentifier)!, functions: PortFunction(rawValue: functions), mspBaudRate: BaudRate(rawValue: mspBaudRate)!, gpsBaudRate: BaudRate(rawValue: gpsBaudRate)!, telemetryBaudRate: BaudRate(rawValue: telemetryBaudRate)!, blackboxBaudRate: BaudRate(rawValue: blackboxBaudRate)!)
+        self.init(portIdentifier: PortIdentifier(value: portIdentifier), functions: PortFunction(rawValue: functions), mspBaudRate: BaudRate(value: mspBaudRate), gpsBaudRate: BaudRate(value: gpsBaudRate), telemetryBaudRate: BaudRate(value: telemetryBaudRate), blackboxBaudRate: BaudRate(value: blackboxBaudRate))
     }
     
     func toDict() -> NSDictionary {
-        return [ "portIdentifier": portIdentifier.rawValue, "functions": functions.rawValue, "mspBaudRate": mspBaudRate.rawValue, "gpsBaudRate": gpsBaudRate.rawValue, "telemetryBaudRate": telemetryBaudRate.rawValue, "blackboxBaudRate": blackboxBaudRate.rawValue ]
+        return [ "portIdentifier": portIdentifier.intValue, "functions": functions.rawValue, "mspBaudRate": mspBaudRate.intValue, "gpsBaudRate": gpsBaudRate.intValue, "telemetryBaudRate": telemetryBaudRate.intValue, "blackboxBaudRate": blackboxBaudRate.intValue ]
     }
 }
 
@@ -1106,14 +1173,9 @@ func ==(lhs: GPSLocation, rhs: GPSLocation) -> Bool {
 }
 
 
-enum WaypointAction {
-    case Waypoint
-    case ReturnToHome
-}
-
 struct Waypoint {
     var number: Int
-    var action: WaypointAction
+    var action: INavWaypointAction
     var position: GPSLocation
     var altitude: Double = 0.0
     var param1: Int
@@ -1121,7 +1183,7 @@ struct Waypoint {
     var param3: Int
     var last: Bool
     
-    init(number: Int, action: WaypointAction, position: GPSLocation?, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
+    init(number: Int, action: INavWaypointAction, position: GPSLocation?, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
         self.number = number
         self.action = action
         self.position = position ?? GPSLocation(latitude: 0, longitude: 0)
@@ -1133,11 +1195,11 @@ struct Waypoint {
     }
     
     init(position: GPSLocation, altitude: Double, speed: Int) {
-        self.init(number: 0, action: .Waypoint, position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
+        self.init(number: 0, action: .Known(.Waypoint), position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
     }
     
     static func rthWaypoint() -> Waypoint {
-        return Waypoint(number: 0, action: .ReturnToHome, position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
+        return Waypoint(number: 0, action: .Known(.ReturnToHome), position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
     }
 }
 
@@ -1493,4 +1555,6 @@ func resetAircraftModel() {
     Dataflash.theDataflash = Dataflash()
     
     AllAircraftData.allAircraftData = AllAircraftData()
+    
+    INavConfig.theINavConfig = INavConfig()
 }

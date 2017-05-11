@@ -9,6 +9,10 @@
 import UIKit
 
 class PortConfigViewController: ConfigChildViewController {
+    let MSPAndGPSBaudRates =  [ "9600", "19200", "38400", "57600", "115200" ]
+    let BlackboxBaudRates =  [ "19200", "38400", "57600", "115200", "230400", "250000" ]
+    let TelemetryBaudRates = [ "Auto", "9600", "19200", "38400", "57600", "115200" ]
+    
     @IBOutlet weak var enableMSP: UISwitch!
     @IBOutlet weak var mspBaudrateField: UITextField!
     @IBOutlet weak var peripheralsTypeField: UITextField!
@@ -37,19 +41,19 @@ class PortConfigViewController: ConfigChildViewController {
         
         telemetryMAVLink = Configuration.theConfig.isApiVersionAtLeast("1.31") ? .TelemetryMAVLink : .TelemetryMAVLinkOld
         
-        mspBaudratePicker = MyDownPicker(textField: mspBaudrateField, withData: [ "9600", "19200", "38400", "57600", "115200" ])
+        mspBaudratePicker = MyDownPicker(textField: mspBaudrateField, withData: MSPAndGPSBaudRates)
         mspBaudratePicker.setPlaceholder("")
         peripheralsTypePicker = MyDownPicker(textField: peripheralsTypeField, withData: [ "Disabled", "Blackbox", "TBS SmartAudio", "IRC Tramp" ])
         peripheralsTypePicker.setPlaceholder("")
-        blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: [ "19200", "38400", "57600", "115200", "230400", "250000" ])
+        blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: BlackboxBaudRates)
         blackboxBaudratePicker.setPlaceholder("")
         telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "LTM", "SmartPort", "MAVLink" ])
         telemetryTypePicker.setPlaceholder("")
-        telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: [ "Auto", "9600", "19200", "38400", "57600", "115200" ])
+        telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: TelemetryBaudRates)
         telemetryBaudratePicker.setPlaceholder("")
         sensorTypePicker = MyDownPicker(textField: sensorTypeField, withData: [ "Disabled", "GPS", "ESC" ])
         sensorTypePicker.setPlaceholder("")
-        gpsBaudratePicker = MyDownPicker(textField: gpsBaudrateField, withData: [ "9600", "19200", "38400", "57600", "115200" ])
+        gpsBaudratePicker = MyDownPicker(textField: gpsBaudrateField, withData: MSPAndGPSBaudRates)
         gpsBaudratePicker.setPlaceholder("")
     }
     
@@ -59,7 +63,9 @@ class PortConfigViewController: ConfigChildViewController {
         let port = settings.portConfigs![portIndex]
         
         enableMSP.on = port.functions.contains(.MSP)
-        mspBaudratePicker.selectedIndex = port.mspBaudRate.rawValue - 1             // No auto
+        
+        let mspBaudRate = port.mspBaudRate.intValue - 1             // No auto
+        setPickerValue(mspBaudratePicker, options: MSPAndGPSBaudRates, selected: mspBaudRate)
         
         if port.functions.contains(.Blackbox) {
             peripheralsTypePicker.selectedIndex = 1
@@ -70,7 +76,7 @@ class PortConfigViewController: ConfigChildViewController {
         } else {
             peripheralsTypePicker.selectedIndex = 0
         }
-        blackboxBaudratePicker.selectedIndex = port.blackboxBaudRate.rawValue - 2   // No auto or 9600
+        setPickerValue(blackboxBaudratePicker, options: BlackboxBaudRates, selected: port.blackboxBaudRate.intValue - 2)   // No auto or 9600
         
         if port.functions.contains(.TelemetryFrsky) {
             telemetryTypePicker.selectedIndex = 1
@@ -85,7 +91,7 @@ class PortConfigViewController: ConfigChildViewController {
         } else {
             telemetryTypePicker.selectedIndex = 0
         }
-        telemetryBaudratePicker.selectedIndex = port.telemetryBaudRate.rawValue
+        setPickerValue(telemetryBaudratePicker, options: TelemetryBaudRates, selected: port.telemetryBaudRate.intValue)
         
         enableRx.on = port.functions.contains(.RxSerial)
         
@@ -96,7 +102,23 @@ class PortConfigViewController: ConfigChildViewController {
         } else {
             sensorTypePicker.selectedIndex = 0
         }
-        gpsBaudratePicker.selectedIndex = port.gpsBaudRate.rawValue - 1         // No auto
+        setPickerValue(gpsBaudratePicker, options: MSPAndGPSBaudRates, selected: port.gpsBaudRate.intValue - 1)        // No auto
+    }
+    
+    private func setPickerValue(picker: MyDownPicker, options: [String], selected: Int) {
+        if selected < 0 || selected >= options.count {
+            if selected < 0 || selected - options.count > 4 {
+                picker.enabled = false
+                return
+            }
+            var optionsCopy = options
+            for i in options.count ..< selected + 1 {
+                optionsCopy.append(String(format: "Unknown (%d)", i))
+            }
+            picker.setData(optionsCopy)
+        }
+        picker.enabled = true
+        picker.selectedIndex = selected
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -109,7 +131,9 @@ class PortConfigViewController: ConfigChildViewController {
         } else {
             port.functions.remove(.MSP)
         }
-        port.mspBaudRate = BaudRate(rawValue: mspBaudratePicker.selectedIndex + 1)!
+        if mspBaudratePicker.enabled {
+            port.mspBaudRate = BaudRate(value: mspBaudratePicker.selectedIndex + 1)
+        }
         
         port.functions.remove(.Blackbox)
         port.functions.remove(.VTXSmartAudio)
@@ -124,7 +148,9 @@ class PortConfigViewController: ConfigChildViewController {
         default:
             break
         }
-        port.blackboxBaudRate = BaudRate(rawValue: blackboxBaudratePicker.selectedIndex + 2)!
+        if blackboxBaudratePicker.enabled {
+            port.blackboxBaudRate = BaudRate(value: blackboxBaudratePicker.selectedIndex + 2)
+        }
         
         port.functions.remove(.TelemetryFrsky)
         port.functions.remove(.TelemetryHott)
@@ -145,7 +171,9 @@ class PortConfigViewController: ConfigChildViewController {
         default:
             break
         }
-        port.telemetryBaudRate = BaudRate(rawValue: telemetryBaudratePicker.selectedIndex)!
+        if telemetryBaudratePicker.enabled {
+            port.telemetryBaudRate = BaudRate(value: telemetryBaudratePicker.selectedIndex)
+        }
         
         if enableRx.on {
             port.functions.insert(.RxSerial)
@@ -164,7 +192,9 @@ class PortConfigViewController: ConfigChildViewController {
             port.functions.remove(.GPS)
             port.functions.remove(.ESCSensor)
         }
-        port.gpsBaudRate = BaudRate(rawValue: gpsBaudratePicker.selectedIndex + 1)!
+        if gpsBaudratePicker.enabled {
+            port.gpsBaudRate = BaudRate(value: gpsBaudratePicker.selectedIndex + 1)
+        }
 
         settings.portConfigs![portIndex] = port
         

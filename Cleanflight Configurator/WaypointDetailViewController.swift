@@ -55,12 +55,12 @@ class WaypointDetailViewController: BaseWaypointDetailViewController {
     
     @IBAction func sameAltitudeChanged(sender: AnyObject) {
         cell(altitudeCell, setHidden: sameAltitudeSwitch.on)
-        reloadDataAnimated(true)
+        reloadDataAnimated(sender !== self)
     }
     
     @IBAction func defaultSpeedChanged(sender: AnyObject) {
         cell(speedCell, setHidden: defaultSpeedSwitch.on)
-        reloadDataAnimated(true)
+        reloadDataAnimated(sender !== self)
     }
     
     private func msToLocaleSpeed(speed: Double) -> Double {

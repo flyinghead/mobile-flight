@@ -446,10 +446,10 @@ class MSPParser {
             var offset = 0
             let wpNum = Int(message[offset])
             offset += 1
-            var action: WaypointAction?
+            var action: INavWaypointAction?
             if config.isINav {
                 // 1: waypoint, 4: RTH
-                action = message[offset] == 1 ? .Waypoint : .ReturnToHome
+                action = INavWaypointAction(value: Int(message[offset]))
                 offset += 1
             }
             let position = GPSLocation(latitude: Double(readInt32(message, index: offset)) / 10000000, longitude: Double(readInt32(message, index: offset + 4)) / 10000000)
@@ -655,7 +655,7 @@ class MSPParser {
             settings.portConfigs = [PortConfig]()
             for i in 0..<nPorts {
                 let offset = i * 7
-                settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(rawValue: Int(message[offset]))!, functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(rawValue: Int(message[offset+3]))!, gpsBaudRate: BaudRate(rawValue: Int(message[offset+4]))!, telemetryBaudRate: BaudRate(rawValue: Int(message[offset+5]))!, blackboxBaudRate: BaudRate(rawValue: Int(message[offset+6]))!))
+                settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(value: Int(message[offset])), functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(value: Int(message[offset+3])), gpsBaudRate: BaudRate(value: Int(message[offset+4])), telemetryBaudRate: BaudRate(value: Int(message[offset+5])), blackboxBaudRate: BaudRate(value: Int(message[offset+6]))))
             }
             
         case .MSP_PID_CONTROLLER:
@@ -874,6 +874,34 @@ class MSPParser {
                 settings.throttle3dDeadband = Int(readInt16(message, index: 3))
             }
             
+        // INav
+        case .MSP_NAV_STATUS:
+            if message.count < 7 {
+                return false
+            }
+            let inavConfig = INavConfig.theINavConfig
+            inavConfig.mode = INavStatusMode(value: Int(message[0]))
+            inavConfig.state = INavStatusState(value: Int(message[1]))
+            inavConfig.activeWaypointAction = INavWaypointAction(value: Int(message[2]))
+            inavConfig.activeWaypoint = Int(message[3])
+            inavConfig.error = INavStatusError(value: Int(message[4]))
+            sensorData.headingHold = Double(readInt16(message, index: 5))
+            pingSensorListeners()
+            
+        case .MSP_NAV_POSHOLD:
+            if message.count < 13 {
+                return false
+            }
+            let inavConfig = INavConfig.theINavConfig
+            inavConfig.userControlMode = INavUserControlMode(value: Int(message[0]))
+            inavConfig.maxSpeed = Double(readUInt16(message, index: 1)) / 100
+            inavConfig.maxClimbRate = Double(readUInt16(message, index: 3)) / 100
+            inavConfig.maxManualSpeed = Double(readUInt16(message, index: 5)) / 100
+            inavConfig.maxManualClimbRate = Double(readUInt16(message, index: 7)) / 100
+            inavConfig.maxBankAngle = Int(message[9])
+            inavConfig.useThrottleMidForAltHold = message[10] != 0
+            inavConfig.hoverThrottle = readUInt16(message, index: 11)
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -911,7 +939,8 @@ class MSPParser {
             .MSP_SET_MOTOR_CONFIG,
             .MSP_SET_COMPASS_CONFIG,
             .MSP_SET_GPS_CONFIG,
-            .MSP_SET_RC_DEADBAND:
+            .MSP_SET_RC_DEADBAND,
+            .MSP_SET_NAV_POSHOLD:
             break
             
         default:
@@ -1219,7 +1248,7 @@ class MSPParser {
     func sendINavWaypoint(waypoint: Waypoint, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(waypoint.number))
-        data.append(UInt8(waypoint.action == .Waypoint ? 1 : 4))
+        data.append(UInt8(waypoint.action.intValue))
         data.appendContentsOf(writeInt32(Int(waypoint.position.latitude * 10000000.0)))
         data.appendContentsOf(writeInt32(Int(waypoint.position.longitude * 10000000.0)))
         data.appendContentsOf(writeInt32(Int(waypoint.altitude * 100)))
@@ -1288,12 +1317,12 @@ class MSPParser {
     func sendSerialConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         for portConfig in settings.portConfigs! {
-            data.append(UInt8(portConfig.portIdentifier.rawValue))
+            data.append(UInt8(portConfig.portIdentifier.intValue))
             data.appendContentsOf(writeUInt16(portConfig.functions.rawValue))
-            data.append(UInt8(portConfig.mspBaudRate.rawValue))
-            data.append(UInt8(portConfig.gpsBaudRate.rawValue))
-            data.append(UInt8(portConfig.telemetryBaudRate.rawValue))
-            data.append(UInt8(portConfig.blackboxBaudRate.rawValue))
+            data.append(UInt8(portConfig.mspBaudRate.intValue))
+            data.append(UInt8(portConfig.gpsBaudRate.intValue))
+            data.append(UInt8(portConfig.telemetryBaudRate.intValue))
+            data.append(UInt8(portConfig.blackboxBaudRate.intValue))
         }
         
         sendMessage(.MSP_SET_CF_SERIAL_CONFIG, data: data, retry: 2, callback: callback)
@@ -1519,6 +1548,21 @@ class MSPParser {
         data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
         data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
         sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    // INav
+    
+    func sendNavPosHold(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(inavConfig.userControlMode.intValue))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxSpeed * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxClimbRate * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxManualSpeed * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxManualClimbRate * 100))))
+        data.append(UInt8(inavConfig.maxBankAngle))
+        data.append(UInt8(inavConfig.useThrottleMidForAltHold ? 1 : 0))
+        data.appendContentsOf(writeUInt16(inavConfig.hoverThrottle))
+        sendMessage(.MSP_SET_NAV_POSHOLD, data: data, retry: 2, callback: callback)
     }
     
     func openCommChannel(commChannel: CommChannel) {

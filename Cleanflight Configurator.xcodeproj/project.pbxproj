@@ -29,6 +29,7 @@
 		AE1BBA381EC39CA10081E068 /* BaseWaypointDetailCiewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */; };
 		AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */ = {isa = PBXBuildFile; fileRef = AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */; };
 		AE1BBA3F1EC3B5E20081E068 /* MKHomeLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */; };
+		AE1BBA411EC474230081E068 /* INavModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA401EC474230081E068 /* INavModel.swift */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
@@ -84,7 +85,6 @@
 		AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB621C0F3D230020C4B0 /* Assets.xcassets */; };
 		AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */; };
 		AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */; };
-		AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */; };
 		AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB891C0F3DD50020C4B0 /* MSP.swift */; };
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
@@ -106,8 +106,8 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
-		AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
-		AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
+		AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */; };
+		AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
@@ -145,15 +145,10 @@
 		AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AEF1903E1C3F062D0066C75A /* TryCatch.m */; };
 		AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3703F1C1CAC0B00667E9D /* NumberField.swift */; };
 		AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */; };
-		AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
 		AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
-		AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDA78B11C20A52C00AD4845 /* Utilities.swift */; };
-		AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
-		AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
 		AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
-		AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
 		C43EB355172CCA0AD6495525 /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 720AAEA7FB260329DBBD205A /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist */; };
 /* End PBXBuildFile section */
@@ -167,13 +162,6 @@
 			remoteInfo = "Cleanflight Configurator";
 		};
 		AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AE72AB551C0F3D230020C4B0;
-			remoteInfo = "Cleanflight Configurator";
-		};
-		AE72AB781C0F3D230020C4B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE72AB4E1C0F3D230020C4B0 /* Project object */;
 			proxyType = 1;
@@ -224,6 +212,7 @@
 		AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWaypointDetailCiewController.swift; sourceTree = "<group>"; };
 		AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "home-waypoint.svg"; sourceTree = "<group>"; };
 		AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKHomeLocationView.swift; sourceTree = "<group>"; };
+		AE1BBA401EC474230081E068 /* INavModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INavModel.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -316,9 +305,6 @@
 		AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cleanflight ConfiguratorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cleanflight_ConfiguratorTests.swift; sourceTree = "<group>"; };
 		AE72AB721C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cleanflight ConfiguratorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cleanflight_ConfiguratorUITests.swift; sourceTree = "<group>"; };
-		AE72AB7D1C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE72AB891C0F3DD50020C4B0 /* MSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSP.swift; sourceTree = "<group>"; };
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
 		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
@@ -340,6 +326,8 @@
 		AEBA64171C31538F00783ECE /* ReplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayViewController.swift; sourceTree = "<group>"; };
 		AEBA64191C332B3100783ECE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		AEBA641B1C342BD900783ECE /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTest.swift; sourceTree = "<group>"; };
+		AEBBC6631EC4D32E00EE958A /* DownPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownPicker.framework; path = "../../../Library/Developer/Xcode/DerivedData/Cleanflight_Configurator-gotusvkhuouswvbazgcqqbfbcqlb/Build/Products/Debug-iphoneos/DownPicker/DownPicker.framework"; sourceTree = "<group>"; };
 		AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
 		AECE8D7E1C1E14AE00FB183E /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
@@ -379,7 +367,7 @@
 		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
-		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanflightSimulator.swift; sourceTree = "<group>"; };
+		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CleanflightSimulator.swift; path = "../Cleanflight ConfiguratorUITests/CleanflightSimulator.swift"; sourceTree = "<group>"; };
 		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -409,13 +397,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AE72AB741C0F3D230020C4B0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +407,7 @@
 		1423726195B99A7BD0668A20 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AEBBC6631EC4D32E00EE958A /* DownPicker.framework */,
 				E36398CC8E2486DF5E7F3FAF /* Pods.framework */,
 				E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */,
 				F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */,
@@ -453,6 +436,7 @@
 		AE1DD67E1C7E23F300861248 /* KIFTests */ = {
 			isa = PBXGroup;
 			children = (
+				AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */,
 				AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */,
 				AE1DD6811C7E23F300861248 /* Info.plist */,
 				AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */,
@@ -621,7 +605,6 @@
 				AEDDD2781C1615C8004232AA /* Podfile */,
 				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
-				AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
 				AE1DD67E1C7E23F300861248 /* KIFTests */,
 				AE1EA9EF1CB0174500C24E2A /* InAppSettingsKit */,
 				AE72AB571C0F3D230020C4B0 /* Products */,
@@ -635,7 +618,6 @@
 			children = (
 				AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */,
 				AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */,
-				AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */,
 				AE1DD67D1C7E23F300861248 /* KIFTests.xctest */,
 			);
 			name = Products;
@@ -663,6 +645,7 @@
 				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
+				AE1BBA401EC474230081E068 /* INavModel.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
 				AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */,
@@ -701,18 +684,9 @@
 				AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */,
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
+				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 			);
 			path = "Cleanflight ConfiguratorTests";
-			sourceTree = "<group>";
-		};
-		AE72AB7A1C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */ = {
-			isa = PBXGroup;
-			children = (
-				AE72AB7B1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift */,
-				AE72AB7D1C0F3D230020C4B0 /* Info.plist */,
-				AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */,
-			);
-			path = "Cleanflight ConfiguratorUITests";
 			sourceTree = "<group>";
 		};
 		AEA48A671C25CFDD006BC53E /* Communication */ = {
@@ -826,24 +800,6 @@
 			productReference = AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AE72AB761C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AE72AB861C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorUITests" */;
-			buildPhases = (
-				AE72AB731C0F3D230020C4B0 /* Sources */,
-				AE72AB741C0F3D230020C4B0 /* Frameworks */,
-				AE72AB751C0F3D230020C4B0 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AE72AB791C0F3D230020C4B0 /* PBXTargetDependency */,
-			);
-			name = "Cleanflight ConfiguratorUITests";
-			productName = "Cleanflight ConfiguratorUITests";
-			productReference = AE72AB771C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -868,10 +824,6 @@
 						};
 					};
 					AE72AB6B1C0F3D230020C4B0 = {
-						CreatedOnToolsVersion = 7.1;
-						TestTargetID = AE72AB551C0F3D230020C4B0;
-					};
-					AE72AB761C0F3D230020C4B0 = {
 						CreatedOnToolsVersion = 7.1;
 						TestTargetID = AE72AB551C0F3D230020C4B0;
 					};
@@ -905,7 +857,6 @@
 			targets = (
 				AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */,
 				AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
-				AE72AB761C0F3D230020C4B0 /* Cleanflight ConfiguratorUITests */,
 				AE1DD67C1C7E23F300861248 /* KIFTests */,
 			);
 		};
@@ -945,13 +896,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AE72AB6A1C0F3D230020C4B0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AE72AB751C0F3D230020C4B0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1088,6 +1032,7 @@
 				AE1BBA2E1EC3154B0081E068 /* WaypointPageViewController.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
 				AE1EAA321CB0174500C24E2A /* IASKSwitch.m in Sources */,
+				AE1BBA411EC474230081E068 /* INavModel.swift in Sources */,
 				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
 				AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */,
 				AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */,
@@ -1205,21 +1150,7 @@
 				AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */,
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
 				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AE72AB731C0F3D230020C4B0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AEF621B11C7B9DDF0041E5B3 /* UserDefaults.swift in Sources */,
-				AEF621AF1C7B90F90041E5B3 /* Utilities.swift in Sources */,
-				AEBEE5C81C7CF97D0094FABD /* AutoCoded.swift in Sources */,
-				AEF621AC1C7B75F80041E5B3 /* CleanflightSimulator.swift in Sources */,
-				AE72AB7C1C0F3D230020C4B0 /* Cleanflight_ConfiguratorUITests.swift in Sources */,
-				AEF621B41C7B9EE80041E5B3 /* MSPCodec.swift in Sources */,
-				AEBEE5C61C7CF9600094FABD /* AircraftModel.swift in Sources */,
-				AEF621B61C7B9EED0041E5B3 /* MSPCode.swift in Sources */,
+				AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1235,11 +1166,6 @@
 			isa = PBXTargetDependency;
 			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
 			targetProxy = AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */;
-		};
-		AE72AB791C0F3D230020C4B0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
-			targetProxy = AE72AB781C0F3D230020C4B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1474,30 +1400,6 @@
 			};
 			name = Release;
 		};
-		AE72AB871C0F3D230020C4B0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = "Cleanflight Configurator";
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		AE72AB881C0F3D230020C4B0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Cleanflight ConfiguratorUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = "Cleanflight Configurator";
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1533,15 +1435,6 @@
 			buildConfigurations = (
 				AE72AB841C0F3D230020C4B0 /* Debug */,
 				AE72AB851C0F3D230020C4B0 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AE72AB861C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AE72AB871C0F3D230020C4B0 /* Debug */,
-				AE72AB881C0F3D230020C4B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
