@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommandsProvider {
+class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -60,6 +60,15 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
     var hideNavBarTimer: NSTimer?
     var viewDisappeared = false
     
+    var altitudeEventHandler: Disposable?
+    var rssiEventHandler: Disposable?
+    var attitudeEventHandler: Disposable?
+    var positionHoldEventHandler: Disposable?
+    var flightModeEventHandler: Disposable?
+    var batteryEventHandler: Disposable?
+    var gpsEventHandler: Disposable?
+    var receiverEventHandler: Disposable?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -138,15 +147,27 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         super.viewWillAppear(animated)
         
         timeLabel.appear()
-        msp.addDataListener(self)
+        
+        altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: Telemetry2ViewController.receivedAltitudeData)
+        rssiEventHandler = msp.rssiEvent.addHandler(self, handler: Telemetry2ViewController.receivedRssiData)
+        attitudeEventHandler = msp.attitudeEvent.addHandler(self, handler: Telemetry2ViewController.receivedAttitudeData)
+        positionHoldEventHandler = msp.positionHoldEvent.addHandler(self, handler: Telemetry2ViewController.receivedPosHoldData)
+        flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: Telemetry2ViewController.flightModeChanged)
+        batteryEventHandler = msp.batteryEvent.addHandler(self, handler: Telemetry2ViewController.receivedBatteryData)
+        gpsEventHandler = msp.gpsEvent.addHandler(self, handler: Telemetry2ViewController.receivedGpsData)
+        receiverEventHandler = msp.receiverEvent.addHandler(self, handler: Telemetry2ViewController.receivedReceiverData)
+        
         // For enabled features
-        msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: { success in
-            // FIXME Get rid of MSP_MISC
-            self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: nil)
-        })
-        receivedData()
-        receivedSensorData()
+        msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: nil)
+        
+        receivedBatteryData()
+        receivedAltitudeData()
+        receivedAttitudeData()
+        receivedRssiData()
+        receivedPosHoldData()
+        flightModeChanged()
         receivedGpsData()
+        receivedReceiverData()
         
         startNavBarTimer()
         
@@ -203,7 +224,15 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         hideNavBarTimer = nil
         
         timeLabel.disappear()
-        msp.removeDataListener(self)
+        
+        altitudeEventHandler?.dispose()
+        rssiEventHandler?.dispose()
+        attitudeEventHandler?.dispose()
+        positionHoldEventHandler?.dispose()
+        flightModeEventHandler?.dispose()
+        batteryEventHandler?.dispose()
+        gpsEventHandler?.dispose()
+        receiverEventHandler?.dispose()
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
@@ -231,13 +260,19 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         }
     }
     
-    func receivedSensorData() {
+    // MARK: Event Handlers
+    
+    func receivedAttitudeData() {
         let sensorData = SensorData.theSensorData
         attitudeIndicator.roll = sensorData.rollAngle
         attitudeIndicator.pitch = sensorData.pitchAngle
         
         headingStrip.heading = sensorData.heading
         turnRateIndicator.value = sensorData.turnRate
+    }
+
+    func receivedPosHoldData() {
+        let sensorData = SensorData.theSensorData
         
         let config = Configuration.theConfig
         let settings = Settings.theSettings
@@ -266,7 +301,7 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         variometerScale.currentValue = convertAltitude(sensorData.variometer)   // m -> ft <=> m/s -> ft/s
     }
     
-    func receivedData() {
+    func receivedBatteryData() {
         let config = Configuration.theConfig
         let settings = Settings.theSettings
 
@@ -287,7 +322,11 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", config.mAhDrawn)
         
-        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
+    }
+    
+    func flightModeChanged() {
+        let config = Configuration.theConfig
+        let settings = Settings.theSettings
         
         armedLabel.armed = settings.armed
         
@@ -332,10 +371,15 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
         autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
+        
+        // If BARO, SONAR or MAG modes changed, we have to update UI
+        receivedPosHoldData()
     }
     
-    func received3drRssiData() {
+    func receivedRssiData() {
         let config = Configuration.theConfig
+        
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
         rssiLabel.sikRssi = config.sikQuality
     }
     
@@ -371,6 +415,16 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         }
     }
 
+    func receivedReceiverData() {
+        let receiver = Receiver.theReceiver
+        leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
+        leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
+        rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
+        rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
+    }
+    
+    // MARK: Actions
+    
     @IBAction func menuAction(sender: AnyObject) {
         actionsView.hidden = !actionsView.hidden
         if !actionsView.hidden {
@@ -433,14 +487,6 @@ class Telemetry2ViewController: UIViewController, FlightDataListener, RcCommands
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssiw" : "signalw")
         let config = Configuration.theConfig
         rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
-    }
-    
-    func receivedReceiverData() {
-        let receiver = Receiver.theReceiver
-        leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
-        leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
-        rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
-        rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
     }
     
     func rcCommands() -> [Int] {

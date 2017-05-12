@@ -10,7 +10,7 @@ import UIKit
 
 class PortConfigViewController: ConfigChildViewController {
     let MSPAndGPSBaudRates =  [ "9600", "19200", "38400", "57600", "115200" ]
-    let BlackboxBaudRates =  [ "19200", "38400", "57600", "115200", "230400", "250000" ]
+    let BlackboxBaudRates =  [ "19200", "38400", "57600", "115200", "230400", "250000" ]        // FIXME This has changed in CF2 and INav 1.7
     let TelemetryBaudRates = [ "Auto", "9600", "19200", "38400", "57600", "115200" ]
     
     @IBOutlet weak var enableMSP: UISwitch!

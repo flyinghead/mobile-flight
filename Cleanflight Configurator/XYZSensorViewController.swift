@@ -56,9 +56,15 @@ class XYZSensorViewController: BaseSensorViewController {
         msp.sendMessage(.MSP_RAW_IMU, data: nil)
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        eventHandler = msp.rawIMUDataEvent.addHandler(self, handler: XYZSensorViewController.receivedRawIMUData)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         xSensor.removeAll()
         ySensor.removeAll()
         zSensor.removeAll()

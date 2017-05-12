@@ -70,6 +70,13 @@ class BarometerViewController: BaseSensorViewController {
         updateChartData()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        if eventHandler == nil {
+            eventHandler = msp.altitudeEvent.addHandler(self, handler: BarometerViewController.receivedAltitudeData)
+        }
+        super.viewWillAppear(animated)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         

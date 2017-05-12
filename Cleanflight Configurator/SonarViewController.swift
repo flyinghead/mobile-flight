@@ -51,7 +51,7 @@ class SonarViewController: BarometerViewController {
         titleLabel.text = selectedUnitSystem() != .Metric ? "Sonar - inches" : "Sonar - cm"
     }
     
-    // MARK: FlightDataListener
+    // MARK: Event Handlers
     
     func receivedSonarData() {
         updateSensorData()
@@ -61,7 +61,10 @@ class SonarViewController: BarometerViewController {
         updateChartData()
     }
 
-    override func receivedAltitudeData() {
-        
+    // MARK: 
+    
+    override func viewWillAppear(animated: Bool) {
+        eventHandler = msp.sonarEvent.addHandler(self, handler: SonarViewController.receivedSonarData)
+        super.viewWillAppear(animated)
     }
 }

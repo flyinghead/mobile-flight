@@ -9,8 +9,9 @@
 import UIKit
 import Charts
 
-class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommandSender {
-
+class BaseSensorViewController: UIViewController, MSPCommandSender {
+    var eventHandler: Disposable?
+    
     let MaxSampleCount = 300
     
     var chartView: LineChartView!
@@ -35,8 +36,6 @@ class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommand
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
-
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.addMSPCommandSender(self)
     }
@@ -44,7 +43,7 @@ class BaseSensorViewController: UIViewController, FlightDataListener, MSPCommand
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        eventHandler?.dispose()
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.removeMSPCommandSender(self)

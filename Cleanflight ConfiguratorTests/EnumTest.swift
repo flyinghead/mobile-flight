@@ -38,36 +38,3 @@ class EnumTest: XCTestCase {
     }
     
 }
-/*
-enum BaudRate {
-    enum Internal : Int {
-        case Auto = 0
-        case Baud9600 = 1
-        case Baud19200 = 2
-        case Baud38400 = 3
-        case Baud57600 = 4
-        case Baud115200 = 5
-        case Baud230400 = 6
-        case Baud250000 = 7
-    }
-    case Known(Internal)
-    case Unknown(Int)
-    
-    init(value: Int) {
-        if let intern = Internal(rawValue: value) {
-            self = .Known(intern)
-        } else {
-            self = .Unknown(value)
-        }
-    }
-    
-    var intValue: Int {
-        switch self {
-        case .Known(let intern):
-            return intern.rawValue
-        case .Unknown(let value):
-            return value
-        }
-    }
-}
-*/

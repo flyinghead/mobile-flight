@@ -10,7 +10,7 @@ import UIKit
 import SVProgressHUD
 import MapKit
 
-class CalibrationViewController: StaticDataTableViewController, FlightDataListener {
+class CalibrationViewController: StaticDataTableViewController {
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
     @IBOutlet weak var calAccImgButton: UIButton!
@@ -43,6 +43,8 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     let MagnetometerCalibDuration = 30.0
     
     var calibrationStart: NSDate?
+    
+    var flightModeEventHandler: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,10 +82,10 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
             }
         }
         
-        msp.addDataListener(self)
+        flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: CalibrationViewController.flightModeChanged)
+        flightModeChanged()
         
         MetarManager.instance.addObserver(self, selector: #selector(metarUpdated))
-        
         metarUpdated()
         
         metarTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(metarTimerFired), userInfo: nil, repeats: true)
@@ -92,7 +94,7 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        flightModeEventHandler?.dispose()
         
         MetarManager.instance.removeObserver(self)
         
@@ -100,7 +102,7 @@ class CalibrationViewController: StaticDataTableViewController, FlightDataListen
         metarTimer = nil
     }
     
-    func receivedData() {
+    func flightModeChanged() {
         let config = Configuration.theConfig
         
         let armed = Settings.theSettings.armed

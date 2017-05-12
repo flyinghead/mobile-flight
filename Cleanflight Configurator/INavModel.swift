@@ -72,6 +72,28 @@ enum INavStatusState {
             return value
         }
     }
+    
+    var description: String {
+        switch self {
+        case .Known(let intern):
+            switch intern {
+            case .None:
+                return ""
+            case .ReturnToHomeStart, .ReturnToHomeEnRoute:
+                return "Return To Home"
+            case .HoldInfinite, .HoldTimed:
+                return "Position Hold"
+            case .WaypointEnRoute, .ProcessNext,.DoJump:
+                return "Waypoint"
+            case .LandStart, .Landing, .LandSettle, .LandStartDescent:
+                return "Landing"
+            case .Landed:
+                return "Landed"
+            }
+        case .Unknown:
+            return "Unknown"
+        }
+    }
 }
 
 enum INavWaypointAction : Equatable {
@@ -136,6 +158,40 @@ enum INavStatusError {
             return mode.rawValue
         case .Unknown(let value):
             return value
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .Unknown:
+            return "Unknown error"
+        case .Known(let intern):
+            switch intern {
+            case .None:
+                return ""
+            case .TooFar:
+                return "Waypoint too far"
+            case .GpsSpoiled:
+                return "Bad GPS reception"
+            case .WaypointCRC:
+                return "Error reading waypoint"
+            case .Finish:
+                return "Navigation finished"
+            case .TimeWait:
+                return "Waiting"
+            case .InvalidJump:
+                return "Invalid jump"
+            case .InvalidData:
+                return "Invalid waypoint data"
+            case .WaitForRthAlt:
+                return "Reaching RTH altitude"
+            case .GpsFixLost:
+                return "GPS fix lost"
+            case .Disarmed:
+                return "Disarmed"
+            case .Landing:
+                return "Landing"
+            }
         }
     }
 }

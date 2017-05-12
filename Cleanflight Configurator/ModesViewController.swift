@@ -10,7 +10,7 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 
-class ModesViewController: UITableViewController, FlightDataListener, UITextFieldDelegate {
+class ModesViewController: UITableViewController, UITextFieldDelegate {
     var dontReloadTable = false
 
     var modeRanges: [ModeRange]?
@@ -19,6 +19,8 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     var channelLabels = ["Delete Range"]
     
     var previousModes = 0
+    var flightModeEventHandler: Disposable?
+    var receiverEventHandler: Disposable?
     
     func tableViewTapped(recognizer: UITapGestureRecognizer) {
         if recognizer.state == .Began || recognizer.state == .Changed {
@@ -75,17 +77,18 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
     }
     
     func receivedReceiverData() {
-        let channelCount = Receiver.theReceiver.activeChannels - 3
+        let receiver = Receiver.theReceiver
+        
+        let channelCount = receiver.activeChannels - 3
         // If the receiver config has changed, remove extraneous channels
         while channelCount < channelLabels.count {
             channelLabels.removeLast()
         }
         // Similarly, add missing channels if needed
-        for i in channelLabels.count..<channelCount {
+        for i in channelLabels.count ..< channelCount {
             channelLabels.append(String(format: "AUX%d", i))
         }
         if let visibleRowIndices = tableView.indexPathsForVisibleRows {
-            let receiver = Receiver.theReceiver
             for indexPath in visibleRowIndices {
                 if let cell = tableView.cellForRowAtIndexPath(indexPath) as? ModeRangeCell {
                     let channel = modeRanges![cell.modeRangeIdx].auxChannelId
@@ -94,7 +97,7 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
             }
         }
     }
-    func receivedData() {
+    func flightModeChanged() {
         let config = Configuration.theConfig
         if !dontReloadTable && config.mode != previousModes {
             previousModes = config.mode
@@ -107,13 +110,15 @@ class ModesViewController: UITableViewController, FlightDataListener, UITextFiel
         
         initialFetch()
         
-        msp.addDataListener(self)
+        flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: ModesViewController.flightModeChanged)
+        receiverEventHandler = msp.receiverEvent.addHandler(self, handler: ModesViewController.receivedReceiverData)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        flightModeEventHandler?.dispose()
+        receiverEventHandler?.dispose()
     }
     
     func pickerDidBeginEditing() {

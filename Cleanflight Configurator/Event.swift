@@ -20,6 +20,12 @@ public class Event<T> {
         }
     }
     
+    public func raiseDispatch(data: T) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.raise(data)
+        }
+    }
+    
     public func addHandler<U: AnyObject>(target: U,
                            handler: (U) -> EventHandler) -> Disposable {
         let wrapper = EventHandlerWrapper(target: target,

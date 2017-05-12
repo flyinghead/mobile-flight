@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import SVProgressHUD
 
-class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener, CLLocationManagerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     var locationManager: CLLocationManager?
     var gpsPositions = 0
     
@@ -24,6 +24,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
     @IBOutlet weak var rssiImg: UIImageView!
     @IBOutlet weak var uploadButton: UIButton!
     
+    var altitudeEventHandler: Disposable?
+    var rssiEventHandler: Disposable?
+    var positionHoldEventHandler: Disposable?
+    var flightModeEventHandler: Disposable?
+    var batteryEventHandler: Disposable?
+    var gpsEventHandler: Disposable?
+
     var annotationView: MKAnnotationView?
     
     var aircraftLocation: MKPointAnnotation?
@@ -57,10 +64,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         super.viewWillAppear(animated)
         
         timeLabel.appear()
-        msp.addDataListener(self)
-        receivedData()
+
+        receivedBatteryData()
         receivedAltitudeData()
         receivedGpsData()
+        receivedRssiData()
+        receivedPosHoldData()
+        flightModeChanged()
         
         mapView.showsUserLocation = true
         
@@ -87,6 +97,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
          */
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
         
+        altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: MapViewController.receivedAltitudeData)
+        rssiEventHandler = msp.rssiEvent.addHandler(self, handler: MapViewController.receivedRssiData)
+        positionHoldEventHandler = msp.positionHoldEvent.addHandler(self, handler: MapViewController.receivedPosHoldData)
+        flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: MapViewController.flightModeChanged)
+        batteryEventHandler = msp.batteryEvent.addHandler(self, handler: MapViewController.receivedBatteryData)
+        gpsEventHandler = msp.gpsEvent.addHandler(self, handler: MapViewController.receivedGpsData)
+        
         let gpsData = GPSData.theGPSData
         if Configuration.theConfig.isINav && gpsData.waypoints.isEmpty {
             msp.fetchINavWaypoints(gpsData) { success in
@@ -106,7 +123,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         super.viewWillDisappear(animated)
         
         timeLabel.disappear()
-        msp.removeDataListener(self)
+        
+        altitudeEventHandler?.dispose()
+        rssiEventHandler?.dispose()
+        positionHoldEventHandler?.dispose()
+        flightModeEventHandler?.dispose()
+        batteryEventHandler?.dispose()
+        gpsEventHandler?.dispose()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -169,24 +192,26 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
         addWaypointsOverlay()
     }
     
-    // MARK: FlightDataListener
+    // MARK: Event Handlers
     
-    func receivedData() {
+    func receivedBatteryData() {
         let config = Configuration.theConfig
         
         batteryLabel.voltage = config.voltage
         
-        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
-        
-        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) && posHoldLocation != nil {
+    }
+    
+    func flightModeChanged() {
+        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: Configuration.theConfig.mode) && posHoldLocation != nil {
             mapView.removeAnnotation(posHoldLocation!)
             posHoldLocation = nil
         }
     }
     
-    func received3drRssiData() {
+    func receivedRssiData() {
         let config = Configuration.theConfig
         
+        rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
         rssiLabel.sikRssi = config.sikQuality
     }
     
@@ -269,6 +294,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, FlightDataListener
             }
             
         }
+    }
+    
+    func receivedPosHoldData() {
+        let gpsData = GPSData.theGPSData
+        let config = Configuration.theConfig
         if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
             var addAnnot = true
             if posHoldLocation != nil {

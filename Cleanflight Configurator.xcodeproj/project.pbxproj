@@ -88,7 +88,6 @@
 		AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB891C0F3DD50020C4B0 /* MSP.swift */; };
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
-		AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
@@ -96,7 +95,6 @@
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
 		AEAB37181CB1CDCD0097DC9A /* UtilitiesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */; };
-		AEAB371A1CB1CF9F0097DC9A /* FlightDataListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */; };
 		AEAC44ED1CB5914800D73377 /* DataLinkChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAC44EC1CB5914800D73377 /* DataLinkChartViewController.swift */; };
 		AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEBA640D1C3086CF00783ECE /* Connection.storyboard */; };
 		AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */; };
@@ -308,7 +306,6 @@
 		AE72AB891C0F3DD50020C4B0 /* MSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSP.swift; sourceTree = "<group>"; };
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
 		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
-		AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightDataListener.swift; sourceTree = "<group>"; };
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
@@ -642,7 +639,6 @@
 				AE1CB4821C70A71A003DB117 /* CLIViewController.swift */,
 				AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */,
 				AE1BBA311EC3348B0081E068 /* Event.swift */,
-				AE72AB8F1C0F7B570020C4B0 /* FlightDataListener.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
 				AE1BBA401EC474230081E068 /* INavModel.swift */,
@@ -1081,7 +1077,6 @@
 				AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */,
 				AE63D5EF1C216C320070D1D2 /* MainNavigationController.swift in Sources */,
 				AE1EAA2A1CB0174500C24E2A /* IASKSettingsStore.m in Sources */,
-				AE72AB901C0F7B570020C4B0 /* FlightDataListener.swift in Sources */,
 				AE1BBA361EC37CAD0081E068 /* RTHDetailViewController.swift in Sources */,
 				AEDDD2651C12338F004232AA /* AccelerometerViewController.swift in Sources */,
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
@@ -1145,7 +1140,6 @@
 				AEAB37181CB1CDCD0097DC9A /* UtilitiesTest.swift in Sources */,
 				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
 				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
-				AEAB371A1CB1CF9F0097DC9A /* FlightDataListener.swift in Sources */,
 				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
 				AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */,
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,

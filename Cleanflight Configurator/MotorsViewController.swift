@@ -8,7 +8,8 @@
 
 import UIKit
 
-class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSender {
+class MotorsViewController: UIViewController, MSPCommandSender {
+    var motorEventHandler: Disposable?
 
     @IBOutlet weak var modelView: UIImageView!
     @IBOutlet weak var enableMotorView: UIView!
@@ -140,7 +141,7 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
+        motorEventHandler = msp.altitudeEvent.addHandler(self, handler: MotorsViewController.receivedMotorData)
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.addMSPCommandSender(self)
@@ -184,7 +185,7 @@ class MotorsViewController: UIViewController, FlightDataListener, MSPCommandSend
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        motorEventHandler?.dispose()
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.removeMSPCommandSender(self)

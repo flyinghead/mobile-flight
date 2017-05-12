@@ -59,6 +59,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     var newSettings: Settings?
     var newMisc: Misc?
     var childVisible = false
+    var supportsGPS = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -127,8 +128,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
         var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_VOLTAGE_METER_CONFIG]
         
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {    // CF 2.0
-            mspCalls.appendContentsOf([.MSP_MOTOR_CONFIG, /* .MSP_GPS_CONFIG, */ .MSP_COMPASS_CONFIG])      // FIXME CF 2.0 not compiled with GPS
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.35") {    // CF 2.0
+            mspCalls.appendContentsOf([.MSP_MOTOR_CONFIG, .MSP_COMPASS_CONFIG])
         } else {
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
@@ -136,7 +138,14 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         chainMspCalls(msp, calls: mspCalls) { success in
             if success {
-                self.fetchFailsafeConfig()
+                if config.isApiVersionAtLeast("1.35") {    // CF 2.0
+                    self.msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
+                        self.supportsGPS = success
+                        self.fetchFailsafeConfig()
+                    }
+                } else {
+                    self.fetchFailsafeConfig()
+                }
             } else {
                 self.fetchInformationFailed()
             }
@@ -360,8 +369,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
             msp.sendMotorConfig(self.newSettings!) { success in
                 if success {
-//                    self.msp.sendGpsConfig(self.newSettings!) { success in    // FIXME CF 2.0 not compiled with GPS
-//                        if success {
+                    let tmpCallback: ((Bool) -> Void) = { success in
+                        if success {
                             self.msp.sendRssiConfig(self.newSettings!.rssiChannel) { success in
                                 if success {
                                     self.msp.sendCompassConfig(self.newSettings!.magDeclination) { success in
@@ -387,10 +396,16 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                                     self.saveConfigFailed()
                                 }
                             }
-//                        } else {
-//                            self.saveConfigFailed()
-//                        }
-//                    }
+                        } else {
+                            self.saveConfigFailed()
+                        }
+                    }
+                    
+                    if self.supportsGPS {
+                        self.msp.sendGpsConfig(self.newSettings!, callback: tmpCallback)
+                    } else {
+                        tmpCallback(true)
+                    }
                 } else {
                     self.saveConfigFailed()
                 }

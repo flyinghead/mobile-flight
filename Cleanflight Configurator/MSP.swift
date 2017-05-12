@@ -38,6 +38,20 @@ class DataMessageRetryHandler : MessageRetryHandler {
 }
 
 class MSPParser {
+    let motorEvent = Event<Void>()
+    let rawIMUDataEvent = Event<Void>()
+    let altitudeEvent = Event<Void>()
+    let sonarEvent = Event<Void>()
+    let rssiEvent = Event<Void>()
+    let attitudeEvent = Event<Void>()
+    let positionHoldEvent = Event<Void>()
+    let flightModeEvent = Event<Void>()
+    let batteryEvent = Event<Void>()
+    let gpsEvent = Event<Void>()
+    let receiverEvent = Event<Void>()
+    let communicationEvent = Event<Bool>()
+    let dataReceivedEvent = Event<Void>()
+    
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
     let latencyMsgs = Set<MSP_code>(arrayLiteral: .MSP_STATUS, .MSP_RAW_GPS, .MSP_COMP_GPS, .MSP_ALTITUDE, .MSP_ATTITUDE, .MSP_ANALOG, .MSP_WP)
@@ -47,8 +61,6 @@ class MSPParser {
     
     private var outputQueue = [[UInt8]]()
     
-    var dataListeners = [FlightDataListener]()
-    var dataListenersLock = NSObject()
     private var commChannel: CommChannel?
     
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
@@ -131,6 +143,9 @@ class MSPParser {
                 if success {
                     if processMessage(mspCode, message: message) {
                         callSuccessCallback(mspCode, data: message)
+                        dataReceivedEvent.raiseDispatch()
+                    } else {
+                        callErrorCallback(mspCode)
                     }
                 } else {
                     callErrorCallback(mspCode)
@@ -157,7 +172,6 @@ class MSPParser {
             settings.mixerConfiguration = Int(message[1])
             config.mspVersion = Int(message[2])
             config.capability = readUInt32(message, index: 3)
-            pingDataListeners()
             
         case .MSP_STATUS, .MSP_STATUS_EX:
             if message.count < 11 {
@@ -166,6 +180,7 @@ class MSPParser {
             config.cycleTime = readUInt16(message, index: 0)
             config.i2cError = readUInt16(message, index: 2)
             config.activeSensors = readUInt16(message, index: 4)
+            let previousMode = config.mode
             config.mode = readUInt32(message, index: 6)
             config.profile = Int(message[10])
             if message.count >= 13 {
@@ -179,7 +194,9 @@ class MSPParser {
                     }
                 }
             }
-            pingDataListeners()
+            if previousMode != config.mode {
+                flightModeEvent.raiseDispatch()
+            }
             
         case .MSP_RAW_IMU:
             if message.count < 18 {
@@ -199,7 +216,7 @@ class MSPParser {
             sensorData.magnetometerY = Double(readInt16(message, index: 14)) / 1090
             sensorData.magnetometerZ = Double(readInt16(message, index: 16)) / 1090
             
-            pingRawIMUListeners()
+            rawIMUDataEvent.raiseDispatch()
         
         case .MSP_SERVO:
             if message.count < 16 {
@@ -208,7 +225,7 @@ class MSPParser {
             for i in 0..<8 {
                 motorData.servoValue[i] = readUInt16(message, index: i*2)
             }
-            pingMotorListeners()
+            motorEvent.raiseDispatch()
         
         case .MSP_SERVO_CONFIGURATIONS:
             let servoConfSize = 14
@@ -247,14 +264,13 @@ class MSPParser {
                 }
             }
             motorData.nMotors = nMotors
-            pingMotorListeners()
+            motorEvent.raiseDispatch()
         
         case .MSP_UID:
             if message.count < 12 {
                 return false
             }
             config.uid = String(format: "%04x%04x%04x", readUInt32(message, index: 0), readUInt32(message, index: 4), readUInt32(message, index: 8))
-            pingDataListeners()
             
         case .MSP_ACC_TRIM:
             if message.count < 4 {
@@ -262,7 +278,6 @@ class MSPParser {
             }
             misc.accelerometerTrimPitch = readInt16(message, index: 0)
             misc.accelerometerTrimRoll = readInt16(message, index: 2)
-            pingDataListeners()
             
         case .MSP_RC:
             var channelCount = message.count / 2
@@ -274,7 +289,7 @@ class MSPParser {
             for i in 0..<channelCount {
                 receiver.channels[i] = Int(readUInt16(message, index: (i * 2)));
             }
-            pingReceiverListeners()
+            receiverEvent.raiseDispatch()
             
         case .MSP_RAW_GPS:
             if message.count < 16 {
@@ -287,7 +302,7 @@ class MSPParser {
             gpsData.altitude = readUInt16(message, index: 10)
             gpsData.speed = Double(readUInt16(message, index: 12)) * 0.036           // km/h = cm/s / 100 * 3.6
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
-            pingGpsListeners()
+            gpsEvent.raiseDispatch()
             
         case .MSP_COMP_GPS:
             if message.count < 5 {
@@ -296,7 +311,7 @@ class MSPParser {
             gpsData.distanceToHome = readUInt16(message, index: 0)
             gpsData.directionToHome = readUInt16(message, index: 2)
             gpsData.update = Int(message[4])
-            pingGpsListeners()
+            gpsEvent.raiseDispatch()
             
         case .MSP_ATTITUDE:
             if message.count < 6 {
@@ -305,7 +320,7 @@ class MSPParser {
             sensorData.rollAngle = Double(readInt16(message, index: 0)) / 10.0   // x
             sensorData.pitchAngle = Double(readInt16(message, index: 2)) / 10.0   // y
             sensorData.heading = Double(readInt16(message, index: 4))          // z
-            pingSensorListeners()
+            attitudeEvent.raiseDispatch()
             
         case .MSP_ALTITUDE:
             if message.count < 6 {
@@ -314,14 +329,14 @@ class MSPParser {
             sensorData.altitude = Double(readInt32(message, index: 0)) / 100.0      // cm
             sensorData.variometer = Double(readInt16(message, index: 4)) / 100.0    // cm/s
             // iNAV baro latest alt (4)
-            pingAltitudeListeners()
+            altitudeEvent.raiseDispatch()
             
         case .MSP_SONAR:
             if message.count < 4 {
                 return false
             }
             sensorData.sonar = readInt32(message,  index: 0);
-            pingSonarListeners()
+            sonarEvent.raiseDispatch()
 
         case .MSP_ANALOG:
             if message.count < 7 {
@@ -331,7 +346,8 @@ class MSPParser {
             config.mAhDrawn = readUInt16(message, index: 1)
             config.rssi = readUInt16(message, index: 3) * 100 / 1023                    // 0-1023
             config.amperage = Double(readInt16(message, index: 5)) / 100                // 1/100 A
-            pingDataListeners()
+            rssiEvent.raiseDispatch()
+            batteryEvent.raiseDispatch()
             
         case .MSP_RC_TUNING:
             if message.count < 11 {
@@ -399,8 +415,8 @@ class MSPParser {
                 settings.vbatMaxCellVoltage = Double(message[offset]) / 10; // 10-50
                 offset += 1
                 settings.vbatWarningCellVoltage = Double(message[offset]) / 10; // 10-50
+                batteryEvent.raiseDispatch()
             }
-            pingDataListeners()
             
         case .MSP_MOTOR_PINS:
             // Unused
@@ -463,7 +479,7 @@ class MSPParser {
                 } else {
                     gpsData.homePosition = position
                 }
-                pingGpsListeners()
+                gpsEvent.raiseDispatch()
             }
             else if wpNum == 16 || wpNum == 255 {     // Cleanflight: 16, INav: 255
                 // FIXME Not sure this is the desired position/alt in INav and not the current pos/alt
@@ -471,8 +487,7 @@ class MSPParser {
                 sensorData.altitudeHold = altitude
                 sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph, INav
                 offset += 2
-                pingGpsListeners()
-                pingSensorListeners()
+                positionHoldEvent.raiseDispatch()
             }
             else if config.isINav && wpNum >= 1 && wpNum <= 15 {
                 let p1 = Int(readInt16(message, index: offset))     // Speed for .Waypoint action in cm/s (must be > 0.5 m/s and < general.max_speed (3 m/s by default))
@@ -506,7 +521,7 @@ class MSPParser {
             }
             gpsData.satellites = sats
             
-            pingGpsListeners()
+            gpsEvent.raiseDispatch()
             
         case .MSP_RX_CONFIG:
             if message.count < 8 {
@@ -568,7 +583,7 @@ class MSPParser {
                 }
                 receiver.map[i] = Int(b)
             }
-            pingReceiverListeners()
+            receiverEvent.raiseDispatch()
             
         case .MSP_BF_CONFIG:        // Deprecated, removed in CF 1.14+
             if message.count < 16 {
@@ -590,21 +605,18 @@ class MSPParser {
             }
             config.msgProtocolVersion = Int(message[0])
             config.apiVersion = String(format: "%d.%d", message[1], message[2])
-            pingDataListeners()
             
         case .MSP_FC_VARIANT:
             if message.count < 4 {
                 return false
             }
             config.fcIdentifier = String(format: "%c%c%c%c", message[0], message[1], message[2], message[3])
-            pingDataListeners()
             
         case .MSP_FC_VERSION:
             if message.count < 3 {
                 return false
             }
             config.fcVersion = String(format: "%d.%d.%d", message[0], message[1], message[2])
-            pingDataListeners()
             
         case .MSP_BUILD_INFO:
             if message.count < 19 {
@@ -619,7 +631,6 @@ class MSPParser {
             }
             */
             config.buildInfo = String(format: "%@ %@", date!, time!)
-            pingDataListeners()
             
         case .MSP_BOARD_INFO:
             if message.count < 6 {
@@ -627,7 +638,6 @@ class MSPParser {
             }
             config.boardInfo = String(format: "%c%c%c%c", message[0], message[1], message[2], message[3])
             config.boardVersion = readUInt16(message, index: 4)
-            pingDataListeners()
             
         case .MSP_MODE_RANGES:
             let nRanges = message.count / 4
@@ -695,7 +705,7 @@ class MSPParser {
             config.txBuffer = Int(message[6])
             config.noise = Int(message[7])
             config.remoteNoise = Int(message[8])
-            ping3drRssiListeners()
+            rssiEvent.raiseDispatch()
         
         // Betaflight
         case .MSP_PID_ADVANCED_CONFIG:
@@ -790,6 +800,7 @@ class MSPParser {
                 if message.count > 4 {
                     settings.vbatMeterType = Int(message[4])
                 }
+                batteryEvent.raiseDispatch()
             }
         
         case .MSP_MIXER_CONFIG:
@@ -814,6 +825,7 @@ class MSPParser {
             settings.batteryCapacity = readUInt16(message, index: 3)
             settings.voltageMeterSource = Int(message[5])
             settings.currentMeterSource = Int(message[6])
+            batteryEvent.raiseDispatch()
             
         case .MSP_BOARD_ALIGNMENT:
             if message.count < 6 {
@@ -832,8 +844,9 @@ class MSPParser {
                 settings.currentOffset = Int(readInt16(message, index: 2))
                 settings.currentMeterType = Int(message[4])
                 settings.batteryCapacity = Int(readInt16(message, index: 5))
+                batteryEvent.raiseDispatch()
             } else {
-                // CF 2.0
+                // CF 2.0 (ignoring virtual current meter if any)
                 settings.currentMeterId = Int(message[2])
                 settings.currentMeterType = Int(message[3])
                 settings.currentScale = Int(readInt16(message, index: 4))
@@ -886,8 +899,9 @@ class MSPParser {
             inavConfig.activeWaypoint = Int(message[3])
             inavConfig.error = INavStatusError(value: Int(message[4]))
             sensorData.headingHold = Double(readInt16(message, index: 5))
-            pingSensorListeners()
-            
+            positionHoldEvent.raiseDispatch()
+
+        // INav 1.6+
         case .MSP_NAV_POSHOLD:
             if message.count < 13 {
                 return false
@@ -1031,87 +1045,6 @@ class MSPParser {
             handler.timer?.invalidate()
         }
         objc_sync_exit(retriedMessageLock)
-    }
-    
-    func addDataListener(listener: FlightDataListener) {
-        objc_sync_enter(dataListenersLock);
-        dataListeners.append(listener);
-        objc_sync_exit(dataListenersLock);
-    }
-    
-    func removeDataListener(listener: FlightDataListener) {
-        objc_sync_enter(dataListenersLock);
-        for (i, l) in dataListeners.enumerate() {
-            if (l === listener) {
-                dataListeners.removeAtIndex(i)
-                break
-            }
-        }
-        objc_sync_exit(dataListenersLock);
-    }
-
-    func pingListeners(delegate: ((listener: FlightDataListener) -> Void)) {
-        var dataListenersCopy: [FlightDataListener]?
-        
-        objc_sync_enter(dataListenersLock);
-        dataListenersCopy = [FlightDataListener](dataListeners)
-        objc_sync_exit(dataListenersLock);
-        
-        dispatch_async(dispatch_get_main_queue(), {
-            for l in dataListenersCopy! {
-                delegate(listener: l)
-            }
-        })
-    }
-    func pingDataListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedData?()
-        }
-    }
-    func pingGpsListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedGpsData?()
-        }
-    }
-    func pingReceiverListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedReceiverData?()
-        }
-    }
-    func pingSensorListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedSensorData?()
-        }
-    }
-    func pingMotorListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedMotorData?()
-        }
-    }
-    func pingCommunicationStatusListeners(status: Bool) {
-        pingListeners { (listener) -> Void in
-            listener.communicationStatus?(status)
-        }
-    }
-    func pingRawIMUListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedRawIMUData?()
-        }
-    }
-    func pingSonarListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedSonarData?()
-        }
-    }
-    func pingAltitudeListeners() {
-        pingListeners { (listener) -> Void in
-            listener.receivedAltitudeData?()
-        }
-    }
-    func ping3drRssiListeners() {
-        pingListeners { (listener) -> Void in
-            listener.received3drRssiData?()
-        }
     }
     
     func sendSetMisc(misc: Misc, settings: Settings, callback:((success:Bool) -> Void)?) {
@@ -1456,12 +1389,15 @@ class MSPParser {
         var data = [UInt8]()
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
             // CF 2 / BF 3.1.8
+            /*
             if settings.currentMeterType == 1 {     // CURRENT_METER_ADC
                 // regular
                 data.append(UInt8(10))  // CURRENT_METER_ID_BATTERY_1
             } else {
                 data.append(UInt8(80))  // CURRENT_METER_ID_VIRTUAL_1
             }
+             */
+            data.append(UInt8(settings.currentMeterId))
             data.appendContentsOf(writeUInt16(settings.currentScale))
             data.appendContentsOf(writeUInt16(settings.currentOffset))
         } else {
@@ -1567,7 +1503,7 @@ class MSPParser {
     
     func openCommChannel(commChannel: CommChannel) {
         self.commChannel = commChannel
-        pingCommunicationStatusListeners(true)
+        communicationEvent.raiseDispatch(true)
     }
     
     func closeCommChannel() {
@@ -1579,7 +1515,7 @@ class MSPParser {
             self.sentDates.removeAll()
             self.msgLatencies.removeAll()
         }
-        pingCommunicationStatusListeners(false)
+        communicationEvent.raiseDispatch(false)
     }
     
     var communicationEstablished: Bool {
@@ -1650,6 +1586,6 @@ class MSPParser {
     func setRssi(rssi: Double) {
         Configuration.theConfig.btRssi = Int(round(constrain((104 + rssi) / 78 * 100, min: 0, max: 100)))
         
-        pingDataListeners()
+        rssiEvent.raiseDispatch()
     }
 }

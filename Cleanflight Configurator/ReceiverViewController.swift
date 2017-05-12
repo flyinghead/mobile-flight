@@ -8,13 +8,14 @@
 
 import UIKit
 
-class ReceiverViewController: UITableViewController, FlightDataListener {
+class ReceiverViewController: UITableViewController {
     
-    var colors = [UIColor(hex6: 0xf1453d), UIColor(hex6: 0x673fb4), UIColor(hex6: 0x2b98f0), UIColor(hex6: 0x1fbcd2),
+    let colors = [UIColor(hex6: 0xf1453d), UIColor(hex6: 0x673fb4), UIColor(hex6: 0x2b98f0), UIColor(hex6: 0x1fbcd2),
         UIColor(hex6: 0x159588), UIColor(hex6: 0x50ae55), UIColor(hex6: 0xcdda49), UIColor(hex6: 0xfdc02f),
         UIColor(hex6: 0xfc5830), UIColor(hex6: 0x785549), UIColor(hex6: 0x9e9e9e), UIColor(hex6: 0x617d8a),
         UIColor(hex6: 0xcf267d), UIColor(hex6: 0x7a1464), UIColor(hex6: 0x3a7a14), UIColor(hex6: 0x14407a)]
-    
+    var receiverEventHandler: Disposable?
+
     func receivedReceiverData() {
         tableView.reloadData()
     }
@@ -22,13 +23,13 @@ class ReceiverViewController: UITableViewController, FlightDataListener {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
+        receiverEventHandler = msp.receiverEvent.addHandler(self, handler: ReceiverViewController.receivedReceiverData)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
+        receiverEventHandler?.dispose()
     }
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

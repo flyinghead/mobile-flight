@@ -155,7 +155,7 @@ class RSSILowAlarm : VoiceAlarm {
     }
 }
 
-class VoiceMessage: NSObject, FlightDataListener, AVSpeechSynthesizerDelegate {
+class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
     static let theVoice = VoiceMessage()
     let synthesizer = AVSpeechSynthesizer()
     

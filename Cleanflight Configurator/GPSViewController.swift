@@ -8,8 +8,8 @@
 
 import UIKit
 
-class GPSViewController : UITableViewController, FlightDataListener {
-    
+class GPSViewController : UITableViewController {
+    var gpsEventHandler: Disposable?
     var slowTimer: NSTimer?
     
     func receivedGpsData() {
@@ -19,8 +19,7 @@ class GPSViewController : UITableViewController, FlightDataListener {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.addDataListener(self)
-        
+        gpsEventHandler = msp.gpsEvent.addHandler(self, handler: GPSViewController.receivedGpsData)
         if (slowTimer == nil) {
             // Cleanflight configurator uses 75ms interval. Cleanflight firmware polls every second with ublox GPS.
             slowTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(GPSViewController.slowTimerDidFire(_:)), userInfo: nil, repeats: true)
@@ -30,8 +29,8 @@ class GPSViewController : UITableViewController, FlightDataListener {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        msp.removeDataListener(self)
-
+        gpsEventHandler?.dispose()
+        
         slowTimer?.invalidate()
         slowTimer = nil
     }

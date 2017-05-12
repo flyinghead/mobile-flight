@@ -940,7 +940,7 @@ class Configuration : AutoCoded {
     // MSP_ANALOG
     var voltage = 0.0 {      // V
         didSet {
-            if voltage > 0 && batteryCells == 0 && Settings.theSettings.features.contains(.VBat) ?? false {
+            if voltage > 0 && batteryCells == 0 && Settings.theSettings.features.contains(.VBat) {
                 let vbatMaxCellVoltage = Settings.theSettings.vbatMaxCellVoltage
                 if vbatMaxCellVoltage > 0 {
                     batteryCells = Int(voltage / vbatMaxCellVoltage + 1)

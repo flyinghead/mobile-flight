@@ -13,7 +13,7 @@ import CoreLocation
 typealias LocationCallback = (GPSLocation) -> Void
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLocationManagerDelegate, UserLocationProvider {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UserLocationProvider {
 
     var window: UIWindow?
     var msp = MSPParser()
@@ -56,7 +56,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         
         registerInitialUserDefaults()
         
-        msp.addDataListener(self)
+        msp.rssiEvent.addHandler(self, handler: AppDelegate.receivedRssiData)
+        msp.flightModeEvent.addHandler(self, handler: AppDelegate.checkArmedStatus)
+        msp.batteryEvent.addHandler(self, handler: AppDelegate.receivedBatteryData)
+        msp.gpsEvent.addHandler(self, handler: AppDelegate.receivedGpsData)
+        msp.communicationEvent.addHandler(self, handler: AppDelegate.communicationStatus)
+        msp.dataReceivedEvent.addHandler(self, handler: AppDelegate.dismissNoDataReceived)
         
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
@@ -195,6 +200,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         return true
     }
     
+    // MARK: Event Handlers
+    
     private func dismissNoDataReceived() {
         lastDataReceived = NSDate()
         if noDataReceived {
@@ -203,31 +210,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
     
-    // MARK: FlightDataListener
-    
-    func receivedData() {
-        dismissNoDataReceived()
-        
-        checkArmedStatus()
-        
+    private func receivedBatteryData() {
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
+    }
+    
+    private func receivedRssiData() {
         VoiceMessage.theVoice.checkAlarm(RSSILowAlarm())
     }
     
-    func receivedSensorData() {
-        dismissNoDataReceived()
-    }
-    
-    func receivedAltitudeData() {
-        dismissNoDataReceived()
-    }
-    
-    func receivedGpsData() {
-        dismissNoDataReceived()
+    private func receivedGpsData() {
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
-    func communicationStatus(status: Bool) {
+    private func communicationStatus(status: Bool) {
         if !status {
             VoiceMessage.theVoice.stopAll()
             stopTimer()
@@ -246,8 +241,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
         }
     }
     
-    // MARK:
-
     func checkArmedStatus() {
         if Settings.theSettings.armed && !armed {
             armed = true
@@ -264,6 +257,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FlightDataListener, CLLoc
             stopFlightlogRecording()
         }
     }
+    
+    // MARK:
     
     var totalArmedTime: Double {
         return _totalArmedTime - (lastArming?.timeIntervalSinceNow ?? 0.0)
