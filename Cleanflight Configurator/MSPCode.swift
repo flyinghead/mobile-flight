@@ -146,6 +146,9 @@ enum MSP_code : Int {
     // INav
     case MSP_NAV_POSHOLD =          12
     case MSP_SET_NAV_POSHOLD =      13
+    case MSP_WP_MISSION_LOAD =      18
+    case MSP_WP_MISSION_SAVE =      19
+    case MSP_WP_GETINFO =           20  // INav 1.7
     case MSP_NAV_STATUS =          121
 }
 

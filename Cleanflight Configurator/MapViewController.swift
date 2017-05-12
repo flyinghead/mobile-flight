@@ -106,15 +106,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         let gpsData = GPSData.theGPSData
         if Configuration.theConfig.isINav && gpsData.waypoints.isEmpty {
-            msp.fetchINavWaypoints(gpsData) { success in
-                dispatch_async(dispatch_get_main_queue(), {
-                    if success {
-                        self.waypointList.setWaypoints(gpsData.waypoints)
-                    } else {
-                        SVProgressHUD.showErrorWithStatus("Error downloading waypoints")
-                        gpsData.waypoints.removeAll()   // So we try to reload them when we appear next time
-                    }
-                })
+            msp.loadMission() { success in
+                self.msp.fetchINavWaypoints(gpsData) { success in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if success {
+                            self.waypointList.setWaypoints(gpsData.waypoints)
+                        } else {
+                            SVProgressHUD.showErrorWithStatus("Error downloading waypoints")
+                            gpsData.waypoints.removeAll()   // So we try to reload them when we appear next time
+                        }
+                    })
+                }
             }
         }
     }
@@ -441,15 +443,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             gpsData.waypoints.append(wp)
         }
         msp.sendINavWaypoints(gpsData) { success in
-            dispatch_async(dispatch_get_main_queue(), {
-                if !success {
-                    SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
-                } else {
-                    SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
-                    self.uploadButton.hidden = true
+            if success {
+                self.msp.saveMission() { success in
+                    if success {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
+                            self.uploadButton.hidden = true
+                        }
+                    } else {
+                        self.waypointUploadFailed()
+                    }
                 }
-            })
+            } else {
+                self.waypointUploadFailed()
+            }
         }
+    }
+    
+    private func waypointUploadFailed() {
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
+        })
     }
 }
 

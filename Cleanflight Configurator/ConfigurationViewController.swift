@@ -325,16 +325,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                                             if success {
                                                 self.msp.sendSetArmingConfig(self.newSettings!) { success in
                                                     if success {
-                                                        // FIXME removed in CF2 / BF 3.1.8
-                                                        self.msp.sendLoopTime(self.newSettings!) { success in
+                                                        self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
                                                             if success {
-                                                                self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
-                                                                    if success {
-                                                                        self.saveMiscOrEquivalent()
-                                                                    } else {
-                                                                        self.saveConfigFailed()
-                                                                    }
-                                                                }
+                                                                self.saveMiscOrEquivalent()
                                                             } else {
                                                                 self.saveConfigFailed()
                                                             }
@@ -413,7 +406,13 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         } else {
             msp.sendSetMisc(self.newMisc!, settings: self.newSettings!) { success in
                 if success {
-                    self.saveNewFailsafeSettings()
+                    self.msp.sendLoopTime(self.newSettings!) { success in
+                        if success {
+                            self.saveNewFailsafeSettings()
+                        } else {
+                             self.saveConfigFailed()
+                        }
+                    }
                 } else {
                     self.saveConfigFailed()
                 }

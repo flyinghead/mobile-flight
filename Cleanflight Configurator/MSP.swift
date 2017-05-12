@@ -954,7 +954,9 @@ class MSPParser {
             .MSP_SET_COMPASS_CONFIG,
             .MSP_SET_GPS_CONFIG,
             .MSP_SET_RC_DEADBAND,
-            .MSP_SET_NAV_POSHOLD:
+            .MSP_SET_NAV_POSHOLD,
+            .MSP_WP_MISSION_LOAD,
+            .MSP_WP_MISSION_SAVE:
             break
             
         default:
@@ -1499,6 +1501,16 @@ class MSPParser {
         data.append(UInt8(inavConfig.useThrottleMidForAltHold ? 1 : 0))
         data.appendContentsOf(writeUInt16(inavConfig.hoverThrottle))
         sendMessage(.MSP_SET_NAV_POSHOLD, data: data, retry: 2, callback: callback)
+    }
+    
+    func loadMission(callback:((success:Bool) -> Void)?) {
+        let data = [UInt8(0)]
+        sendMessage(.MSP_WP_MISSION_LOAD, data: data, retry: 2, callback: callback)
+    }
+    
+    func saveMission(callback:((success:Bool) -> Void)?) {
+        let data = [UInt8(0)]
+        sendMessage(.MSP_WP_MISSION_SAVE, data: data, retry: 2, callback: callback)
     }
     
     func openCommChannel(commChannel: CommChannel) {
