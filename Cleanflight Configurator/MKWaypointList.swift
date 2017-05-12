@@ -21,6 +21,8 @@ class MKWaypointList : SequenceType {
     var indexChangedEvent = Event<Int>()
     
     private var waypoints = [MKWaypoint]()
+    
+    var activeWaypoint: MKWaypoint?
 
     func getWaypoints() -> [Waypoint] {
         var wps = [Waypoint]()

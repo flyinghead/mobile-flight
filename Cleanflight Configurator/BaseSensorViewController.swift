@@ -36,7 +36,6 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.addMSPCommandSender(self)
     }
     
@@ -45,7 +44,6 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
         
         eventHandler?.dispose()
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.removeMSPCommandSender(self)
     }
     

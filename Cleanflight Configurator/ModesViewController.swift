@@ -34,7 +34,6 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
     func initialFetch() {
         dontReloadTable = true
 
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
         msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
             if success {
@@ -43,7 +42,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
                         self.msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2, callback: { success in
                             if success {
                                 dispatch_async(dispatch_get_main_queue(), {
-                                    appDelegate.startTimer()
+                                    self.appDelegate.startTimer()
                                     let settings = Settings.theSettings
                                     self.modeRanges = [ModeRange](settings.modeRanges!)
                                     self.modeRangeSlots = settings.modeRangeSlots
@@ -66,8 +65,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
 
     private func refreshError() {
         dispatch_async(dispatch_get_main_queue(), {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.startTimer()
+            self.appDelegate.startTimer()
             
             SVProgressHUD.showErrorWithStatus("Communication error")
             if !self.dontReloadTable {
@@ -266,7 +264,6 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
     }
     
     @IBAction func saveAction(sender: AnyObject) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
         sendModeRange(0)
     }
@@ -281,8 +278,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
                 if index >= self.modeRangeSlots - 1 {
                     self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                         dispatch_async(dispatch_get_main_queue(), {
-                            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                            appDelegate.startTimer()
+                            self.appDelegate.startTimer()
                             if success {
                                 SVProgressHUD.showSuccessWithStatus("Settings saved")
                             } else {
@@ -295,8 +291,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
-                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                    appDelegate.startTimer()
+                    self.appDelegate.startTimer()
                     SVProgressHUD.showErrorWithStatus("Save failed")
                 })
             }

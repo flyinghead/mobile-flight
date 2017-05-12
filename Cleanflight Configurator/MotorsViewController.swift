@@ -143,7 +143,6 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         
         motorEventHandler = msp.altitudeEvent.addHandler(self, handler: MotorsViewController.receivedMotorData)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.addMSPCommandSender(self)
         
         self.msp.sendMessage(.MSP_MIXER_CONFIG, data: nil, retry: 2, callback: { success in
@@ -187,7 +186,6 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         
         motorEventHandler?.dispose()
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.removeMSPCommandSender(self)
     }
     

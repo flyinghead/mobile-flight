@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import SVProgressHUD
 
-class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, MSPCommandSender {
     var locationManager: CLLocationManager?
     var gpsPositions = 0
     
@@ -26,7 +26,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     var altitudeEventHandler: Disposable?
     var rssiEventHandler: Disposable?
-    var positionHoldEventHandler: Disposable?
+    var navigationEventHandler: Disposable?
     var flightModeEventHandler: Disposable?
     var batteryEventHandler: Disposable?
     var gpsEventHandler: Disposable?
@@ -69,7 +69,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         receivedAltitudeData()
         receivedGpsData()
         receivedRssiData()
-        receivedPosHoldData()
+        receivedNavigationData()
         flightModeChanged()
         
         mapView.showsUserLocation = true
@@ -99,11 +99,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: MapViewController.receivedAltitudeData)
         rssiEventHandler = msp.rssiEvent.addHandler(self, handler: MapViewController.receivedRssiData)
-        positionHoldEventHandler = msp.positionHoldEvent.addHandler(self, handler: MapViewController.receivedPosHoldData)
+        navigationEventHandler = msp.navigationEvent.addHandler(self, handler: MapViewController.receivedNavigationData)
         flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: MapViewController.flightModeChanged)
         batteryEventHandler = msp.batteryEvent.addHandler(self, handler: MapViewController.receivedBatteryData)
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: MapViewController.receivedGpsData)
         
+        appDelegate.addMSPCommandSender(self)
+
         let gpsData = GPSData.theGPSData
         if Configuration.theConfig.isINav && gpsData.waypoints.isEmpty {
             msp.loadMission() { success in
@@ -128,10 +130,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         altitudeEventHandler?.dispose()
         rssiEventHandler?.dispose()
-        positionHoldEventHandler?.dispose()
+        navigationEventHandler?.dispose()
         flightModeEventHandler?.dispose()
         batteryEventHandler?.dispose()
         gpsEventHandler?.dispose()
+        
+        appDelegate.removeMSPCommandSender(self)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -194,6 +198,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         addWaypointsOverlay()
     }
     
+    func sendMSPCommands() {
+        let settings = Settings.theSettings
+        let config = Configuration.theConfig
+        if settings.armed && config.isINav {
+            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
+        }
+    }
+
     // MARK: Event Handlers
     
     func receivedBatteryData() {
@@ -298,7 +310,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    func receivedPosHoldData() {
+    func receivedNavigationData() {
         let gpsData = GPSData.theGPSData
         let config = Configuration.theConfig
         if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
@@ -318,8 +330,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
             
         }
+        let inavConfig = INavConfig.theINavConfig
+        let activeWaypoint: MKWaypoint?
+        if inavConfig.activeWaypoint >= 1 && inavConfig.activeWaypoint + 1 < waypointList.count {
+            activeWaypoint = waypointList.waypointAt(inavConfig.activeWaypoint - 1)
+        } else {
+            activeWaypoint = nil
+        }
+        if activeWaypoint != waypointList.activeWaypoint {
+            if let previousActive = waypointList.activeWaypoint {
+                (mapView.viewForAnnotation(previousActive) as? MKWaypointView)?.didSelect()
+            }
+            waypointList.activeWaypoint = activeWaypoint
+            if activeWaypoint != nil {
+                (mapView.viewForAnnotation(activeWaypoint!) as? MKWaypointView)?.didSelect()
+            }
+        }
     }
-    
+
     // MARK: MKMapViewDelegate
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {

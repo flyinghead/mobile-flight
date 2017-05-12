@@ -107,6 +107,8 @@ enum Mode : String {
     case DISABLE3DSWITCH = "DISABLE 3D SWITCH"
     case FPVANGLEMIX = "FPV ANGLE MIX"
     case BLACKBOXERASE = "BLACKBOX ERASE (>30s)"
+    // INav
+    case NAVWP = "NAV WP"
     
     var spokenName: String {
         switch self {
@@ -174,6 +176,8 @@ enum Mode : String {
             return "FPV angle mix"
         case .BLACKBOXERASE:
             return "blackbox erase"
+        case .NAVWP:
+            return "waypoint mode"
         }
     }
 }
@@ -525,7 +529,7 @@ class Settings : AutoCoded {
         "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
-        "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "pitotDisabled",
+        "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "pitotDisabled", "sonarDisabled",
         "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
         "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
@@ -652,6 +656,7 @@ class Settings : AutoCoded {
     var barometerDisabled = true
     var magnetometerDisabled = true
     var pitotDisabled = false
+    var sonarDisabled = false
 
     // MSP_RSSI_CONFIG / MSP_SET_RSSI_CONFIG
     var rssiChannel = 0
@@ -789,6 +794,7 @@ class Settings : AutoCoded {
         self.barometerDisabled = copyOf.barometerDisabled
         self.magnetometerDisabled = copyOf.magnetometerDisabled
         self.pitotDisabled = copyOf.pitotDisabled
+        self.sonarDisabled = copyOf.sonarDisabled
         
         self.rssiChannel = copyOf.rssiChannel
         

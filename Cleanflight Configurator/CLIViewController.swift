@@ -36,7 +36,6 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CLIViewController.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
@@ -54,7 +53,7 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         msp.cliViewController = nil
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
         appDelegate.startTimer()
     }
 

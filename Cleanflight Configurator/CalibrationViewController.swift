@@ -121,12 +121,10 @@ class CalibrationViewController: StaticDataTableViewController {
     }
     
     private func startTimer() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.startTimer()
     }
     
     private func stopTimer() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.stopTimer()
     }
     

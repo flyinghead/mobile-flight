@@ -63,7 +63,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     var altitudeEventHandler: Disposable?
     var rssiEventHandler: Disposable?
     var attitudeEventHandler: Disposable?
-    var positionHoldEventHandler: Disposable?
+    var navigationEventHandler: Disposable?
     var flightModeEventHandler: Disposable?
     var batteryEventHandler: Disposable?
     var gpsEventHandler: Disposable?
@@ -151,7 +151,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: Telemetry2ViewController.receivedAltitudeData)
         rssiEventHandler = msp.rssiEvent.addHandler(self, handler: Telemetry2ViewController.receivedRssiData)
         attitudeEventHandler = msp.attitudeEvent.addHandler(self, handler: Telemetry2ViewController.receivedAttitudeData)
-        positionHoldEventHandler = msp.positionHoldEvent.addHandler(self, handler: Telemetry2ViewController.receivedPosHoldData)
+        navigationEventHandler = msp.navigationEvent.addHandler(self, handler: Telemetry2ViewController.receivedPosHoldData)
         flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: Telemetry2ViewController.flightModeChanged)
         batteryEventHandler = msp.batteryEvent.addHandler(self, handler: Telemetry2ViewController.receivedBatteryData)
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: Telemetry2ViewController.receivedGpsData)
@@ -174,7 +174,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         if let tabBarController = parentViewController as? UITabBarController {
             tabBarController.tabBar.hidden = false
         }
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         if showRCSticksButton.selected && actingRC {
             appDelegate.rcCommandsProvider = self
         }
@@ -228,13 +227,12 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         altitudeEventHandler?.dispose()
         rssiEventHandler?.dispose()
         attitudeEventHandler?.dispose()
-        positionHoldEventHandler?.dispose()
+        navigationEventHandler?.dispose()
         flightModeEventHandler?.dispose()
         batteryEventHandler?.dispose()
         gpsEventHandler?.dispose()
         receiverEventHandler?.dispose()
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.rcCommandsProvider = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
@@ -428,7 +426,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     @IBAction func menuAction(sender: AnyObject) {
         actionsView.hidden = !actionsView.hidden
         if !actionsView.hidden {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             followMeButton.selected = appDelegate.followMeActive
         }
     }
@@ -436,7 +433,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     @IBAction func followMeAction(sender: AnyObject) {
         actionsView.hidden = true
         if !msp.replaying {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.followMeActive = !appDelegate.followMeActive
         }
     }
@@ -449,7 +445,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         showRCSticksButton.selected = !showRCSticksButton.selected
         if !msp.replaying && Settings.theSettings.features.contains(.RxMsp) {
             actingRC = showRCSticksButton.selected
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.rcCommandsProvider = actingRC ? self : nil
             leftStick.userInteractionEnabled = true
             rightStick.userInteractionEnabled = true
@@ -464,7 +459,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     @IBAction func disconnectAction(sender: AnyObject) {
         actionsView.hidden = true
         msp.closeCommChannel()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     @IBAction func viewTapped(sender: AnyObject) {

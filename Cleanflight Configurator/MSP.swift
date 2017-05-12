@@ -44,7 +44,7 @@ class MSPParser {
     let sonarEvent = Event<Void>()
     let rssiEvent = Event<Void>()
     let attitudeEvent = Event<Void>()
-    let positionHoldEvent = Event<Void>()
+    let navigationEvent = Event<Void>()
     let flightModeEvent = Event<Void>()
     let batteryEvent = Event<Void>()
     let gpsEvent = Event<Void>()
@@ -487,7 +487,7 @@ class MSPParser {
                 sensorData.altitudeHold = altitude
                 sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph, INav
                 offset += 2
-                positionHoldEvent.raiseDispatch()
+                navigationEvent.raiseDispatch()
             }
             else if config.isINav && wpNum >= 1 && wpNum <= 15 {
                 let p1 = Int(readInt16(message, index: offset))     // Speed for .Waypoint action in cm/s (must be > 0.5 m/s and < general.max_speed (3 m/s by default))
@@ -773,7 +773,9 @@ class MSPParser {
             settings.magnetometerDisabled = config.isINav ? message[2] == 0 : message[2] != 0
             if message.count >= 4 {
                 settings.pitotDisabled = config.isINav ? message[3] == 0 : message[3] != 0
-                // INav rangefinder (1)
+                if message.count >= 5 {
+                    settings.sonarDisabled = config.isINav ? message[4] == 0 : message[4] != 0
+                }
                 // INav optical flow (1) (future)
             }
         case .MSP_RSSI_CONFIG:
@@ -899,7 +901,7 @@ class MSPParser {
             inavConfig.activeWaypoint = Int(message[3])
             inavConfig.error = INavStatusError(value: Int(message[4]))
             sensorData.headingHold = Double(readInt16(message, index: 5))
-            positionHoldEvent.raiseDispatch()
+            navigationEvent.raiseDispatch()
 
         // INav 1.6+
         case .MSP_NAV_POSHOLD:
@@ -1467,6 +1469,7 @@ class MSPParser {
         data.append(UInt8(settings.barometerDisabled != config.isINav ? 1 : 0))
         data.append(UInt8(settings.magnetometerDisabled != config.isINav ? 1 : 0))
         data.append(UInt8(settings.pitotDisabled != config.isINav ? 1 : 0))
+        data.append(UInt8(settings.sonarDisabled != config.isINav ? 1 : 0))
         sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
     }
     

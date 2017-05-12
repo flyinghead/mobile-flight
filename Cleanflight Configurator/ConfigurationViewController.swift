@@ -46,6 +46,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var enableBarometer: UISwitch!
     @IBOutlet weak var enableMagnetometer: UISwitch!
     @IBOutlet weak var enablePitotSwitch: UISwitch!
+    @IBOutlet weak var enableSonarSwitch: UISwitch!
     @IBOutlet weak var airModeSwitch: UISwitch!
     @IBOutlet weak var osdSwitch: UISwitch!
     @IBOutlet weak var vtxSwitch: UISwitch!
@@ -251,6 +252,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             if isINav {
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
                 enablePitotSwitch.on = !newSettings!.pitotDisabled
+                enableSonarSwitch.on = !newSettings!.sonarDisabled
             } else {
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
             }
@@ -306,6 +308,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             saveFeatureSwitchValue(osdSwitch, feature: .OSD)
         } else if isINav {
             newSettings!.pitotDisabled = !enablePitotSwitch.on
+            newSettings!.sonarDisabled = !enableSonarSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
         }
         

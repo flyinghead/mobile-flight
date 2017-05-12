@@ -37,6 +37,7 @@ class PIDViewController: StaticDataTableViewController {
     //GPS
     @IBOutlet weak var posP: NumberField!
     @IBOutlet weak var posI: NumberField!
+    @IBOutlet weak var posD: NumberField!
     @IBOutlet weak var posRP: NumberField!
     @IBOutlet weak var posRI: NumberField!
     @IBOutlet weak var posRD: NumberField!
@@ -144,6 +145,7 @@ class PIDViewController: StaticDataTableViewController {
                     pid = settings.getPID(.Pos)!
                     self.posP.value = pid[0]
                     self.posI.value = pid[1]
+                    self.posD.value = pid[2]
                     pid = settings.getPID(.PosR)!
                     self.posRP.value = pid[0]
                     self.posRI.value = pid[1]
@@ -188,7 +190,7 @@ class PIDViewController: StaticDataTableViewController {
         pids.append([ pitchP.value, pitchI.value, pitchD.value ])
         pids.append([ yawP.value, yawI.value, yawD.value ])
         pids.append([ altP.value, 0.0, 0.0 ])
-        pids.append([ posP.value, posI.value, 0.0 ])
+        pids.append([ posP.value, posI.value, posD.value ])
         pids.append([ posRP.value, posRI.value, posRD.value ])
         pids.append([ navRP.value, navRI.value, navRD.value ])
         pids.append([ angleLevel.value, horizonLevel.value, horizonTransition.value ])

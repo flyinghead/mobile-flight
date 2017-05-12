@@ -48,7 +48,9 @@ class MKWaypointView : MKAnnotationView {
     }
     
     func didSelect() {
-        if highlighted || selected || dragState == .Dragging {
+        if waypointList?.activeWaypoint == annotation as? MKWaypoint {
+            svgShapeLayer.fillColor = UIColor.redColor().CGColor
+        } else if highlighted || selected || dragState == .Dragging {
             svgShapeLayer.fillColor = UIColor.whiteColor().CGColor
         } else {
             svgShapeLayer.fillColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.8).CGColor
