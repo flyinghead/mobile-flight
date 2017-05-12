@@ -363,45 +363,121 @@ enum PortIdentifier {
     }
 }
 
-enum BaudRate {
-    enum Internal : Int {
-        case Auto = 0
-        case Baud9600 = 1
-        case Baud19200 = 2
-        case Baud38400 = 3
-        case Baud57600 = 4
-        case Baud115200 = 5
-        case Baud230400 = 6
-        case Baud250000 = 7
-    }
-    case Known(Internal)
-    case Unknown(Int)
+enum BaudRate : Equatable {
+    case Auto
+    case Baud1200
+    case Baud2400
+    case Baud4800
+    case Baud9600
+    case Baud19200
+    case Baud38400
+    case Baud57600
+    case Baud115200
+    case Baud230400
+    case Baud250000
+    case Baud400000
+    case Baud460800
+    case Baud500000
+    case Baud921600
+    case Baud1000000
+    case Baud1500000
+    case Baud2000000
+    case Baud2470000
+    case Unknown(value: Int)
     
     init(value: Int) {
-        if let intern = Internal(rawValue: value) {
-            self = .Known(intern)
+        let values = BaudRate.values()
+        if value >= 0 && value < values.count {
+            self = values[value]
         } else {
-            self = .Unknown(value)
+            self = .Unknown(value: value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let intern):
-            return intern.rawValue
         case .Unknown(let value):
             return value
+        default:
+            let values = BaudRate.values()
+            return values.indexOf(self) ?? 0
         }
     }
+    
+    var description: String {
+        switch self {
+        case Auto:
+            return "Auto"
+        case Baud1200:
+            return "1200"
+        case Baud2400:
+            return "2400"
+        case Baud4800:
+            return "4800"
+        case Baud9600:
+            return "9600"
+        case Baud19200:
+            return "19200"
+        case Baud38400:
+            return "38400"
+        case Baud57600:
+            return "57600"
+        case Baud115200:
+            return "115200"
+        case Baud230400:
+            return "230400"
+        case Baud250000:
+            return "250000"
+        case Baud400000:
+            return "400000"
+        case Baud460800:
+            return "460800"
+        case Baud500000:
+            return "500000"
+        case Baud921600:
+            return "921600"
+        case Baud1000000:
+            return "1000000"
+        case Baud1500000:
+            return "1500000"
+        case Baud2000000:
+            return "2000000"
+        case Baud2470000:
+            return "2470000"
+        case Unknown(let value):
+            return String(format: "Unknown (%d)", value)
+        }
+    }
+    
+    static let inav17Values = [Auto, Baud1200, Baud2400, Baud4800, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000, Baud460800, Baud921600]
+    static let bfValues = [Auto, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000, Baud400000, Baud460800, Baud500000, Baud921600, Baud1000000, Baud1500000, Baud2000000, Baud2470000]
+    static let defaultValues =  [Auto, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000]
+
+    static func values() -> [BaudRate] {
+        let config = Configuration.theConfig
+        if config.isINav && config.isApiVersionAtLeast("1.25") {    // INav 1.7
+            return inav17Values
+        }
+        else if config.isApiVersionAtLeast("1.31") {    // BF3.1, CF2
+            return bfValues
+        }
+        else {
+            return defaultValues
+        }
+    }
+}
+
+func ==(lhs: BaudRate, rhs: BaudRate) -> Bool {
+    return lhs.description == rhs.description
 }
 
 struct PortConfig : DictionaryCoding {
     var portIdentifier = PortIdentifier.Known(.None)
     var functions = PortFunction.None
-    var mspBaudRate = BaudRate.Known(.Auto)
-    var gpsBaudRate = BaudRate.Known(.Auto)
-    var telemetryBaudRate = BaudRate.Known(.Auto)
-    var blackboxBaudRate = BaudRate.Known(.Auto)
+    var mspBaudRate = BaudRate.Auto
+    var gpsBaudRate = BaudRate.Auto
+    var telemetryBaudRate = BaudRate.Auto
+    var blackboxBaudRate = BaudRate.Auto
     
     init(portIdentifier: PortIdentifier, functions: PortFunction, mspBaudRate: BaudRate, gpsBaudRate: BaudRate, telemetryBaudRate: BaudRate, blackboxBaudRate: BaudRate) {
         self.portIdentifier = portIdentifier
