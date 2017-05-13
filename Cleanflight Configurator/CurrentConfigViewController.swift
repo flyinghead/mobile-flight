@@ -15,6 +15,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBOutlet weak var meterTypeField: UITextField!
     @IBOutlet var hideableCells: [UITableViewCell]!
     @IBOutlet var currentScaleCells: [UITableViewCell]!
+    @IBOutlet weak var batteryCapacityField: NumberField!
 
     var meterTypePicker: MyDownPicker!
     
@@ -55,10 +56,11 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        currentMeterSwitch.on = settings!.features.contains(.CurrentMeter)
-        meterScaleField.value = Double(settings!.currentScale)
-        meterOffsetField.value = Double(settings!.currentOffset)
+        currentMeterSwitch.on = settings.features.contains(.CurrentMeter)
+        meterScaleField.value = Double(settings.currentScale)
+        meterOffsetField.value = Double(settings.currentOffset)
         meterTypePicker.selectedIndex = settings.currentMeterType
+        batteryCapacityField.value = Double(settings.batteryCapacity)
         hideCellsAsNeeded()
         reloadDataAnimated(false)
     }
@@ -66,9 +68,10 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        settings!.currentScale = Int(meterScaleField.value)
-        settings!.currentOffset = Int(meterOffsetField.value)
+        settings.currentScale = Int(meterScaleField.value)
+        settings.currentOffset = Int(meterOffsetField.value)
         settings.currentMeterType = meterTypePicker.selectedIndex
+        settings.batteryCapacity = Int(round(batteryCapacityField.value))
         configViewController?.refreshUI()
     }
     

@@ -1393,15 +1393,12 @@ class MSPParser {
         var data = [UInt8]()
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
             // CF 2 / BF 3.1.8
-            /*
             if settings.currentMeterType == 1 {     // CURRENT_METER_ADC
                 // regular
                 data.append(UInt8(10))  // CURRENT_METER_ID_BATTERY_1
             } else {
                 data.append(UInt8(80))  // CURRENT_METER_ID_VIRTUAL_1
             }
-             */
-            data.append(UInt8(settings.currentMeterId))
             data.appendContentsOf(writeUInt16(settings.currentScale))
             data.appendContentsOf(writeUInt16(settings.currentOffset))
         } else {

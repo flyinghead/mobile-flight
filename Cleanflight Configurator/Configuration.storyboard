@@ -2420,6 +2420,55 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Battery" id="MpA-cg-WEy">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Xt8-3W-pIb">
+                                        <rect key="frame" x="0.0" y="325" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xt8-3W-pIb" id="868-fj-vCK">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Capacity (mAh)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hGh-3H-Vhk">
+                                                    <rect key="frame" x="8" y="12" width="112" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oyp-96-tWd" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="566" y="7" width="26" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="1400"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="20000"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="100"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hGh-3H-Vhk" firstAttribute="leading" secondItem="868-fj-vCK" secondAttribute="leadingMargin" id="52d-nv-iHw"/>
+                                                <constraint firstItem="oyp-96-tWd" firstAttribute="leading" secondItem="hGh-3H-Vhk" secondAttribute="trailing" constant="8" id="QL3-Ow-lOJ"/>
+                                                <constraint firstItem="oyp-96-tWd" firstAttribute="centerY" secondItem="868-fj-vCK" secondAttribute="centerY" id="h3T-oC-EEH"/>
+                                                <constraint firstItem="oyp-96-tWd" firstAttribute="trailing" secondItem="868-fj-vCK" secondAttribute="trailingMargin" id="mOG-ah-x4D"/>
+                                                <constraint firstItem="hGh-3H-Vhk" firstAttribute="centerY" secondItem="868-fj-vCK" secondAttribute="centerY" id="pHR-8X-jJk"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="nsb-rB-W0A" id="X1V-jm-6oi"/>
@@ -2429,6 +2478,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="500"/>
                     <connections>
+                        <outlet property="batteryCapacityField" destination="oyp-96-tWd" id="vhY-aJ-pBb"/>
                         <outlet property="currentMeterSwitch" destination="VBh-fl-181" id="rRD-pw-6YV"/>
                         <outlet property="meterOffsetField" destination="kpC-go-rn8" id="xpf-1n-Iv4"/>
                         <outlet property="meterScaleField" destination="7dw-EG-k0B" id="8PT-PL-ab7"/>
@@ -2438,6 +2488,7 @@
                         <outletCollection property="hideableCells" destination="mpg-sG-PWc" collectionClass="NSMutableArray" id="QZj-0l-jRs"/>
                         <outletCollection property="currentScaleCells" destination="Crh-LY-YNE" collectionClass="NSMutableArray" id="WrP-Sn-gT4"/>
                         <outletCollection property="currentScaleCells" destination="Jep-TZ-g30" collectionClass="NSMutableArray" id="YUu-A8-gCF"/>
+                        <outletCollection property="hideableCells" destination="Xt8-3W-pIb" collectionClass="NSMutableArray" id="cU3-bh-2DH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mVX-Rs-OEt" userLabel="First Responder" sceneMemberID="firstResponder"/>

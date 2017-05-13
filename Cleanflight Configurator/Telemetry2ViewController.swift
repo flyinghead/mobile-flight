@@ -317,6 +317,12 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         ampsGauge.value = config.amperage
         ampsValueLabel.text = formatWithUnit(config.amperage, unit: "")
         
+        if mAhGauge.ranges.isEmpty && settings.batteryCapacity != 0 {
+            mAhGauge.maximum = Double(settings.batteryCapacity) * 1.2
+            mAhGauge.ranges.append((min: 0, max: Double(settings.batteryCapacity) * 0.8, UIColor.greenColor()))
+            mAhGauge.ranges.append((min: Double(settings.batteryCapacity) * 0.8, max: Double(settings.batteryCapacity), UIColor.yellowColor()))
+            mAhGauge.ranges.append((min: Double(settings.batteryCapacity), max: mAhGauge.maximum, UIColor.redColor()))
+        }
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", config.mAhDrawn)
         
