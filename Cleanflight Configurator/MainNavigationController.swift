@@ -9,7 +9,7 @@
 import UIKit
 
 class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
-    var myallViewControllers: [UIViewController]?       // allViewControllers conflicts silently with a var of the superclass !!
+    var myallViewControllers: [UIViewController]!       // allViewControllers conflicts silently with a var of the superclass !!
     var allViewControllersEnabled = true
     
     override func awakeFromNib() {
@@ -30,7 +30,12 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         }
         let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
         viewControllers!.insert(controller, atIndex: 1)
-        
+
+        storyboard = UIStoryboard(name: "INav", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 3)
+        }
+
         customizableViewControllers = viewControllers!.filter({
             return !($0 is Telemetry2ViewController)
         })
@@ -53,25 +58,39 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         myallViewControllers = viewControllers
     }
     
+    private func isOfType<T: UIViewController>(viewController: UIViewController, type: T.Type) -> Bool {
+        if viewController is T {
+            return true
+        }
+        if let navVC = viewController as? UINavigationController {
+            return navVC.topViewController is T
+        } else {
+            return false
+        }
+    }
+    
     func removeViewControllersForReplay() {
         allViewControllersEnabled = false
         let filteredVC = viewControllers?.filter({
-            var viewController = $0
-            if let navigationController = viewController as? UINavigationController {
-                viewController = navigationController.topViewController ?? viewController
-            }
-            return viewController is Telemetry2ViewController
-                || viewController is MapViewController
-                || viewController is GPSViewController
-                || viewController is SensorPagesViewController
-                || viewController is AppSettingsViewController
+            self.isOfType($0, type: Telemetry2ViewController.self)
+                || self.isOfType($0, type: MapViewController.self)
+                || self.isOfType($0, type: GPSViewController.self)
+                || self.isOfType($0, type: SensorPagesViewController.self)
+                || self.isOfType($0, type: AppSettingsViewController.self)
         })
         setViewControllers(filteredVC, animated: false)
     }
     
     func enableAllViewControllers() {
         allViewControllersEnabled = true
-        setViewControllers(myallViewControllers, animated: false)
+        var viewControllers = myallViewControllers
+        if !Configuration.theConfig.isINav {
+            viewControllers = viewControllers.filter({
+                !self.isOfType($0, type: INavSettingsViewController.self)
+            })
+
+        }
+        setViewControllers(viewControllers, animated: false)
     }
     
     func tabBarController(tabBarController: UITabBarController, didEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
@@ -79,6 +98,12 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
             var tabOrder = [Int]()
             for vc in self.viewControllers! {
                 tabOrder.append(vc.tabBarItem.tag)
+            }
+            if !Configuration.theConfig.isINav {
+                let inavVC = myallViewControllers.filter({
+                    self.isOfType($0, type: INavSettingsViewController.self)
+                }).first!
+                tabOrder.append(inavVC.tabBarItem.tag)
             }
             NSUserDefaults.standardUserDefaults().setObject(tabOrder, forKey: "MainTabBarOrder")
         }

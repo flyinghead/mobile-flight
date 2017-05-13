@@ -63,38 +63,6 @@ class WaypointDetailViewController: BaseWaypointDetailViewController {
         reloadDataAnimated(sender !== self)
     }
     
-    private func msToLocaleSpeed(speed: Double) -> Double {
-        let speedKmh = speed * 3600 / 1000
-        
-        switch selectedUnitSystem() {
-        case .Imperial:
-            // mile/h
-            return speedKmh * 1000 / METER_PER_MILE
-        case .Aviation:
-            // Knots
-            return speedKmh * 1000 / METER_PER_NM
-        default:
-            // km/h
-            return speedKmh
-        }
-    }
-    
-    private func localeSpeedToMs(speed: Double) -> Double {
-        let kmhSpeed: Double
-        switch selectedUnitSystem() {
-        case .Imperial:
-            // mile/h
-            kmhSpeed = speed / 1000 * METER_PER_MILE
-        case .Aviation:
-            // Knots
-            kmhSpeed = speed / 1000 * METER_PER_NM
-        default:
-            // km/h
-            kmhSpeed = speed
-        }
-        return kmhSpeed / 3600 * 1000
-    }
-    
     private func meterToLocaleAlt(alt: Double) -> Double {
         switch selectedUnitSystem() {
         case .Imperial, .Aviation:

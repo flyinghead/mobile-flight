@@ -136,6 +136,9 @@
 		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
 		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
 		AEEDA92B1C1B96F50040EC09 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
+		AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EB21EC73A4D00CC3D94 /* INav.storyboard */; };
+		AEEE2EB51EC7514B00CC3D94 /* INavSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EB41EC7514B00CC3D94 /* INavSettingsViewController.swift */; };
+		AEEE2EB71EC751B500CC3D94 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EB61EC751B500CC3D94 /* Units.swift */; };
 		AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */; };
 		AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */; };
 		AEF190371C3DB54C0066C75A /* FlightLogFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190361C3DB54C0066C75A /* FlightLogFile.swift */; };
@@ -355,6 +358,9 @@
 		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCode.swift; sourceTree = "<group>"; };
+		AEEE2EB21EC73A4D00CC3D94 /* INav.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = INav.storyboard; sourceTree = "<group>"; };
+		AEEE2EB41EC7514B00CC3D94 /* INavSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INavSettingsViewController.swift; sourceTree = "<group>"; };
+		AEEE2EB61EC751B500CC3D94 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlinkingLabel.swift; sourceTree = "<group>"; };
 		AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayComm.swift; sourceTree = "<group>"; };
 		AEF190361C3DB54C0066C75A /* FlightLogFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightLogFile.swift; sourceTree = "<group>"; };
@@ -580,8 +586,11 @@
 		AE62AADD1EB8902400D0DEF2 /* Mission */ = {
 			isa = PBXGroup;
 			children = (
+				AEEE2EB21EC73A4D00CC3D94 /* INav.storyboard */,
 				AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */,
 				AE1BBA371EC39CA10081E068 /* BaseWaypointDetailCiewController.swift */,
+				AE1BBA401EC474230081E068 /* INavModel.swift */,
+				AEEE2EB41EC7514B00CC3D94 /* INavSettingsViewController.swift */,
 				AE1BBA3E1EC3B5E20081E068 /* MKHomeLocationView.swift */,
 				AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */,
 				AE1BBA2F1EC329BB0081E068 /* MKWaypointList.swift */,
@@ -641,7 +650,6 @@
 				AE1BBA311EC3348B0081E068 /* Event.swift */,
 				AEF190361C3DB54C0066C75A /* FlightLogFile.swift */,
 				AEDDD23E1C10BDF1004232AA /* GPSViewController.swift */,
-				AE1BBA401EC474230081E068 /* INavModel.swift */,
 				AE63D5EE1C216C320070D1D2 /* MainNavigationController.swift */,
 				AEA48A781C29E421006BC53E /* MapViewController.swift */,
 				AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */,
@@ -659,6 +667,7 @@
 				AE71D8201C3596C800CC0AEB /* ServosViewController.swift */,
 				AE59A1C21C4ECFB300837475 /* Telemetry2ViewController.swift */,
 				AEBA641B1C342BD900783ECE /* UserDefaults.swift */,
+				AEEE2EB61EC751B500CC3D94 /* Units.swift */,
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
 				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
 				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
@@ -877,6 +886,7 @@
 				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
+				AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
@@ -1040,6 +1050,7 @@
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
 				AEDDD2431C10EEC3004232AA /* ReceiverChannel.swift in Sources */,
+				AEEE2EB71EC751B500CC3D94 /* Units.swift in Sources */,
 				AE1EAA2F1CB0174500C24E2A /* IASKPSSliderSpecifierViewCell.m in Sources */,
 				AE1EAA291CB0174500C24E2A /* IASKSettingsReader.m in Sources */,
 				AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */,
@@ -1115,6 +1126,7 @@
 				AE3E45E31C50E96000E33E9F /* RoundGauge.swift in Sources */,
 				AE1EAA251CB0174500C24E2A /* IASKAppSettingsViewController.m in Sources */,
 				AE1BBA341EC37C9A0081E068 /* WaypointDetailViewController.swift in Sources */,
+				AEEE2EB51EC7514B00CC3D94 /* INavSettingsViewController.swift in Sources */,
 				AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */,
 				AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */,
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,

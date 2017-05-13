@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="f09-9J-ouV">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--INAV-->
+        <scene sceneID="PkU-eB-lAy">
+            <objects>
+                <navigationController storyboardIdentifier="INavSettingsController" automaticallyAdjustsScrollViewInsets="NO" id="f09-9J-ouV" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" tag="15" title="INAV" image="inav-logo" id="FHL-fb-s88"/>
+                    <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4xU-8A-eTY">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5Ao-OT-MNS" kind="relationship" relationship="rootViewController" id="184-Ac-WEb"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A16-Wp-mnt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="96.799999999999997" y="84.107946026986511"/>
+        </scene>
+        <!--INAV Settings-->
+        <scene sceneID="CW3-jE-2aX">
+            <objects>
+                <tableViewController id="5Ao-OT-MNS" customClass="INavSettingsViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="oOh-oe-75x">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection id="9DT-la-64B">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Z4q-ct-kxj">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z4q-ct-kxj" id="Oft-jy-tFs">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User Control Mode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ry-yL-raf">
+                                                    <rect key="frame" x="8" y="12" width="272" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Attitude" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dZG-NH-8Xc">
+                                                    <rect key="frame" x="288" y="7" width="79" height="30"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="8ry-yL-raf" firstAttribute="leading" secondItem="Oft-jy-tFs" secondAttribute="leadingMargin" id="1CH-Ka-RSU"/>
+                                                <constraint firstItem="dZG-NH-8Xc" firstAttribute="centerY" secondItem="Oft-jy-tFs" secondAttribute="centerY" id="3zZ-5S-rIG"/>
+                                                <constraint firstItem="dZG-NH-8Xc" firstAttribute="leading" secondItem="8ry-yL-raf" secondAttribute="trailing" constant="8" id="7K3-U9-Q0u"/>
+                                                <constraint firstItem="dZG-NH-8Xc" firstAttribute="trailing" secondItem="Oft-jy-tFs" secondAttribute="trailingMargin" id="XP9-dO-7EW"/>
+                                                <constraint firstItem="8ry-yL-raf" firstAttribute="centerY" secondItem="Oft-jy-tFs" secondAttribute="centerY" id="l9N-gS-HOT"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="pe2-wn-6eg">
+                                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pe2-wn-6eg" id="IjG-bE-iYU">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Navigation Speed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BfS-Q7-IHP">
+                                                    <rect key="frame" x="8" y="12" width="162.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="11" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8kD-1J-mrB" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="178.5" y="11" width="188.5" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.35999999999999999"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="72"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.10000000000000001"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="11"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="8kD-1J-mrB" firstAttribute="trailing" secondItem="IjG-bE-iYU" secondAttribute="trailingMargin" id="9JG-aO-nOP"/>
+                                                <constraint firstItem="BfS-Q7-IHP" firstAttribute="centerY" secondItem="IjG-bE-iYU" secondAttribute="centerY" id="QdK-r3-cyg"/>
+                                                <constraint firstItem="8kD-1J-mrB" firstAttribute="centerY" secondItem="IjG-bE-iYU" secondAttribute="centerY" id="h20-bB-5EK"/>
+                                                <constraint firstItem="8kD-1J-mrB" firstAttribute="leading" secondItem="BfS-Q7-IHP" secondAttribute="trailing" constant="8" id="j6n-Pa-d2T"/>
+                                                <constraint firstItem="BfS-Q7-IHP" firstAttribute="leading" secondItem="IjG-bE-iYU" secondAttribute="leadingMargin" id="xhw-g3-24P"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="1NQ-di-30l">
+                                        <rect key="frame" x="0.0" y="88" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1NQ-di-30l" id="byq-ht-exv">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Cruise Speed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Omi-5x-EU5">
+                                                    <rect key="frame" x="8" y="12" width="132" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="11" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="y6e-bh-EFe" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="148" y="11" width="219" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.35999999999999999"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="72"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.10000000000000001"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="18"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="y6e-bh-EFe" firstAttribute="trailing" secondItem="byq-ht-exv" secondAttribute="trailingMargin" id="3n3-Vj-aOp"/>
+                                                <constraint firstItem="Omi-5x-EU5" firstAttribute="leading" secondItem="byq-ht-exv" secondAttribute="leadingMargin" id="VFm-2D-7SQ"/>
+                                                <constraint firstItem="y6e-bh-EFe" firstAttribute="leading" secondItem="Omi-5x-EU5" secondAttribute="trailing" constant="8" id="joM-eq-aZs"/>
+                                                <constraint firstItem="y6e-bh-EFe" firstAttribute="centerY" secondItem="byq-ht-exv" secondAttribute="centerY" id="k9b-Cg-jYa"/>
+                                                <constraint firstItem="Omi-5x-EU5" firstAttribute="centerY" secondItem="byq-ht-exv" secondAttribute="centerY" id="q9c-yb-5Zt"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JzI-PS-bHY">
+                                        <rect key="frame" x="0.0" y="132" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JzI-PS-bHY" id="8Yh-Ht-sju">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Navigation Climb Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXy-1b-NdU">
+                                                    <rect key="frame" x="8" y="12" width="194.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="11" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sIJ-mO-TjJ" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="210.5" y="11" width="156.5" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.35999999999999999"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="72"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.10000000000000001"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="18"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="NXy-1b-NdU" firstAttribute="centerY" secondItem="8Yh-Ht-sju" secondAttribute="centerY" id="7F9-4e-f06"/>
+                                                <constraint firstItem="sIJ-mO-TjJ" firstAttribute="trailing" secondItem="8Yh-Ht-sju" secondAttribute="trailingMargin" id="EVa-at-5Ud"/>
+                                                <constraint firstItem="NXy-1b-NdU" firstAttribute="leading" secondItem="8Yh-Ht-sju" secondAttribute="leadingMargin" id="Wtk-fG-n7a"/>
+                                                <constraint firstItem="sIJ-mO-TjJ" firstAttribute="leading" secondItem="NXy-1b-NdU" secondAttribute="trailing" constant="8" id="Y4p-jm-B59"/>
+                                                <constraint firstItem="sIJ-mO-TjJ" firstAttribute="centerY" secondItem="8Yh-Ht-sju" secondAttribute="centerY" id="s0s-OV-hZn"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="2Ll-uV-cNt">
+                                        <rect key="frame" x="0.0" y="176" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Ll-uV-cNt" id="xCl-rF-ObG">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Alt.Hold Climb Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GkY-be-rQh">
+                                                    <rect key="frame" x="8" y="12" width="175.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="11" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EeK-jg-xOz" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="191.5" y="11" width="175.5" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.35999999999999999"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="72"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.10000000000000001"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="7"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="EeK-jg-xOz" firstAttribute="centerY" secondItem="xCl-rF-ObG" secondAttribute="centerY" id="C9J-sB-0rS"/>
+                                                <constraint firstItem="EeK-jg-xOz" firstAttribute="trailing" secondItem="xCl-rF-ObG" secondAttribute="trailingMargin" id="Wen-h3-hL6"/>
+                                                <constraint firstItem="GkY-be-rQh" firstAttribute="centerY" secondItem="xCl-rF-ObG" secondAttribute="centerY" id="axw-8y-bo6"/>
+                                                <constraint firstItem="GkY-be-rQh" firstAttribute="leading" secondItem="xCl-rF-ObG" secondAttribute="leadingMargin" id="q46-pl-Ty9"/>
+                                                <constraint firstItem="EeK-jg-xOz" firstAttribute="leading" secondItem="GkY-be-rQh" secondAttribute="trailing" constant="8" id="qmv-Mg-E0j"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="yJu-VT-eCD">
+                                        <rect key="frame" x="0.0" y="220" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yJu-VT-eCD" id="NAJ-oJ-MMK">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max Bank Angle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OVz-we-Iib">
+                                                    <rect key="frame" x="8" y="12" width="116.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="11" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="acu-uh-Pb9" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="132.5" y="11" width="234.5" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="15"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="45"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="30"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="acu-uh-Pb9" firstAttribute="leading" secondItem="OVz-we-Iib" secondAttribute="trailing" constant="8" id="VGo-8g-GNU"/>
+                                                <constraint firstItem="acu-uh-Pb9" firstAttribute="trailing" secondItem="NAJ-oJ-MMK" secondAttribute="trailingMargin" id="XSO-Zd-VVc"/>
+                                                <constraint firstItem="OVz-we-Iib" firstAttribute="centerY" secondItem="NAJ-oJ-MMK" secondAttribute="centerY" id="ZWG-Tx-vxq"/>
+                                                <constraint firstItem="OVz-we-Iib" firstAttribute="leading" secondItem="NAJ-oJ-MMK" secondAttribute="leadingMargin" id="k8H-ZI-7do"/>
+                                                <constraint firstItem="acu-uh-Pb9" firstAttribute="centerY" secondItem="NAJ-oJ-MMK" secondAttribute="centerY" id="ml5-wR-kfF"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="nRx-gC-mcv">
+                                        <rect key="frame" x="0.0" y="264" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nRx-gC-mcv" id="XfM-1r-ghb">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Mid Throttle for Alt.Hold" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hk0-Nf-c8S">
+                                                    <rect key="frame" x="8" y="12" width="207.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gjF-Su-CUz">
+                                                    <rect key="frame" x="318" y="6" width="51" height="31"/>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="gjF-Su-CUz" firstAttribute="trailing" secondItem="XfM-1r-ghb" secondAttribute="trailingMargin" id="QU5-Eq-QI5"/>
+                                                <constraint firstItem="hk0-Nf-c8S" firstAttribute="leading" secondItem="XfM-1r-ghb" secondAttribute="leadingMargin" id="Uaa-sp-IRh"/>
+                                                <constraint firstItem="hk0-Nf-c8S" firstAttribute="centerY" secondItem="XfM-1r-ghb" secondAttribute="centerY" id="bPf-c2-9yI"/>
+                                                <constraint firstItem="gjF-Su-CUz" firstAttribute="centerY" secondItem="XfM-1r-ghb" secondAttribute="centerY" id="cIF-6t-6Fr"/>
+                                                <constraint firstItem="gjF-Su-CUz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="hk0-Nf-c8S" secondAttribute="trailing" constant="8" id="eAD-z8-thU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="q2x-vD-EN4">
+                                        <rect key="frame" x="0.0" y="308" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="q2x-vD-EN4" id="I7y-Ol-96k">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hover Throttle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vZY-up-PWi">
+                                                    <rect key="frame" x="8" y="12" width="104.5" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OCl-wA-b6o" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="120.5" y="11" width="246.5" height="20"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="1000"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="2000"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="1500"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="vZY-up-PWi" firstAttribute="centerY" secondItem="I7y-Ol-96k" secondAttribute="centerY" id="Gu8-4F-9NA"/>
+                                                <constraint firstItem="vZY-up-PWi" firstAttribute="leading" secondItem="I7y-Ol-96k" secondAttribute="leadingMargin" id="LOB-Za-gVE"/>
+                                                <constraint firstItem="OCl-wA-b6o" firstAttribute="leading" secondItem="vZY-up-PWi" secondAttribute="trailing" constant="8" id="lmP-iu-yYE"/>
+                                                <constraint firstItem="OCl-wA-b6o" firstAttribute="trailing" secondItem="I7y-Ol-96k" secondAttribute="trailingMargin" id="myr-rT-cUi"/>
+                                                <constraint firstItem="OCl-wA-b6o" firstAttribute="centerY" secondItem="I7y-Ol-96k" secondAttribute="centerY" id="zuU-Cd-7OG"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="5Ao-OT-MNS" id="kqd-Rb-Bje"/>
+                            <outlet property="delegate" destination="5Ao-OT-MNS" id="4VN-p0-7S1"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="INAV Settings" id="onX-Rs-pfF">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="WOh-kR-LiM">
+                            <connections>
+                                <action selector="saveAction:" destination="5Ao-OT-MNS" id="vfK-TE-Tyv"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="hoverThrottleField" destination="OCl-wA-b6o" id="ihr-jv-JrE"/>
+                        <outlet property="maxBankAngleField" destination="acu-uh-Pb9" id="MtE-x6-pLV"/>
+                        <outlet property="maxManualClimbRateField" destination="EeK-jg-xOz" id="dAO-ET-2TS"/>
+                        <outlet property="maxManualSpeedField" destination="y6e-bh-EFe" id="mUy-kr-bUz"/>
+                        <outlet property="maxNavClimbRateField" destination="sIJ-mO-TjJ" id="1Tf-0i-SP6"/>
+                        <outlet property="maxNavSpeedField" destination="8kD-1J-mrB" id="qwB-eC-2tY"/>
+                        <outlet property="useThrottleMidForAltHoldSwitch" destination="gjF-Su-CUz" id="SRp-br-4Ne"/>
+                        <outlet property="userControlModeField" destination="dZG-NH-8Xc" id="Lnv-np-Zc3"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ef8-WU-pOL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1020" y="92.203898050974516"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="inav-logo" width="30" height="29"/>
+    </resources>
+</document>
