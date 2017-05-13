@@ -25,6 +25,10 @@ class INavSettingsViewController: UITableViewController {
         super.viewDidLoad()
 
         userControlModePicker = MyDownPicker(textField: userControlModeField, withData: [ "Attitude", "Cruise" ])
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         let minSpeed = msToLocaleSpeed(0.1)
         let maxSpeed = msToLocaleSpeed(20)
@@ -32,10 +36,6 @@ class INavSettingsViewController: UITableViewController {
             field.minimumValue = minSpeed
             field.maximumValue = maxSpeed
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
         
         fetchData()
     }
