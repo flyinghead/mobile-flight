@@ -17,6 +17,9 @@ enum MSP_code : Int {
     case MSP_BOARD_INFO =             4
     case MSP_BUILD_INFO =             5
     
+    case MSP_NAME =                   10
+    case MSP_SET_NAME =               11
+    
     // MSP commands for Cleanflight original features
     case MSP_BATTERY_CONFIG =         32
     case MSP_SET_BATTERY_CONFIG =     33

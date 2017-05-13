@@ -151,3 +151,19 @@ func chainMspCalls(msp: MSPParser, calls: [MSP_code], callback: (success: Bool) 
         }
     }
 }
+
+typealias SendCommand = ((Bool) -> Void) -> Void
+
+func chainMspSend(calls: [SendCommand], callback:(success: Bool) -> Void) {
+    if calls.isEmpty {
+        callback(success: true)
+        return
+    }
+    calls[0]() { success in
+        if !success {
+            callback(success: false)
+        } else {
+            chainMspSend(Array(calls.suffixFrom(1)), callback: callback)
+        }
+    }
+}

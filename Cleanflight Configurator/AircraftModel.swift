@@ -533,7 +533,7 @@ class Settings : AutoCoded {
         "rssiChannel",
         "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
         "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
-        "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud"]
+        "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud", "rcDeadband", "yawDeadband", "altHoldDeadband", "throttle3dDeadband", "craftName"]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -701,6 +701,9 @@ class Settings : AutoCoded {
     var altHoldDeadband = 0
     var throttle3dDeadband = 0
     
+    // MSP_NAME
+    var craftName = ""
+    
     private override init() {
         super.init()
     }
@@ -831,6 +834,8 @@ class Settings : AutoCoded {
         self.altHoldDeadband = copyOf.altHoldDeadband
         self.throttle3dDeadband = copyOf.throttle3dDeadband
 
+        self.craftName = copyOf.craftName
+        
         super.init()
     }
     

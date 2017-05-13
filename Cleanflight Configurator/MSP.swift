@@ -889,6 +889,9 @@ class MSPParser {
                 settings.throttle3dDeadband = Int(readInt16(message, index: 3))
             }
             
+        case .MSP_NAME:
+            settings.craftName = NSString(bytes: message, length: message.count, encoding: NSASCIIStringEncoding) as! String
+            
         // INav
         case .MSP_NAV_STATUS:
             if message.count < 7 {
@@ -1486,6 +1489,10 @@ class MSPParser {
         data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
         data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
         sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendCraftName(name: String, callback:((success:Bool) -> Void)?) {
+        sendMessage(.MSP_SET_NAME, data: Array(name.utf8), retry: 2, callback: callback)
     }
     
     // INav

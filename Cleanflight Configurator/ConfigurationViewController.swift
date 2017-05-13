@@ -51,6 +51,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var osdSwitch: UISwitch!
     @IBOutlet weak var vtxSwitch: UISwitch!
     @IBOutlet weak var escSensor: UISwitch!
+    @IBOutlet weak var craftNameField: UITextField!
     
     var gyroUpdateFreqPicker: MyDownPicker?
     var pidLoopFreqPicker: MyDownPicker?
@@ -135,6 +136,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         } else {
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
+        }
+        if config.isApiVersionAtLeast("1.31") {    // BF 3.1
+            mspCalls.append(.MSP_NAME)
         }
         
         chainMspCalls(msp, calls: mspCalls) { success in
@@ -259,6 +263,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
 
             vtxSwitch.on = newSettings!.features.contains(BaseFlightFeature.VTX)
             escSensor.on = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
+            craftNameField.text = newSettings!.craftName
         }
         
         gpsField.text = (newSettings!.features.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
@@ -311,50 +316,50 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             newSettings!.sonarDisabled = !enableSonarSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
         }
+        var craftName = craftNameField.text!
+        if craftName.characters.count > 16 {
+            let index = craftName.startIndex.advancedBy(16)
+            craftName = craftName.substringToIndex(index)
+            craftNameField.text = craftName
+        }
+        newSettings!.craftName = craftName
         
         SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
         enableUserInteraction(false)
 
         appDelegate.stopTimer()
-        msp.sendSerialConfig(self.newSettings!) { success in
+        
+        var commands: [SendCommand] = [
+            { callback in
+                self.msp.sendSerialConfig(self.newSettings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration, callback: callback)
+            },
+            { callback in
+                self.msp.sendSetFeature(self.newSettings!.features, callback: callback)
+            },
+            { callback in
+                self.msp.sendBoardAlignment(self.newSettings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendCurrentMeterConfig(self.newSettings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendSetArmingConfig(self.newSettings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendVoltageMeterConfig(self.newSettings!, callback: callback)
+            }
+        ]
+        if Configuration.theConfig.isApiVersionAtLeast("1.31") {    // BF 3.1
+            commands.append({ callback in
+                self.msp.sendCraftName(self.newSettings!.craftName, callback: callback)
+            })
+        }
+        chainMspSend(commands) { success in
             if success {
-                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
-                    if success {
-                        self.msp.sendSetFeature(self.newSettings!.features) { success in
-                            if success {
-                                self.msp.sendBoardAlignment(self.newSettings!) { success in
-                                    if success {
-                                        self.msp.sendCurrentMeterConfig(self.newSettings!) { success in
-                                            if success {
-                                                self.msp.sendSetArmingConfig(self.newSettings!) { success in
-                                                    if success {
-                                                        self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
-                                                            if success {
-                                                                self.saveMiscOrEquivalent()
-                                                            } else {
-                                                                self.saveConfigFailed()
-                                                            }
-                                                        }
-                                                    } else {
-                                                        self.saveConfigFailed()
-                                                    }
-                                                }
-                                            } else {
-                                                self.saveConfigFailed()
-                                            }
-                                        }
-                                    } else {
-                                        self.saveConfigFailed()
-                                    }
-                                }
-                            } else {
-                                self.saveConfigFailed()
-                            }
-                        }
-                    } else {
-                        self.saveConfigFailed()
-                    }
-                }
+                self.saveMiscOrEquivalent()
             } else {
                 self.saveConfigFailed()
             }
@@ -362,81 +367,65 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
 
     private func saveMiscOrEquivalent() {
+        var commands: [SendCommand]
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
-            msp.sendMotorConfig(self.newSettings!) { success in
-                if success {
-                    let tmpCallback: ((Bool) -> Void) = { success in
-                        if success {
-                            self.msp.sendRssiConfig(self.newSettings!.rssiChannel) { success in
-                                if success {
-                                    self.msp.sendCompassConfig(self.newSettings!.magDeclination) { success in
-                                        if success {
-                                            self.msp.sendBatteryConfig(self.newSettings!) { success in
-                                                if success {
-                                                    self.msp.sendVoltageMeterConfig(self.newSettings!) { success in
-                                                        if success {
-                                                            self.saveNewFailsafeSettings()
-                                                        } else {
-                                                            self.saveConfigFailed()
-                                                        }
-                                                    }
-                                                } else {
-                                                    self.saveConfigFailed()
-                                                }
-                                            }
-                                        } else {
-                                            self.saveConfigFailed()
-                                        }
-                                    }
-                                } else {
-                                    self.saveConfigFailed()
-                                }
-                            }
-                        } else {
-                            self.saveConfigFailed()
-                        }
-                    }
-                    
-                    if self.supportsGPS {
-                        self.msp.sendGpsConfig(self.newSettings!, callback: tmpCallback)
-                    } else {
-                        tmpCallback(true)
-                    }
-                } else {
-                    self.saveConfigFailed()
-                }
+            commands = [
+                { callback in
+                    self.msp.sendMotorConfig(self.newSettings!, callback: callback)
+                },
+                { callback in
+                    self.msp.sendRssiConfig(self.newSettings!.rssiChannel, callback: callback)
+                },
+                { callback in
+                    self.msp.sendCompassConfig(self.newSettings!.magDeclination, callback: callback)
+                },
+                { callback in
+                    self.msp.sendBatteryConfig(self.newSettings!, callback: callback)
+                },
+                { callback in
+                    self.msp.sendVoltageMeterConfig(self.newSettings!, callback: callback)
+                },
+            ]
+            if supportsGPS {
+                commands.append({ callback in
+                    self.msp.sendGpsConfig(self.newSettings!, callback: callback)
+                })
             }
         } else {
-            msp.sendSetMisc(self.newMisc!, settings: self.newSettings!) { success in
-                if success {
-                    self.msp.sendLoopTime(self.newSettings!) { success in
-                        if success {
-                            self.saveNewFailsafeSettings()
-                        } else {
-                             self.saveConfigFailed()
-                        }
-                    }
-                } else {
-                    self.saveConfigFailed()
-                }
+            commands = [
+                { callback in
+                    self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!, callback: callback)
+                },
+                { callback in
+                    self.msp.sendLoopTime(self.newSettings!, callback: callback)
+                },
+            ]
+        }
+        chainMspSend(commands) { success in
+            if success {
+                self.saveNewFailsafeSettings()
+            } else {
+                self.saveConfigFailed()
             }
         }
     }
     
     private func saveNewFailsafeSettings() {
-        self.msp.sendRxConfig(self.newSettings!, callback: { success in
+        let commands: [SendCommand] = [
+            { callback in
+                self.msp.sendRxConfig(self.newSettings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendFailsafeConfig(self.newSettings!, callback: callback)
+            },
+        ]
+        chainMspSend(commands) { success in
             if success {
-                self.msp.sendFailsafeConfig(self.newSettings!, callback: { success in
-                    if success {
-                        self.saveINavFeatures()
-                    } else {
-                        self.saveConfigFailed()
-                    }
-                })
+                self.saveINavFeatures()
             } else {
                 self.saveConfigFailed()
             }
-        })
+        }
     }
 
     private func saveINavFeatures() {
@@ -455,19 +444,21 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private func saveBetaflightFeatures() {
         if isBetaflight || Configuration.theConfig.isINav {
-            self.msp.sendPidAdvancedConfig(self.newSettings!, callback: { success in
+            let commands: [SendCommand] = [
+                { callback in
+                    self.msp.sendPidAdvancedConfig(self.newSettings!, callback: callback)
+                },
+                { callback in
+                    self.msp.sendSensorConfig(self.newSettings!, callback: callback)
+                },
+                ]
+            chainMspSend(commands) { success in
                 if success {
-                    self.msp.sendSensorConfig(self.newSettings!, callback: { success in
-                        if success {
-                            self.writeToEepromAndReboot()
-                        } else {
-                            self.saveConfigFailed()
-                        }
-                    })
+                    self.writeToEepromAndReboot()
                 } else {
                     self.saveConfigFailed()
                 }
-            })
+            }
         } else {
             self.writeToEepromAndReboot()
         }
