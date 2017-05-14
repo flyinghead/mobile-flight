@@ -451,7 +451,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 { callback in
                     self.msp.sendSensorConfig(self.newSettings!, callback: callback)
                 },
-                ]
+            ]
             chainMspSend(commands) { success in
                 if success {
                     self.writeToEepromAndReboot()
@@ -465,26 +465,28 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func writeToEepromAndReboot() {
-        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-            if success {
+        let commands: [SendCommand] = [
+            { callback in
+                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
+            },
+            { callback in
                 dispatch_async(dispatch_get_main_queue(), {
                     SVProgressHUD.setStatus("Rebooting")
                 })
-                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: { success in
-                    if success {
-                        // Wait 4 sec
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-                            // Refetch information from FC
-                            self.fetchInformation()
-                        })
-                    } else {
-                        self.saveConfigFailed()
-                    }
+                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: callback)
+            },
+        ]
+        chainMspSend(commands) { success in
+            if success {
+                // Wait 4 sec
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                    // Refetch information from FC
+                    self.fetchInformation()
                 })
             } else {
                 self.saveConfigFailed()
             }
-        })
+        }
     }
     
     private func saveConfigFailed() {

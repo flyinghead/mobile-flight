@@ -470,28 +470,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             wp.last = i == waypointList.count - 1
             gpsData.waypoints.append(wp)
         }
-        msp.sendINavWaypoints(gpsData) { success in
-            if success {
-                self.msp.saveMission() { success in
-                    if success {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
-                            self.uploadButton.hidden = true
-                        }
-                    } else {
-                        self.waypointUploadFailed()
-                    }
+        let commands: [SendCommand] = [
+            { callback in
+                self.msp.sendINavWaypoints(gpsData, callback: callback)
+            },
+            { callback in
+                self.msp.saveMission(callback)
+            }
+        ]
+        chainMspSend(commands) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                if success {
+                    SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
+                    self.uploadButton.hidden = true
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
                 }
-            } else {
-                self.waypointUploadFailed()
             }
         }
-    }
-    
-    private func waypointUploadFailed() {
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
-        })
     }
 }
 
