@@ -1643,5 +1643,7 @@ func resetAircraftModel() {
     
     AllAircraftData.allAircraftData = AllAircraftData()
     
-    INavConfig.theINavConfig = INavConfig()
+    INavConfig.theINavConfig = INavConfig()         // FIXME some date in there need to be part of AircraftModel
+    
+    OSD.theOSD = OSD()
 }

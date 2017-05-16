@@ -77,13 +77,13 @@ func formatSpeed(kmh: Double) -> String {
     switch selectedUnitSystem() {
     case .Imperial:
         // mile/h
-        return formatWithUnit(kmh * 1000 / METER_PER_MILE, unit: "mph")
+        return formatWithUnit(kmh * 1000 / METER_PER_MILE, unit: speedUnit())
     case .Aviation:
         // Knots
-        return formatWithUnit(kmh * 1000 / METER_PER_NM, unit: "kn")
+        return formatWithUnit(kmh * 1000 / METER_PER_NM, unit: speedUnit())
     default:
         // km/h
-        return formatWithUnit(kmh, unit: "km/h")
+        return formatWithUnit(kmh, unit: speedUnit())
     }
 }
 
@@ -125,4 +125,15 @@ func localeSpeedToMs(speed: Double) -> Double {
         kmhSpeed = speed
     }
     return kmhSpeed / 3600 * 1000
+}
+
+func speedUnit() -> String {
+    switch selectedUnitSystem() {
+    case .Imperial:
+        return "mph"
+    case .Aviation:
+        return "kn"
+    default:
+        return "km/h"
+    }
 }

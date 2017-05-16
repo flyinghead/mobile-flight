@@ -33,12 +33,12 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
 
         storyboard = UIStoryboard(name: "INav", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 3)
+            viewControllers!.insert(controller, atIndex: 9)
         }
 
         storyboard = UIStoryboard(name: "OSD", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 3)
+            viewControllers!.insert(controller, atIndex: 9)
         }
         
         customizableViewControllers = viewControllers!.filter({

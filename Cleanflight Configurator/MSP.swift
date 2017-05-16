@@ -1507,7 +1507,7 @@ class MSPParser {
         sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendSelectRateProfile(rateProfile: Int, callback:((success:Bool) -> Void)?) {
+    func sendSelectRateProfile(rateProfile: Int, callback:((success: Bool) -> Void)?) {
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile & 0x80) ], retry: 2, callback: callback)
     }
     
@@ -1529,7 +1529,8 @@ class MSPParser {
         sendMessage(.MSP_SET_NAME, data: Array(name.utf8), retry: 2, callback: callback)
     }
     
-    func sendOsdConfig(osd: OSD, callback:((success:Bool) -> Void)?) {
+    func sendOsdConfig(osd: OSD, callback:((success: Bool) -> Void)?) {
+        sendOsdConfigRecursive(osd, index: -1, callback: callback)
     }
     
     private func sendOsdConfigRecursive(osd: OSD, index: Int, callback:((success:Bool) -> Void)?) {

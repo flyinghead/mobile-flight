@@ -118,7 +118,7 @@ class OSDSettingsViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:     // elements
-            return OSDElement.Elements.count
+            return OSD.theOSD.elements.count
         case 1:     // Alarms
             return 4
         case 2:     // Others

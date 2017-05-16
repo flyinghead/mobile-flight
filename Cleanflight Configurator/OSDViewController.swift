@@ -70,8 +70,11 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
         let minScale = min(widthScale, heightScale)
         
         scrollView.minimumZoomScale = minScale
-        
-        scrollView.zoomScale = max(minScale, scrollView.zoomScale)
+        // Set the current zoom scale so that the full width or height of the scroll view is used
+        scrollView.zoomScale = max(widthScale, heightScale)
+        // Center the OSD in the scroll view
+        scrollView.contentOffset.x = scrollView.contentSize.width / 2 - size.width / 2
+        scrollView.contentOffset.y = scrollView.contentSize.height / 2 - size.height / 2
     }
     
     private func updateConstraintsForSize(size: CGSize) {
@@ -90,7 +93,20 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
     func refreshUI() {
         osdView.updateVisibleViews()
     }
+    
     @IBAction func saveAction(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("Saving OSD configuration", maskType: .Black)
+        appDelegate.stopTimer()
+        msp.sendOsdConfig(OSD.theOSD) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                if success {
+                    SVProgressHUD.dismiss()
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Save failed")
+                }
+                self.appDelegate.startTimer()
+            }
+        }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

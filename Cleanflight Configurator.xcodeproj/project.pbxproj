@@ -104,6 +104,7 @@
 		AEBA64181C31538F00783ECE /* ReplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA64171C31538F00783ECE /* ReplayViewController.swift */; };
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
+		AEBB7A0A1ECB10F900F56D6C /* SpeedUnitLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */; };
 		AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */; };
 		AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
@@ -341,6 +342,7 @@
 		AEBA64171C31538F00783ECE /* ReplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayViewController.swift; sourceTree = "<group>"; };
 		AEBA64191C332B3100783ECE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		AEBA641B1C342BD900783ECE /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedUnitLabel.swift; sourceTree = "<group>"; };
 		AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTest.swift; sourceTree = "<group>"; };
 		AEBBC6631EC4D32E00EE958A /* DownPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownPicker.framework; path = "../../../Library/Developer/Xcode/DerivedData/Cleanflight_Configurator-gotusvkhuouswvbazgcqqbfbcqlb/Build/Products/Debug-iphoneos/DownPicker/DownPicker.framework"; sourceTree = "<group>"; };
 		AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
@@ -613,6 +615,7 @@
 				AE3E45E21C50E96000E33E9F /* RoundGauge.swift */,
 				AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */,
 				AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */,
+				AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */,
 				AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */,
 				AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */,
 			);
@@ -1195,6 +1198,7 @@
 				AE1EAA251CB0174500C24E2A /* IASKAppSettingsViewController.m in Sources */,
 				AE1BBA341EC37C9A0081E068 /* WaypointDetailViewController.swift in Sources */,
 				AEEE2EB51EC7514B00CC3D94 /* INavSettingsViewController.swift in Sources */,
+				AEBB7A0A1ECB10F900F56D6C /* SpeedUnitLabel.swift in Sources */,
 				AEF370401C1CAC0B00667E9D /* NumberField.swift in Sources */,
 				AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */,
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
