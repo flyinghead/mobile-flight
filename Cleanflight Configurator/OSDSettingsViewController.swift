@@ -35,6 +35,7 @@ class MinutesCell : UITableViewCell {
 
 class AltitudeCell : UITableViewCell {
     @IBOutlet weak var altitudeField: NumberField!
+    @IBOutlet weak var altitudeLabel: UILabel!
     
 }
 
@@ -170,6 +171,7 @@ class OSDSettingsViewController: UITableViewController {
             default:
                 let cell = tableView.dequeueReusableCellWithIdentifier("altitudeCell", forIndexPath: indexPath) as! AltitudeCell
                 cell.altitudeField.value = Double(osd.altitudeAlarm)
+                cell.altitudeLabel.text = "Altitude (" + (osd.unitMode == .Imperial ? "ft" : "m") + ")"
                 return cell
             }
         default:     // Others
