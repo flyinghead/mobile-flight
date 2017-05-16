@@ -66,6 +66,12 @@ enum MSP_code : Int {
     case MSP_SET_TRANSPONDER_CONFIG = 83
     
     // Betaflight Additional Commands
+    case MSP_OSD_CONFIG =             84
+    case MSP_SET_OSD_CONFIG =         85
+    case MSP_OSD_CHAR_READ =          86
+    case MSP_OSD_CHAR_WRITE =         87
+    case MSP_VTX_CONFIG =             88
+    case MSP_SET_VTX_CONFIG =         89
     case MSP_PID_ADVANCED_CONFIG =    90    // aka MSP_ADVANCED_CONFIG in bf code
     case MSP_SET_PID_ADVANCED_CONFIG = 91   // aka ...
     case MSP_FILTER_CONFIG =          92

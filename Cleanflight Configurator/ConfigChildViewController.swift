@@ -10,11 +10,11 @@ import UIKit
 
 class ConfigChildViewController: StaticDataTableViewController, UITextFieldDelegate {
     
-    var configViewController: ConfigurationViewController!
+    weak var configViewController: ConfigurationViewController!
     var settings: Settings!
     var misc: Misc!
 
-    var activeField: UITextField?
+    weak var activeField: UITextField?
     
     var savedContentInset: UIEdgeInsets?
     var savedScrollIndicatorInset: UIEdgeInsets?

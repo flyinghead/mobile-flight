@@ -139,6 +139,21 @@
 		AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EB21EC73A4D00CC3D94 /* INav.storyboard */; };
 		AEEE2EB51EC7514B00CC3D94 /* INavSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EB41EC7514B00CC3D94 /* INavSettingsViewController.swift */; };
 		AEEE2EB71EC751B500CC3D94 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EB61EC751B500CC3D94 /* Units.swift */; };
+		AEEE2EBC1EC86CF400CC3D94 /* CharDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EBB1EC86CF400CC3D94 /* CharDefinition.swift */; };
+		AEEE2EBE1EC86E2A00CC3D94 /* OSDElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EBD1EC86E2A00CC3D94 /* OSDElement.swift */; };
+		AEEE2EC01EC88CDD00CC3D94 /* OSDElementPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EBF1EC88CDD00CC3D94 /* OSDElementPosition.swift */; };
+		AEEE2EC21EC88DF300CC3D94 /* OSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC11EC88DF300CC3D94 /* OSD.swift */; };
+		AEEE2EC41EC8905200CC3D94 /* OSDElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC31EC8905200CC3D94 /* OSDElementView.swift */; };
+		AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EC51EC8A18200CC3D94 /* default.mcm */; };
+		AEEE2EC81EC8A2C100CC3D94 /* OSDPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC71EC8A2C100CC3D94 /* OSDPreview.swift */; };
+		AEEE2ECA1EC8A88200CC3D94 /* OSD.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EC91EC8A88200CC3D94 /* OSD.storyboard */; };
+		AEEE2ECC1EC8E60300CC3D94 /* OSDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2ECB1EC8E60300CC3D94 /* OSDViewController.swift */; };
+		AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED31ECA237600CC3D94 /* bold.mcm */; };
+		AEEE2ED91ECA237600CC3D94 /* cleanflight.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */; };
+		AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED51ECA237600CC3D94 /* digital.mcm */; };
+		AEEE2EDB1ECA237600CC3D94 /* extra_large.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */; };
+		AEEE2EDC1ECA237600CC3D94 /* large.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED71ECA237600CC3D94 /* large.mcm */; };
+		AEEE2EDE1ECA400E00CC3D94 /* OSDSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EDD1ECA400D00CC3D94 /* OSDSettingsViewController.swift */; };
 		AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */; };
 		AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */; };
 		AEF190371C3DB54C0066C75A /* FlightLogFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190361C3DB54C0066C75A /* FlightLogFile.swift */; };
@@ -361,6 +376,21 @@
 		AEEE2EB21EC73A4D00CC3D94 /* INav.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = INav.storyboard; sourceTree = "<group>"; };
 		AEEE2EB41EC7514B00CC3D94 /* INavSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INavSettingsViewController.swift; sourceTree = "<group>"; };
 		AEEE2EB61EC751B500CC3D94 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
+		AEEE2EBB1EC86CF400CC3D94 /* CharDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharDefinition.swift; sourceTree = "<group>"; };
+		AEEE2EBD1EC86E2A00CC3D94 /* OSDElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDElement.swift; sourceTree = "<group>"; };
+		AEEE2EBF1EC88CDD00CC3D94 /* OSDElementPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDElementPosition.swift; sourceTree = "<group>"; };
+		AEEE2EC11EC88DF300CC3D94 /* OSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSD.swift; sourceTree = "<group>"; };
+		AEEE2EC31EC8905200CC3D94 /* OSDElementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDElementView.swift; sourceTree = "<group>"; };
+		AEEE2EC51EC8A18200CC3D94 /* default.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = default.mcm; sourceTree = "<group>"; };
+		AEEE2EC71EC8A2C100CC3D94 /* OSDPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDPreview.swift; sourceTree = "<group>"; };
+		AEEE2EC91EC8A88200CC3D94 /* OSD.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = OSD.storyboard; sourceTree = "<group>"; };
+		AEEE2ECB1EC8E60300CC3D94 /* OSDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDViewController.swift; sourceTree = "<group>"; };
+		AEEE2ED31ECA237600CC3D94 /* bold.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bold.mcm; sourceTree = "<group>"; };
+		AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cleanflight.mcm; sourceTree = "<group>"; };
+		AEEE2ED51ECA237600CC3D94 /* digital.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = digital.mcm; sourceTree = "<group>"; };
+		AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = extra_large.mcm; sourceTree = "<group>"; };
+		AEEE2ED71ECA237600CC3D94 /* large.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = large.mcm; sourceTree = "<group>"; };
+		AEEE2EDD1ECA400D00CC3D94 /* OSDSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDSettingsViewController.swift; sourceTree = "<group>"; };
 		AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlinkingLabel.swift; sourceTree = "<group>"; };
 		AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayComm.swift; sourceTree = "<group>"; };
 		AEF190361C3DB54C0066C75A /* FlightLogFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlightLogFile.swift; sourceTree = "<group>"; };
@@ -431,6 +461,12 @@
 		AE1BBA391EC3B55D0081E068 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				AEEE2ED31ECA237600CC3D94 /* bold.mcm */,
+				AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */,
+				AEEE2ED51ECA237600CC3D94 /* digital.mcm */,
+				AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */,
+				AEEE2ED71ECA237600CC3D94 /* large.mcm */,
+				AEEE2EC51EC8A18200CC3D94 /* default.mcm */,
 				AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */,
 			);
 			name = Resource;
@@ -636,6 +672,7 @@
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
 				AE62AADD1EB8902400D0DEF2 /* Mission */,
+				AEEE2EB81EC86CBC00CC3D94 /* OSD */,
 				AE1BBA391EC3B55D0081E068 /* Resource */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
@@ -721,6 +758,22 @@
 				AECE8D851C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift */,
 			);
 			name = RangeSlider;
+			sourceTree = "<group>";
+		};
+		AEEE2EB81EC86CBC00CC3D94 /* OSD */ = {
+			isa = PBXGroup;
+			children = (
+				AEEE2EC91EC8A88200CC3D94 /* OSD.storyboard */,
+				AEEE2EBB1EC86CF400CC3D94 /* CharDefinition.swift */,
+				AEEE2EC11EC88DF300CC3D94 /* OSD.swift */,
+				AEEE2EBD1EC86E2A00CC3D94 /* OSDElement.swift */,
+				AEEE2EBF1EC88CDD00CC3D94 /* OSDElementPosition.swift */,
+				AEEE2EC31EC8905200CC3D94 /* OSDElementView.swift */,
+				AEEE2EC71EC8A2C100CC3D94 /* OSDPreview.swift */,
+				AEEE2EDD1ECA400D00CC3D94 /* OSDSettingsViewController.swift */,
+				AEEE2ECB1EC8E60300CC3D94 /* OSDViewController.swift */,
+			);
+			name = OSD;
 			sourceTree = "<group>";
 		};
 		B9B1ECE4CAF18A994626F4A9 /* Pods */ = {
@@ -882,8 +935,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */,
+				AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */,
+				AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */,
 				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
 				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
+				AEEE2ECA1EC8A88200CC3D94 /* OSD.storyboard in Resources */,
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
 				AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */,
@@ -892,8 +949,11 @@
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
+				AEEE2EDB1ECA237600CC3D94 /* extra_large.mcm in Resources */,
+				AEEE2EDC1ECA237600CC3D94 /* large.mcm in Resources */,
 				AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
+				AEEE2ED91ECA237600CC3D94 /* cleanflight.mcm in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
 				0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */,
@@ -1035,8 +1095,11 @@
 				AE63D5F31C240EAB0070D1D2 /* DataflashController.swift in Sources */,
 				AEBA64161C312B7800783ECE /* BluetoothViewController.swift in Sources */,
 				AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */,
+				AEEE2EC01EC88CDD00CC3D94 /* OSDElementPosition.swift in Sources */,
 				AE1BBA2E1EC3154B0081E068 /* WaypointPageViewController.swift in Sources */,
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
+				AEEE2EC81EC8A2C100CC3D94 /* OSDPreview.swift in Sources */,
+				AEEE2EDE1ECA400E00CC3D94 /* OSDSettingsViewController.swift in Sources */,
 				AE1EAA321CB0174500C24E2A /* IASKSwitch.m in Sources */,
 				AE1BBA411EC474230081E068 /* INavModel.swift in Sources */,
 				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
@@ -1060,6 +1123,7 @@
 				AE1BBA2C1EC315250081E068 /* WaypointViewController.swift in Sources */,
 				AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */,
 				AEDDD26B1C12E07C004232AA /* MagnetometerViewController.swift in Sources */,
+				AEEE2EBE1EC86E2A00CC3D94 /* OSDElement.swift in Sources */,
 				AEF370421C1CDA8000667E9D /* ConfigChildViewController.swift in Sources */,
 				AEDDD2751C15EBBF004232AA /* MultiTypes.swift in Sources */,
 				AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */,
@@ -1098,6 +1162,7 @@
 				AE1EAA351CB0174500C24E2A /* IASKTextViewCell.m in Sources */,
 				AEF190391C3E8E440066C75A /* AutoCoded.swift in Sources */,
 				AE1EAA301CB0174500C24E2A /* IASKPSTextFieldSpecifierViewCell.m in Sources */,
+				AEEE2EC21EC88DF300CC3D94 /* OSD.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
@@ -1106,6 +1171,7 @@
 				AE44329B1CF212E2003C0D81 /* ArmedTimer.swift in Sources */,
 				AE1EA9EB1CAEEED600C24E2A /* AppSettingsViewController.swift in Sources */,
 				AE71D8211C3596C800CC0AEB /* ServosViewController.swift in Sources */,
+				AEEE2ECC1EC8E60300CC3D94 /* OSDViewController.swift in Sources */,
 				AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */,
 				AE1EAA331CB0174500C24E2A /* IASKTextField.m in Sources */,
 				AE1EAA341CB0174500C24E2A /* IASKTextView.m in Sources */,
@@ -1116,7 +1182,9 @@
 				AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */,
 				AE1BBA381EC39CA10081E068 /* BaseWaypointDetailCiewController.swift in Sources */,
 				AE1EAA311CB0174500C24E2A /* IASKSlider.m in Sources */,
+				AEEE2EC41EC8905200CC3D94 /* OSDElementView.swift in Sources */,
 				AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */,
+				AEEE2EBC1EC86CF400CC3D94 /* CharDefinition.swift in Sources */,
 				AEDDD2611C122F43004232AA /* SensorPagesViewController.swift in Sources */,
 				AE5BB66F1C4EA92A00CF2A7C /* HeadingStrip.swift in Sources */,
 				AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */,

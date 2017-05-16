@@ -892,6 +892,39 @@ class MSPParser {
         case .MSP_NAME:
             settings.craftName = NSString(bytes: message, length: message.count, encoding: NSASCIIStringEncoding) as! String
             
+        case .MSP_OSD_CONFIG:
+            if message.count < 1 {
+                return false
+            }
+            let osd = OSD.theOSD
+            let flags = Int(message[0])     // 1: OSD supported, 2: OSD slave, 16: MAX7456 hardware
+            osd.supported = flags & 1 != 0
+            if osd.supported {
+                osd.videoMode = VideoMode(rawValue: Int(message[1]))!
+                if message.count >= 12 {
+                    osd.unitMode = UnitMode(rawValue: Int(message[2]))!
+                    osd.rssiAlarm = Int(message[3])
+                    osd.capacityAlarm = readInt16(message, index: 4)
+                    osd.minutesAlarm = readInt16(message, index: 6)
+                    osd.altitudeAlarm = readInt16(message, index: 8)
+                    var i = 10
+                    osd.elements = [OSDElementPosition]()
+                    for element in OSDElement.Elements {
+                        if i + 1 >= message.count {
+                            break
+                        }
+                        let pos = OSDElementPosition()
+                        pos.element = element
+                        let (x, y, visible, _) = decodePos(readInt16(message, index: i))
+                        pos.visible = visible
+                        pos.x = x
+                        pos.y = y
+                        osd.elements.append(pos)
+                        i += 2
+                    }
+                }
+            }
+            
         // INav
         case .MSP_NAV_STATUS:
             if message.count < 7 {
@@ -961,7 +994,8 @@ class MSPParser {
             .MSP_SET_RC_DEADBAND,
             .MSP_SET_NAV_POSHOLD,
             .MSP_WP_MISSION_LOAD,
-            .MSP_WP_MISSION_SAVE:
+            .MSP_WP_MISSION_SAVE,
+            .MSP_SET_OSD_CONFIG:
             break
             
         default:
@@ -1493,6 +1527,35 @@ class MSPParser {
     
     func sendCraftName(name: String, callback:((success:Bool) -> Void)?) {
         sendMessage(.MSP_SET_NAME, data: Array(name.utf8), retry: 2, callback: callback)
+    }
+    
+    func sendOsdConfig(osd: OSD, callback:((success:Bool) -> Void)?) {
+    }
+    
+    private func sendOsdConfigRecursive(osd: OSD, index: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        if index >= osd.elements.count {
+            callback?(success: true)
+            return
+        } else if index == -1 {
+            data.append(UInt8(0xFF))
+            data.append(UInt8(osd.videoMode.rawValue))
+            data.append(UInt8(osd.unitMode.rawValue))
+            data.append(UInt8(osd.rssiAlarm))
+            data.appendContentsOf(writeUInt16(osd.capacityAlarm))
+            data.appendContentsOf(writeUInt16(osd.minutesAlarm))
+            data.appendContentsOf(writeUInt16(osd.altitudeAlarm))
+        } else {
+            let position = osd.elements[index]
+            data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible, blink: false)))
+        }
+        sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
+            if success {
+                self.sendOsdConfigRecursive(osd, index: index + 1, callback: callback)
+            } else {
+                callback?(success: false)
+            }
+        }
     }
     
     // INav

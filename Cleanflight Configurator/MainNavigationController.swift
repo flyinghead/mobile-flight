@@ -36,11 +36,17 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
             viewControllers!.insert(controller, atIndex: 3)
         }
 
+        storyboard = UIStoryboard(name: "OSD", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 3)
+        }
+        
         customizableViewControllers = viewControllers!.filter({
             return !($0 is Telemetry2ViewController)
         })
         
         // Restore the user-customized order of tabs if any
+        // For resetting during development NSUserDefaults.standardUserDefaults().removeObjectForKey("MainTabBarOrder")
         if let tabOrder = NSUserDefaults.standardUserDefaults().objectForKey("MainTabBarOrder") as? [Int] {
             if tabOrder.count == viewControllers?.count {
                 var tagIndexes = [Int : Int]()
@@ -84,26 +90,39 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
     func enableAllViewControllers() {
         allViewControllersEnabled = true
         var viewControllers = myallViewControllers
-        if !Configuration.theConfig.isINav {
+        let config = Configuration.theConfig
+        if !config.isINav {
             viewControllers = viewControllers.filter({
                 !self.isOfType($0, type: INavSettingsViewController.self)
             })
-
+        }
+        if !config.isINav && !config.isApiVersionAtLeast("1.31") {
+            viewControllers = viewControllers.filter({
+                !self.isOfType($0, type: OSDViewController.self)
+            })
         }
         setViewControllers(viewControllers, animated: false)
     }
     
     func tabBarController(tabBarController: UITabBarController, didEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
+        let config = Configuration.theConfig
+        
         if allViewControllersEnabled {
             var tabOrder = [Int]()
             for vc in self.viewControllers! {
                 tabOrder.append(vc.tabBarItem.tag)
             }
-            if !Configuration.theConfig.isINav {
+            if !config.isINav {
                 let inavVC = myallViewControllers.filter({
                     self.isOfType($0, type: INavSettingsViewController.self)
                 }).first!
                 tabOrder.append(inavVC.tabBarItem.tag)
+            }
+            if !config.isINav && !config.isApiVersionAtLeast("1.31") {
+                let osdVC = myallViewControllers.filter({
+                    self.isOfType($0, type: OSDViewController.self)
+                }).first!
+                tabOrder.append(osdVC.tabBarItem.tag)
             }
             NSUserDefaults.standardUserDefaults().setObject(tabOrder, forKey: "MainTabBarOrder")
         }

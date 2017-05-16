@@ -26,6 +26,17 @@ enum UserDefault : String {
     case RSSIAlarmCritical = "rssialarm_critical"
     case DisableIdleTimer = "disable_idle_timer"
     case FlightModeAlert = "flight_mode_alert"
+    case OSDFont = "osd_font"
+    
+    var stringValue: String? {
+        get {
+            return NSUserDefaults.standardUserDefaults().stringForKey(self.rawValue)
+        }
+    }
+    
+    func setValue(string: String) {
+        setUserDefault(self, string: string)
+    }
 }
 
 func registerInitialUserDefaults(plistFile: String)  -> [String:AnyObject] {
@@ -67,6 +78,10 @@ func userDefaultAsString(userDefault: UserDefault) -> String {
 
 func userDefaultAsInt(userDefault: UserDefault) -> Int {
     return NSUserDefaults.standardUserDefaults().integerForKey(userDefault.rawValue)
+}
+
+func setUserDefault(userDefault: UserDefault, string: String?) {
+    return NSUserDefaults.standardUserDefaults().setValue(string, forKey: userDefault.rawValue)
 }
 
 func selectedUnitSystem() -> UnitSystem {
