@@ -11,13 +11,13 @@ import DownPicker
 import SVProgressHUD
 
 class PIDViewController: StaticDataTableViewController {
-    @IBOutlet weak var profileField: UITextField!
     @IBOutlet weak var pidControllerField: UITextField!
-    var profilePicker: MyDownPicker!
     var pidControllerPicker: MyDownPicker!
     @IBOutlet weak var resetPIDValuesCell: UITableViewCell!
-    @IBOutlet weak var rateProfileField: UITextField!
-    var rateProfilePicker: MyDownPicker!
+    @IBOutlet weak var pidProfileLabel: UILabel!
+    @IBOutlet weak var pidProfileStepper: UIStepper!
+    @IBOutlet weak var rateProfileLabel: UILabel!
+    @IBOutlet weak var rateProfileStepper: UIStepper!
     
     // BASIC
     @IBOutlet weak var rollP: NumberField!
@@ -73,19 +73,19 @@ class PIDViewController: StaticDataTableViewController {
     @IBOutlet var betaflightCells: [UITableViewCell]!
     
     var settings: Settings?
-    var profile: Int?
-    var rateProfile: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
-        profilePicker.addTarget(self, action: #selector(PIDViewController.profileChanged(_:)), forControlEvents: .ValueChanged)
-        profilePicker.setPlaceholder("")           // To keep width down
+        pidProfileStepper.minimumValue = 1
+        pidProfileStepper.maximumValue = 3
+        pidProfileStepper.value = 1
+        pidProfileLabel.text = String(1)
         
-        rateProfilePicker = MyDownPicker(textField: rateProfileField, withData: [ "1", "2", "3" ])
-        rateProfilePicker.addTarget(self, action: #selector(PIDViewController.rateProfileChanged(_:)), forControlEvents: .ValueChanged)
-        rateProfilePicker.setPlaceholder("")           // To keep width down
+        rateProfileStepper.minimumValue = 1
+        rateProfileStepper.maximumValue = 3
+        rateProfileStepper.value = 1
+        rateProfileLabel.text = String(1)
         
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])
         pidControllerPicker.setPlaceholder("")     // To keep width down
@@ -118,12 +118,12 @@ class PIDViewController: StaticDataTableViewController {
                     let settings = Settings.theSettings
                     self.settings = settings
                     let config = Configuration.theConfig
-                    self.profile = config.profile
-                    self.rateProfile = config.rateProfile
                     
                     self.pidControllerPicker.selectedIndex = settings.pidController
-                    self.profilePicker.selectedIndex = self.profile!
-                    self.rateProfilePicker.selectedIndex = self.rateProfile!
+                    self.pidProfileStepper.value = Double(config.profile + 1)
+                    self.pidProfileLabel.text = String(config.profile + 1)
+                    self.rateProfileStepper.value = Double(config.rateProfile + 1)
+                    self.rateProfileLabel.text = String(config.rateProfile + 1)
                     
                     self.rollRate.value = settings.rollSuperRate
                     self.pitchRate.value = settings.pitchSuperRate
@@ -191,9 +191,6 @@ class PIDViewController: StaticDataTableViewController {
         if pidControllerPicker.selectedIndex >= 0 {
             settings!.pidController = pidControllerPicker.selectedIndex
         }
-        profile = profilePicker.selectedIndex
-        rateProfile = rateProfilePicker.selectedIndex
-        
         settings?.rollSuperRate = rollRate.value
         settings?.pitchSuperRate = pitchRate.value
         settings?.yawSuperRate = yawRate.value
@@ -261,32 +258,6 @@ class PIDViewController: StaticDataTableViewController {
         })
     }
     
-    func profileChanged(sender: AnyObject) {
-        SVProgressHUD.showWithStatus("Changing PID Profile")
-        msp.sendSelectProfile(profilePicker!.selectedIndex, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
-                if success {
-                    self.fetchData()
-                } else {
-                    SVProgressHUD.showErrorWithStatus("Profile change failed")
-                }
-            })
-        })
-    }
-    
-    func rateProfileChanged(sender: AnyObject) {
-        SVProgressHUD.showWithStatus("Changing Rate Profile")
-        msp.sendSelectRateProfile(rateProfilePicker!.selectedIndex, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
-                if success {
-                    self.fetchData()
-                } else {
-                    SVProgressHUD.showErrorWithStatus("Rate profile change failed")
-                }
-            })
-        })
-    }
-    
     @IBAction func resetPIDParams(sender: AnyObject) {
         let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
@@ -297,5 +268,29 @@ class PIDViewController: StaticDataTableViewController {
         }))
         alertController.popoverPresentationController?.sourceView = (sender as! UIView)
         presentViewController(alertController, animated: true, completion: nil)
+    }
+    @IBAction func pidProfileChanged(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("Changing PID Profile")
+        msp.sendSelectProfile(Int(pidProfileStepper.value) - 1, callback: { success in
+            dispatch_async(dispatch_get_main_queue(), {
+                if success {
+                    self.fetchData()
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Profile change failed")
+                }
+            })
+        })
+    }
+    @IBAction func rateProfileChanged(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("Changing Rate Profile")
+        msp.sendSelectRateProfile(Int(rateProfileStepper.value) - 1, callback: { success in
+            dispatch_async(dispatch_get_main_queue(), {
+                if success {
+                    self.fetchData()
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Rate profile change failed")
+                }
+            })
+        })
     }
 }

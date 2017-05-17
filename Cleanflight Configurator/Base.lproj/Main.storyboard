@@ -53,7 +53,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0°-90°" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qlE-Kr-oXE">
-                                            <rect key="frame" x="143.5" y="43" width="48" height="18"/>
+                                            <rect key="frame" x="144" y="43" width="48" height="18"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.55676333109537768" green="0.55676333109537768" blue="0.55676333109537768" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -492,23 +492,32 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="PID Profile" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SVn-QJ-Bjg">
-                                                    <rect key="frame" x="8" y="12" width="547" height="20"/>
+                                                    <rect key="frame" x="8" y="12" width="76" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ePn-4G-Y6p">
-                                                    <rect key="frame" x="563" y="7" width="29" height="30"/>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="HE1-A0-amC">
+                                                    <rect key="frame" x="498" y="7" width="94" height="29"/>
+                                                    <connections>
+                                                        <action selector="pidProfileChanged:" destination="Exb-KD-o8b" eventType="valueChanged" id="iLN-od-Qzw"/>
+                                                    </connections>
+                                                </stepper>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="2" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UcN-WG-ecQ">
+                                                    <rect key="frame" x="92" y="12" width="398" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="SVn-QJ-Bjg" firstAttribute="leading" secondItem="Xfu-ZZ-mrU" secondAttribute="leadingMargin" id="8Te-LT-bVq"/>
                                                 <constraint firstItem="SVn-QJ-Bjg" firstAttribute="centerY" secondItem="Xfu-ZZ-mrU" secondAttribute="centerY" id="MXj-UX-XS7"/>
-                                                <constraint firstItem="ePn-4G-Y6p" firstAttribute="leading" secondItem="SVn-QJ-Bjg" secondAttribute="trailing" constant="8" id="Tzv-tD-Vhj"/>
-                                                <constraint firstItem="ePn-4G-Y6p" firstAttribute="trailing" secondItem="Xfu-ZZ-mrU" secondAttribute="trailingMargin" id="XU3-PG-IMd"/>
-                                                <constraint firstItem="ePn-4G-Y6p" firstAttribute="centerY" secondItem="Xfu-ZZ-mrU" secondAttribute="centerY" id="vc2-Ni-X9Y"/>
+                                                <constraint firstItem="HE1-A0-amC" firstAttribute="centerY" secondItem="Xfu-ZZ-mrU" secondAttribute="centerY" id="Pc4-t3-VeF"/>
+                                                <constraint firstItem="UcN-WG-ecQ" firstAttribute="centerY" secondItem="Xfu-ZZ-mrU" secondAttribute="centerY" id="VCK-i6-W10"/>
+                                                <constraint firstItem="UcN-WG-ecQ" firstAttribute="leading" secondItem="SVn-QJ-Bjg" secondAttribute="trailing" constant="8" id="hpm-SB-Ia2"/>
+                                                <constraint firstItem="HE1-A0-amC" firstAttribute="leading" secondItem="UcN-WG-ecQ" secondAttribute="trailing" constant="8" id="oDV-b3-qH7"/>
+                                                <constraint firstItem="HE1-A0-amC" firstAttribute="trailing" secondItem="Xfu-ZZ-mrU" secondAttribute="trailingMargin" id="ud3-qx-S2c"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -520,23 +529,32 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Rate Profile" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OQc-jg-NMl">
-                                                    <rect key="frame" x="8" y="11" width="545" height="20"/>
+                                                    <rect key="frame" x="8" y="11" width="84" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LU1-aX-K40">
-                                                    <rect key="frame" x="561" y="6" width="31" height="30"/>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="7WU-So-lr2">
+                                                    <rect key="frame" x="498" y="7" width="94" height="29"/>
+                                                    <connections>
+                                                        <action selector="rateProfileChanged:" destination="Exb-KD-o8b" eventType="valueChanged" id="HUh-4N-xyg"/>
+                                                    </connections>
+                                                </stepper>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="3" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7As-UP-fXT">
+                                                    <rect key="frame" x="100" y="12" width="390" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="LU1-aX-K40" firstAttribute="trailing" secondItem="3uD-Qm-MkO" secondAttribute="trailingMargin" id="Fky-pS-b9n"/>
+                                                <constraint firstItem="7As-UP-fXT" firstAttribute="centerY" secondItem="3uD-Qm-MkO" secondAttribute="centerY" id="Be9-TZ-WGo"/>
+                                                <constraint firstItem="7WU-So-lr2" firstAttribute="leading" secondItem="7As-UP-fXT" secondAttribute="trailing" constant="8" id="JhH-eA-UD1"/>
+                                                <constraint firstItem="7As-UP-fXT" firstAttribute="leading" secondItem="OQc-jg-NMl" secondAttribute="trailing" constant="8" id="K21-gN-Gx3"/>
                                                 <constraint firstItem="OQc-jg-NMl" firstAttribute="centerY" secondItem="3uD-Qm-MkO" secondAttribute="centerY" id="Klp-MG-7Ap"/>
-                                                <constraint firstItem="LU1-aX-K40" firstAttribute="centerY" secondItem="3uD-Qm-MkO" secondAttribute="centerY" id="Uql-F2-qlp"/>
+                                                <constraint firstItem="7WU-So-lr2" firstAttribute="centerY" secondItem="3uD-Qm-MkO" secondAttribute="centerY" id="NLB-4Z-G31"/>
+                                                <constraint firstItem="7WU-So-lr2" firstAttribute="trailing" secondItem="3uD-Qm-MkO" secondAttribute="trailingMargin" id="XJB-ou-HIF"/>
                                                 <constraint firstItem="OQc-jg-NMl" firstAttribute="leading" secondItem="3uD-Qm-MkO" secondAttribute="leadingMargin" id="fMe-ne-A3M"/>
-                                                <constraint firstItem="LU1-aX-K40" firstAttribute="leading" secondItem="OQc-jg-NMl" secondAttribute="trailing" constant="8" id="vax-7P-Deg"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -2420,6 +2438,8 @@
                         <outlet property="navRP" destination="kcT-vW-oTh" id="3TW-06-rgR"/>
                         <outlet property="pidControllerCell" destination="aKi-pN-nZj" id="gjC-SX-3w1"/>
                         <outlet property="pidControllerField" destination="AEf-tE-ScI" id="OsO-nw-80E"/>
+                        <outlet property="pidProfileLabel" destination="UcN-WG-ecQ" id="7ba-54-xeP"/>
+                        <outlet property="pidProfileStepper" destination="HE1-A0-amC" id="UGG-GY-rOj"/>
                         <outlet property="pitchD" destination="UaU-48-uXq" id="sCf-uR-KTo"/>
                         <outlet property="pitchI" destination="TUz-IQ-lBo" id="qc6-hC-uKa"/>
                         <outlet property="pitchP" destination="cHq-Dg-B0O" id="K3e-89-l7C"/>
@@ -2430,8 +2450,8 @@
                         <outlet property="posRD" destination="CZn-uP-ons" id="D5Z-LD-Klg"/>
                         <outlet property="posRI" destination="g27-yJ-LgN" id="Gmm-xC-hXv"/>
                         <outlet property="posRP" destination="lbx-iN-BRr" id="OXF-WV-OX6"/>
-                        <outlet property="profileField" destination="ePn-4G-Y6p" id="dYs-VO-hTM"/>
-                        <outlet property="rateProfileField" destination="LU1-aX-K40" id="3AZ-a4-XrU"/>
+                        <outlet property="rateProfileLabel" destination="7As-UP-fXT" id="eqn-kL-UmA"/>
+                        <outlet property="rateProfileStepper" destination="7WU-So-lr2" id="sm1-hq-RqE"/>
                         <outlet property="resetPIDValuesCell" destination="j7a-F4-Vga" id="Iws-np-KTO"/>
                         <outlet property="rollD" destination="hka-3T-Gom" id="A8g-WR-1dh"/>
                         <outlet property="rollI" destination="leP-6e-nIN" id="ZC7-1j-XqV"/>
