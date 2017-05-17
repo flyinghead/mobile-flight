@@ -189,7 +189,7 @@ class MSPParser {
                     if config.isINav {
                         config.armingFlags = readUInt16(message, index: 14)
                         config.accCalibAxis = Int(message[16])
-                    } else if config.isINav {
+                    } else {
                         config.rateProfile = Int(message[14])
                     }
                 }
@@ -1009,7 +1009,8 @@ class MSPParser {
             .MSP_WP_MISSION_LOAD,
             .MSP_WP_MISSION_SAVE,
             .MSP_SET_OSD_CONFIG,
-            .MSP_SET_VTX_CONFIG:
+            .MSP_SET_VTX_CONFIG,
+            .MSP_SET_FILTER_CONFIG:
             break
             
         default:
@@ -1204,7 +1205,7 @@ class MSPParser {
     }
     
     func sendSelectProfile(profile: Int, callback:((success:Bool) -> Void)?) {
-        // Note: this call includes a write eeprom
+        // Note: this call includes a write eeprom (in CF 1.12. Not sure about other versions)
         sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
     }
     
@@ -1522,7 +1523,7 @@ class MSPParser {
     }
     
     func sendSelectRateProfile(rateProfile: Int, callback:((success: Bool) -> Void)?) {
-        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile & 0x80) ], retry: 2, callback: callback)
+        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile | 0x80) ], retry: 2, callback: callback)
     }
     
     func sendFilterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {

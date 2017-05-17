@@ -136,7 +136,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             msp.sendRawRc(rcCommands!)
         }
 
-        msp.sendMessage(.MSP_STATUS, data: nil, flush: false)
+        msp.sendMessage(.MSP_STATUS_EX, data: nil, flush: false)
         statusSwitch = !statusSwitch
         if statusSwitch {
             msp.sendMessage(.MSP_RAW_GPS, data: nil, flush: false)

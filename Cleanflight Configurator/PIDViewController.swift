@@ -13,9 +13,11 @@ import SVProgressHUD
 class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var profileField: UITextField!
     @IBOutlet weak var pidControllerField: UITextField!
-    var profilePicker: MyDownPicker?
-    var pidControllerPicker: MyDownPicker?
+    var profilePicker: MyDownPicker!
+    var pidControllerPicker: MyDownPicker!
     @IBOutlet weak var resetPIDValuesCell: UITableViewCell!
+    @IBOutlet weak var rateProfileField: UITextField!
+    var rateProfilePicker: MyDownPicker!
     
     // BASIC
     @IBOutlet weak var rollP: NumberField!
@@ -72,16 +74,21 @@ class PIDViewController: StaticDataTableViewController {
     
     var settings: Settings?
     var profile: Int?
+    var rateProfile: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         profilePicker = MyDownPicker(textField: profileField, withData: [ "1", "2", "3" ])
-        profilePicker?.addTarget(self, action: #selector(PIDViewController.profileChanged(_:)), forControlEvents: .ValueChanged)
-        profilePicker?.setPlaceholder("")           // To keep width down
+        profilePicker.addTarget(self, action: #selector(PIDViewController.profileChanged(_:)), forControlEvents: .ValueChanged)
+        profilePicker.setPlaceholder("")           // To keep width down
+        
+        rateProfilePicker = MyDownPicker(textField: rateProfileField, withData: [ "1", "2", "3" ])
+        rateProfilePicker.addTarget(self, action: #selector(PIDViewController.rateProfileChanged(_:)), forControlEvents: .ValueChanged)
+        rateProfilePicker.setPlaceholder("")           // To keep width down
         
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])
-        pidControllerPicker?.setPlaceholder("")     // To keep width down
+        pidControllerPicker.setPlaceholder("")     // To keep width down
         
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {
@@ -106,14 +113,17 @@ class PIDViewController: StaticDataTableViewController {
         }
         
         chainMspCalls(msp, calls: calls) { success in
-            if success {
-                dispatch_async(dispatch_get_main_queue(), {
+            dispatch_async(dispatch_get_main_queue()) {
+                if success {
                     let settings = Settings.theSettings
                     self.settings = settings
-                    self.profile = Configuration.theConfig.profile ?? 0
+                    let config = Configuration.theConfig
+                    self.profile = config.profile
+                    self.rateProfile = config.rateProfile
                     
-                    self.pidControllerPicker?.selectedIndex = settings.pidController
-                    self.profilePicker?.selectedIndex = self.profile!
+                    self.pidControllerPicker.selectedIndex = settings.pidController
+                    self.profilePicker.selectedIndex = self.profile!
+                    self.rateProfilePicker.selectedIndex = self.rateProfile!
                     
                     self.rollRate.value = settings.rollSuperRate
                     self.pitchRate.value = settings.pitchSuperRate
@@ -168,16 +178,21 @@ class PIDViewController: StaticDataTableViewController {
                     self.dTermNotchFrequency.value = Double(settings.dTermNotchFrequency)
                     self.dTermNotchCutoff.value = Double(settings.dTermNotchCutoff)
                     self.yawLowpassFrequency.value = Double(settings.yawLowpassFrequency)
-                })
+                    
+                    SVProgressHUD.dismiss()
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Communication error")
+                }
             }
         }
      }
 
     @IBAction func saveAction(sender: AnyObject) {
-        if pidControllerPicker!.selectedIndex >= 0 {
-            settings!.pidController = pidControllerPicker!.selectedIndex
+        if pidControllerPicker.selectedIndex >= 0 {
+            settings!.pidController = pidControllerPicker.selectedIndex
         }
-        profile = profilePicker!.selectedIndex
+        profile = profilePicker.selectedIndex
+        rateProfile = rateProfilePicker.selectedIndex
         
         settings?.rollSuperRate = rollRate.value
         settings?.pitchSuperRate = pitchRate.value
@@ -208,46 +223,27 @@ class PIDViewController: StaticDataTableViewController {
         settings?.dTermNotchCutoff = Int(round(dTermNotchCutoff.value))
         settings?.yawLowpassFrequency = Int(round(yawLowpassFrequency.value))
         
-        msp.sendSetRcTuning(settings!, callback: { success in
-            if success {
-                self.msp.sendPid(self.settings!, callback: { success in
-                    if success {
-                        self.msp.sendPidController(self.settings!.pidController, callback: { success in
-                            if success {
-                                let config = Configuration.theConfig
-                                if config.isApiVersionAtLeast("1.31") || config.isINav {
-                                    self.msp.sendFilterConfig(self.settings!) { success in
-                                        if success {
-                                            self.saveToEeprom()
-                                        } else {
-                                            self.saveFailedAlert()
-                                        }
-                                    }
-                                } else {
-                                    self.saveToEeprom()
-                                }
-                            } else {
-                                self.saveFailedAlert()
-                            }
-                        })
-                    } else {
-                        self.saveFailedAlert()
-                    }
-                })
-            } else {
-                self.saveFailedAlert()
-            }
+        var commands: [SendCommand] = [
+            { callback in
+                self.msp.sendSetRcTuning(self.settings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendPid(self.settings!, callback: callback)
+            },
+            { callback in
+                self.msp.sendPidController(self.settings!.pidController, callback: callback)
+            },
+        ]
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") || config.isINav {
+            commands.append({ callback in
+                self.msp.sendFilterConfig(self.settings!, callback: callback)
+            })
+        }
+        commands.append({ callback in
+            self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
         })
-    }
-    
-    func saveFailedAlert() {
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus("Save failed")
-        })
-    }
-    
-    func saveToEeprom() {
-        self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+        chainMspSend(commands) { success in
             if success {
                 dispatch_async(dispatch_get_main_queue(), {
                     SVProgressHUD.showSuccessWithStatus("Settings saved")
@@ -256,20 +252,41 @@ class PIDViewController: StaticDataTableViewController {
             } else {
                 self.saveFailedAlert()
             }
+        }
+    }
+    
+    func saveFailedAlert() {
+        dispatch_async(dispatch_get_main_queue(), {
+            SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }
     
     func profileChanged(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("Changing PID Profile")
         msp.sendSelectProfile(profilePicker!.selectedIndex, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 if success {
                     self.fetchData()
                 } else {
-                    SVProgressHUD.showErrorWithStatus("Profile switch failed")
+                    SVProgressHUD.showErrorWithStatus("Profile change failed")
                 }
             })
         })
     }
+    
+    func rateProfileChanged(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("Changing Rate Profile")
+        msp.sendSelectRateProfile(rateProfilePicker!.selectedIndex, callback: { success in
+            dispatch_async(dispatch_get_main_queue(), {
+                if success {
+                    self.fetchData()
+                } else {
+                    SVProgressHUD.showErrorWithStatus("Rate profile change failed")
+                }
+            })
+        })
+    }
+    
     @IBAction func resetPIDParams(sender: AnyObject) {
         let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
