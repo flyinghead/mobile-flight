@@ -924,6 +924,19 @@ class MSPParser {
                     }
                 }
             }
+        
+        case .MSP_VTX_CONFIG:
+            if message.count < 3 {
+                return false
+            }
+            let vtxConfig = VTXConfig.theVTXConfig
+            vtxConfig.deviceType = Int(message[0])
+            vtxConfig.band = Int(message[1])
+            vtxConfig.channel = Int(message[2])
+            if message.count >= 5 {
+                vtxConfig.powerIdx = Int(message[3])
+                vtxConfig.pitMode = message[4] != 0
+            }
             
         // INav
         case .MSP_NAV_STATUS:
@@ -995,7 +1008,8 @@ class MSPParser {
             .MSP_SET_NAV_POSHOLD,
             .MSP_WP_MISSION_LOAD,
             .MSP_WP_MISSION_SAVE,
-            .MSP_SET_OSD_CONFIG:
+            .MSP_SET_OSD_CONFIG,
+            .MSP_SET_VTX_CONFIG:
             break
             
         default:
@@ -1557,6 +1571,15 @@ class MSPParser {
                 callback?(success: false)
             }
         }
+    }
+    
+    func sendVtxConfig(vtxConfig: VTXConfig, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(vtxConfig.band))
+        data.append(UInt8(vtxConfig.channel))
+        data.append(UInt8(vtxConfig.powerIdx))
+        data.append(UInt8(vtxConfig.pitMode ? 1 : 0))
+        sendMessage(.MSP_SET_VTX_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     // INav

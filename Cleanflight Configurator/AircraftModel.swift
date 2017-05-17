@@ -1631,6 +1631,44 @@ class AllAircraftData : NSObject, NSCoding {
 
 }
 
+/*
+enum VTXBand : Int {
+    case BOSCAM_A = 0
+    case BOSCAM_B = 1
+    case BOSCAM_E = 2
+    case FATSHARK = 3
+    case RACEBAND = 4
+}
+
+enum VTXChannel : Int {
+    0-7: Channel 1 to 8
+}
+
+enum SmartAudioPower : Int {
+    case MW25 = 0
+    case MW200 = 1
+    case MW500 = 2
+    case MW800 = 3
+}
+enum TrampPower : Int {
+    case MW25 = 0
+    case MW100 = 1
+    case MW200 = 2
+    case MW400 = 3
+    case MW600 = 4
+}
+*/
+
+class VTXConfig {
+    static var theVTXConfig = VTXConfig()
+    
+    var deviceType = 0
+    var band = 0
+    var channel = 0
+    var powerIdx = 0
+    var pitMode = false
+}
+
 func resetAircraftModel() {
     Settings.theSettings = Settings()
     Misc.theMisc = Misc()
@@ -1646,4 +1684,5 @@ func resetAircraftModel() {
     INavConfig.theINavConfig = INavConfig()         // FIXME some date in there need to be part of AircraftModel
     
     OSD.theOSD = OSD()
+    VTXConfig.theVTXConfig = VTXConfig()
 }

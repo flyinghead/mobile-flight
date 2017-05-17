@@ -11,6 +11,9 @@ import SVProgressHUD
 import MapKit
 
 class CalibrationViewController: StaticDataTableViewController {
+    static let VTXSmartAudioPowers = [ "25 mW", "200 mW", "500 mW", "800 mW" ]
+    static let VTXTrampPowers = [ "25 mW", "100 mW", "200 mW", "400 mW", "600 mW" ]
+    
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
     @IBOutlet weak var calAccImgButton: UIButton!
@@ -36,6 +39,15 @@ class CalibrationViewController: StaticDataTableViewController {
     
     @IBOutlet weak var accTrimCell: UITableViewCell!
     
+    @IBOutlet var vtxCells: [UITableViewCell]!
+    @IBOutlet weak var vtxBandField: UITextField!
+    @IBOutlet weak var vtxChannelField: UITextField!
+    @IBOutlet weak var vtxPowerField: UITextField!
+    @IBOutlet weak var vtxPitModeSwitch: UISwitch!
+    var vtxBandPicker: MyDownPicker!
+    var vtxChannelPicker: MyDownPicker!
+    var vtxPowerPicker: MyDownPicker!
+    
     var metarTimer: NSTimer?
     var reportIndex = 0
     
@@ -54,7 +66,7 @@ class CalibrationViewController: StaticDataTableViewController {
         
         if config.isINav {
             cell(accTrimCell, setHidden: true)
-            reloadDataAnimated(true)
+            reloadDataAnimated(false)
         } else {
             accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
         
@@ -65,6 +77,10 @@ class CalibrationViewController: StaticDataTableViewController {
         calMagView.layer.borderColor = calMagView.tintColor.CGColor
         enableAccCalibration(config.isGyroAndAccActive())
         enableMagCalibration(config.isMagnetometerActive())
+        
+        vtxBandPicker = MyDownPicker(textField: vtxBandField, withData: [ "Boscam A", "Boscam B", "Boscam E", "FatShark", "RaceBand" ])
+        vtxChannelPicker = MyDownPicker(textField: vtxChannelField, withData: [ "1", "2", "3", "3", "4", "5", "6", "7", "8" ])
+        vtxPowerPicker = MyDownPicker(textField: vtxPowerField, withData: CalibrationViewController.VTXTrampPowers)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -89,6 +105,12 @@ class CalibrationViewController: StaticDataTableViewController {
         metarUpdated()
         
         metarTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(metarTimerFired), userInfo: nil, repeats: true)
+        
+        if VTXConfig.theVTXConfig.deviceType <= 0 {
+            cells(vtxCells, setHidden: true)
+            reloadDataAnimated(false)
+        }
+        fetchVtxConfig()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -293,6 +315,43 @@ class CalibrationViewController: StaticDataTableViewController {
             updateCell(metarTableCell)
             reloadTableViewRowAnimation = .Right
             reloadDataAnimated(true)
+        }
+    }
+    
+    private func fetchVtxConfig() {
+        // FIXME Not sure that data can be read from the VTX in most cases. It seems that band/channel/power are reset to default
+        // every time. Check how the OSD "CMS" menu works.
+        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+            msp.sendMessage(.MSP_VTX_CONFIG, data: nil, retry: 2) { success in
+                dispatch_async(dispatch_get_main_queue()) {
+                    if success {
+                        self.cells(self.vtxCells, setHidden: false)
+                        let vtxConfig = VTXConfig.theVTXConfig
+                        self.vtxPowerPicker.setData(vtxConfig.deviceType == 3 ? CalibrationViewController.VTXSmartAudioPowers : CalibrationViewController.VTXTrampPowers)
+                        self.vtxBandPicker.selectedIndex = vtxConfig.band
+                        self.vtxChannelPicker.selectedIndex = vtxConfig.channel
+                        self.vtxPowerPicker.selectedIndex = vtxConfig.powerIdx
+                        self.vtxPitModeSwitch.on = vtxConfig.pitMode
+                        self.reloadDataAnimated(false)
+                    }
+                }
+            }
+        }
+    }
+    
+    @IBAction func vtxSaveAction(sender: AnyObject) {
+        let vtxConfig = VTXConfig.theVTXConfig
+        vtxConfig.band = vtxBandPicker.selectedIndex
+        vtxConfig.channel = vtxChannelPicker.selectedIndex
+        vtxConfig.powerIdx = vtxPowerPicker.selectedIndex
+        vtxConfig.pitMode = vtxPitModeSwitch.on
+        msp.sendVtxConfig(vtxConfig) { success in
+            if success {
+                self.fetchVtxConfig()
+            } else {
+                self.saveFailedError()
+            }
+            
         }
     }
     
