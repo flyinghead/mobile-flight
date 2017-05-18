@@ -187,8 +187,8 @@ class MSPParser {
                 config.systemLoad = readUInt16(message, index: 11)
                 if message.count >= 15 {
                     if config.isINav {
-                        config.armingFlags = readUInt16(message, index: 14)
-                        config.accCalibAxis = Int(message[16])
+                        config.armingFlags = readUInt16(message, index: 13)
+                        config.accCalibAxis = Int(message[15])
                     } else {
                         config.rateProfile = Int(message[14])
                     }
