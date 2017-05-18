@@ -40,13 +40,10 @@ class CalibrationViewController: StaticDataTableViewController {
     @IBOutlet weak var accTrimCell: UITableViewCell!
     
     @IBOutlet var vtxCells: [UITableViewCell]!
-    @IBOutlet weak var vtxBandField: UITextField!
-    @IBOutlet weak var vtxChannelField: UITextField!
-    @IBOutlet weak var vtxPowerField: UITextField!
+    @IBOutlet weak var vtxBandPicker: StepperPicker!
+    @IBOutlet weak var vtxChannelStepper: StepperWithLabel!
+    @IBOutlet weak var vtxPowerPicker: StepperPicker!
     @IBOutlet weak var vtxPitModeSwitch: UISwitch!
-    var vtxBandPicker: MyDownPicker!
-    var vtxChannelPicker: MyDownPicker!
-    var vtxPowerPicker: MyDownPicker!
     
     var metarTimer: NSTimer?
     var reportIndex = 0
@@ -78,9 +75,13 @@ class CalibrationViewController: StaticDataTableViewController {
         enableAccCalibration(config.isGyroAndAccActive())
         enableMagCalibration(config.isMagnetometerActive())
         
-        vtxBandPicker = MyDownPicker(textField: vtxBandField, withData: [ "Boscam A", "Boscam B", "Boscam E", "FatShark", "RaceBand" ])
-        vtxChannelPicker = MyDownPicker(textField: vtxChannelField, withData: [ "1", "2", "3", "3", "4", "5", "6", "7", "8" ])
-        vtxPowerPicker = MyDownPicker(textField: vtxPowerField, withData: CalibrationViewController.VTXTrampPowers)
+        vtxBandPicker.labels =  [ "Boscam A", "Boscam B", "Boscam E", "FatShark", "RaceBand" ]
+        vtxChannelStepper.minimumValue = 0
+        vtxChannelStepper.maximumValue = 7
+        vtxChannelStepper.labelFormatter = { value in
+            return String(Int(value) + 1)
+        }
+        vtxPowerPicker.labels = CalibrationViewController.VTXTrampPowers
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -327,9 +328,9 @@ class CalibrationViewController: StaticDataTableViewController {
                     if success {
                         self.cells(self.vtxCells, setHidden: false)
                         let vtxConfig = VTXConfig.theVTXConfig
-                        self.vtxPowerPicker.setData(vtxConfig.deviceType == 3 ? CalibrationViewController.VTXSmartAudioPowers : CalibrationViewController.VTXTrampPowers)
+                        self.vtxPowerPicker.labels = vtxConfig.deviceType == 3 ? CalibrationViewController.VTXSmartAudioPowers : CalibrationViewController.VTXTrampPowers
                         self.vtxBandPicker.selectedIndex = vtxConfig.band
-                        self.vtxChannelPicker.selectedIndex = vtxConfig.channel
+                        self.vtxChannelStepper.value = Double(vtxConfig.channel)
                         self.vtxPowerPicker.selectedIndex = vtxConfig.powerIdx
                         self.vtxPitModeSwitch.on = vtxConfig.pitMode
                         self.reloadDataAnimated(false)
@@ -342,7 +343,7 @@ class CalibrationViewController: StaticDataTableViewController {
     @IBAction func vtxSaveAction(sender: AnyObject) {
         let vtxConfig = VTXConfig.theVTXConfig
         vtxConfig.band = vtxBandPicker.selectedIndex
-        vtxConfig.channel = vtxChannelPicker.selectedIndex
+        vtxConfig.channel = Int(vtxChannelStepper.value)
         vtxConfig.powerIdx = vtxPowerPicker.selectedIndex
         vtxConfig.pitMode = vtxPitModeSwitch.on
         msp.sendVtxConfig(vtxConfig) { success in

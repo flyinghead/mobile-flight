@@ -105,6 +105,9 @@
 		AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AEBA64191C332B3100783ECE /* Settings.bundle */; };
 		AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBA641B1C342BD900783ECE /* UserDefaults.swift */; };
 		AEBB7A0A1ECB10F900F56D6C /* SpeedUnitLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */; };
+		AEBB7A0C1ECCEF3400F56D6C /* StepperWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBB7A0B1ECCEF3400F56D6C /* StepperWithLabel.swift */; };
+		AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEBB7A0D1ECCEF4F00F56D6C /* StepperWithLabel.xib */; };
+		AEBB7A121ECCF6CA00F56D6C /* StepperPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBB7A111ECCF6CA00F56D6C /* StepperPicker.swift */; };
 		AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */; };
 		AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
@@ -343,6 +346,9 @@
 		AEBA64191C332B3100783ECE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		AEBA641B1C342BD900783ECE /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedUnitLabel.swift; sourceTree = "<group>"; };
+		AEBB7A0B1ECCEF3400F56D6C /* StepperWithLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepperWithLabel.swift; sourceTree = "<group>"; };
+		AEBB7A0D1ECCEF4F00F56D6C /* StepperWithLabel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StepperWithLabel.xib; sourceTree = "<group>"; };
+		AEBB7A111ECCF6CA00F56D6C /* StepperPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepperPicker.swift; sourceTree = "<group>"; };
 		AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTest.swift; sourceTree = "<group>"; };
 		AEBBC6631EC4D32E00EE958A /* DownPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownPicker.framework; path = "../../../Library/Developer/Xcode/DerivedData/Cleanflight_Configurator-gotusvkhuouswvbazgcqqbfbcqlb/Build/Products/Debug-iphoneos/DownPicker/DownPicker.framework"; sourceTree = "<group>"; };
 		AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
@@ -616,8 +622,11 @@
 				AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */,
 				AE3E465C1C58147500E33E9F /* SimpleVerticalScale.swift */,
 				AEBB7A091ECB10F900F56D6C /* SpeedUnitLabel.swift */,
+				AEBB7A111ECCF6CA00F56D6C /* StepperPicker.swift */,
+				AEBB7A0B1ECCEF3400F56D6C /* StepperWithLabel.swift */,
 				AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */,
 				AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */,
+				AEBB7A0D1ECCEF4F00F56D6C /* StepperWithLabel.xib */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -949,6 +958,7 @@
 				AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
+				AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */,
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
@@ -1133,6 +1143,7 @@
 				AE26A1D31C414F78007498EF /* BatteryVoltageLabel.swift in Sources */,
 				AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */,
 				AECE8D811C1E14AE00FB183E /* RangeSliderTrackLayer.swift in Sources */,
+				AEBB7A121ECCF6CA00F56D6C /* StepperPicker.swift in Sources */,
 				AE72AB5E1C0F3D230020C4B0 /* AboutViewController.swift in Sources */,
 				AEBA64121C30A3B100783ECE /* WifiViewController.swift in Sources */,
 				AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */,
@@ -1203,6 +1214,7 @@
 				AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */,
 				AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */,
 				AE1EAA271CB0174500C24E2A /* IASKMultipleValueSelection.m in Sources */,
+				AEBB7A0C1ECCEF3400F56D6C /* StepperWithLabel.swift in Sources */,
 				AEDDD26F1C14D2DD004232AA /* SonarViewController.swift in Sources */,
 				AE3E462E1C52C04300E33E9F /* RCStick.swift in Sources */,
 				AE62AAE11EB8941500D0DEF2 /* MKWaypointView.swift in Sources */,
