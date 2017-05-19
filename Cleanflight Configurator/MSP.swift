@@ -915,7 +915,7 @@ class MSPParser {
                         }
                         let pos = OSDElementPosition()
                         pos.element = element
-                        let (x, y, visible, _) = decodePos(readInt16(message, index: i))
+                        let (x, y, visible) = decodePos(readInt16(message, index: i))
                         pos.visible = visible
                         pos.x = x
                         pos.y = y
@@ -1562,8 +1562,9 @@ class MSPParser {
             data.appendContentsOf(writeUInt16(osd.minutesAlarm))
             data.appendContentsOf(writeUInt16(osd.altitudeAlarm))
         } else {
+            data.append(UInt8(index))
             let position = osd.elements[index]
-            data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible, blink: false)))
+            data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
         }
         sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
             if success {

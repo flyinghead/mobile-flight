@@ -11,6 +11,7 @@ import UIKit
 class OSDPreview: UIView, UIGestureRecognizerDelegate {
     let image = UIImage(named: "OSD-background")!
     
+    var backgroundView: UIImageView!
     var tapGesture: UITapGestureRecognizer!
     var dragGesture: UIPanGestureRecognizer!
     var draggedView: OSDElementView?
@@ -27,10 +28,10 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
     }
     
     private func localInit() {
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .ScaleAspectFit
-        imageView.frame = bounds
-        addSubview(imageView)
+        backgroundView = UIImageView(image: image)
+        backgroundView.contentMode = .ScaleAspectFit
+        backgroundView.frame = bounds
+        addSubview(backgroundView)
 
         createElementViews()
         
@@ -56,6 +57,8 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         switch elem {
         case .HorizonSidebars:
             return CGRect(x: 7 * charWidth, y: 3 * charHeight, width: 15 * charWidth, height: 7 * charHeight)
+        case .ArtificialHorizon, .Crosshairs:
+            return CGRect(x: CGFloat(elem.defaultPosition().x) * charWidth, y: CGFloat(elem.defaultPosition().y) * charHeight, width: CGFloat(elem.preview.characters.count) * charWidth, height: charHeight)
         default:
             return CGRect(x: CGFloat(x) * charWidth, y: CGFloat(y) * charHeight, width: CGFloat(elem.preview.characters.count) * charWidth, height: charHeight)
         }
@@ -140,6 +143,14 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
             view.hidden = !e.visible
             addSubview(view)
         }
+        // Send non selectionable views to the back so they don't capture taps
+        for v in subviews {
+            if let elemView = v as? OSDElementView where !elemView.position.element.positionable {
+                sendSubviewToBack(elemView)
+            }
+        }
+        // Background needs to be at the very back
+        sendSubviewToBack(backgroundView)
     }
     
     func updateVisibleViews() {

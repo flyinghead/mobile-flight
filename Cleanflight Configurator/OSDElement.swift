@@ -190,80 +190,80 @@ enum OSDElement {
         }
     }
     
-    func defaultPosition() -> (x: Int, y: Int, visible: Bool, blink: Bool) {
+    func defaultPosition() -> (x: Int, y: Int, visible: Bool) {
         switch self {
         case .MainBattVoltage:
-            return (12, 1, true, false)
+            return (12, 1, true)
         case .RSSI:
-            return (8, 1, true, false)
+            return (8, 1, true)
         case .ArtificialHorizon:
-            return (10, 6, true, false)
+            return (10, 6, true)
         case .Crosshairs:
-            return (13, 6, true, false)
+            return (13, 6, true)
         case .OnTime:
-            return (22, 1, true, false)
+            return (22, 1, true)
         case .FlyTime:
-            return (1, 1, true, false)
+            return (1, 1, true)
         case .FlyMode:
-            return (13, 11, true, false)
+            return (13, 11, true)
         case .CraftName:
-            return (10, 12, true, false)
+            return (10, 12, true)
         case .ThrottlePosition:
-            return (1, 7, true, false)
+            return (1, 7, true)
         case .VtxChannel:
-            return (24, 11, true, false)
+            return (24, 11, true)
         case .CurrentDraw:
-            return (1, 12, true, false)
+            return (1, 12, true)
         case .MAhDrawn:
-            return (1, 11, true, false)
+            return (1, 11, true)
         case .GpsSpeed:
-            return (26, 6, true, false)
+            return (26, 6, true)
         case .GpsSats:
-            return (19, 1, true, false)
+            return (19, 1, true)
         case .Altitude:
-            return (23, 7, true, false)
+            return (23, 7, true)
             
         case .PidRoll:
-            return (7, 13, true, false)
+            return (7, 13, true)
         case .PidPitch:
-            return (7, 14, true, false)
+            return (7, 14, true)
         case .PidYaw:
-            return (7, 15, true, false)
+            return (7, 15, true)
         case .Power:
-            return (1, 10, true, false)
+            return (1, 10, true)
             
         case .PidRateProfile:
-            return (25, 10, true, false)
+            return (25, 10, true)
         case .AvgCellVoltage:
-            return (12, 2, true, false)
+            return (12, 2, true)
         case .BatteryWarning:
-            return (9, 10, true, false)
+            return (9, 10, true)
         case .Debug:
-            return (7, 12, true, false)
+            return (7, 12, true)
         case .PitchAngle:
-            return (1, 8, true, false)
+            return (1, 8, true)
         case .RollAngle:
-            return (1, 9, true, false)
+            return (1, 9, true)
         
         case .HomeDistance:
-            return (1, 1, false, false)
+            return (1, 1, false)
         case .Heading:
-            return (12, 1, false, false)
+            return (12, 1, false)
         case .Vario:
-            return (22, 5, false, false)
+            return (22, 5, false)
         case .VarioNum:
-            return (23, 7, false, false)
+            return (23, 7, false)
         case .HomeDirection:
-            return (14, 11, false, false)
+            return (14, 11, false)
         case .GpsLatitude:
-            return (18, 14, true, false)
+            return (18, 14, true)
         case .GpsLongitude:
-            return (18, 15, true, false)
+            return (18, 15, true)
         case .MainBattUsage:
-            return (15, 10, true, false)
+            return (15, 10, true)
 
         default:
-            return (10, 10, true, false)
+            return (10, 10, true)
         }
     }
     
@@ -365,19 +365,17 @@ enum OSDElement {
     }
 }
 
-func encodePos(x: Int, y: Int, visible: Bool = true, blink: Bool = false) -> Int {
+func encodePos(x: Int, y: Int, visible: Bool = true) -> Int {
     let v = 0x800 * (visible ? 1 : 0)
-        + 0x400 * (blink ? 1 : 0)
     return v
-        + (y * CHARS_PER_LINE) << 5
+        + (y << 5)
         + x
 }
 
-func decodePos(v: Int) -> (x: Int, y: Int, visible: Bool, blink: Bool) {
+func decodePos(v: Int) -> (x: Int, y: Int, visible: Bool) {
     let visible = (v & 0x800) != 0
-    let blink = (v & 0x400) != 0
     let y = (v >> 5) & 0x1F
     let x = v & 0x1F
     
-    return (x, y, visible, blink)
+    return (x, y, visible)
 }

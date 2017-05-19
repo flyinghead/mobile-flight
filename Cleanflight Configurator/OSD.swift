@@ -50,7 +50,7 @@ class OSD {
     init() {
         loadFont(UserDefault.OSDFont.stringValue ?? "digital")
         
-        // FIXME Debug
+        // For Debug
         /*
         elements = [OSDElementPosition]()
         for e in OSDElement.Elements {
