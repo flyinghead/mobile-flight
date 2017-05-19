@@ -418,17 +418,10 @@ class MSPParser {
                 batteryEvent.raiseDispatch()
             }
             
-        case .MSP_MOTOR_PINS:
-            // Unused
-            if message.count < 8 {
-                return false
-            }
-            break;
-            
         case .MSP_BOXNAMES:
             settings.boxNames = [String]()
             var buf = [UInt8]()
-            for i in 0..<message.count {
+            for i in 0 ..< message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
                     settings.boxNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()
@@ -440,7 +433,7 @@ class MSPParser {
         case .MSP_PIDNAMES:
             settings.pidNames = [String]()
             var buf = [UInt8]()
-            for i in 0..<message.count {
+            for i in 0 ..< message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
                     settings.pidNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()

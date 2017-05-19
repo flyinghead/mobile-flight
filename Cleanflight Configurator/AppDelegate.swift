@@ -146,8 +146,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         msp.sendMessage(.MSP_ALTITUDE, data: nil, flush: false)
         msp.sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
         msp.sendMessage(.MSP_ANALOG, data: nil, flush: false)
-        // WP #0 = home, WP #16 = poshold
-        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : 16  ], flush: false)   // Altitude hold, mag hold
+        // WP #0 = home, WP #16 (or 255 for INav) = poshold
+        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : Configuration.theConfig.isINav ? 255 : 16  ], flush: false)   // Altitude hold, mag hold
         msp.sendMessage(.MSP_RC, data: nil)
         
         for sender in mspCommandSenders {
