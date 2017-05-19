@@ -81,7 +81,7 @@ class GPSFixLostAlarm : VoiceAlarm {
         
         // Only alert if armed and in GPS Hold or Home mode
         if !settings.armed
-            || (!settings.isModeOn(.GPSHOLD, forStatus: mode) && !settings.isModeOn(.GPSHOME, forStatus: mode)) {
+            || (!settings.isModeOn(.NAV_WP, forStatus: mode) && !settings.returnToHomeMode && !settings.positionHoldMode) {
                 return false
         }
         

@@ -84,8 +84,8 @@ enum Mode : String {
     case HEADADJ = "HEADADJ"
     case CAMSTAB = "CAMSTAB"
     case CAMTRIG = "CAMTRIG"
-    case GPSHOME = "GPS HOME"
-    case GPSHOLD = "GPS HOLD"
+    case GPS_HOME = "GPS HOME"
+    case GPS_HOLD = "GPS HOLD"
     case PASSTHRU = "PASSTHRU"
     case BEEPER = "BEEPER"
     case LEDMAX = "LEDMAX"
@@ -103,12 +103,16 @@ enum Mode : String {
     case BLACKBOX = "BLACKBOX"
     case FAILSAFE = "FAILSAFE"
     case AIR = "AIR MODE"
-    case ANTIGRAVITY = "ANTI GRAVITY"
-    case DISABLE3DSWITCH = "DISABLE 3D SWITCH"
-    case FPVANGLEMIX = "FPV ANGLE MIX"
-    case BLACKBOXERASE = "BLACKBOX ERASE (>30s)"
+    case ANTI_GRAVITY = "ANTI GRAVITY"
+    case DISABLE_3D_SWITCH = "DISABLE 3D SWITCH"
+    case FPV_ANGLE_MIX = "FPV ANGLE MIX"
+    case BLACKBOX_ERASE = "BLACKBOX ERASE (>30s)"
     // INav
-    case NAVWP = "NAV WP"
+    case NAV_WP = "NAV WP"
+    case NAV_ALTHOLD = "NAV ALTHOLD"
+    case NAV_POSHOLD = "NAV POSHOLD"
+    case NAV_RTH = "NAV RTH"
+    case HEADING_HOLD = "HEADING HOLD"
     
     var spokenName: String {
         switch self {
@@ -120,7 +124,7 @@ enum Mode : String {
             return "horizon mode"
         case .BARO:
             return "barometer mode"
-        case .MAG:
+        case .MAG, .HEADING_HOLD:
             return "heading mode"
         case .HEADFREE:
             return "head free mode"
@@ -130,9 +134,9 @@ enum Mode : String {
             return "camera stabilization"
         case .CAMTRIG:
             return "camera trigger"
-        case .GPSHOME:
+        case .GPS_HOME, .NAV_RTH:
             return "return to home mode"
-        case .GPSHOLD:
+        case .GPS_HOLD:
             return "GPS hold mode"
         case .PASSTHRU:
             return "Pass-through mode"
@@ -168,16 +172,56 @@ enum Mode : String {
             return "failsafe mode"
         case .AIR:
             return "air mode"
-        case .ANTIGRAVITY:
+        case .ANTI_GRAVITY:
             return "anti gravity"
-        case .DISABLE3DSWITCH:
+        case .DISABLE_3D_SWITCH:
             return "disable 3D switch"
-        case .FPVANGLEMIX:
+        case .FPV_ANGLE_MIX:
             return "FPV angle mix"
-        case .BLACKBOXERASE:
+        case .BLACKBOX_ERASE:
             return "blackbox erase"
-        case .NAVWP:
+        case .NAV_WP:
             return "waypoint mode"
+        case .NAV_ALTHOLD:
+            return "altitude hold"
+        case .NAV_POSHOLD:
+            return "position hold"
+        }
+    }
+    
+    var altitudeHold: Bool {
+        switch self {
+        case .BARO, .NAV_ALTHOLD, .NAV_WP, .SONAR:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var positionHold: Bool {
+        switch self {
+        case .GPS_HOLD, .NAV_POSHOLD:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var headingHold: Bool {
+        switch self {
+        case .MAG, .HEADING_HOLD:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var returnToHome: Bool {
+        switch self {
+        case .GPS_HOME, .NAV_RTH:
+            return true
+        default:
+            return false
         }
     }
 }
@@ -853,6 +897,34 @@ class Settings : AutoCoded {
     
     var armed: Bool {
         return isModeOn(.ARM, forStatus: Configuration.theConfig.mode)
+    }
+    
+    var altitudeHoldMode: Bool {
+        return hasModeWithCondition({ $0.altitudeHold })
+    }
+    
+    var positionHoldMode: Bool {
+        return hasModeWithCondition({ $0.positionHold })
+    }
+    
+    var headingHoldMode: Bool {
+        return hasModeWithCondition({ $0.headingHold })
+    }
+    
+    var returnToHomeMode: Bool {
+        return hasModeWithCondition({ $0.returnToHome })
+    }
+    
+    private func hasModeWithCondition(condition: (mode: Mode) -> Bool) -> Bool {
+        let status = Configuration.theConfig.mode
+        for (i, m) in boxNames!.enumerate() {
+            if status & (1 << i) != 0 {
+                if let mode = Mode(rawValue: m) where condition(mode: mode) {
+                    return true
+                }
+            }
+        }
+        return false
     }
     
     func getPID(name: PIDName) -> [Double]? {

@@ -131,9 +131,9 @@ class TelemetryTest : XCTestCase {
         tester().waitForViewWithAccessibilityLabel("ANGL")
         
         // Pos
-        CleanflightSimulator.instance.setMode(.GPSHOLD)
+        CleanflightSimulator.instance.setMode(.GPS_HOLD)
         tester().waitForViewWithAccessibilityLabel("POS")
-        CleanflightSimulator.instance.setMode(.GPSHOME)
+        CleanflightSimulator.instance.setMode(.GPS_HOME)
         tester().waitForAbsenceOfViewWithAccessibilityLabel("POS")
         tester().waitForViewWithAccessibilityLabel("RTH")
         
@@ -169,7 +169,7 @@ class TelemetryTest : XCTestCase {
         doTestSecondaryFlightMode(.CAMSTAB, viewId: "camstabMode")
         doTestSecondaryFlightMode(.CALIB, viewId: "calibrateMode")
         doTestSecondaryFlightMode(.BLACKBOX, viewId: "blackboxMode")
-        doTestSecondaryFlightMode(.AUTOTUNE, viewId: "autotuneMode")
+        doTestSecondaryFlightMode(.GTUNE, viewId: "autotuneMode")
         
     }
     private func doTestSecondaryFlightMode(mode: Mode, viewId: String) {

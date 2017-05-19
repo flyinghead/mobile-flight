@@ -216,7 +216,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     func flightModeChanged() {
-        if !Settings.theSettings.isModeOn(.GPSHOLD, forStatus: Configuration.theConfig.mode) && posHoldLocation != nil {
+        if !Settings.theSettings.positionHoldMode && posHoldLocation != nil {
             mapView.removeAnnotation(posHoldLocation!)
             posHoldLocation = nil
         }
@@ -312,8 +312,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func receivedNavigationData() {
         let gpsData = GPSData.theGPSData
-        let config = Configuration.theConfig
-        if gpsData.posHoldPosition != nil && Settings.theSettings.isModeOn(.GPSHOLD, forStatus: config.mode) {
+        if gpsData.posHoldPosition != nil && Settings.theSettings.positionHoldMode {
             var addAnnot = true
             if posHoldLocation != nil {
                 if posHoldLocation!.coordinate.latitude == gpsData.posHoldPosition!.latitude && posHoldLocation!.coordinate.longitude == gpsData.posHoldPosition!.longitude {
@@ -430,7 +429,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 return
             }
             
-            if !settings.isModeOn(.GPSHOLD, forStatus: config.mode) {
+            if !settings.positionHoldMode {
                 let alertController = UIAlertController(title: "Waypoint", message: "Enable GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
                 alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                 alertController.popoverPresentationController?.sourceView = mapView

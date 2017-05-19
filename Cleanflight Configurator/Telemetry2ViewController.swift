@@ -275,7 +275,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         let config = Configuration.theConfig
         let settings = Settings.theSettings
         altitudeScale.bugs.removeAll()
-        if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+        if settings.altitudeHoldMode {
             altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyanColor()))
             altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
         } else {
@@ -283,7 +283,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         }
 
         headingStrip.bugs.removeAll()
-        if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+        if settings.headingHoldMode {
             headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
         }
 
@@ -348,20 +348,20 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         } else {
             airModeLabel.hidden = true
         }
-        if settings.isModeOn(Mode.BARO, forStatus: config.mode) || settings.isModeOn(Mode.SONAR, forStatus: config.mode) {
+        if settings.altitudeHoldMode {
             altModeLabel.hidden = false
         } else {
             altModeLabel.hidden = true
         }
-        if settings.isModeOn(Mode.MAG, forStatus: config.mode) {
+        if settings.headingHoldMode {
             headingModeLabel.hidden = false
         } else {
             headingModeLabel.hidden = true
         }
-        if settings.isModeOn(Mode.GPSHOME, forStatus: config.mode) {
+        if settings.returnToHomeMode {
             posModeLabel.text = "RTH"
             posModeLabel.hidden = false
-        } else if settings.isModeOn(Mode.GPSHOLD, forStatus: config.mode) {
+        } else if settings.positionHoldMode {
             posModeLabel.text = "POS"
             posModeLabel.hidden = false
         } else {
