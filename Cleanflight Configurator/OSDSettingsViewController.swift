@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ElementCell : UITableViewCell {
     @IBOutlet weak var elementLabel: UILabel!
@@ -123,7 +124,7 @@ class OSDSettingsViewController: UITableViewController {
         case 1:     // Alarms
             return 4
         case 2:     // Others
-            return 3
+            return 4
         default:
             return 0
         }
@@ -184,10 +185,50 @@ class OSDSettingsViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCellWithIdentifier("unitsCell", forIndexPath: indexPath) as! UnitsCell
                 cell.unitsPicker.selectedIndex = osd.unitMode.rawValue
                 return cell
-            default:
+            case 2:
                 let cell = tableView.dequeueReusableCellWithIdentifier("fontCell", forIndexPath: indexPath) as! FontCell
                 cell.fontPicker.selectedIndex = FONTS.indexOf(osd.fontName) ?? -1
                 return cell
+            default:
+                return tableView.dequeueReusableCellWithIdentifier("uploadFontCell", forIndexPath: indexPath)
+            }
+        }
+    }
+    
+    @IBAction func uploadFontAction(sender: AnyObject) {
+        if let fontCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2)) as? FontCell {
+            let osd = OSD.theOSD
+            appDelegate.stopTimer()
+            let status = "Uploading font..."
+            SVProgressHUD.showProgress(0, status: status)
+            osd.loadFont(FONTS[fontCell.fontPicker.selectedIndex])
+            osd.fontDefinition.writeToOsd(msp, progressCallback: { progress in
+                dispatch_async(dispatch_get_main_queue()) {
+                    SVProgressHUD.showProgress(progress, status: status)
+                }
+            }) { success in
+                dispatch_async(dispatch_get_main_queue()) {
+                    if success {
+                        SVProgressHUD.showWithStatus("Rebooting...")
+                        self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2) { success in
+                            if success {
+                                // Wait 4 sec
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                                    SVProgressHUD.dismiss()
+                                    self.appDelegate.startTimer()
+                                })
+                            } else {
+                                dispatch_async(dispatch_get_main_queue()) {
+                                    SVProgressHUD.showErrorWithStatus("Reboot failed")
+                                    self.appDelegate.startTimer()
+                                }
+                            }
+                        }
+                    } else {
+                        SVProgressHUD.showErrorWithStatus("Upload failed")
+                        self.appDelegate.startTimer()
+                    }
+                }
             }
         }
     }

@@ -21,6 +21,35 @@ class CharDefinition {
     static let Width = 12
     
     var pixels = [[PixelColor]]()
+    
+    func writeToOsd(msp: MSPParser, index: Int, callback: ((Bool) -> Void)?) {
+        var data = [UInt8]()
+        for line in 0 ..< pixels.count {
+            var shift = UInt8(6)
+            var byte = UInt8(0)
+            for col in 0 ..< pixels[line].count {
+                var pixel: UInt8
+                switch pixels[line][col] {
+                case .Black:
+                    pixel = 0
+                case .Transparent:
+                    pixel = 1
+                case .White:
+                    pixel = 2
+                }
+                pixel <<= shift
+                byte |= pixel
+                if shift == 0 {
+                    shift = 6
+                    data.append(byte)
+                    byte = 0
+                } else {
+                    shift -= 2
+                }
+            }
+        }
+        msp.sendOsdChar(index, data: data, callback: callback)
+    }
 }
 
 class FontDefinition {
@@ -73,6 +102,25 @@ class FontDefinition {
         } catch let error as NSError {
             NSLog("Error loading font file %@", error)
             return nil
+        }
+    }
+    
+    func writeToOsd(msp: MSPParser, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
+        writeCharToOsd(msp, index: 0, progressCallback: progressCallback, callback: callback)
+    }
+    
+    private func writeCharToOsd(msp: MSPParser, index: Int, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
+        if index >= chars.count {
+            callback?(true)
+            return
+        }
+        chars[index].writeToOsd(msp, index: index) { success in
+            if success {
+                progressCallback?(Float(index + 1) / Float(self.chars.count))
+                self.writeCharToOsd(msp, index: index + 1, progressCallback: progressCallback, callback: callback)
+            } else {
+                callback?(false)
+            }
         }
     }
 }

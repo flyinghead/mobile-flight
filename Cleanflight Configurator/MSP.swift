@@ -1010,7 +1010,8 @@ class MSPParser {
             .MSP_WP_MISSION_SAVE,
             .MSP_SET_OSD_CONFIG,
             .MSP_SET_VTX_CONFIG,
-            .MSP_SET_FILTER_CONFIG:
+            .MSP_SET_FILTER_CONFIG,
+            .MSP_OSD_CHAR_WRITE:
             break
             
         default:
@@ -1573,6 +1574,12 @@ class MSPParser {
                 callback?(success: false)
             }
         }
+    }
+    
+    func sendOsdChar(char: Int, data: [UInt8], callback:((success:Bool) -> Void)?) {
+        var msgData = [ UInt8(char) ]
+        msgData.appendContentsOf(data)
+        sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2, callback: callback)
     }
     
     func sendVtxConfig(vtxConfig: VTXConfig, callback:((success:Bool) -> Void)?) {

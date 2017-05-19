@@ -282,13 +282,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Altitude (m)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zUb-wM-EVB">
-                                            <rect key="frame" x="8" y="12" width="56.5" height="19.5"/>
+                                            <rect key="frame" x="8" y="12" width="85" height="19.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XJf-ex-kUl" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                            <rect key="frame" x="72.5" y="11" width="294.5" height="20"/>
+                                            <rect key="frame" x="101" y="11" width="266" height="20"/>
                                             <nil key="textColor"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <textInputTraits key="textInputTraits"/>
@@ -419,6 +419,28 @@
                                 <connections>
                                     <outlet property="fontField" destination="crl-CB-zhv" id="geB-Mi-hja"/>
                                 </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="uploadFontCell" id="oNF-rj-hnF">
+                                <rect key="frame" x="0.0" y="408" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oNF-rj-hnF" id="hY5-cw-ZwL">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d6q-9J-uDY">
+                                            <rect key="frame" x="143" y="6" width="89" height="32"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <state key="normal" title="Upload Font"/>
+                                            <connections>
+                                                <action selector="uploadFontAction:" destination="sMe-yY-JK2" eventType="touchUpInside" id="Yhc-XQ-IhM"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="d6q-9J-uDY" firstAttribute="centerY" secondItem="hY5-cw-ZwL" secondAttribute="centerY" id="Fht-6M-pqr"/>
+                                        <constraint firstItem="d6q-9J-uDY" firstAttribute="centerX" secondItem="hY5-cw-ZwL" secondAttribute="centerX" id="gqJ-Cw-L8R"/>
+                                    </constraints>
+                                </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
