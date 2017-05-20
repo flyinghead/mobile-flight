@@ -22,6 +22,7 @@ class MainConnectionViewController: UIViewController {
         viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("BluetoothViewController"))
         viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("WifiViewController"))
         viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("ReplayViewController"))
+        viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("SimulatorViewController"))
         
         for vc in viewControllers {
             addChildViewController(vc)

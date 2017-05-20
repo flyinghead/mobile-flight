@@ -141,7 +141,7 @@ class MotorsViewController: UIViewController, MSPCommandSender {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        motorEventHandler = msp.altitudeEvent.addHandler(self, handler: MotorsViewController.receivedMotorData)
+        motorEventHandler = msp.motorEvent.addHandler(self, handler: MotorsViewController.receivedMotorData)
         
         appDelegate.addMSPCommandSender(self)
         

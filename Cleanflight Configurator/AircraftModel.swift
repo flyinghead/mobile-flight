@@ -607,15 +607,15 @@ class Settings : AutoCoded {
     // MSP_RC_TUNING / MSP_SET_RC_TUNING
     var rcExpo = 0.0        // pitch & roll expo curve
     var yawExpo = 0.0       // yaw expo curve
-    var rcRate = 0.0        // pitch & roll rate
-    var yawRate = 0.0       // yaw rate
-    var rollSuperRate = 0.0
-    var pitchSuperRate = 0.0
-    var yawSuperRate = 0.0
-    var throttleMid = 0.0
+    var rcRate = 1.0        // pitch & roll rate
+    var yawRate = 1.0       // yaw rate
+    var rollSuperRate = 0.7
+    var pitchSuperRate = 0.7
+    var yawSuperRate = 0.7
+    var throttleMid = 0.5
     var throttleExpo = 0.0
     var tpaRate = 0.0
-    var tpaBreakpoint = 0
+    var tpaBreakpoint = 1500
     
     // MSP_PIDNAMES
     var pidNames: [String]?
@@ -676,24 +676,24 @@ class Settings : AutoCoded {
     var gyroUses32KHz = false
     
     // MSP_FILTER_CONFIG / MSP_SET_FILTER_CONFIG
-    var gyroLowpassFrequency = 0
-    var dTermLowpassFrequency = 0
+    var gyroLowpassFrequency = 90
+    var dTermLowpassFrequency = 100
     var yawLowpassFrequency = 0
-    var gyroNotchFrequency = 0
-    var gyroNotchCutoff = 0
-    var dTermNotchFrequency = 0
-    var dTermNotchCutoff = 0
-    var gyroNotchFrequency2 = 0
-    var gyroNotchCutoff2 = 0
+    var gyroNotchFrequency = 400
+    var gyroNotchCutoff = 300
+    var dTermNotchFrequency = 260
+    var dTermNotchCutoff = 160
+    var gyroNotchFrequency2 = 200
+    var gyroNotchCutoff2 = 100
     
     // MSP_PID_ADVANCED / MSP_SET_PID_ADVANCED
     var vbatPidCompensation = false
-    var setpointRelaxRatio = 0
-    var dTermSetpointWeight = 0
+    var setpointRelaxRatio = 100
+    var dTermSetpointWeight = 60
     var rateAccelLimit = 0
-    var yawRateAccelLimit = 0
-    var levelAngleLimit = 0
-    var levelSensitivity = 0
+    var yawRateAccelLimit = 100
+    var levelAngleLimit = 55
+    var levelSensitivity = 55
     
     // MSP_SENSOR_CONFIG / MSP_SET_SENSOR_CONFIG
     var accelerometerDisabled = false
@@ -916,6 +916,9 @@ class Settings : AutoCoded {
     }
     
     private func hasModeWithCondition(condition: (mode: Mode) -> Bool) -> Bool {
+        if boxNames == nil {
+            return false
+        }
         let status = Configuration.theConfig.mode
         for (i, m) in boxNames!.enumerate() {
             if status & (1 << i) != 0 {

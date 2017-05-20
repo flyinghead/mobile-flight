@@ -37,7 +37,7 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
         urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: self, delegateQueue: nil)
     }
     
-    var locationProvider: UserLocationProvider! {
+    weak var locationProvider: UserLocationProvider! {
         didSet {
             // Only when setting the initial provider. Otherwise, let the update timer do its job
             if updateTimer == nil {
@@ -47,9 +47,9 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
     }
     
     private func updateCurrentLocationAndRetrieveReports() {
-        locationProvider?.currentLocation() {
-            self.position = $0
-            self.retrieveMetarReports()
+        locationProvider?.currentLocation() { [weak self] in
+            self?.position = $0
+            self?.retrieveMetarReports()
         }
     }
     

@@ -344,6 +344,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         updatingLocation = false
     }
     
+    // MARK: CLLocationManagerDelegate
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             if followMeActive && (lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod) {
@@ -383,12 +385,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
     
+    // MARK: UserLocationProvider
+    
     func currentLocation(callback: LocationCallback) {
         if !msp.replaying {
             currentLocationCallbacks.append(callback)
             startLocationManager()
         }
     }
+    
+    // MARK:
     
     func addMSPCommandSender(sender: MSPCommandSender) {
         mspCommandSenders.append(sender)
@@ -418,7 +424,7 @@ protocol RcCommandsProvider {
     func rcCommands() -> [Int]
 }
 
-protocol UserLocationProvider {
+protocol UserLocationProvider : class {
     func currentLocation(callback: LocationCallback)
 }
 

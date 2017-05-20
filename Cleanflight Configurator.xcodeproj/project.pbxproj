@@ -68,6 +68,8 @@
 		AE5BB66F1C4EA92A00CF2A7C /* HeadingStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB66E1C4EA92A00CF2A7C /* HeadingStrip.swift */; };
 		AE5BB6711C4EAF7C00CF2A7C /* VerticalScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */; };
 		AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */; };
+		AE5F113C1ECF7F3F00816B6D /* Simulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F113B1ECF7F3F00816B6D /* Simulator.swift */; };
+		AE5F113E1ECF809B00816B6D /* SimulatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F113D1ECF809B00816B6D /* SimulatorViewController.swift */; };
 		AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */; };
 		AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */; };
 		AE62AADC1EB5DED900D0DEF2 /* MessageStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */; };
@@ -304,6 +306,8 @@
 		AE5BB66E1C4EA92A00CF2A7C /* HeadingStrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadingStrip.swift; sourceTree = "<group>"; };
 		AE5BB6701C4EAF7C00CF2A7C /* VerticalScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalScale.swift; sourceTree = "<group>"; };
 		AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurnRateIndicator.swift; sourceTree = "<group>"; };
+		AE5F113B1ECF7F3F00816B6D /* Simulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Simulator.swift; sourceTree = "<group>"; };
+		AE5F113D1ECF809B00816B6D /* SimulatorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorViewController.swift; sourceTree = "<group>"; };
 		AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Cleanflight-versions.txt"; sourceTree = "<group>"; };
 		AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorConfigViewController.swift; sourceTree = "<group>"; };
 		AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageStream.swift; sourceTree = "<group>"; };
@@ -754,6 +758,8 @@
 				AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */,
 				AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */,
 				AEBA64171C31538F00783ECE /* ReplayViewController.swift */,
+				AE5F113B1ECF7F3F00816B6D /* Simulator.swift */,
+				AE5F113D1ECF809B00816B6D /* SimulatorViewController.swift */,
 				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
 				AEBA64111C30A3B100783ECE /* WifiViewController.swift */,
 				AEBA640D1C3086CF00783ECE /* Connection.storyboard */,
@@ -1131,6 +1137,7 @@
 				AE1EAA291CB0174500C24E2A /* IASKSettingsReader.m in Sources */,
 				AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */,
 				AEDA78B01C2072A800AD4845 /* PIDViewController.swift in Sources */,
+				AE5F113E1ECF809B00816B6D /* SimulatorViewController.swift in Sources */,
 				AE1BBA3F1EC3B5E20081E068 /* MKHomeLocationView.swift in Sources */,
 				AEDA78B21C20A52C00AD4845 /* Utilities.swift in Sources */,
 				AE1BBA2C1EC315250081E068 /* WaypointViewController.swift in Sources */,
@@ -1190,6 +1197,7 @@
 				AE1EAA331CB0174500C24E2A /* IASKTextField.m in Sources */,
 				AE1EAA341CB0174500C24E2A /* IASKTextView.m in Sources */,
 				AE1BBA321EC3348B0081E068 /* Event.swift in Sources */,
+				AE5F113C1ECF7F3F00816B6D /* Simulator.swift in Sources */,
 				AE1EAA261CB0174500C24E2A /* IASKAppSettingsWebViewController.m in Sources */,
 				AE48F6E11C1F5D6D004E949F /* ReceiverTuningViewController.swift in Sources */,
 				AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */,

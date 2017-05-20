@@ -222,7 +222,7 @@ class MSPParser {
             if message.count < 16 {
                 return false
             }
-            for i in 0..<8 {
+            for i in 0 ..< 8 {
                 motorData.servoValue[i] = readUInt16(message, index: i*2)
             }
             motorEvent.raiseDispatch()
@@ -230,7 +230,7 @@ class MSPParser {
         case .MSP_SERVO_CONFIGURATIONS:
             let servoConfSize = 14
             var servoConfigs = [ServoConfig]()
-            for i in 0..<message.count / servoConfSize {
+            for i in 0 ..< message.count / servoConfSize {
                 let offset = i * servoConfSize
                 var servoConfig = ServoConfig(
                     minimumRC: readInt16(message, index: offset),
@@ -257,7 +257,7 @@ class MSPParser {
                 return false
             }
             var nMotors = 0
-            for i in 0..<8 {
+            for i in 0 ..< 8 {
                 motorData.throttle[i] = readUInt16(message, index: i*2)
                 if (motorData.throttle[i] > 0) {
                     nMotors += 1
@@ -423,7 +423,7 @@ class MSPParser {
             var buf = [UInt8]()
             for i in 0 ..< message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
-                    settings.boxNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
+                    settings.boxNames!.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
                     buf.removeAll()
                 } else {
                     buf.append(message[i])
@@ -496,8 +496,8 @@ class MSPParser {
             
         case .MSP_BOXIDS:
             settings.boxIds = [Int]()
-            for i in 0..<message.count {
-                settings.boxIds?.append(Int(message[i]))
+            for i in 0 ..< message.count {
+                settings.boxIds!.append(Int(message[i]))
             }
             
         case .MSP_GPSSVINFO:
@@ -635,7 +635,7 @@ class MSPParser {
         case .MSP_MODE_RANGES:
             let nRanges = message.count / 4
             var modeRanges = [ModeRange]()
-            for i in 0..<nRanges {
+            for i in 0 ..< nRanges {
                 let offset = i * 4
                 let start = 900 + Int(message[offset+2]) * 25
                 let end = 900 + Int(message[offset+3]) * 25
@@ -667,7 +667,7 @@ class MSPParser {
             }
             settings.pidController = Int(message[0])
 
-        case .MSP_DATAFLASH_SUMMARY:    // FIXME This is just a test
+        case .MSP_DATAFLASH_SUMMARY:
             if message.count < 13 {
                 return false
             }

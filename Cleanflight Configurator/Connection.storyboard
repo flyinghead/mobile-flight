@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mobile Flight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M2i-6f-o2c">
-                                <rect key="frame" x="111" y="28" width="98.5" height="20.5"/>
+                                <rect key="frame" x="110.5" y="28" width="99" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -32,11 +32,12 @@
                                 <rect key="frame" x="0.0" y="102.5" width="320" height="465.5"/>
                             </containerView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" restorationIdentifier="MainConnectionSegmentedControl" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bordered" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="scl-ci-gnb">
-                                <rect key="frame" x="49.5" y="58.5" width="221" height="29"/>
+                                <rect key="frame" x="12.5" y="58.5" width="295" height="29"/>
                                 <segments>
                                     <segment title="Bluetooth"/>
                                     <segment title="Wi-Fi"/>
                                     <segment title="Replay"/>
+                                    <segment title="Simulator"/>
                                 </segments>
                                 <connections>
                                     <action selector="connectionTypeChanged:" destination="Hzo-ns-WUo" eventType="valueChanged" id="yTp-9W-G3a"/>
@@ -402,6 +403,60 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S1L-Z6-sl6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="861.5" y="998.5"/>
+        </scene>
+        <!--Simulator View Controller-->
+        <scene sceneID="yWF-mv-zbq">
+            <objects>
+                <viewController storyboardIdentifier="SimulatorViewController" id="GNQ-J8-Nk0" customClass="SimulatorViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="c4b-LX-HOH"/>
+                        <viewControllerLayoutGuide type="bottom" id="Vbc-WE-CXY"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wha-gv-Uuj">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6IO-Sq-EIi">
+                                <rect key="frame" x="129" y="117.5" width="62" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
+                                <state key="normal" title="Start"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="startAction:" destination="GNQ-J8-Nk0" eventType="touchUpInside" id="ziA-Z7-SI3"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The simulator allows you to explore and test the app without connecting to an actual aircraft." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OZa-Di-INN">
+                                <rect key="frame" x="24" y="36" width="272" height="57.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="OZa-Di-INN" firstAttribute="trailing" secondItem="wha-gv-Uuj" secondAttribute="trailingMargin" constant="-8" id="0Ct-jg-qKW"/>
+                            <constraint firstItem="6IO-Sq-EIi" firstAttribute="top" secondItem="OZa-Di-INN" secondAttribute="bottom" constant="24" id="qFC-OF-hkK"/>
+                            <constraint firstItem="OZa-Di-INN" firstAttribute="leading" secondItem="wha-gv-Uuj" secondAttribute="leadingMargin" constant="8" id="qLv-UD-4wI"/>
+                            <constraint firstItem="OZa-Di-INN" firstAttribute="top" secondItem="c4b-LX-HOH" secondAttribute="bottom" constant="16" id="sBz-b3-JO2"/>
+                            <constraint firstItem="6IO-Sq-EIi" firstAttribute="centerX" secondItem="wha-gv-Uuj" secondAttribute="centerX" id="sRg-7Z-Sll"/>
+                            <constraint firstItem="Vbc-WE-CXY" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6IO-Sq-EIi" secondAttribute="bottom" constant="8" id="uqb-fW-YMS"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="startButton" destination="6IO-Sq-EIi" id="mA5-d5-TQd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O8h-eR-uYX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1531.875" y="987.67605633802816"/>
         </scene>
     </scenes>
     <resources>

@@ -271,9 +271,8 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
 
     func receivedPosHoldData() {
         let sensorData = SensorData.theSensorData
-        
-        let config = Configuration.theConfig
         let settings = Settings.theSettings
+
         altitudeScale.bugs.removeAll()
         if settings.altitudeHoldMode {
             altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyanColor()))

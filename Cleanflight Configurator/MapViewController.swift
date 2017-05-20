@@ -273,21 +273,20 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
                 aircraftLocationsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
                 mapView.addOverlay(aircraftLocationsOverlay!)
-                
-                let coordinate = MapViewController.getAircraftCoordinates()!
-                if aircraftLocation != nil {
-                    if (aircraftLocation!.coordinate.latitude != coordinate.latitude || aircraftLocation!.coordinate.longitude != coordinate.longitude) {
-                        UIView.animateWithDuration(0.1, animations: {
-                            self.aircraftLocation!.coordinate = coordinate
-                        })
-                        annotationView?.setNeedsDisplay()
-                    }
-                } else {
-                    aircraftLocation = MKPointAnnotation()
-                    aircraftLocation!.title = "Aircraft"
-                    aircraftLocation!.coordinate = coordinate
-                    mapView.addAnnotation(aircraftLocation!)
+            }
+            let coordinate = MapViewController.getAircraftCoordinates()!
+            if aircraftLocation != nil {
+                if (aircraftLocation!.coordinate.latitude != coordinate.latitude || aircraftLocation!.coordinate.longitude != coordinate.longitude) {
+                    UIView.animateWithDuration(0.1, animations: {
+                        self.aircraftLocation!.coordinate = coordinate
+                    })
+                    annotationView?.setNeedsDisplay()
                 }
+            } else {
+                aircraftLocation = MKPointAnnotation()
+                aircraftLocation!.title = "Aircraft"
+                aircraftLocation!.coordinate = coordinate
+                mapView.addAnnotation(aircraftLocation!)
             }
         }
         if gpsData.homePosition != nil {
@@ -495,6 +494,10 @@ class MKAircraftView : MKAnnotationView {
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        self.frame.size.width = Size
+        self.frame.size.height = Size
+        
+        self.opaque = false
     }
     
     required init?(coder aDecoder: NSCoder) {
