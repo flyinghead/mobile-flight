@@ -478,7 +478,9 @@ class MSPParser {
                 // FIXME Not sure this is the desired position/alt in INav and not the current pos/alt
                 gpsData.posHoldPosition = position
                 sensorData.altitudeHold = altitude
-                sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph, INav
+                if !config.isINav {
+                    sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph
+                }
                 offset += 2
                 navigationEvent.raiseDispatch()
             }

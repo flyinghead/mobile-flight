@@ -172,7 +172,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func fetchBetaflightConfig() {
-        if !isBetaflight && !Configuration.theConfig.isINav {
+        if !isBetaflight && !isINav {
             fetchInformationSucceeded()
         } else {
             chainMspCalls(msp, calls: [.MSP_PID_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
@@ -443,7 +443,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func saveBetaflightFeatures() {
-        if isBetaflight || Configuration.theConfig.isINav {
+        if isBetaflight || isINav {
             let commands: [SendCommand] = [
                 { callback in
                     self.msp.sendPidAdvancedConfig(self.newSettings!, callback: callback)

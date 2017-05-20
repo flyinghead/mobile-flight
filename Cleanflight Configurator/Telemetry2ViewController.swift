@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Telemetry2ViewController: UIViewController, RcCommandsProvider {
+class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommandSender {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -157,6 +157,8 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: Telemetry2ViewController.receivedGpsData)
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: Telemetry2ViewController.receivedReceiverData)
         
+        appDelegate.addMSPCommandSender(self)
+
         // For enabled features
         msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: nil)
         
@@ -232,6 +234,8 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         batteryEventHandler?.dispose()
         gpsEventHandler?.dispose()
         receiverEventHandler?.dispose()
+
+        appDelegate.removeMSPCommandSender(self)
         
         appDelegate.rcCommandsProvider = nil
         
@@ -491,4 +495,13 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
     }
+    
+    func sendMSPCommands() {
+        let settings = Settings.theSettings
+        let config = Configuration.theConfig
+        if settings.armed && config.isINav {
+            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
+        }
+    }
+
 }
