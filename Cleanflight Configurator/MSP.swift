@@ -165,7 +165,7 @@ class MSPParser {
         
         switch code {
         case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.1.8
-            if message.count < 4 {
+            if message.count < 7 {
                 return false
             }
             config.version = String(format:"%d.%02d", message[0] / 100, message[0] % 100)
@@ -1006,7 +1006,8 @@ class MSPParser {
             .MSP_SET_OSD_CONFIG,
             .MSP_SET_VTX_CONFIG,
             .MSP_SET_FILTER_CONFIG,
-            .MSP_OSD_CHAR_WRITE:
+            .MSP_OSD_CHAR_WRITE,
+            .MSP_SET_NAME:
             break
             
         default:

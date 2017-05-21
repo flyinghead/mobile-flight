@@ -24,7 +24,7 @@ class ServosViewController: UITableViewController {
                 self.tableView.reloadData()
                 self.refreshControl?.endRefreshing()
                 if !success {
-                    SVProgressHUD.showErrorWithStatus("Error fetching servo configuration")
+                    SVProgressHUD.showErrorWithStatus("Communication error or servos not supported")
                 }
             })
         })

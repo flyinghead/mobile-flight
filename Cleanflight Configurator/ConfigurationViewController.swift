@@ -62,6 +62,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     var newMisc: Misc?
     var childVisible = false
     var supportsGPS = true
+    var supportsMagnetometer = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,7 +133,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.35") {    // CF 2.0
-            mspCalls.appendContentsOf([.MSP_MOTOR_CONFIG, .MSP_COMPASS_CONFIG])
+            mspCalls.append(.MSP_MOTOR_CONFIG)
         } else {
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
@@ -146,7 +147,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 if config.isApiVersionAtLeast("1.35") {    // CF 2.0
                     self.msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
                         self.supportsGPS = success
-                        self.fetchFailsafeConfig()
+                        self.msp.sendMessage(.MSP_COMPASS_CONFIG, data: nil, retry: 2) { success in
+                            self.supportsMagnetometer = success
+                            self.fetchFailsafeConfig()
+                        }
                     }
                 } else {
                     self.fetchFailsafeConfig()
@@ -334,7 +338,14 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 self.msp.sendSerialConfig(self.newSettings!, callback: callback)
             },
             { callback in
-                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration, callback: callback)
+                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
+                    // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
+                    if self.isBetaflight || success {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                }
             },
             { callback in
                 self.msp.sendSetFeature(self.newSettings!.features, callback: callback)
@@ -377,9 +388,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                     self.msp.sendRssiConfig(self.newSettings!.rssiChannel, callback: callback)
                 },
                 { callback in
-                    self.msp.sendCompassConfig(self.newSettings!.magDeclination, callback: callback)
-                },
-                { callback in
                     self.msp.sendBatteryConfig(self.newSettings!, callback: callback)
                 },
                 { callback in
@@ -389,6 +397,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             if supportsGPS {
                 commands.append({ callback in
                     self.msp.sendGpsConfig(self.newSettings!, callback: callback)
+                })
+            }
+            if supportsMagnetometer {
+                commands.append({ callback in
+                    self.msp.sendCompassConfig(self.newSettings!.magDeclination, callback: callback)
                 })
             }
         } else {
