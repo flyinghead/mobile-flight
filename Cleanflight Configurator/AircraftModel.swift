@@ -667,11 +667,11 @@ class Settings : AutoCoded {
     // Betaflight
     
     // MSP_[PID_]ADVANCED_CONFIG / MSP_SET_[PID_]ADVANCED_CONFIG
-    var gyroSyncDenom = 0
-    var pidProcessDenom = 0
+    var gyroSyncDenom = 8
+    var pidProcessDenom = 1
     var useUnsyncedPwm = false
     var motorPwmProtocol = 0        // PWM = 0, Oneshot125 = 1, Oneshot42 = 2, Multishot = 3, Brushed = 4, DShot150 = 5, DShot 300 = 6, DShot 600 = 7
-    var motorPwmRate = 0
+    var motorPwmRate = 400
     var digitalIdleOffsetPercent = 0.0
     var gyroUses32KHz = false
     
@@ -1232,7 +1232,7 @@ class Configuration : AutoCoded {
     }
     
     var isBetaflight: Bool {
-        return fcIdentifier == "BTFL"
+        return fcIdentifier!.hasPrefix("BTFL")  // Account for the simulator (BTFL SIM)
     }
     
     var isINav: Bool {

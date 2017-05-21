@@ -75,7 +75,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             if value == 0 {
                 self.cyclesPerSecLabel.text = ""
             } else {
-                self.cyclesPerSecLabel.text = String(format:"%.0f", 1 / value * 1000 * 1000)
+                self.cyclesPerSecLabel.text = String(format:"%.0f Hz", 1 / value * 1000 * 1000)
             }
         }
         hideSectionsWithHiddenRows = true
@@ -90,10 +90,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             cells(Array(Set(betaflightFeatures).union(Set(iNavFeatures))), setHidden: true)
         }
 
-        gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 KHz", "4 KHz", "2.67 KHz", "2 KHz", "1.6 KHz", "1.33 KHz", "1.14 KHz", "1 KHz" ])
+        gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 kHz", "4 kHz", "2.67 kHz", "2 kHz", "1.6 kHz", "1.33 kHz", "1.14 kHz", "1 kHz" ])
         gyroUpdateFreqPicker!.setPlaceholder("")
         gyroUpdateFreqPicker!.addTarget(self, action: #selector(ConfigurationViewController.enable32kHzChanged(_:)), forControlEvents: .ValueChanged)
-        pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 KHz", "1 KHz", "0.67 KHz", "0.5 KHz", "0.4 KHz", "0.33 KHz", "0.29 KHz", "0.25 KHz" ])
+        pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 kHz", "1 kHz", "0.67 kHz", "0.5 kHz", "0.4 kHz", "0.33 kHz", "0.29 kHz", "0.25 kHz" ])
         pidLoopFreqPicker!.setPlaceholder("")
 
         if Configuration.theConfig.isINav {

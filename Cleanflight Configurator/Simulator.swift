@@ -146,7 +146,9 @@ class Simulator : CommChannel {
             }
         }
         
-        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(Simulator.timerDidFire(_:)), userInfo: nil, repeats: true)
+        timer = NSTimer(timeInterval: 0.1, target: self, selector: #selector(Simulator.timerDidFire(_:)), userInfo: nil, repeats: true)
+        NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+
     }
     
     func flushOut() {

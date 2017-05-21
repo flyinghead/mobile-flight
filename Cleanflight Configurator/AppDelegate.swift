@@ -153,7 +153,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         for sender in mspCommandSenders {
             sender.sendMSPCommands()
         }
-        //NSLog("Status Requested")
         
         msp.readBluetoothRssi()
         
