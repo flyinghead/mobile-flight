@@ -51,9 +51,9 @@ class RoundGauge: UIView {
         CGContextStrokePath(ctx)
         
         for (rangeMin, rangeMax, color) in ranges {
-            CGContextAddArc(ctx, squareBounds.midX, squareBounds.midY, squareBounds.height / 2 - 3, CGFloat(minAngle + (rangeMin - minimum) * (maxAngle - minAngle) / (maximum - minimum)), CGFloat(minAngle + (rangeMax - minimum) * (maxAngle - minAngle) / (maximum - minimum)), 0)
+            CGContextAddArc(ctx, squareBounds.midX, squareBounds.midY, squareBounds.height / 2 - 2.5, CGFloat(minAngle + (rangeMin - minimum) * (maxAngle - minAngle) / (maximum - minimum)), CGFloat(minAngle + (rangeMax - minimum) * (maxAngle - minAngle) / (maximum - minimum)), 0)
             CGContextSetStrokeColorWithColor(ctx, color.CGColor)
-            CGContextSetLineWidth(ctx, 4)
+            CGContextSetLineWidth(ctx, 5)
             CGContextStrokePath(ctx)
         }
         
