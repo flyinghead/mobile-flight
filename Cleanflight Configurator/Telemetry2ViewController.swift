@@ -337,7 +337,10 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         
         armedLabel.armed = settings.armed
         
-        if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
+        if settings.isModeOn(Mode.GCS_NAV, forStatus: config.mode) {
+            accroModeLabel.text = "GCS"
+            accroModeLabel.hidden = false
+        } else if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
             accroModeLabel.text = "ANGL"
             accroModeLabel.hidden = false
         } else if settings.isModeOn(Mode.HORIZON, forStatus: config.mode) {
@@ -366,6 +369,9 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
             posModeLabel.hidden = false
         } else if settings.positionHoldMode {
             posModeLabel.text = "POS"
+            posModeLabel.hidden = false
+        } else if settings.isModeOn(Mode.NAV_WP, forStatus: config.mode) {
+            posModeLabel.text = "WP"
             posModeLabel.hidden = false
         } else {
             posModeLabel.hidden = true
@@ -423,11 +429,13 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
     }
 
     func receivedReceiverData() {
-        let receiver = Receiver.theReceiver
-        leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
-        leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
-        rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
-        rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
+        if !actingRC {
+            let receiver = Receiver.theReceiver
+            leftStick.horizontalValue = constrain((Double(receiver.channels[2]) - 1500) / 500, min: -1, max: 1)
+            leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
+            rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
+            rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
+        }
     }
     
     // MARK: Actions

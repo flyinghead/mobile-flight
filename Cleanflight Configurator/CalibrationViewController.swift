@@ -72,7 +72,7 @@ class CalibrationViewController: StaticDataTableViewController {
         }
         calAccView.layer.borderColor = calAccView.tintColor.CGColor
         calMagView.layer.borderColor = calMagView.tintColor.CGColor
-        enableAccCalibration(config.isGyroAndAccActive())
+        enableAccCalibration(config.isAccelerometerActive())
         enableMagCalibration(config.isMagnetometerActive())
         
         vtxBandPicker.labels =  [ "Boscam A", "Boscam B", "Boscam E", "FatShark", "RaceBand" ]
@@ -129,7 +129,7 @@ class CalibrationViewController: StaticDataTableViewController {
         let config = Configuration.theConfig
         
         let armed = Settings.theSettings.armed
-        self.enableAccCalibration(!armed && config.isGyroAndAccActive())
+        self.enableAccCalibration(!armed && config.isAccelerometerActive())
         self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }
     

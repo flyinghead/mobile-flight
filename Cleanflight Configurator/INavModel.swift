@@ -222,6 +222,55 @@ enum INavUserControlMode {
     }
 }
 
+struct INavArmingFlags : OptionSetType {
+    let rawValue: Int
+    
+    static let OkToArm              = BaseFlightFeature(rawValue: 1 << 0)
+    static let PreventArming        = BaseFlightFeature(rawValue: 1 << 1)
+    static let Armed                = BaseFlightFeature(rawValue: 1 << 2)
+    static let WasArmed             = BaseFlightFeature(rawValue: 1 << 3)
+    static let NotLevel             = BaseFlightFeature(rawValue: 1 << 8)
+    static let SensorsCalibrating   = BaseFlightFeature(rawValue: 1 << 9)
+    static let SystemOverloaded     = BaseFlightFeature(rawValue: 1 << 10)
+    static let NavigationSafety     = BaseFlightFeature(rawValue: 1 << 11)
+    static let CompassNotCalibrated = BaseFlightFeature(rawValue: 1 << 12)
+    static let AccNotCalibrated     = BaseFlightFeature(rawValue: 1 << 13)
+    static let HardwareFailure      = BaseFlightFeature(rawValue: 1 << 15)
+
+    init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+}
+
+enum INavSensorStatus {
+    enum Internal : Int {
+        case None = 0
+        case Healthy = 1
+        case Unavailable = 2
+        case Unhealthy = 3
+    }
+    case Known(Internal)
+    case Unknown(Int)
+    
+    init(value: Int) {
+        if let mode = Internal(rawValue: value) {
+            self = .Known(mode)
+        } else {
+            self = .Unknown(value)
+        }
+    }
+    
+    var intValue: Int {
+        switch self {
+        case .Known(let mode):
+            return mode.rawValue
+        case .Unknown(let value):
+            return value
+        }
+    }
+}
+
 class INavConfig {
     static var theINavConfig = INavConfig()
     
@@ -242,4 +291,18 @@ class INavConfig {
     var useThrottleMidForAltHold = false
     var hoverThrottle = 1500
     
+    // MSP_STATUS_EX
+    var armingFlags = INavArmingFlags(rawValue: 1)
+    var accCalibAxis = 0
+    
+    // MSP_SENSOR_STATUS
+    var hardwareHealthy = true
+    var gyroStatus = INavSensorStatus.Known(.None)
+    var accStatus = INavSensorStatus.Known(.None)
+    var magStatus = INavSensorStatus.Known(.None)
+    var baroStatus = INavSensorStatus.Known(.None)
+    var gpsStatus = INavSensorStatus.Known(.None)
+    var sonarStatus = INavSensorStatus.Known(.None)
+    var pitotStatus = INavSensorStatus.Known(.None)
+    var flowStatus = INavSensorStatus.Known(.None)
 }

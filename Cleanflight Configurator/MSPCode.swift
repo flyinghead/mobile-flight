@@ -159,5 +159,6 @@ enum MSP_code : Int {
     case MSP_WP_MISSION_SAVE =      19
     case MSP_WP_GETINFO =           20  // INav 1.7
     case MSP_NAV_STATUS =          121
+    case MSP_SENSOR_STATUS =       151
 }
 

@@ -428,18 +428,32 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 return
             }
             
-            if !settings.positionHoldMode {
-                let alertController = UIAlertController(title: "Waypoint", message: "Enable GPS HOLD mode to enable waypoint navigation", preferredStyle: UIAlertControllerStyle.Alert)
+            var title: String? = nil
+            var message: String? = nil
+            if config.isINav {
+                if !settings.isModeOn(.GCS_NAV, forStatus: config.mode) {
+                    title = "GCS Mode"
+                    message = "Enable GCS NAV mode to enable direct-to navigation"
+                }
+            } else {
+                if !settings.positionHoldMode {
+                    title = "Waypoint"
+                    message = "Enable GPS HOLD mode to enable waypoint navigation"
+                }
+            }
+            if message != nil {
+                let alertController = UIAlertController(title: title, message: message!, preferredStyle: UIAlertControllerStyle.Alert)
                 alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                 alertController.popoverPresentationController?.sourceView = mapView
                 presentViewController(alertController, animated: true, completion: nil)
                 
                 return
             }
+            
             let point = sender.locationInView(mapView)
             let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
             
-            let message = String(format: "Navigate to location %@ %.04f, %@ %.04f ?", locale: NSLocale.currentLocale(), coordinates.latitude >= 0 ? "N" : "S", abs(coordinates.latitude), coordinates.longitude >= 0 ? "E" : "W", abs(coordinates.longitude))
+            message = String(format: "Navigate to location %@ %.04f, %@ %.04f ?", locale: NSLocale.currentLocale(), coordinates.latitude >= 0 ? "N" : "S", abs(coordinates.latitude), coordinates.longitude >= 0 ? "E" : "W", abs(coordinates.longitude))
             let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
             alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in

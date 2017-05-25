@@ -162,6 +162,7 @@ class MSPParser {
         let misc = Misc.theMisc
         let sensorData = SensorData.theSensorData
         let motorData = MotorData.theMotorData
+        let inavConfig = INavConfig.theINavConfig
         
         switch code {
         case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.1.8
@@ -187,8 +188,8 @@ class MSPParser {
                 config.systemLoad = readUInt16(message, index: 11)
                 if message.count >= 15 {
                     if config.isINav {
-                        config.armingFlags = readUInt16(message, index: 13)
-                        config.accCalibAxis = Int(message[15])
+                        inavConfig.armingFlags = INavArmingFlags(rawValue: readUInt16(message, index: 13))
+                        inavConfig.accCalibAxis = Int(message[15])
                     } else {
                         config.rateProfile = Int(message[14])
                     }
@@ -938,7 +939,6 @@ class MSPParser {
             if message.count < 7 {
                 return false
             }
-            let inavConfig = INavConfig.theINavConfig
             inavConfig.mode = INavStatusMode(value: Int(message[0]))
             inavConfig.state = INavStatusState(value: Int(message[1]))
             inavConfig.activeWaypointAction = INavWaypointAction(value: Int(message[2]))
@@ -947,12 +947,25 @@ class MSPParser {
             sensorData.headingHold = Double(readInt16(message, index: 5))
             navigationEvent.raiseDispatch()
 
+        case .MSP_SENSOR_STATUS:
+            if message.count < 9 {
+                return false
+            }
+            inavConfig.hardwareHealthy = message[0] != 0
+            inavConfig.gyroStatus = INavSensorStatus(value: Int(message[1]))
+            inavConfig.accStatus = INavSensorStatus(value: Int(message[2]))
+            inavConfig.magStatus = INavSensorStatus(value: Int(message[3]))
+            inavConfig.baroStatus = INavSensorStatus(value: Int(message[4]))
+            inavConfig.gpsStatus = INavSensorStatus(value: Int(message[5]))
+            inavConfig.sonarStatus = INavSensorStatus(value: Int(message[6]))
+            inavConfig.pitotStatus = INavSensorStatus(value: Int(message[7]))
+            inavConfig.flowStatus = INavSensorStatus(value: Int(message[8]))
+            
         // INav 1.6+
         case .MSP_NAV_POSHOLD:
             if message.count < 13 {
                 return false
             }
-            let inavConfig = INavConfig.theINavConfig
             inavConfig.userControlMode = INavUserControlMode(value: Int(message[0]))
             inavConfig.maxSpeed = Double(readUInt16(message, index: 1)) / 100
             inavConfig.maxClimbRate = Double(readUInt16(message, index: 3)) / 100
@@ -961,7 +974,7 @@ class MSPParser {
             inavConfig.maxBankAngle = Int(message[9])
             inavConfig.useThrottleMidForAltHold = message[10] != 0
             inavConfig.hoverThrottle = readUInt16(message, index: 11)
-            
+        
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,

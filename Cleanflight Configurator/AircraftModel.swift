@@ -113,6 +113,7 @@ enum Mode : String {
     case NAV_POSHOLD = "NAV POSHOLD"
     case NAV_RTH = "NAV RTH"
     case HEADING_HOLD = "HEADING HOLD"
+    case GCS_NAV = "GCS NAV"
     
     var spokenName: String {
         switch self {
@@ -186,12 +187,14 @@ enum Mode : String {
             return "altitude hold"
         case .NAV_POSHOLD:
             return "position hold"
+        case .GCS_NAV:
+            return "ground countrol station"
         }
     }
     
     var altitudeHold: Bool {
         switch self {
-        case .BARO, .NAV_ALTHOLD, .NAV_WP, .SONAR:
+        case .BARO, .NAV_ALTHOLD, .NAV_WP, .SONAR, .GCS_NAV:    // FIXME GCS_NAV can be enabled disarmed. Not sure it should be here.
             return true
         default:
             return false
@@ -200,7 +203,7 @@ enum Mode : String {
     
     var positionHold: Bool {
         switch self {
-        case .GPS_HOLD, .NAV_POSHOLD:
+        case .GPS_HOLD, .NAV_POSHOLD, .GCS_NAV:    // FIXME GCS_NAV can be enabled disarmed and without a GPS fix. Not sure it should be here.
             return true
         default:
             return false
@@ -1026,7 +1029,7 @@ class Misc : AutoCoded {
 }
 
 class Configuration : AutoCoded {
-    var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "systemLoad", "rateProfile", "armingFlags", "accCalibAxis", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
+    var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "systemLoad", "rateProfile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
     static var theConfig = Configuration()
     
     // MSP_IDENT
@@ -1095,9 +1098,6 @@ class Configuration : AutoCoded {
     var profile = 0
     var systemLoad = 0      // 0-100% in MSP_STATUS_EX
     var rateProfile = 0     // Only exposed (MSP_STATUS_EX) and settable (MSP_SELECT_SETTING) with betaflight
-    // INav
-    var armingFlags = 0
-    var accCalibAxis = 0
 
     // MSP_ANALOG
     var voltage = 0.0 {      // V
@@ -1151,23 +1151,33 @@ class Configuration : AutoCoded {
     }
     // MARK:
     
-    func isGyroAndAccActive() -> Bool {
-        return activeSensors & 1 > 0;
+    func isAccelerometerActive() -> Bool {
+        return activeSensors & 1 != 0;
     }
     func isBarometerActive() -> Bool {
-        return activeSensors & 2 > 0;
+        return activeSensors & 2 != 0;
     }
     
     func isMagnetometerActive() -> Bool {
-        return activeSensors & 4 > 0;
+        return activeSensors & 4 != 0;
     }
     
     func isGPSActive() -> Bool {
-        return activeSensors & 8 > 0;
+        return activeSensors & 8 != 0;
     }
     
     func isSonarActive() -> Bool {
-        return activeSensors & 16 > 0;
+        return activeSensors & 16 != 0;
+    }
+    
+    // INav
+    
+    func isPitotActive() -> Bool {
+        return activeSensors & 64 != 0;
+    }
+    
+    func isHardwareHealthy() -> Bool {
+        return activeSensors & (1 << 15) != 0;
     }
     
     func isApiVersionAtLeast(version: String) -> Bool {
