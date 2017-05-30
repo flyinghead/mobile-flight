@@ -148,6 +148,7 @@ class MSPParser {
                         callErrorCallback(mspCode)
                     }
                 } else {
+                    NSLog("MSP %d unsupported or invalid", mspCode.rawValue)
                     callErrorCallback(mspCode)
                 }
             }
@@ -844,7 +845,8 @@ class MSPParser {
                 settings.batteryCapacity = Int(readInt16(message, index: 5))
                 batteryEvent.raiseDispatch()
             } else {
-                // CF 2.0 (ignoring virtual current meter if any)
+                // FIXME: Need to retrieve virtual sensor scale and offset if currently being used
+                // CF 2.0 / BF 3.2 (ignoring virtual current meter if any)
                 settings.currentMeterId = Int(message[2])
                 settings.currentMeterType = Int(message[3])
                 settings.currentScale = Int(readInt16(message, index: 4))
@@ -1403,16 +1405,16 @@ class MSPParser {
     func sendVoltageMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
-            // CF 2 / BF 3.1.8
+            // CF 2 / BF 3.2
             data.append(UInt8(settings.vbatMeterId))
             data.append(UInt8(settings.vbatScale))
             data.append(UInt8(settings.vbatResistorDividerValue))
             data.append(UInt8(settings.vbatResistorDividerMultiplier))
         } else {
             data.append(UInt8(settings.vbatScale))
-            data.append(UInt8(settings.vbatMinCellVoltage))
-            data.append(UInt8(settings.vbatMaxCellVoltage))
-            data.append(UInt8(settings.vbatWarningCellVoltage))
+            data.append(UInt8(settings.vbatMinCellVoltage * 10))
+            data.append(UInt8(settings.vbatMaxCellVoltage * 10))
+            data.append(UInt8(settings.vbatWarningCellVoltage * 10))
             data.append(UInt8(settings.vbatMeterType))
         }
         sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
@@ -1432,9 +1434,9 @@ class MSPParser {
     
     func sendBatteryConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.append(UInt8(settings.vbatMinCellVoltage))
-        data.append(UInt8(settings.vbatMaxCellVoltage))
-        data.append(UInt8(settings.vbatWarningCellVoltage))
+        data.append(UInt8(settings.vbatMinCellVoltage * 10))
+        data.append(UInt8(settings.vbatMaxCellVoltage * 10))
+        data.append(UInt8(settings.vbatWarningCellVoltage * 10))
         data.appendContentsOf(writeUInt16(settings.batteryCapacity))
         data.append(UInt8(settings.voltageMeterSource))
         data.append(UInt8(settings.currentMeterSource))
@@ -1454,7 +1456,7 @@ class MSPParser {
     func sendCurrentMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         if Configuration.theConfig.isApiVersionAtLeast("1.35") {
-            // CF 2 / BF 3.1.8
+            // CF 2 / BF 3.2
             if settings.currentMeterType == 1 {     // CURRENT_METER_ADC
                 // regular
                 data.append(UInt8(10))  // CURRENT_METER_ID_BATTERY_1

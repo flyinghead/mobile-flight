@@ -132,8 +132,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_VOLTAGE_METER_CONFIG]
         
         let config = Configuration.theConfig
-        if config.isApiVersionAtLeast("1.35") {    // CF 2.0
+        if config.isApiVersionAtLeast("1.35") {    // CF 2.0 / BF 3.2
             mspCalls.append(.MSP_MOTOR_CONFIG)
+            mspCalls.append(.MSP_BATTERY_CONFIG)
         } else {
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
