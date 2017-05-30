@@ -17,6 +17,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet weak var landCell: UITableViewCell!
     @IBOutlet var landCells: [UITableViewCell]!
     @IBOutlet var stage2ActiveCells: [UITableViewCell]!
+    @IBOutlet weak var rthCell: UITableViewCell!
     
     @IBOutlet weak var minimumPulseField: NumberField!
     @IBOutlet weak var maximumPulseField: NumberField!
@@ -45,12 +46,14 @@ class FailsafeConfigViewController: ConfigChildViewController {
             cells(channelCells, setHidden: true)
         } else {
             cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
+            cell(rthCell, setHidden: true)
+            stage2ActiveCells.removeAtIndex(stage2ActiveCells.indexOf(rthCell)!)
         }
     }
     
     @IBAction func failsafeSwitchChanged(sender: AnyObject) {
         if failsafeSwitch.on {
-            if dropCell.accessoryType == .Checkmark {
+            if landCell.accessoryType != .Checkmark {
                 cells(Array(Set(stage2ActiveCells).subtract(Set(landCells))), setHidden: false)
             } else {
                 cells(stage2ActiveCells, setHidden: false)
@@ -75,7 +78,13 @@ class FailsafeConfigViewController: ConfigChildViewController {
         settings.failsafeKillSwitch = killSwitch.on
         settings.failsafeDelay = guardTimeField.value
         settings.failsafeThrottleLowDelay = throttleLowDelayField.value
-        settings.failsafeProcedure = landCell.accessoryType == .Checkmark ? 0 : 1
+        if landCell.accessoryType == .Checkmark {
+            settings.failsafeProcedure =  0
+        } else if dropCell.accessoryType == .Checkmark {
+            settings.failsafeProcedure = 1
+        } else if rthCell.accessoryType == .Checkmark{
+            settings.failsafeProcedure = 2
+        }
         settings.failsafeOffDelay = motorsOffDelayField.value
         
         if settings.rxFailMode != nil {
@@ -110,14 +119,22 @@ class FailsafeConfigViewController: ConfigChildViewController {
         throttleLowDelayField.value = settings.failsafeThrottleLowDelay
         motorsOffDelayField.value = settings.failsafeOffDelay
         
-        if settings.failsafeProcedure == 0 {    // Land
+        switch settings.failsafeProcedure {
+        case 0:                             // Land
             landCell.accessoryType = .Checkmark
             dropCell.accessoryType = .None
+            rthCell.accessoryType = .None
             cells(landCells, setHidden: false)
-        } else {                                // Drop
+        case 1:                             // Drop
             landCell.accessoryType = .None
             dropCell.accessoryType = .Checkmark
             cells(landCells, setHidden: true)
+            rthCell.accessoryType = .None
+        default:                            // RTH
+            landCell.accessoryType = .None
+            dropCell.accessoryType = .None
+            cells(landCells, setHidden: true)
+            rthCell.accessoryType = .Checkmark
         }
         if settings.rxFailMode != nil {
             for i in 0 ..< settings.rxFailMode!.count {
@@ -139,11 +156,18 @@ class FailsafeConfigViewController: ConfigChildViewController {
         if selectedCell == dropCell {
             selectedCell.accessoryType = .Checkmark
             landCell.accessoryType = .None
+            rthCell.accessoryType = .None
             cells(landCells, setHidden: true)
         } else if selectedCell == landCell {
             selectedCell.accessoryType = .Checkmark
             dropCell.accessoryType = .None
+            rthCell.accessoryType = .None
             cells(landCells, setHidden: false)
+        } else if selectedCell == rthCell {
+            selectedCell.accessoryType = .Checkmark
+            dropCell.accessoryType = .None
+            landCell.accessoryType = .None
+            cells(landCells, setHidden: true)
         }
         selectedCell.selected = false
         reloadDataAnimated(true)

@@ -3133,7 +3133,7 @@
             <objects>
                 <tableViewController id="7CO-Kl-F7y" userLabel="Failsafe Config" customClass="FailsafeConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="6wN-pv-OET">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="1501"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1700"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <sections>
@@ -4292,13 +4292,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Landing Throttle Value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2eY-At-u8y">
-                                                    <rect key="frame" x="15" y="12" width="164" height="20"/>
+                                                    <rect key="frame" x="25" y="12" width="164" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fkE-lT-Hdl" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                    <rect key="frame" x="187" y="14" width="405" height="17"/>
+                                                    <rect key="frame" x="197" y="14" width="395" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                     <userDefinedRuntimeAttributes>
@@ -4324,7 +4324,7 @@
                                                 <constraint firstItem="fkE-lT-Hdl" firstAttribute="trailing" secondItem="RvU-Am-YY9" secondAttribute="trailingMargin" id="Iax-Ub-6dB"/>
                                                 <constraint firstItem="2eY-At-u8y" firstAttribute="centerY" secondItem="RvU-Am-YY9" secondAttribute="centerY" id="Pw5-S9-xlH"/>
                                                 <constraint firstItem="fkE-lT-Hdl" firstAttribute="leading" secondItem="2eY-At-u8y" secondAttribute="trailing" constant="8" id="UdW-X8-df8"/>
-                                                <constraint firstItem="2eY-At-u8y" firstAttribute="leading" secondItem="RvU-Am-YY9" secondAttribute="leadingMargin" constant="7" id="ftq-X4-OXT"/>
+                                                <constraint firstItem="2eY-At-u8y" firstAttribute="leading" secondItem="RvU-Am-YY9" secondAttribute="leadingMargin" constant="17" id="ftq-X4-OXT"/>
                                                 <constraint firstItem="fkE-lT-Hdl" firstAttribute="centerY" secondItem="RvU-Am-YY9" secondAttribute="centerY" id="vzg-bT-fjW"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -4337,13 +4337,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Motors Off Delay (sec)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zjR-8O-wa1">
-                                                    <rect key="frame" x="15" y="12" width="163.5" height="20"/>
+                                                    <rect key="frame" x="25" y="12" width="163.5" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2aA-9N-AwZ" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                    <rect key="frame" x="186.5" y="13" width="405.5" height="17"/>
+                                                    <rect key="frame" x="196.5" y="13" width="395.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                     <userDefinedRuntimeAttributes>
@@ -4370,8 +4370,25 @@
                                                 <constraint firstItem="2aA-9N-AwZ" firstAttribute="leading" secondItem="zjR-8O-wa1" secondAttribute="trailing" constant="8" id="4Mj-WG-CTR"/>
                                                 <constraint firstItem="2aA-9N-AwZ" firstAttribute="trailing" secondItem="UgF-IW-4hV" secondAttribute="trailingMargin" id="5gr-C4-cMW"/>
                                                 <constraint firstItem="2aA-9N-AwZ" firstAttribute="centerY" secondItem="UgF-IW-4hV" secondAttribute="centerY" id="HeS-RI-72O"/>
-                                                <constraint firstItem="zjR-8O-wa1" firstAttribute="leading" secondItem="UgF-IW-4hV" secondAttribute="leadingMargin" constant="7" id="QiS-sE-uqz"/>
+                                                <constraint firstItem="zjR-8O-wa1" firstAttribute="leading" secondItem="UgF-IW-4hV" secondAttribute="leadingMargin" constant="17" id="QiS-sE-uqz"/>
                                             </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="AKb-uo-AF2" style="IBUITableViewCellStyleDefault" id="VeL-j1-Klr">
+                                        <rect key="frame" x="0.0" y="1459" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VeL-j1-Klr" id="edE-uZ-Xnw">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Return to Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AKb-uo-AF2">
+                                                    <rect key="frame" x="15" y="0.0" width="570" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -4383,7 +4400,7 @@
                         </connections>
                     </tableView>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="1501"/>
+                    <size key="freeformSize" width="600" height="1700"/>
                     <connections>
                         <outlet property="dropCell" destination="xVP-zR-8ax" id="SwV-XR-eR2"/>
                         <outlet property="failsafeSwitch" destination="IBl-q8-wSr" id="KM6-6l-1dM"/>
@@ -4393,6 +4410,7 @@
                         <outlet property="maximumPulseField" destination="EcP-sc-o9N" id="QiP-GJ-8gr"/>
                         <outlet property="minimumPulseField" destination="REg-6K-hPk" id="s3V-F2-g1v"/>
                         <outlet property="motorsOffDelayField" destination="2aA-9N-AwZ" id="HH2-W4-vKv"/>
+                        <outlet property="rthCell" destination="VeL-j1-Klr" id="SSs-oL-EoB"/>
                         <outlet property="throttleField" destination="fkE-lT-Hdl" id="4fe-VA-qhr"/>
                         <outlet property="throttleLowDelayField" destination="9YC-ak-8Lk" id="nfl-gy-Z8T"/>
                         <outletCollection property="channelCells" destination="iuJ-pe-i67" collectionClass="NSMutableArray" id="k8h-Yy-F7d"/>
@@ -4454,11 +4472,12 @@
                         <outletCollection property="auxChannelsValueFields" destination="aV6-z8-Eoz" collectionClass="NSMutableArray" id="Syh-9m-HRZ"/>
                         <outletCollection property="auxChannelsValueFields" destination="b8a-FO-sVe" collectionClass="NSMutableArray" id="E3j-cm-MpV"/>
                         <outletCollection property="auxChannelsValueFields" destination="cjL-Ov-ncU" collectionClass="NSMutableArray" id="XE4-fR-Tbe"/>
+                        <outletCollection property="stage2ActiveCells" destination="VeL-j1-Klr" collectionClass="NSMutableArray" id="hAX-cH-Svl"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fS6-Uj-1Id" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1448" y="-65"/>
+            <point key="canvasLocation" x="1448" y="72"/>
         </scene>
     </scenes>
     <resources>
