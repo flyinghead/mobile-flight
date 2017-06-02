@@ -8,6 +8,7 @@
 
 import UIKit
 import SVProgressHUD
+import Firebase
 
 extension UIViewController {
 
@@ -26,6 +27,7 @@ extension UIViewController {
                         dispatch_async(dispatch_get_main_queue()) {
                             callback(success: false)
                             SVProgressHUD.showErrorWithStatus("This firmware version is not supported. Please upgrade", maskType: .None)
+                            Analytics.logEvent("firmware_not_supported", parameters: ["apiVersion" : config.apiVersion!])
                         }
                     } else {
                         var msgs = [ MSP_code.MSP_FC_VARIANT, .MSP_BOXNAMES ]
@@ -51,8 +53,11 @@ extension UIViewController {
         dispatch_async(dispatch_get_main_queue(), {
             if success {
                 SVProgressHUD.dismiss()
+                let config = Configuration.theConfig
+                Analytics.logEvent("finish_handshake", parameters: ["apiVersion" : config.apiVersion!, "fcIdentifier" : config.fcIdentifier!, "connectionType" : self.msp.isWifi ? "wifi" : "bt"])
                 callback(success: true)
             } else {
+                Analytics.logEvent("handshake_failed", parameters: nil)
                 callback(success: false)
             }
         })

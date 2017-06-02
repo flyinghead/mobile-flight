@@ -8,6 +8,7 @@
 
 import Foundation
 import MapKit
+import Firebase
 
 protocol DictionaryCoding {
     func toDict() -> NSDictionary
@@ -591,7 +592,13 @@ class Settings : AutoCoded {
     var mixerConfiguration = 3              // Quad X by default
     
     // MSP_FEATURE
-    var features = BaseFlightFeature.None
+    var features = BaseFlightFeature.None {
+        didSet(oldValue) {
+            if oldValue != features {
+                Analytics.logEvent("features", parameters: ["features" : features.rawValue])
+            }
+        }
+    }
     
     // MSP_BOARD_ALIGNMENT
     var boardAlignRoll = 0

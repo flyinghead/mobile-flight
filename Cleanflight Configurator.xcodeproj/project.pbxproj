@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99C9260AEA09ECF35B486D36 /* Pods-Cleanflight Configurator-metadata.plist */; };
+		0A1F18FFDECD44A66FA41D17 /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		1C8CFA37F2B65A4354831018 /* Pods-KIFTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 500F887352E78E56B0B1A8D9 /* Pods-KIFTests-metadata.plist */; };
 		2011414390B1527C586297D1 /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */; };
 		39EF8A153ECA020413F61F55 /* Pods-Cleanflight Configurator-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0229EA3883BEC44AAD636E2B /* Pods-Cleanflight Configurator-settings-metadata.plist */; };
@@ -93,6 +94,7 @@
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
+		AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -111,7 +113,6 @@
 		AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEBB7A0D1ECCEF4F00F56D6C /* StepperWithLabel.xib */; };
 		AEBB7A121ECCF6CA00F56D6C /* StepperPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBB7A111ECCF6CA00F56D6C /* StepperPicker.swift */; };
 		AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */; };
-		AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF190381C3E8E440066C75A /* AutoCoded.swift */; };
 		AECE8D7F1C1E14AE00FB183E /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7C1C1E14AE00FB183E /* RangeSlider.swift */; };
 		AECE8D801C1E14AE00FB183E /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECE8D7D1C1E14AE00FB183E /* RangeSliderThumbLayer.swift */; };
@@ -335,6 +336,7 @@
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
+		AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F9E19C647B7247CD6AF2C10 /* Pods_Cleanflight_Configurator.framework in Frameworks */,
+				0A1F18FFDECD44A66FA41D17 /* Pods_Cleanflight_Configurator.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,7 +445,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEBBC6651EC4D66300EE958A /* Pods_Cleanflight_Configurator.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,6 +694,7 @@
 				AE1BBA391EC3B55D0081E068 /* Resource */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
+				AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
 				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
@@ -955,6 +958,7 @@
 			files = (
 				AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */,
 				AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */,
+				AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */,
 				AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */,
 				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
 				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
@@ -1002,7 +1006,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3AB6D4F2AE6A106AA758CEA9 /* [CP] Copy Pods Resources */ = {
@@ -1062,7 +1066,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		AE62AAD81EB3DE0300D0DEF2 /* ShellScript */ = {
@@ -1435,7 +1439,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0605C31ABC063F21E026C673 /* Pods-Cleanflight Configurator.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1457,7 +1460,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0ABAD2DAAE88A2D392993D02 /* Pods-Cleanflight Configurator.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

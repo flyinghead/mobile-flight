@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import SVProgressHUD
+import Firebase
 
 class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, MSPCommandSender {
     var locationManager: CLLocationManager?
@@ -424,6 +425,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                     let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
                     let waypoint = Waypoint(position: GPSLocation(latitude: coordinates.latitude, longitude: coordinates.longitude), altitude: 0, speed: 0)
                     waypointList.append(waypoint)
+                    Analytics.logEvent("waypoint_added", parameters: nil)
                 }
                 return
             }
@@ -459,6 +461,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in
                 // TODO allow to set altitude
                 self.msp.setGPSHoldPosition(latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
+                Analytics.logEvent("waypoint_goto", parameters: nil)
             }))
             alertController.popoverPresentationController?.sourceView = mapView
             presentViewController(alertController, animated: true, completion: nil)
@@ -495,8 +498,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 if success {
                     SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
                     self.uploadButton.hidden = true
+                    Analytics.logEvent("waypoints_uploaded", parameters: ["count" : gpsData.waypoints.count])
                 } else {
                     SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
+                    Analytics.logEvent("waypoints_upload_failed", parameters: ["count" : gpsData.waypoints.count])
                 }
             }
         }

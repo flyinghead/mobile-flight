@@ -9,6 +9,7 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import Firebase
 
 class ServoConfigViewController: UITableViewController {
     @IBOutlet weak var minimumRangeField: NumberField!
@@ -48,6 +49,7 @@ class ServoConfigViewController: UITableViewController {
     }
 
     func saveIfNeeded() {
+        Analytics.logEvent("servo_saved", parameters: nil)
         let settings = Settings.theSettings
         if settings.servoConfigs == nil || settings.servoConfigs!.count <= servoIdx {
             return
@@ -92,6 +94,7 @@ class ServoConfigViewController: UITableViewController {
     
     func showError() {
         dispatch_async(dispatch_get_main_queue(), {
+            Analytics.logEvent("servo_saved_failed", parameters: nil)
             SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }

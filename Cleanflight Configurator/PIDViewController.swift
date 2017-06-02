@@ -9,6 +9,7 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import Firebase
 
 class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var pidControllerField: UITextField!
@@ -220,6 +221,8 @@ class PIDViewController: StaticDataTableViewController {
         settings?.dTermNotchCutoff = Int(round(dTermNotchCutoff.value))
         settings?.yawLowpassFrequency = Int(round(yawLowpassFrequency.value))
         
+        Analytics.logEvent("pid_saved", parameters: nil)
+        
         var commands: [SendCommand] = [
             { callback in
                 self.msp.sendSetRcTuning(self.settings!, callback: callback)
@@ -231,6 +234,7 @@ class PIDViewController: StaticDataTableViewController {
                 self.msp.sendPidController(self.settings!.pidController, callback: callback)
             },
         ]
+        
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {
             commands.append({ callback in
@@ -254,6 +258,7 @@ class PIDViewController: StaticDataTableViewController {
     
     func saveFailedAlert() {
         dispatch_async(dispatch_get_main_queue(), {
+            Analytics.logEvent("pid_saved_failed", parameters: nil)
             SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }
@@ -262,6 +267,7 @@ class PIDViewController: StaticDataTableViewController {
         let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
+            Analytics.logEvent("pid_reset", parameters: nil)
             self.msp.sendMessage(.MSP_SET_RESET_CURR_PID, data: nil, retry: 3, callback: { success in
                 self.fetchData()
             })
@@ -271,6 +277,7 @@ class PIDViewController: StaticDataTableViewController {
     }
     @IBAction func pidProfileChanged(sender: AnyObject) {
         SVProgressHUD.showWithStatus("Changing PID Profile")
+        Analytics.logEvent("pid_profile_changed", parameters: nil)
         msp.sendSelectProfile(Int(pidProfileStepper.value) - 1, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 if success {
@@ -283,6 +290,7 @@ class PIDViewController: StaticDataTableViewController {
     }
     @IBAction func rateProfileChanged(sender: AnyObject) {
         SVProgressHUD.showWithStatus("Changing Rate Profile")
+        Analytics.logEvent("rate_profile_changed", parameters: nil)
         msp.sendSelectRateProfile(Int(rateProfileStepper.value) - 1, callback: { success in
             dispatch_async(dispatch_get_main_queue(), {
                 if success {

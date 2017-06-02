@@ -9,6 +9,7 @@
 import UIKit
 import SVProgressHUD
 import MapKit
+import Firebase
 
 class CalibrationViewController: StaticDataTableViewController {
     static let VTXSmartAudioPowers = [ "25 mW", "200 mW", "500 mW", "800 mW" ]
@@ -156,7 +157,8 @@ class CalibrationViewController: StaticDataTableViewController {
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
             self.stopTimer()
-            
+            Analytics.logEvent("calibrate_acc", parameters: nil)
+
             self.enableAccCalibration(false)
             self.msp.sendMessage(.MSP_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
                 dispatch_async(dispatch_get_main_queue(), {
@@ -196,6 +198,8 @@ class CalibrationViewController: StaticDataTableViewController {
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
             self.stopTimer()
+            Analytics.logEvent("calibrate_mag", parameters: nil)
+            
             self.enableMagCalibration(false)
             self.msp.sendMessage(.MSP_MAG_CALIBRATION, data: nil, retry: 2, callback: { success in
                 dispatch_async(dispatch_get_main_queue(), {
@@ -241,6 +245,7 @@ class CalibrationViewController: StaticDataTableViewController {
         misc.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
         misc.accelerometerTrimRoll = Int(accTrimRollStepper.value)
         let msp = self.msp
+        Analytics.logEvent("acc_trim_saved", parameters: nil)
         msp.sendSetAccTrim(misc) { success in
             if success {
                 msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2) { success in
@@ -326,6 +331,7 @@ class CalibrationViewController: StaticDataTableViewController {
             msp.sendMessage(.MSP_VTX_CONFIG, data: nil, retry: 2) { success in
                 dispatch_async(dispatch_get_main_queue()) {
                     if success {
+                        Analytics.logEvent("load_vtx_config", parameters: nil)
                         self.cells(self.vtxCells, setHidden: false)
                         let vtxConfig = VTXConfig.theVTXConfig
                         self.vtxPowerPicker.labels = vtxConfig.deviceType == 3 ? CalibrationViewController.VTXSmartAudioPowers : CalibrationViewController.VTXTrampPowers
@@ -334,6 +340,8 @@ class CalibrationViewController: StaticDataTableViewController {
                         self.vtxPowerPicker.selectedIndex = vtxConfig.powerIdx
                         self.vtxPitModeSwitch.on = vtxConfig.pitMode
                         self.reloadDataAnimated(false)
+                    } else {
+                        Analytics.logEvent("load_vtx_config_failed", parameters: nil)
                     }
                 }
             }
@@ -341,6 +349,7 @@ class CalibrationViewController: StaticDataTableViewController {
     }
     
     @IBAction func vtxSaveAction(sender: AnyObject) {
+        Analytics.logEvent("save_vtx_config", parameters: nil)
         let vtxConfig = VTXConfig.theVTXConfig
         vtxConfig.band = vtxBandPicker.selectedIndex
         vtxConfig.channel = Int(vtxChannelStepper.value)
@@ -350,6 +359,7 @@ class CalibrationViewController: StaticDataTableViewController {
             if success {
                 self.fetchVtxConfig()
             } else {
+                Analytics.logEvent("save_vtx_config_failed", parameters: nil)
                 self.saveFailedError()
             }
             

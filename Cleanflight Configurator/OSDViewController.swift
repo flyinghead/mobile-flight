@@ -8,6 +8,7 @@
 
 import UIKit
 import SVProgressHUD
+import Firebase
 
 class OSDViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var osdView: OSDPreview!
@@ -95,6 +96,7 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func saveAction(sender: AnyObject) {
+        Analytics.logEvent("osd_saved", parameters: nil)
         SVProgressHUD.showWithStatus("Saving OSD configuration", maskType: .Black)
         appDelegate.stopTimer()
         msp.sendOsdConfig(OSD.theOSD) { success in
@@ -102,6 +104,7 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
                 if success {
                     SVProgressHUD.dismiss()
                 } else {
+                    Analytics.logEvent("osd_saved_failed", parameters: nil)
                     SVProgressHUD.showErrorWithStatus("Save failed")
                 }
                 self.appDelegate.startTimer()

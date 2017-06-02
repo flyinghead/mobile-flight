@@ -1417,6 +1417,7 @@ class MSPParser {
             data.append(UInt8(settings.vbatWarningCellVoltage * 10))
             data.append(UInt8(settings.vbatMeterType))
         }
+        // FIXME: CF 2.0 always returns an error (bug)
         sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
@@ -1441,6 +1442,7 @@ class MSPParser {
         data.append(UInt8(settings.voltageMeterSource))
         data.append(UInt8(settings.currentMeterSource))
 
+        // FIXME: CF 2.0 always returns an error (bug)
         sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2, callback: callback)
     }
     
@@ -1472,6 +1474,7 @@ class MSPParser {
             data.appendContentsOf(writeUInt16(settings.batteryCapacity))
         }
     
+        // FIXME: CF 2.0 always returns an error (bug)
         sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2, callback: callback)
     }
 
@@ -1578,6 +1581,7 @@ class MSPParser {
             let position = osd.elements[index]
             data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
         }
+        // FIXME: CF 2.0 always returns an error (bug)
         sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
             if success {
                 self.sendOsdConfigRecursive(osd, index: index + 1, callback: callback)
@@ -1590,6 +1594,7 @@ class MSPParser {
     func sendOsdChar(char: Int, data: [UInt8], callback:((success:Bool) -> Void)?) {
         var msgData = [ UInt8(char) ]
         msgData.appendContentsOf(data)
+        // FIXME: CF 2.0 always returns an error (bug)
         sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2, callback: callback)
     }
     
@@ -1654,6 +1659,10 @@ class MSPParser {
     
     var replaying: Bool {
         return commChannel is ReplayComm
+    }
+    
+    var isWifi: Bool {
+        return commChannel is TCPComm
     }
     
     func nextOutputMessage() -> [UInt8]? {

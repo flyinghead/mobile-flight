@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreMotion
+import Firebase
 
 class Simulator : CommChannel {
     private let msp: MSPParser
@@ -149,6 +150,7 @@ class Simulator : CommChannel {
         timer = NSTimer(timeInterval: 0.1, target: self, selector: #selector(Simulator.timerDidFire(_:)), userInfo: nil, repeats: true)
         NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
 
+        Analytics.logEvent("simulator_started", parameters: nil)
     }
     
     func flushOut() {

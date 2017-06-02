@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class AboutViewController: UITableViewController {
 
@@ -18,6 +19,8 @@ class AboutViewController: UITableViewController {
                 self.msp.sendMessage(.MSP_BUILD_INFO, data: nil, retry: 2, callback: { success in
                     self.msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: 2, callback: { success in
                         dispatch_async(dispatch_get_main_queue(), {
+                            let config = Configuration.theConfig
+                            Analytics.logEvent("about_info", parameters: [ "fcIdentifier" :  config.fcIdentifier!, "fcVersion" : config.fcVersion!, "buildDate" : config.buildInfo!, "boardType" : config.boardInfo!])
                             self.tableView.reloadData()
                         })
                     })
@@ -51,7 +54,7 @@ class AboutViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
         
-        let config = Configuration.theConfig;
+        let config = Configuration.theConfig
         switch indexPath.section {
         case 0:
             switch indexPath.row {

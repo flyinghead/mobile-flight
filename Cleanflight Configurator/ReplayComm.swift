@@ -8,6 +8,7 @@
 
 import Foundation
 import SVProgressHUD
+import Firebase
 
 class ReplayComm : NSObject, CommChannel {
     let datalog: NSFileHandle
@@ -24,6 +25,7 @@ class ReplayComm : NSObject, CommChannel {
         self.msp = msp
         self.datalogStart = NSDate()
         super.init()
+        Analytics.logEvent("replay_started", parameters: nil)
         msp.openCommChannel(self)
         read()
     }

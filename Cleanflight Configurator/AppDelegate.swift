@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SVProgressHUD
 import CoreLocation
+import Firebase
 
 typealias LocationCallback = (GPSLocation) -> Void
 
@@ -49,6 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var showBtRssi = false
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        FirebaseApp.configure()
+        
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()

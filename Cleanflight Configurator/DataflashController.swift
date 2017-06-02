@@ -8,6 +8,7 @@
 
 import UIKit
 import SVProgressHUD
+import Firebase
 
 class DataflashController: UIViewController {
     @IBOutlet weak var gauge: LinearGauge!
@@ -97,11 +98,13 @@ class DataflashController: UIViewController {
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
             SVProgressHUD.showWithStatus("Erasing dataflash. Please wait.", maskType: .Black)
+            Analytics.logEvent("dataflash_erase", parameters: nil)
             self.msp.sendMessage(.MSP_DATAFLASH_ERASE, data: nil, retry: 0, callback: { success in
                 dispatch_async(dispatch_get_main_queue(), {
                     if success {
                         NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(DataflashController.eraseTimer(_:)), userInfo: nil, repeats: true)
                     } else {
+                        Analytics.logEvent("dataflash_erase_failed", parameters: nil)
                         SVProgressHUD.showErrorWithStatus("Erase failed");
                         self.updateSummary()
                     }

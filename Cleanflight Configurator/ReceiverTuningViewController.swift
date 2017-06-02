@@ -9,6 +9,7 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import Firebase
 
 class ReceiverTuningViewController: StaticDataTableViewController {
     @IBOutlet weak var channelMapField: UITextField!
@@ -143,6 +144,8 @@ class ReceiverTuningViewController: StaticDataTableViewController {
             // In case we failed to fetch exiting data
             return
         }
+        Analytics.logEvent("receiver_saved", parameters: nil)
+
         var somethingChanged = false
         
         if rssiChannelPicker!.selectedIndex >= 0 {
@@ -244,6 +247,7 @@ class ReceiverTuningViewController: StaticDataTableViewController {
     
     func showSaveFailedError() {
         dispatch_async(dispatch_get_main_queue(), {
+            Analytics.logEvent("receiver_saved_failed", parameters: nil)
             SVProgressHUD.showErrorWithStatus("Save failed")
         })
     }

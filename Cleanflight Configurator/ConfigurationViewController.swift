@@ -9,6 +9,7 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import Firebase
 
 class ConfigurationViewController: StaticDataTableViewController, UITextFieldDelegate {
     @IBOutlet weak var mixerTypeTextField: UITextField!
@@ -279,6 +280,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     @IBAction func saveAction(sender: AnyObject) {
+        Analytics.logEvent("config_saved", parameters: nil)
+        
         if mixerTypePicker!.selectedIndex >= 0 {
             newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
         }
@@ -505,6 +508,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     
     private func saveConfigFailed() {
         dispatch_async(dispatch_get_main_queue(), {
+            Analytics.logEvent("config_saved_failed", parameters: nil)
             self.appDelegate.startTimer()
             self.showError("Save failed")
             self.enableUserInteraction(true)

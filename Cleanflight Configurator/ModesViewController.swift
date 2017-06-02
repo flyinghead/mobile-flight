@@ -9,6 +9,7 @@
 import UIKit
 import DownPicker
 import SVProgressHUD
+import Firebase
 
 class ModesViewController: UITableViewController, UITextFieldDelegate {
     var dontReloadTable = false
@@ -264,6 +265,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
     }
     
     @IBAction func saveAction(sender: AnyObject) {
+        Analytics.logEvent("modes_save", parameters: nil)
         appDelegate.stopTimer()
         sendModeRange(0)
     }
@@ -282,6 +284,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
                             if success {
                                 SVProgressHUD.showSuccessWithStatus("Settings saved")
                             } else {
+                                Analytics.logEvent("modes_save_failed", parameters: nil)
                                 SVProgressHUD.showErrorWithStatus("Save failed")
                             }
                         })
@@ -292,6 +295,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.appDelegate.startTimer()
+                    Analytics.logEvent("modes_save_failed", parameters: nil)
                     SVProgressHUD.showErrorWithStatus("Save failed")
                 })
             }

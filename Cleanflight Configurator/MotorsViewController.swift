@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class MotorsViewController: UIViewController, MSPCommandSender {
     var motorEventHandler: Disposable?
@@ -43,6 +44,7 @@ class MotorsViewController: UIViewController, MSPCommandSender {
                 self.enableMotorSwitch.on = false
             }))
             alertController.addAction(UIAlertAction(title: "Arm Motors", style: UIAlertActionStyle.Destructive, handler: { alertController in
+                Analytics.logEvent("motors_armed", parameters: nil)
                 self.enableSliders(true)
             }))
             alertController.popoverPresentationController?.sourceView = sender as? UIView
