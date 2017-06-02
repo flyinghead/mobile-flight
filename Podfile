@@ -26,6 +26,8 @@ target 'Cleanflight Configurator' do
   #pod "InAppSettingsKit"
   pod "SwiftSVG"
   pod 'Firebase/Core'
+  pod 'Fabric'
+  pod 'Crashlytics'
 
   target 'KIFTests' do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']

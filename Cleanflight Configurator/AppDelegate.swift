@@ -10,6 +10,8 @@ import UIKit
 import SVProgressHUD
 import CoreLocation
 import Firebase
+import Fabric
+import Crashlytics
 
 typealias LocationCallback = (GPSLocation) -> Void
 
@@ -51,7 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         FirebaseApp.configure()
-        
+        Fabric.with([Crashlytics.self])
+
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()

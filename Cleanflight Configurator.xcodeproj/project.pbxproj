@@ -851,6 +851,7 @@
 				E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */,
 				806F9F3538A6C197599F5C14 /* [CP] Copy Pods Resources */,
 				AE62AAD81EB3DE0300D0DEF2 /* ShellScript */,
+				AE8D56CB1EE16988008A69A6 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1081,6 +1082,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "TAGS=\"TODO|FIXME\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
+		};
+		AE8D56CB1EE16988008A69A6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 09b9ab9e3d80804c5c2619283c9531ef3e4c403f e7ecb56faf9afe58b7c504a52243d7c9815532101cc8bce7f7b7a6743e301cbb";
 		};
 		E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1365,7 +1379,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
