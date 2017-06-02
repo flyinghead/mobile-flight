@@ -8,6 +8,7 @@
 
 import UIKit
 import SVProgressHUD
+import Firebase
 
 class ElementCell : UITableViewCell {
     @IBOutlet weak var elementLabel: UILabel!
@@ -197,6 +198,8 @@ class OSDSettingsViewController: UITableViewController {
     
     @IBAction func uploadFontAction(sender: AnyObject) {
         if let fontCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2)) as? FontCell {
+            Analytics.logEvent("osd_font_upload", parameters: [ "font" : fontCell.fontPicker.selectedIndex ])
+
             let osd = OSD.theOSD
             appDelegate.stopTimer()
             let status = "Uploading font..."
@@ -219,12 +222,14 @@ class OSDSettingsViewController: UITableViewController {
                                 })
                             } else {
                                 dispatch_async(dispatch_get_main_queue()) {
+                                    Analytics.logEvent("osd_font_upload_failed", parameters: nil)
                                     SVProgressHUD.showErrorWithStatus("Reboot failed")
                                     self.appDelegate.startTimer()
                                 }
                             }
                         }
                     } else {
+                        Analytics.logEvent("osd_font_upload_failed", parameters: nil)
                         SVProgressHUD.showErrorWithStatus("Upload failed")
                         self.appDelegate.startTimer()
                     }

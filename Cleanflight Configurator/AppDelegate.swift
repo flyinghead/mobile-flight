@@ -245,6 +245,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func checkArmedStatus() {
         if Settings.theSettings.armed && !armed {
+            Analytics.logEvent("uav_armed", parameters: nil)
             armed = true
             lastArming = NSDate()
             if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
@@ -256,6 +257,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             _lastArmedTime = -lastArming!.timeIntervalSinceNow
             _totalArmedTime += _lastArmedTime
             lastArming = nil
+            Analytics.logEvent("uav_disarmed", parameters: [ "duration" : _lastArmedTime ])
             stopFlightlogRecording()
         }
     }
@@ -308,6 +310,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     var followMeActive = false {
         didSet {
+            if oldValue != followMeActive {
+                Analytics.logEvent("follow_me", parameters: ["on" : followMeActive])
+            }
             startLocationManagerIfNeeded()
             // else
             if !followMeActive && currentLocationCallbacks.isEmpty {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommandSender {
     let SpeedScale = 30.0       // points per km/h
@@ -465,6 +466,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
             appDelegate.rcCommandsProvider = actingRC ? self : nil
             leftStick.userInteractionEnabled = true
             rightStick.userInteractionEnabled = true
+            Analytics.logEvent("msp_rc_control", parameters: ["on" : actingRC])
         } else {
             if showRCSticksButton.selected {
                 leftStick.userInteractionEnabled = false
