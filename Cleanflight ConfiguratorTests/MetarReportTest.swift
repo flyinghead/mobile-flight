@@ -12,39 +12,48 @@ import XCTest
 class MetarReportTest: XCTestCase {
     
     func testReportDescription() {
-        let report = MetarReport()
-        
-        report.cover = "RA"
+        var report = MetarReport()
+        report.wx = "RA"
         XCTAssertEqual(report.description, "Rain")
         
-        report.cover = "SHRA"
+        report = MetarReport()
+        report.wx = "SHRA"
         XCTAssertEqual(report.description, "Rain showers")
         
-        report.cover = "TSRA"
+        report = MetarReport()
+        report.wx = "TSRA"
         XCTAssertEqual(report.description, "Rain thunderstorm")
         
-        report.cover = "VCTS"
+        report = MetarReport()
+        report.wx = "VCTS"
         XCTAssertEqual(report.description, "Thunderstorm")
         
-        report.cover = "-FZDZ"
+        report = MetarReport()
+        report.wx = "-FZDZ"
         XCTAssertEqual(report.description, "Light freezing drizzle")
         
-        report.cover = "+VCBLSN"
+        report = MetarReport()
+        report.wx = "+VCBLSN"
         XCTAssertEqual(report.description, "Heavy blowing snow")
         
-        report.cover = "-SHG"
+        report = MetarReport()
+        report.wx = "-SHG"
         XCTAssertEqual(report.description, "Light showers")
         
-        report.cover = "-SHRA BCFG"
+        report = MetarReport()
+        report.wx = "-SHRA BCFG"
         XCTAssertEqual(report.description, "Light rain showers, Fog patches")
         
-        report.cover = "DRSA"
+        report = MetarReport()
+        report.wx = "DRSA"
         XCTAssertEqual(report.description, "Blowing sand")
         
-        report.cover = "SHSN"
+        report = MetarReport()
+        report.wx = "SHSN"
         XCTAssertEqual(report.description, "Snow showers")
         
-        report.cover = "FZFG"
+        report = MetarReport()
+        report.wx = "FZFG"
         XCTAssertEqual(report.description, "Freezing fog")
     }
     

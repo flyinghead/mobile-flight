@@ -29,7 +29,7 @@ PODS:
   - SwiftSVG (1.1.5)
 
 DEPENDENCIES:
-  - Charts (= 2.3.1)
+  - Charts (~> 2.0)
   - Crashlytics
   - DownPicker
   - Fabric
@@ -53,6 +53,6 @@ SPEC CHECKSUMS:
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
   SwiftSVG: 79d3c15af0899d05bffc927e902e0d0738326511
 
-PODFILE CHECKSUM: f93051c55050dc5b5d599ca72e878c7aced51f1e
+PODFILE CHECKSUM: 6c160222c31da25536d05d40ccbd96f8f0b39467
 
 COCOAPODS: 1.2.1

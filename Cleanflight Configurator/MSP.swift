@@ -581,7 +581,8 @@ class MSPParser {
                 receiver.map[i] = Int(b)
             }
             receiverEvent.raiseDispatch()
-            
+        
+        /*
         case .MSP_BF_CONFIG:        // Deprecated, removed in CF 1.14+
             if message.count < 16 {
                 return false
@@ -594,6 +595,7 @@ class MSPParser {
             settings.boardAlignYaw = Int(readInt16(message, index: 10))
             settings.currentScale = Int(readInt16(message, index: 12))
             settings.currentOffset = Int(readInt16(message, index: 14))
+        */
 
         // Cleanflight-specific
         case .MSP_API_VERSION:
@@ -1137,6 +1139,7 @@ class MSPParser {
         sendMessage(.MSP_SET_MISC, data: data, retry: 2, callback: callback)
     }
     
+    /*
     func sendSetBfConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.mixerConfiguration))
@@ -1150,6 +1153,7 @@ class MSPParser {
         
         sendMessage(.MSP_SET_BF_CONFIG, data: data, retry: 2, callback: callback)
     }
+    */
     
     func sendSetAccTrim(misc: Misc, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()

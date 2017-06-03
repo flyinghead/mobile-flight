@@ -24,6 +24,7 @@ extension UIViewController {
             msp.sendMessage(.MSP_API_VERSION, data: nil, retry: 4) { success in
                 if success {
                     if !config.isApiVersionAtLeast("1.16") {
+                        NSLog("Handshake: API version %@", config.apiVersion ?? "")
                         dispatch_async(dispatch_get_main_queue()) {
                             callback(success: false)
                             SVProgressHUD.showErrorWithStatus("This firmware version is not supported. Please upgrade", maskType: .None)
@@ -54,6 +55,7 @@ extension UIViewController {
             if success {
                 SVProgressHUD.dismiss()
                 let config = Configuration.theConfig
+                NSLog("Connected to FC %@ API version %@", config.fcIdentifier!, config.apiVersion!)
                 Analytics.logEvent("finish_handshake", parameters: ["apiVersion" : config.apiVersion!, "fcIdentifier" : config.fcIdentifier!, "connectionType" : self.msp.isWifi ? "wifi" : "bt"])
                 callback(success: true)
             } else {

@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99C9260AEA09ECF35B486D36 /* Pods-Cleanflight Configurator-metadata.plist */; };
+		01825FA52F5658A217E11A60 /* Pods-KIFTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA843920595E4534A366A140 /* Pods-KIFTests-settings-metadata.plist */; };
 		0A1F18FFDECD44A66FA41D17 /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
 		1C8CFA37F2B65A4354831018 /* Pods-KIFTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 500F887352E78E56B0B1A8D9 /* Pods-KIFTests-metadata.plist */; };
 		2011414390B1527C586297D1 /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */; };
+		28F91231F9115254ADDD4E9F /* Pods-Cleanflight ConfiguratorTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */; };
 		39EF8A153ECA020413F61F55 /* Pods-Cleanflight Configurator-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0229EA3883BEC44AAD636E2B /* Pods-Cleanflight Configurator-settings-metadata.plist */; };
-		8C56F4CC6CD0A879B85E422F /* Pods_Cleanflight_Configurator_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D7FE62BC642ECB2CB346F3E /* Pods_Cleanflight_Configurator_KIFTests.framework */; };
+		4665D6D4F54A04C59F4A5448 /* Pods_Cleanflight_ConfiguratorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */; };
 		8F9E19C647B7247CD6AF2C10 /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
+		909FC6B16F34F93CCDF9AA76 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = AEB92FCDA9D3EF3771FCE688 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist */; };
 		9166ACFB1FFD5C1A33520D35 /* Pods-Cleanflight Configurator-KIFTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F2AE1CC476F0074A2FC4EA /* Pods-Cleanflight Configurator-KIFTests-metadata.plist */; };
 		AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE00734C1C24C2780000926F /* VoiceMessage.swift */; };
 		AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */; };
@@ -95,6 +98,7 @@
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */; };
+		AE8D56CD1EE3179D008A69A6 /* ValidateFirmwareTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -212,12 +216,14 @@
 		0ABAD2DAAE88A2D392993D02 /* Pods-Cleanflight Configurator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator.release.xcconfig"; sourceTree = "<group>"; };
 		21D314FEEDABF1AD10A59D2F /* Pods-KIFTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.debug.xcconfig"; sourceTree = "<group>"; };
 		500F887352E78E56B0B1A8D9 /* Pods-KIFTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-KIFTests-metadata.plist"; path = "Pods/Pods-KIFTests-metadata.plist"; sourceTree = "<group>"; };
+		5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight ConfiguratorTests-metadata.plist"; path = "Pods/Pods-Cleanflight ConfiguratorTests-metadata.plist"; sourceTree = "<group>"; };
 		604E619CF803DAD034B88B11 /* Pods-Cleanflight Configurator-KIFTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator-KIFTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests.debug.xcconfig"; sourceTree = "<group>"; };
 		720AAEA7FB260329DBBD205A /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist"; sourceTree = "<group>"; };
 		7D7FE62BC642ECB2CB346F3E /* Pods_Cleanflight_Configurator_KIFTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_Configurator_KIFTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F96871AAC3D57B9D5EC912 /* Pods-KIFTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.release.xcconfig"; sourceTree = "<group>"; };
 		86F2AE1CC476F0074A2FC4EA /* Pods-Cleanflight Configurator-KIFTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-KIFTests-metadata.plist"; path = "Pods/Pods-Cleanflight Configurator-KIFTests-metadata.plist"; sourceTree = "<group>"; };
 		87B70B98D5521BAD461DA7AC /* Pods-Cleanflight Configurator-KIFTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator-KIFTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests.release.xcconfig"; sourceTree = "<group>"; };
+		95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight ConfiguratorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests.release.xcconfig"; sourceTree = "<group>"; };
 		99C9260AEA09ECF35B486D36 /* Pods-Cleanflight Configurator-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-metadata.plist"; path = "Pods/Pods-Cleanflight Configurator-metadata.plist"; sourceTree = "<group>"; };
 		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
@@ -337,12 +343,14 @@
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
 		AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidateFirmwareTest.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		AEAB37151CB16F330097DC9A /* MetarManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetarManager.swift; sourceTree = "<group>"; };
 		AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilitiesTest.swift; sourceTree = "<group>"; };
 		AEAC44EC1CB5914800D73377 /* DataLinkChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLinkChartViewController.swift; sourceTree = "<group>"; };
+		AEB92FCDA9D3EF3771FCE688 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight ConfiguratorTests-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-Cleanflight ConfiguratorTests-settings-metadata.plist"; sourceTree = "<group>"; };
 		AEBA640D1C3086CF00783ECE /* Connection.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Connection.storyboard; sourceTree = "<group>"; };
 		AEBA640F1C30891F00783ECE /* MainConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConnectionViewController.swift; sourceTree = "<group>"; };
 		AEBA64111C30A3B100783ECE /* WifiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiViewController.swift; sourceTree = "<group>"; };
@@ -417,6 +425,9 @@
 		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CleanflightSimulator.swift; path = "../Cleanflight ConfiguratorUITests/CleanflightSimulator.swift"; sourceTree = "<group>"; };
 		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
+		BA843920595E4534A366A140 /* Pods-KIFTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-KIFTests-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-KIFTests-settings-metadata.plist"; sourceTree = "<group>"; };
+		C53AA28E0267FAB9D92D30A7 /* Pods-Cleanflight ConfiguratorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight ConfiguratorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_ConfiguratorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KIFTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_Configurator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -428,7 +439,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2011414390B1527C586297D1 /* Pods_KIFTests.framework in Frameworks */,
-				8C56F4CC6CD0A879B85E422F /* Pods_Cleanflight_Configurator_KIFTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -445,6 +455,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4665D6D4F54A04C59F4A5448 /* Pods_Cleanflight_ConfiguratorTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +470,7 @@
 				E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */,
 				F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */,
 				7D7FE62BC642ECB2CB346F3E /* Pods_Cleanflight_Configurator_KIFTests.framework */,
+				E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -491,9 +503,9 @@
 			children = (
 				AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */,
 				AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */,
-				AE1DD6811C7E23F300861248 /* Info.plist */,
 				AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */,
 				AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */,
+				AE1DD6811C7E23F300861248 /* Info.plist */,
 			);
 			path = KIFTests;
 			sourceTree = "<group>";
@@ -742,10 +754,11 @@
 			isa = PBXGroup;
 			children = (
 				AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */,
+				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 				AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */,
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
+				AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */,
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
-				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 			);
 			path = "Cleanflight ConfiguratorTests";
 			sourceTree = "<group>";
@@ -811,6 +824,11 @@
 				86F2AE1CC476F0074A2FC4EA /* Pods-Cleanflight Configurator-KIFTests-metadata.plist */,
 				0229EA3883BEC44AAD636E2B /* Pods-Cleanflight Configurator-settings-metadata.plist */,
 				720AAEA7FB260329DBBD205A /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist */,
+				BA843920595E4534A366A140 /* Pods-KIFTests-settings-metadata.plist */,
+				C53AA28E0267FAB9D92D30A7 /* Pods-Cleanflight ConfiguratorTests.debug.xcconfig */,
+				95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */,
+				5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */,
+				AEB92FCDA9D3EF3771FCE688 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -866,9 +884,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorTests" */;
 			buildPhases = (
+				F18A59325A50E9756B3B4774 /* [CP] Check Pods Manifest.lock */,
 				AE72AB681C0F3D230020C4B0 /* Sources */,
 				AE72AB691C0F3D230020C4B0 /* Frameworks */,
 				AE72AB6A1C0F3D230020C4B0 /* Resources */,
+				6CDE2864DF258ED97298BE89 /* [CP] Embed Pods Frameworks */,
+				6748B571357AE2419FFBBA3A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -950,6 +971,7 @@
 				1C8CFA37F2B65A4354831018 /* Pods-KIFTests-metadata.plist in Resources */,
 				9166ACFB1FFD5C1A33520D35 /* Pods-Cleanflight Configurator-KIFTests-metadata.plist in Resources */,
 				C43EB355172CCA0AD6495525 /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist in Resources */,
+				01825FA52F5658A217E11A60 /* Pods-KIFTests-settings-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -989,6 +1011,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28F91231F9115254ADDD4E9F /* Pods-Cleanflight ConfiguratorTests-metadata.plist in Resources */,
+				909FC6B16F34F93CCDF9AA76 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1022,7 +1046,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		42767116AE385C4F2AFDFBC5 /* [CP] Embed Pods Frameworks */ = {
@@ -1037,7 +1061,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6748B571357AE2419FFBBA3A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6CDE2864DF258ED97298BE89 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		806F9F3538A6C197599F5C14 /* [CP] Copy Pods Resources */ = {
@@ -1109,6 +1163,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F18A59325A50E9756B3B4774 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1266,6 +1335,7 @@
 				AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */,
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
 				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
+				AE8D56CD1EE3179D008A69A6 /* ValidateFirmwareTest.swift in Sources */,
 				AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1329,7 +1399,7 @@
 /* Begin XCBuildConfiguration section */
 		AE1DD6841C7E23F300861248 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 604E619CF803DAD034B88B11 /* Pods-Cleanflight Configurator-KIFTests.debug.xcconfig */;
+			baseConfigurationReference = 21D314FEEDABF1AD10A59D2F /* Pods-KIFTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = KIFTests/Info.plist;
@@ -1344,7 +1414,7 @@
 		};
 		AE1DD6851C7E23F300861248 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87B70B98D5521BAD461DA7AC /* Pods-Cleanflight Configurator-KIFTests.release.xcconfig */;
+			baseConfigurationReference = 84F96871AAC3D57B9D5EC912 /* Pods-KIFTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = KIFTests/Info.plist;
@@ -1492,6 +1562,7 @@
 		};
 		AE72AB841C0F3D230020C4B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C53AA28E0267FAB9D92D30A7 /* Pods-Cleanflight ConfiguratorTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
@@ -1504,6 +1575,7 @@
 		};
 		AE72AB851C0F3D230020C4B0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";

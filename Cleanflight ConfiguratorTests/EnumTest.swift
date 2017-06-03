@@ -12,6 +12,12 @@ import XCTest
 class EnumTest: XCTestCase {
     
     func testBaudRate() {
-     }
+        XCTAssertEqual(BaudRate(value: 999).intValue, 999)
+        XCTAssertEqual(BaudRate(value: 0), BaudRate.Auto)
+        XCTAssertEqual(BaudRate(value: 0).description, "Auto")
+        XCTAssertEqual(BaudRate(value: 1), BaudRate.Baud9600)
+        XCTAssertEqual(BaudRate(value: 1).description, "9600")
+        XCTAssertEqual(BaudRate(value: 7), BaudRate.Baud250000)
+    }
     
 }

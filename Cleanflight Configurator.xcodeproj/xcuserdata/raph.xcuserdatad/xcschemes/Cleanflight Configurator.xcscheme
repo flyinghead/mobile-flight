@@ -42,16 +42,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AE72AB761C0F3D230020C4B0"
-               BuildableName = "Cleanflight ConfiguratorUITests.xctest"
-               BlueprintName = "Cleanflight ConfiguratorUITests"
-               ReferencedContainer = "container:Cleanflight Configurator.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE1DD67C1C7E23F300861248"
                BuildableName = "KIFTests.xctest"
                BlueprintName = "KIFTests"
@@ -93,7 +83,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-FIRDebugEnabled"
+            argument = "-FIRDebugDisabled"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

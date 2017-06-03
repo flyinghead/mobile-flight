@@ -2,6 +2,17 @@ platform :ios, '8.0'
 use_frameworks!
 plugin 'cocoapods-acknowledgements', :settings_bundle => true
 
+def common_pods
+    pod 'DownPicker'
+    pod 'Charts', '~> 2.0'
+    pod 'SVProgressHUD'
+    pod 'SwiftSVG'
+    pod 'Firebase/Core'
+    pod 'Fabric'
+    pod 'Crashlytics'
+    #pod "InAppSettingsKit"
+end
+
 target 'Cleanflight Configurator' do
   post_install do | installer |
   #    require 'fileutils'
@@ -20,18 +31,16 @@ target 'Cleanflight Configurator' do
     end
   end
 
-  pod "DownPicker"
-  pod "Charts", "2.3.1"
-  pod "SVProgressHUD"
-  #pod "InAppSettingsKit"
-  pod "SwiftSVG"
-  pod 'Firebase/Core'
-  pod 'Fabric'
-  pod 'Crashlytics'
+  common_pods
+end
 
-  target 'KIFTests' do
+target 'KIFTests' do
     pod 'KIF', '~> 3.0', :configurations => ['Debug']
     pod 'KIF/IdentifierTests', :configurations => ['Debug']
-  end
+    common_pods
+end
+
+target 'Cleanflight ConfiguratorTests' do
+    common_pods
 end
 

@@ -172,35 +172,53 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
         }
     }
     
+    private func short(v: Int) -> NSNumber {
+        return NSNumber(short: v)
+    }
+    
+    private func byte(v: Int) -> NSNumber {
+        return NSNumber(char: Int8(v))
+    }
+    
+    private func uint(v: Int) -> NSNumber {
+        return NSNumber(unsignedInt: v)
+    }
+    
+    private func int(v: Int) -> NSNumber {
+        return NSNumber(int: v)
+    }
+    
     private func operation(mspCode: MSP_code, message: [UInt8]) {
         NSLog("CleanflightSimulator: operation %d", mspCode.rawValue)
         switch mspCode {
-        case .MSP_IDENT:
-            send(mspCode, NSNumber(char: 110), NSNumber(char: 3), NSNumber(char: 0), NSNumber(unsignedInt: 0))
+        case .MSP_FC_VARIANT:
+            send(mspCode, "CLFL")
         case .MSP_API_VERSION:
-            send(mspCode, NSNumber(char: 0), NSNumber(char: 1), NSNumber(char: 7))
+            send(mspCode, byte(0), byte(char: 1), byte(char: 16))
         case .MSP_ATTITUDE:
-            send(mspCode, NSNumber(short: Int16(roll * 10)), NSNumber(short: Int16(pitch * 10)), NSNumber(short: Int16(heading)))
+            send(mspCode, short(roll * 10), short(pitch * 10), short(heading))
         case .MSP_ALTITUDE:
-            send(mspCode, NSNumber(int: Int32(altitude * 100)), NSNumber(short: Int16(variometer * 100)))
+            send(mspCode, int(altitude * 100), short(variometer * 100))
         case .MSP_UID:
-            send(mspCode, NSNumber(unsignedInt: 0xBAADF00D), NSNumber(unsignedInt: 0xBAADF00D), NSNumber(unsignedInt: 0xBAADF00D))
+            send(mspCode, uint(0xBAADF00D), uint(0xBAADF00D), uint(0xBAADF00D))
         case .MSP_BOXNAMES:
             var boxnamesString = ""
             for name in boxnames {
                 boxnamesString += name.rawValue + ";"
             }
             send(mspCode, boxnamesString);
-        case .MSP_BF_CONFIG:
-            send(mspCode, NSNumber(char: 3), NSNumber(unsignedInt: 0), NSNumber(char: 0), NSNumber(short: 0), NSNumber(short: 0), NSNumber(short: 0), NSNumber(short: 0), NSNumber(short: 0))
-        case .MSP_STATUS:
-            send(mspCode, NSNumber(short: 3500), NSNumber(short: 0), NSNumber(short: 0x7FFF), NSNumber(unsignedInt: mode), NSNumber(char: 0))
+        case .MSP_STATUS, .MSP_STATUS_EX:
+            send(mspCode, short(3500), short(0), short(0x7FFF), uint(mode), byte(0))
         case .MSP_ANALOG:
-            send(mspCode, NSNumber(char: Int8(voltage * 10.0)), NSNumber(short: Int16(mAh)), NSNumber(short: Int16(rssi)), NSNumber(short: Int16(amps * 100)))
+            send(mspCode, byte(Int(voltage * 10.0)), short(mAh), short(rssi), short(amps * 100))
         case .MSP_RAW_GPS:
-            send(mspCode, NSNumber(char: 1), NSNumber(char: Int8(numSats)), NSNumber(int: 0), NSNumber(int: 0), NSNumber(short: 0), NSNumber(short: Int16(speed * 100000 / 3600)), NSNumber(short: Int16(heading * 10)))
+            send(mspCode, byte(1), byte(numSats), int(0), int(0), short(0), short(speed * 100000 / 3600), short(heading * 10))
         case .MSP_COMP_GPS:
-            send(mspCode, NSNumber(short: Int16(distanceToHome)), NSNumber(short: 0), NSNumber(char: 1))
+            send(mspCode, short(distanceToHome), short(0), byte(1))
+        case .MSP_VOLTAGE_METER_CONFIG:
+            send(mspCode, byte(110), byte(33), byte(43), byte(36))
+        case .MSP_CURRENT_METER_CONFIG:
+            send(mspCode, short(1), short(0), byte(1), short(1500))
         default:
             NSLog("CleanflightSimulator: Unhandled operation %d", mspCode.rawValue)
         }
