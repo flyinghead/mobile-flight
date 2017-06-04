@@ -22,6 +22,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet weak var minimumPulseField: NumberField!
     @IBOutlet weak var maximumPulseField: NumberField!
     @IBOutlet weak var killSwitch: UISwitch!
+    @IBOutlet weak var killSwitchCell: UITableViewCell!
     @IBOutlet weak var guardTimeField: NumberField!
     @IBOutlet weak var throttleLowDelayField: NumberField!
     @IBOutlet weak var motorsOffDelayField: NumberField!
@@ -42,8 +43,13 @@ class FailsafeConfigViewController: ConfigChildViewController {
             field.delegate = self
         }
         
-        if Configuration.theConfig.isINav {
+        let config = Configuration.theConfig
+        if config.isINav {
             cells(channelCells, setHidden: true)
+            if config.isApiVersionAtLeast("1.25") {
+                cell(killSwitchCell, setHidden: true)
+                stage2ActiveCells.removeAtIndex(stage2ActiveCells.indexOf(killSwitchCell)!)
+            }
         } else {
             cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
             cell(rthCell, setHidden: true)

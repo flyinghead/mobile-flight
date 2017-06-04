@@ -2334,7 +2334,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Meter Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPf-l8-EPW">
-                                                    <rect key="frame" x="8" y="12" width="82.5" height="20"/>
+                                                    <rect key="frame" x="8" y="12" width="83" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -4406,6 +4406,7 @@
                         <outlet property="failsafeSwitch" destination="IBl-q8-wSr" id="KM6-6l-1dM"/>
                         <outlet property="guardTimeField" destination="WdE-hG-IRH" id="fCg-n3-Fzm"/>
                         <outlet property="killSwitch" destination="DDS-G6-rZI" id="X8w-JO-Rva"/>
+                        <outlet property="killSwitchCell" destination="r6Q-gU-uv5" id="efc-Xa-qVb"/>
                         <outlet property="landCell" destination="X4f-HK-NSm" id="moz-w2-6Jx"/>
                         <outlet property="maximumPulseField" destination="EcP-sc-o9N" id="QiP-GJ-8gr"/>
                         <outlet property="minimumPulseField" destination="REg-6K-hPk" id="s3V-F2-g1v"/>

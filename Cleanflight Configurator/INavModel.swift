@@ -329,4 +329,54 @@ class INavConfig {
     var fwMaxDiveAngle = 15             // deg
     var fwPitchToThrottle = 10
     var fwLoiterRadius = 50.0           // m
+
+    init() {
+    }
+    
+    init(copyOf: INavConfig) {
+        self.mode = copyOf.mode
+        self.state = copyOf.state
+        self.activeWaypointAction = copyOf.activeWaypointAction
+        self.activeWaypoint = copyOf.activeWaypoint
+        self.error = copyOf.error
+        self.userControlMode = copyOf.userControlMode
+        self.maxSpeed = copyOf.maxSpeed
+        self.maxClimbRate = copyOf.maxClimbRate
+        self.maxManualSpeed = copyOf.maxManualSpeed
+        self.maxManualClimbRate = copyOf.maxManualClimbRate
+        self.maxBankAngle = copyOf.maxBankAngle
+        self.useThrottleMidForAltHold = copyOf.useThrottleMidForAltHold
+        self.hoverThrottle = copyOf.hoverThrottle
+        self.armingFlags = copyOf.armingFlags
+        self.accCalibAxis = copyOf.accCalibAxis
+        self.hardwareHealthy = copyOf.hardwareHealthy
+        self.gyroStatus = copyOf.gyroStatus
+        self.accStatus = copyOf.accStatus
+        self.magStatus = copyOf.magStatus
+        self.baroStatus = copyOf.baroStatus
+        self.gpsStatus = copyOf.gpsStatus
+        self.sonarStatus = copyOf.sonarStatus
+        self.pitotStatus = copyOf.pitotStatus
+        self.flowStatus = copyOf.flowStatus
+        self.minRthDistance = copyOf.minRthDistance
+        self.rthClimbFirst = copyOf.rthClimbFirst
+        self.rthClimbIgnoreEmergency = copyOf.rthClimbIgnoreEmergency
+        self.rthTailFirst = copyOf.rthTailFirst
+        self.rthAllowLanding = copyOf.rthAllowLanding
+        self.rthAltControlMode = copyOf.rthAltControlMode
+        self.rthAbortThreshold = copyOf.rthAbortThreshold
+        self.rthAltitude = copyOf.rthAltitude
+        self.landDescendRate = copyOf.landDescendRate
+        self.landSlowdownMinAlt = copyOf.landSlowdownMinAlt
+        self.landSlowdownMaxAlt = copyOf.landSlowdownMaxAlt
+        self.emergencyDescendRate = copyOf.emergencyDescendRate
+        self.fwCruiseThrottle = copyOf.fwCruiseThrottle
+        self.fwMinThrottle = copyOf.fwMinThrottle
+        self.fwMaxThrottle = copyOf.fwMaxThrottle
+        self.fwMaxBankAngle = copyOf.fwMaxBankAngle
+        self.fwMaxClimbAngle = copyOf.fwMaxClimbAngle
+        self.fwMaxDiveAngle = copyOf.fwMaxDiveAngle
+        self.fwPitchToThrottle = copyOf.fwPitchToThrottle
+        self.fwLoiterRadius = copyOf.fwLoiterRadius
+    }
 }

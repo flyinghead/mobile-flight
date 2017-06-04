@@ -56,6 +56,7 @@ class ValidateFirmwareTest: XCTestCase {
         let misc = Misc.theMisc
         let receiver = Receiver.theReceiver
         let gpsData = GPSData.theGPSData
+        let inavConfig = INavConfig.theINavConfig
         
         let commands: [SendCommand] = [
             { callback in
@@ -359,7 +360,9 @@ class ValidateFirmwareTest: XCTestCase {
                         XCTAssertEqual(settings.failsafeDelay, tmp.failsafeDelay)
                         XCTAssertEqual(settings.failsafeOffDelay, tmp.failsafeOffDelay)
                         XCTAssertEqual(settings.failsafeThrottle, tmp.failsafeThrottle)
-                        XCTAssertEqual(settings.failsafeKillSwitch, tmp.failsafeKillSwitch)             // FIXME: Fails with INav
+                        if !config.isINav || !config.isApiVersionAtLeast("1.25") {                          // removed in INAV 1.7
+                            XCTAssertEqual(settings.failsafeKillSwitch, tmp.failsafeKillSwitch)
+                        }
                         XCTAssertEqual(settings.failsafeThrottleLowDelay, tmp.failsafeThrottleLowDelay)
                         XCTAssertEqual(settings.failsafeProcedure, tmp.failsafeProcedure)
                         callback(success)
@@ -468,6 +471,98 @@ class ValidateFirmwareTest: XCTestCase {
                     }
                 }
             },
+            { callback in
+                if !config.isINav || !config.isApiVersionAtLeast("1.24") {
+                    callback(true)
+                    return
+                }
+                let tmp = INavConfig(copyOf: inavConfig)
+                tmp.userControlMode = INavUserControlMode(value: tmp.userControlMode.intValue == 0 ? 1 : 0)
+                tmp.maxSpeed += 0.1
+                tmp.maxClimbRate += 0.1
+                tmp.maxManualSpeed += 0.1
+                tmp.maxManualClimbRate += 0.1
+                tmp.maxBankAngle += 1
+                tmp.useThrottleMidForAltHold = !tmp.useThrottleMidForAltHold
+                tmp.hoverThrottle += 1
+                msp.sendNavPosHold(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_NAV_POSHOLD, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(inavConfig.userControlMode.intValue, tmp.userControlMode.intValue)
+                        XCTAssertEqual(inavConfig.maxSpeed, tmp.maxSpeed)
+                        XCTAssertEqual(inavConfig.maxClimbRate, tmp.maxClimbRate)
+                        XCTAssertEqual(inavConfig.maxManualSpeed, tmp.maxManualSpeed)
+                        XCTAssertEqual(inavConfig.maxManualClimbRate, tmp.maxManualClimbRate)
+                        XCTAssertEqual(inavConfig.maxBankAngle, tmp.maxBankAngle)
+                        XCTAssertEqual(inavConfig.useThrottleMidForAltHold, tmp.useThrottleMidForAltHold)
+                        XCTAssertEqual(inavConfig.hoverThrottle, tmp.hoverThrottle)
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if !config.isINav || !config.isApiVersionAtLeast("1.26") {
+                    callback(true)
+                    return
+                }
+                let tmp = INavConfig(copyOf: inavConfig)
+                tmp.rthAltitude += 0.1
+                tmp.rthTailFirst = !tmp.rthTailFirst
+                tmp.rthClimbFirst = !tmp.rthClimbFirst
+                tmp.rthClimbIgnoreEmergency = !tmp.rthClimbIgnoreEmergency
+                tmp.rthAllowLanding = !tmp.rthAllowLanding
+                tmp.rthAbortThreshold += 0.1
+                tmp.minRthDistance += 0.1
+                tmp.rthAltControlMode = (tmp.rthAltControlMode + 1) % 5
+
+                msp.sendRthAndLandConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_RTH_AND_LAND_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(inavConfig.rthAltitude, tmp.rthAltitude)
+                        XCTAssertEqual(inavConfig.rthTailFirst, tmp.rthTailFirst)
+                        XCTAssertEqual(inavConfig.rthClimbFirst, tmp.rthClimbFirst)
+                        XCTAssertEqual(inavConfig.rthClimbIgnoreEmergency, tmp.rthClimbIgnoreEmergency)
+                        XCTAssertEqual(inavConfig.rthAllowLanding, tmp.rthAllowLanding)
+                        XCTAssertEqual(inavConfig.rthAbortThreshold, tmp.rthAbortThreshold)
+                        XCTAssertEqual(inavConfig.minRthDistance, tmp.minRthDistance)
+                        XCTAssertEqual(inavConfig.rthAltControlMode, tmp.rthAltControlMode)
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if !config.isINav || !config.isApiVersionAtLeast("1.26") {
+                    callback(true)
+                    return
+                }
+                let tmp = INavConfig(copyOf: inavConfig)
+                tmp.fwCruiseThrottle += 1
+                tmp.fwMinThrottle += 1
+                tmp.fwMaxThrottle += 1
+                tmp.fwMaxBankAngle += 1
+                tmp.fwMaxClimbAngle += 1
+                tmp.fwMaxDiveAngle += 1
+                tmp.fwLoiterRadius += 1
+                tmp.fwPitchToThrottle += 1
+                
+                msp.sendFwConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_FW_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(inavConfig.fwCruiseThrottle, tmp.fwCruiseThrottle)
+                        XCTAssertEqual(inavConfig.fwMinThrottle, tmp.fwMinThrottle)
+                        XCTAssertEqual(inavConfig.fwMaxThrottle, tmp.fwMaxThrottle)
+                        XCTAssertEqual(inavConfig.fwMaxBankAngle, tmp.fwMaxBankAngle)
+                        XCTAssertEqual(inavConfig.fwMaxClimbAngle, tmp.fwMaxClimbAngle)
+                        XCTAssertEqual(inavConfig.fwMaxDiveAngle, tmp.fwMaxDiveAngle)
+                        XCTAssertEqual(inavConfig.fwLoiterRadius, tmp.fwLoiterRadius)
+                        XCTAssertEqual(inavConfig.fwPitchToThrottle, tmp.fwPitchToThrottle)
+                        callback(success)
+                    }
+                }
+            }
         ]
         chainMspSend(commands) { success in
             XCTAssert(success)
