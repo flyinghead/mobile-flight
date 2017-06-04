@@ -44,19 +44,12 @@ class PortConfigViewController: ConfigChildViewController {
         }
         
         mspBaudratePicker = MyDownPicker(textField: mspBaudrateField, withData: baudRates)
-        mspBaudratePicker.setPlaceholder("")
         peripheralsTypePicker = MyDownPicker(textField: peripheralsTypeField, withData: [ "Disabled", "Blackbox", "TBS SmartAudio", "IRC Tramp" ])
-        peripheralsTypePicker.setPlaceholder("")
         blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: baudRates)
-        blackboxBaudratePicker.setPlaceholder("")
         telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "LTM", "SmartPort", "MAVLink" ])
-        telemetryTypePicker.setPlaceholder("")
         telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: baudRates)
-        telemetryBaudratePicker.setPlaceholder("")
         sensorTypePicker = MyDownPicker(textField: sensorTypeField, withData: [ "Disabled", "GPS", "ESC" ])
-        sensorTypePicker.setPlaceholder("")
         gpsBaudratePicker = MyDownPicker(textField: gpsBaudrateField, withData: baudRates)
-        gpsBaudratePicker.setPlaceholder("")
     }
     
     override func viewWillAppear(animated: Bool) {

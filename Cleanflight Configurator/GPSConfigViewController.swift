@@ -25,12 +25,8 @@ class GPSConfigViewController: ConfigChildViewController {
         super.viewDidLoad()
 
         gpsProtocolPicker = MyDownPicker(textField: gpsProtocolField, withData: gpsTypeLabels)
-        gpsProtocolPicker?.showArrowImage(true)
-        gpsProtocolPicker?.setPlaceholder("")
         
         gpsRegionPicker = MyDownPicker(textField: gpsRegionField, withData: gpsRegionLabels)
-        gpsRegionPicker?.showArrowImage(true)
-        gpsRegionPicker?.setPlaceholder("")
         
         magDeclinationField.delegate = self
     }

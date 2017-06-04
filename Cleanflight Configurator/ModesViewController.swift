@@ -317,7 +317,6 @@ class ModeRangeCell : UITableViewCell {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
             _channelPicker?.addTarget(self, action: #selector(ModeRangeCell.channelChanged(_:)), forControlEvents: .ValueChanged)
-            _channelPicker?.setPlaceholder("")
         }
         return _channelPicker!
     }

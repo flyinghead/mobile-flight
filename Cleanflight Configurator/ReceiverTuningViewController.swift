@@ -46,14 +46,11 @@ class ReceiverTuningViewController: StaticDataTableViewController {
         hideSectionsWithHiddenRows = true
 
         channelMapPicker = MyDownPicker(textField: channelMapField, withData: RcMapChoices)
-        channelMapPicker!.setPlaceholder("")
         
         rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
-        rssiChannelPicker!.setPlaceholder("")
 
         if Configuration.theConfig.isApiVersionAtLeast("1.31") {
             interpolationPicker = MyDownPicker(textField: interpolationTypeField, withData: ["Off", "Preset", "Auto", "Manual"])
-            interpolationPicker!.setPlaceholder("")
         } else {
             cells(interpolationCells, setHidden: true)
             reloadDataAnimated(false)

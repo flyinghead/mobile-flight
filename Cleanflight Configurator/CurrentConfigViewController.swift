@@ -23,7 +23,6 @@ class CurrentConfigViewController: ConfigChildViewController {
         super.viewDidLoad()
 
         meterTypePicker = MyDownPicker(textField: meterTypeField, withData: [ "None", "Onboard ADC", "Virtual", "ESC Sensor" ])
-        meterTypePicker.setPlaceholder("")
         meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
 
         meterScaleField.delegate = self

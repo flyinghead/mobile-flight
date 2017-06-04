@@ -24,7 +24,6 @@ class VBatConfigViewController: ConfigChildViewController {
         super.viewDidLoad()
 
         meterTypePicker = MyDownPicker(textField: meterTypeFIeld, withData: [ "Onboard ADC", "ESC Sensor" ])
-        meterTypePicker.setPlaceholder("")
         meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
 
         minVoltage.delegate = self

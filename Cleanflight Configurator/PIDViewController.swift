@@ -89,7 +89,6 @@ class PIDViewController: StaticDataTableViewController {
         rateProfileLabel.text = String(1)
         
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])
-        pidControllerPicker.setPlaceholder("")     // To keep width down
         
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {

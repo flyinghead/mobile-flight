@@ -10,6 +10,24 @@ import UIKit
 import DownPicker
 
 class MyDownPicker: DownPicker {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    override init!(textField tf: UITextField!) {
+        super.init(textField: tf)
+        setPlaceholder("")
+    }
+    
+    override init!(textField tf: UITextField!, withData data: [AnyObject]!) {
+        super.init(textField: tf, withData: data)
+        setPlaceholder("")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     override func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         let beginEditing = super.textFieldShouldBeginEditing(textField)
         if beginEditing {

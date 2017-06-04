@@ -70,7 +70,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
         mixerTypePicker!.addTarget(self, action: #selector(ConfigurationViewController.mixerTypeChanged(_:)), forControlEvents: .ValueChanged)
-        mixerTypePicker!.setPlaceholder("")
         
         loopTimeField.changeCallback = { value in
             if value == 0 {
@@ -92,10 +91,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
 
         gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 kHz", "4 kHz", "2.67 kHz", "2 kHz", "1.6 kHz", "1.33 kHz", "1.14 kHz", "1 kHz" ])
-        gyroUpdateFreqPicker!.setPlaceholder("")
         gyroUpdateFreqPicker!.addTarget(self, action: #selector(ConfigurationViewController.enable32kHzChanged(_:)), forControlEvents: .ValueChanged)
         pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 kHz", "1 kHz", "0.67 kHz", "0.5 kHz", "0.4 kHz", "0.33 kHz", "0.29 kHz", "0.25 kHz" ])
-        pidLoopFreqPicker!.setPlaceholder("")
 
         if Configuration.theConfig.isINav {
             boardRollField.increment = 0.1

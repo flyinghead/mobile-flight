@@ -43,7 +43,6 @@ class MotorConfigViewController: ConfigChildViewController {
             UnsyncedMotorSwitch.enabled = false
         }
         escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: escProtocols)
-        escProtocolPicker!.setPlaceholder("")
         escProtocolPicker!.addTarget(self, action: #selector(escProtocolChanged(_:)), forControlEvents: .ValueChanged)
     }
 

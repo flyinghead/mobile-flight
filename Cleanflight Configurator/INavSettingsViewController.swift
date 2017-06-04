@@ -52,6 +52,7 @@ class INavSettingsViewController: StaticDataTableViewController {
         hideSectionsWithHiddenRows = true
         userControlModePicker = MyDownPicker(textField: userControlModeField, withData: [ "Attitude", "Cruise" ])
         rthAltModePicker = MyDownPicker(textField: rthAltModeField, withData: [ "Keep Current", "Extra", "Fixed", "Max Reached", "At Least" ])
+
         cells(inav171Cells, setHidden: !Configuration.theConfig.isApiVersionAtLeast("1.26"))
     }
     
@@ -60,7 +61,7 @@ class INavSettingsViewController: StaticDataTableViewController {
         
         let minSpeed = msToLocaleSpeed(0.1)
         let maxSpeed = msToLocaleSpeed(20)
-        for field in [ maxNavSpeedField, maxManualSpeedField, maxNavClimbRateField, maxManualClimbRateField ] {
+        for field in [ maxNavSpeedField, maxManualSpeedField ] {
             field.minimumValue = minSpeed
             field.maximumValue = maxSpeed
         }
@@ -73,7 +74,7 @@ class INavSettingsViewController: StaticDataTableViewController {
             field.maximumValue = maxDist
         }
         let maxVerticalSpeed = msToLocaleVerticalSpeed(655.36)
-        for field in [ landDescendRate, emergencyDescendRate ] {
+        for field in [ landDescendRate, emergencyDescendRate, maxNavClimbRateField, maxManualClimbRateField ] {
             field.maximumValue = maxVerticalSpeed
         }
         
@@ -94,8 +95,8 @@ class INavSettingsViewController: StaticDataTableViewController {
                     self.userControlModePicker.selectedIndex = inavConfig.userControlMode.intValue
                     self.maxNavSpeedField.value = msToLocaleSpeed(inavConfig.maxSpeed)
                     self.maxManualSpeedField.value = msToLocaleSpeed(inavConfig.maxManualSpeed)
-                    self.maxNavClimbRateField.value = msToLocaleSpeed(inavConfig.maxClimbRate)
-                    self.maxManualClimbRateField.value = msToLocaleSpeed(inavConfig.maxManualClimbRate)
+                    self.maxNavClimbRateField.value = msToLocaleVerticalSpeed(inavConfig.maxClimbRate)
+                    self.maxManualClimbRateField.value = msToLocaleVerticalSpeed(inavConfig.maxManualClimbRate)
                     self.maxBankAngleField.value = Double(inavConfig.maxBankAngle)
                     self.useThrottleMidForAltHoldSwitch.on = inavConfig.useThrottleMidForAltHold
                     self.hoverThrottleField.value = Double(inavConfig.hoverThrottle)
@@ -138,8 +139,8 @@ class INavSettingsViewController: StaticDataTableViewController {
         inavConfig.userControlMode = INavUserControlMode(value: userControlModePicker.selectedIndex)
         inavConfig.maxSpeed = localeSpeedToMs(maxNavSpeedField.value)
         inavConfig.maxManualSpeed = localeSpeedToMs(maxManualSpeedField.value)
-        inavConfig.maxClimbRate = localeSpeedToMs(maxNavClimbRateField.value)
-        inavConfig.maxManualClimbRate = localeSpeedToMs(maxManualClimbRateField.value)
+        inavConfig.maxClimbRate = localeVerticalSpeedToMs(maxNavClimbRateField.value)
+        inavConfig.maxManualClimbRate = localeVerticalSpeedToMs(maxManualClimbRateField.value)
         inavConfig.maxBankAngle = Int(round(maxBankAngleField.value))
         inavConfig.useThrottleMidForAltHold = useThrottleMidForAltHoldSwitch.on
         inavConfig.hoverThrottle = Int(round(hoverThrottleField.value))
