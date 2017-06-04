@@ -55,6 +55,7 @@ class ValidateFirmwareTest: XCTestCase {
         let motorData = MotorData.theMotorData
         let misc = Misc.theMisc
         let receiver = Receiver.theReceiver
+        let gpsData = GPSData.theGPSData
         
         let commands: [SendCommand] = [
             { callback in
@@ -137,6 +138,10 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
+                if config.isINav {
+                    callback(true)
+                    return
+                }
                 let tmp = Misc(copyOf: misc)
                 tmp.accelerometerTrimRoll = 2
                 tmp.accelerometerTrimPitch = -1
@@ -167,9 +172,11 @@ class ValidateFirmwareTest: XCTestCase {
                     XCTAssert(success)
                     msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2) { success in
                         XCTAssert(success)
-                        XCTAssertEqual(settings.rcRate, tmp.rcRate)
+                        if !config.isINav {
+                            XCTAssertEqual(settings.rcRate, tmp.rcRate)
+                            XCTAssertEqual(settings.yawRate, tmp.yawRate)
+                        }
                         XCTAssertEqual(settings.rcExpo, tmp.rcExpo)
-                        XCTAssertEqual(settings.yawRate, tmp.yawRate)
                         XCTAssertEqual(settings.yawExpo, tmp.yawExpo)
                         XCTAssertEqual(settings.rollSuperRate, tmp.rollSuperRate)
                         XCTAssertEqual(settings.pitchSuperRate, tmp.pitchSuperRate)
@@ -352,7 +359,7 @@ class ValidateFirmwareTest: XCTestCase {
                         XCTAssertEqual(settings.failsafeDelay, tmp.failsafeDelay)
                         XCTAssertEqual(settings.failsafeOffDelay, tmp.failsafeOffDelay)
                         XCTAssertEqual(settings.failsafeThrottle, tmp.failsafeThrottle)
-                        XCTAssertEqual(settings.failsafeKillSwitch, tmp.failsafeKillSwitch)
+                        XCTAssertEqual(settings.failsafeKillSwitch, tmp.failsafeKillSwitch)             // FIXME: Fails with INav
                         XCTAssertEqual(settings.failsafeThrottleLowDelay, tmp.failsafeThrottleLowDelay)
                         XCTAssertEqual(settings.failsafeProcedure, tmp.failsafeProcedure)
                         callback(success)
@@ -369,6 +376,94 @@ class ValidateFirmwareTest: XCTestCase {
                     msp.sendMessage(.MSP_NAME, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.craftName, "TESTME")
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if config.isApiVersionAtLeast("1.35") {
+                    callback(true)
+                    return
+                }
+                let tmp = Settings(copyOf: settings)
+                tmp.midRC = 1480
+                tmp.minThrottle = 1111
+                tmp.maxThrottle = 1996
+                tmp.minCommand = 1011
+                tmp.failsafeThrottle = 1217
+                tmp.gpsType = 1
+                tmp.gpsUbxSbas = 1
+                tmp.rssiChannel = 9
+                tmp.magDeclination = 57
+                tmp.vbatScale = 101
+                tmp.vbatMinCellVoltage = 3.0
+                tmp.vbatMaxCellVoltage = 5.0
+                tmp.vbatWarningCellVoltage = 3.1
+                msp.sendSetMisc(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_MISC, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.midRC, tmp.midRC)
+                        XCTAssertEqual(settings.minThrottle, tmp.minThrottle)
+                        XCTAssertEqual(settings.maxThrottle, tmp.maxThrottle)
+                        XCTAssertEqual(settings.minCommand, tmp.minCommand)
+                        XCTAssertEqual(settings.failsafeThrottle, tmp.failsafeThrottle)
+                        XCTAssertEqual(settings.gpsType, tmp.gpsType)                       // FIXME: Fails if GPS not compiled in
+                        XCTAssertEqual(settings.gpsUbxSbas, tmp.gpsUbxSbas)                 // FIXME: Fails if GPS not compiled in
+                        XCTAssertEqual(settings.rssiChannel, tmp.rssiChannel)
+                        XCTAssertEqual(settings.magDeclination, tmp.magDeclination)
+                        if !config.isApiVersionAtLeast("1.24") {    // Removed in CF 1.14
+                            XCTAssertEqual(settings.vbatScale, tmp.vbatScale)
+                            XCTAssertEqual(settings.vbatMinCellVoltage, tmp.vbatMinCellVoltage)
+                            XCTAssertEqual(settings.vbatMaxCellVoltage, tmp.vbatMaxCellVoltage)
+                            XCTAssertEqual(settings.vbatWarningCellVoltage, tmp.vbatWarningCellVoltage)
+                        }
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                // INav: UAV needs to be armed and have a GPS fix and home pos to set GPS hold position. So we use a regular waypoint number
+                if config.isINav {
+                    let wp = Waypoint(number: 1, action: .Known(.Waypoint), position: GPSLocation(latitude: 3.14, longitude: 6.28), altitude: 10, param1: 1, param2: 2, param3: 3, last: true)
+                    msp.sendINavWaypoint(wp) { success in
+                        XCTAssert(success)
+                        msp.sendMessage(.MSP_WP, data: [ UInt8(1) ], retry: 2) { success in
+                            XCTAssert(success)
+                            XCTAssertEqual(gpsData.waypoints[0].position.latitude, 3.14)
+                            XCTAssertEqual(gpsData.waypoints[0].position.longitude, 6.28)
+                            XCTAssertEqual(gpsData.waypoints[0].altitude, 10)
+                            XCTAssertEqual(gpsData.waypoints[0].param1, 1)
+                            XCTAssertEqual(gpsData.waypoints[0].param2, 2)
+                            XCTAssertEqual(gpsData.waypoints[0].param3, 3)
+                            callback(success)
+                        }
+                    }
+                } else {
+                    msp.setGPSHoldPosition(latitude: 3.14, longitude: 6.28, altitude: 0) { success in
+                        XCTAssert(success)
+                        msp.sendMessage(.MSP_WP, data: [ UInt8(config.isINav ? 255 : 16) ], retry: 2) { success in
+                            XCTAssert(success)
+                            XCTAssertEqual(gpsData.posHoldPosition!.latitude, 3.14)
+                            XCTAssertEqual(gpsData.posHoldPosition!.longitude, 6.28)
+                            callback(success)
+                        }
+                    }
+                }
+            },
+            { callback in
+                // MSP_LOOP_TIME supported in CF up to 1.13 and INAV
+                if config.isBetaflight || (!config.isINav && config.isApiVersionAtLeast("1.24")) {
+                    callback(true)
+                    return
+                }
+                let tmp = Settings(copyOf: settings)
+                tmp.loopTime = 1002
+                msp.sendLoopTime(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_LOOP_TIME, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.loopTime, tmp.loopTime)
                         callback(success)
                     }
                 }

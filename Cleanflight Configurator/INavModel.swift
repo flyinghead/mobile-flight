@@ -305,4 +305,28 @@ class INavConfig {
     var sonarStatus = INavSensorStatus.Known(.None)
     var pitotStatus = INavSensorStatus.Known(.None)
     var flowStatus = INavSensorStatus.Known(.None)
+    
+    // MSP_RTH_AND_LAND_CONFIG
+    var minRthDistance = 5.0            // m
+    var rthClimbFirst = true
+    var rthClimbIgnoreEmergency = false
+    var rthTailFirst = false
+    var rthAllowLanding = true
+    var rthAltControlMode = 0
+    var rthAbortThreshold = 500.0       // m
+    var rthAltitude = 10.0
+    var landDescendRate = 2.0           // m/s
+    var landSlowdownMinAlt = 5.0        // m
+    var landSlowdownMaxAlt = 20.0       // m
+    var emergencyDescendRate = 5.0      // m/s
+    
+    // MSP_FW_CONFIG
+    var fwCruiseThrottle = 1400
+    var fwMinThrottle = 1200
+    var fwMaxThrottle = 1700
+    var fwMaxBankAngle = 20             // deg
+    var fwMaxClimbAngle = 20            // deg
+    var fwMaxDiveAngle = 15             // deg
+    var fwPitchToThrottle = 10
+    var fwLoiterRadius = 50.0           // m
 }

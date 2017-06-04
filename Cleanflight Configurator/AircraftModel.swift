@@ -1773,7 +1773,7 @@ func resetAircraftModel() {
     
     AllAircraftData.allAircraftData = AllAircraftData()
     
-    INavConfig.theINavConfig = INavConfig()         // FIXME some date in there need to be part of AircraftModel
+    INavConfig.theINavConfig = INavConfig()         // FIXME some data in there need to be part of AircraftModel
     
     OSD.theOSD = OSD()
     VTXConfig.theVTXConfig = VTXConfig()

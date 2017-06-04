@@ -127,6 +127,42 @@ func localeSpeedToMs(speed: Double) -> Double {
     return kmhSpeed / 3600 * 1000
 }
 
+func msToLocaleVerticalSpeed(d: Double) -> Double {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return d * FEET_PER_METER
+    default:
+        return d
+    }
+}
+
+func localeVerticalSpeedToMs(d: Double) -> Double {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return d / FEET_PER_METER
+    default:
+        return d
+    }
+}
+
+func mToLocaleDistance(d: Double) -> Double {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return d * FEET_PER_METER
+    default:
+        return d
+    }
+}
+
+func localeDistanceToM(d: Double) -> Double {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return d / FEET_PER_METER
+    default:
+        return d
+    }
+}
+
 func speedUnit() -> String {
     switch selectedUnitSystem() {
     case .Imperial:
@@ -135,5 +171,23 @@ func speedUnit() -> String {
         return "kn"
     default:
         return "km/h"
+    }
+}
+
+func verticalSpeedUnit() -> String {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return "ft/s"
+    default:
+        return "m/s"
+    }
+}
+
+func distanceUnit() -> String {
+    switch selectedUnitSystem() {
+    case .Imperial, .Aviation:
+        return "ft"
+    default:
+        return "m"
     }
 }

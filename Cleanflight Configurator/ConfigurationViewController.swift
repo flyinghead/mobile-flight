@@ -411,7 +411,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         } else {
             commands = [
                 { callback in
-                    self.msp.sendSetMisc(self.newMisc!, settings: self.newSettings!, callback: callback)
+                    self.msp.sendSetMisc(self.newSettings!, callback: callback)
                 },
                 { callback in
                     self.msp.sendLoopTime(self.newSettings!, callback: callback)

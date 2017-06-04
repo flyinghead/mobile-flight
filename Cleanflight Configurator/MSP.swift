@@ -446,11 +446,11 @@ class MSPParser {
             
         case .MSP_WP:
             if config.isINav {
-                if message.count < 15 {
+                if message.count < 21 {
                     return false
                 }
             } else {
-                if message.count < 21 {
+                if message.count < 15 {
                     return false
                 }
             }
@@ -979,6 +979,36 @@ class MSPParser {
             inavConfig.useThrottleMidForAltHold = message[10] != 0
             inavConfig.hoverThrottle = readUInt16(message, index: 11)
         
+        case .MSP_RTH_AND_LAND_CONFIG:
+            if message.count < 19 {
+                return false
+            }
+            inavConfig.minRthDistance = Double(readUInt16(message, index: 0)) / 100
+            inavConfig.rthClimbFirst = message[2] != 0
+            inavConfig.rthClimbIgnoreEmergency = message[3] != 0
+            inavConfig.rthTailFirst = message[4] != 0
+            inavConfig.rthAllowLanding = message[5] != 0
+            inavConfig.rthAltControlMode = Int(message[6])
+            inavConfig.rthAbortThreshold = Double(readUInt16(message, index: 7)) / 100
+            inavConfig.rthAltitude = Double(readUInt16(message, index: 9)) / 100
+            inavConfig.landDescendRate = Double(readUInt16(message, index: 11)) / 100
+            inavConfig.landSlowdownMinAlt = Double(readUInt16(message, index: 13)) / 100
+            inavConfig.landSlowdownMaxAlt = Double(readUInt16(message, index: 15)) / 100
+            inavConfig.emergencyDescendRate = Double(readUInt16(message, index: 17)) / 100
+            
+        case .MSP_FW_CONFIG:
+            if message.count < 12 {
+                return false
+            }
+            inavConfig.fwCruiseThrottle = readUInt16(message, index: 0)
+            inavConfig.fwMinThrottle = readUInt16(message, index: 2)
+            inavConfig.fwMaxThrottle = readUInt16(message, index: 4)
+            inavConfig.fwMaxBankAngle = Int(message[6])
+            inavConfig.fwMaxClimbAngle = Int(message[7])
+            inavConfig.fwMaxDiveAngle = Int(message[8])
+            inavConfig.fwPitchToThrottle = Int(message[9])
+            inavConfig.fwLoiterRadius = Double(readUInt16(message, index: 10)) / 100
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -1024,7 +1054,9 @@ class MSPParser {
             .MSP_SET_VTX_CONFIG,
             .MSP_SET_FILTER_CONFIG,
             .MSP_OSD_CHAR_WRITE,
-            .MSP_SET_NAME:
+            .MSP_SET_NAME,
+            .MSP_SET_RTH_AND_LAND_CONFIG,
+            .MSP_SET_FW_CONFIG:
             break
             
         default:
@@ -1117,7 +1149,7 @@ class MSPParser {
         objc_sync_exit(retriedMessageLock)
     }
     
-    func sendSetMisc(misc: Misc, settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendSetMisc(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.appendContentsOf(writeInt16(settings.midRC))
         data.appendContentsOf(writeInt16(settings.minThrottle))
@@ -1285,8 +1317,12 @@ class MSPParser {
     }
     
     func setGPSHoldPosition(latitude latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
-        let wpNumber = Configuration.theConfig.isINav ? 255 : 16
-        sendWaypoint(wpNumber, latitude: latitude, longitude: longitude, altitude: altitude, callback: callback)
+        if Configuration.theConfig.isINav {
+            let waypoint = Waypoint(number: 255, action: .Known(.Waypoint), position: GPSLocation(latitude: latitude, longitude: longitude), altitude: altitude, param1: 0, param2: 0, param3: 0, last: false)
+            sendINavWaypoint(waypoint, callback: callback)
+        } else {
+            sendWaypoint(16, latitude: latitude, longitude: longitude, altitude: altitude, callback: callback)
+        }
     }
     
     // Clear gpsData.waypoints before calling this function
@@ -1634,6 +1670,37 @@ class MSPParser {
     func saveMission(callback:((success:Bool) -> Void)?) {
         let data = [UInt8(0)]
         sendMessage(.MSP_WP_MISSION_SAVE, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendRthAndLandConfig(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.minRthDistance * 100))))
+        data.append(UInt8(inavConfig.rthClimbFirst ? 1 : 0))
+        data.append(UInt8(inavConfig.rthClimbIgnoreEmergency ? 1 : 0))
+        data.append(UInt8(inavConfig.rthTailFirst ? 1 : 0))
+        data.append(UInt8(inavConfig.rthAllowLanding ? 1 : 0))
+        data.append(UInt8(inavConfig.rthAltControlMode))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.rthAbortThreshold * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.rthAltitude * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landDescendRate * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landSlowdownMinAlt * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landSlowdownMaxAlt * 100))))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.emergencyDescendRate * 100))))
+
+        sendMessage(.MSP_SET_RTH_AND_LAND_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendFwConfig(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt16(inavConfig.fwCruiseThrottle))
+        data.appendContentsOf(writeUInt16(inavConfig.fwMinThrottle))
+        data.appendContentsOf(writeUInt16(inavConfig.fwMaxThrottle))
+        data.append(UInt8(inavConfig.fwMaxBankAngle))
+        data.append(UInt8(inavConfig.fwMaxClimbAngle))
+        data.append(UInt8(inavConfig.fwMaxDiveAngle))
+        data.append(UInt8(inavConfig.fwPitchToThrottle))
+        data.appendContentsOf(writeUInt16(Int(round(inavConfig.fwLoiterRadius * 100))))
+        sendMessage(.MSP_SET_FW_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     func openCommChannel(commChannel: CommChannel) {
