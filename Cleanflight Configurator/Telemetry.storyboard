@@ -11,209 +11,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Map-->
-        <scene sceneID="hue-MD-HWj">
-            <objects>
-                <viewController storyboardIdentifier="MapViewController" id="HAc-Jz-dH5" userLabel="Map" customClass="MapViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="m5b-1a-tYz"/>
-                        <viewControllerLayoutGuide type="bottom" id="ubb-Lq-gqh"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="h0E-f4-1lm">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vxu-7w-poj">
-                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="zN8-5v-rhl" appends="YES" id="oWh-dg-q5W"/>
-                                </connections>
-                            </mapView>
-                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0oz-VT-H27">
-                                <rect key="frame" x="8" y="28" width="79" height="77"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="battery" translatesAutoresizingMaskIntoConstraints="NO" id="g9M-qu-4Fy">
-                                        <rect key="frame" x="8" y="8" width="15" height="15"/>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gps_small" translatesAutoresizingMaskIntoConstraints="NO" id="5HP-v7-I65">
-                                        <rect key="frame" x="8" y="54" width="15" height="15"/>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12.1V" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GAi-C0-F6k" customClass="BatteryVoltageLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="31" y="7" width="40" height="18"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OK" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKy-HN-tIO" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="49" y="53" width="22" height="18"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0AG-vS-HA4" userLabel="RSSI">
-                                        <rect key="frame" x="8" y="31" width="71" height="17"/>
-                                        <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="signal" translatesAutoresizingMaskIntoConstraints="NO" id="elJ-6m-GJk">
-                                                <rect key="frame" x="0.0" y="1" width="15" height="15"/>
-                                            </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEz-Uy-RIY" customClass="RssiLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                                <rect key="frame" x="33" y="0.0" width="32" height="18"/>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstItem="elJ-6m-GJk" firstAttribute="centerY" secondItem="vEz-Uy-RIY" secondAttribute="centerY" id="AYi-ep-QsK"/>
-                                            <constraint firstItem="elJ-6m-GJk" firstAttribute="leading" secondItem="0AG-vS-HA4" secondAttribute="leading" id="HAZ-rO-h5A"/>
-                                            <constraint firstItem="vEz-Uy-RIY" firstAttribute="top" secondItem="0AG-vS-HA4" secondAttribute="top" id="Qbo-iI-Gbb"/>
-                                            <constraint firstAttribute="bottom" secondItem="vEz-Uy-RIY" secondAttribute="bottom" id="Qug-zU-hYr"/>
-                                            <constraint firstAttribute="trailing" secondItem="vEz-Uy-RIY" secondAttribute="trailing" id="ehE-Hk-rkn"/>
-                                            <constraint firstItem="vEz-Uy-RIY" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="elJ-6m-GJk" secondAttribute="trailing" constant="8" id="nu4-A9-B4G"/>
-                                        </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="1Hg-tG-G2a" appends="YES" id="czv-31-wlP"/>
-                                        </connections>
-                                    </view>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstItem="0AG-vS-HA4" firstAttribute="top" secondItem="GAi-C0-F6k" secondAttribute="bottom" constant="5" id="2Qq-Uj-Wqe"/>
-                                    <constraint firstItem="GAi-C0-F6k" firstAttribute="centerY" secondItem="g9M-qu-4Fy" secondAttribute="centerY" id="2Vd-8L-PSU"/>
-                                    <constraint firstItem="g9M-qu-4Fy" firstAttribute="top" secondItem="0oz-VT-H27" secondAttribute="top" constant="8" id="3XX-F8-6MB"/>
-                                    <constraint firstItem="jKy-HN-tIO" firstAttribute="top" secondItem="0AG-vS-HA4" secondAttribute="bottom" constant="5" id="98B-Ba-UCT"/>
-                                    <constraint firstAttribute="trailing" secondItem="jKy-HN-tIO" secondAttribute="trailing" constant="8" id="Jav-Me-Mid"/>
-                                    <constraint firstAttribute="bottom" secondItem="5HP-v7-I65" secondAttribute="bottom" constant="8" id="KHD-aZ-YS1"/>
-                                    <constraint firstItem="jKy-HN-tIO" firstAttribute="centerY" secondItem="5HP-v7-I65" secondAttribute="centerY" id="TJ7-5M-66b"/>
-                                    <constraint firstItem="jKy-HN-tIO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5HP-v7-I65" secondAttribute="trailing" constant="8" id="XzP-7l-lVb"/>
-                                    <constraint firstItem="0AG-vS-HA4" firstAttribute="leading" secondItem="0oz-VT-H27" secondAttribute="leading" constant="8" id="b45-fU-MOq"/>
-                                    <constraint firstItem="GAi-C0-F6k" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="g9M-qu-4Fy" secondAttribute="trailing" constant="8" id="dLa-G1-2gb"/>
-                                    <constraint firstAttribute="trailing" secondItem="GAi-C0-F6k" secondAttribute="trailing" constant="8" id="npp-5j-Ggz"/>
-                                    <constraint firstAttribute="trailing" secondItem="0AG-vS-HA4" secondAttribute="trailing" constant="8" id="oyd-Q7-D0D"/>
-                                    <constraint firstItem="5HP-v7-I65" firstAttribute="leading" secondItem="0oz-VT-H27" secondAttribute="leading" constant="8" id="rlX-dW-h8m"/>
-                                    <constraint firstItem="g9M-qu-4Fy" firstAttribute="leading" secondItem="0oz-VT-H27" secondAttribute="leading" constant="8" id="sjF-pD-MkN"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                            <view opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mh4-oO-Iou">
-                                <rect key="frame" x="491" y="28" width="101" height="77"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="time" translatesAutoresizingMaskIntoConstraints="NO" id="WpA-Pl-viC">
-                                        <rect key="frame" x="8" y="8" width="15" height="15"/>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="height" translatesAutoresizingMaskIntoConstraints="NO" id="e6F-HP-GFQ">
-                                        <rect key="frame" x="8" y="31" width="15" height="15"/>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="speed" translatesAutoresizingMaskIntoConstraints="NO" id="RVH-YT-5f9">
-                                        <rect key="frame" x="8" y="54" width="15" height="15"/>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="37m" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIo-4b-ZbY">
-                                        <rect key="frame" x="60" y="30" width="33" height="18"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9,8km/h" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VE8-Vl-r5k">
-                                        <rect key="frame" x="31" y="53" width="62" height="18"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09:05" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6O8-wL-tWb" customClass="ArmedTimer" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="48" y="7" width="45" height="18"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstItem="WpA-Pl-viC" firstAttribute="top" secondItem="mh4-oO-Iou" secondAttribute="top" constant="8" id="2i5-GZ-CfK"/>
-                                    <constraint firstAttribute="bottom" secondItem="RVH-YT-5f9" secondAttribute="bottom" constant="8" id="5fB-zh-XpR"/>
-                                    <constraint firstItem="VE8-Vl-r5k" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="RVH-YT-5f9" secondAttribute="trailing" constant="8" id="De0-4v-YSy"/>
-                                    <constraint firstItem="RVH-YT-5f9" firstAttribute="leading" secondItem="mh4-oO-Iou" secondAttribute="leading" constant="8" id="RyV-Hr-njY"/>
-                                    <constraint firstItem="6O8-wL-tWb" firstAttribute="centerY" secondItem="WpA-Pl-viC" secondAttribute="centerY" id="TP9-gl-ODM"/>
-                                    <constraint firstItem="WpA-Pl-viC" firstAttribute="leading" secondItem="mh4-oO-Iou" secondAttribute="leading" constant="8" id="XEf-T6-uZv"/>
-                                    <constraint firstAttribute="trailing" secondItem="6O8-wL-tWb" secondAttribute="trailing" constant="8" id="gkj-ev-bBp"/>
-                                    <constraint firstItem="CIo-4b-ZbY" firstAttribute="centerY" secondItem="e6F-HP-GFQ" secondAttribute="centerY" id="k6L-6R-6Pk"/>
-                                    <constraint firstItem="RVH-YT-5f9" firstAttribute="top" secondItem="e6F-HP-GFQ" secondAttribute="bottom" constant="8" id="lnW-hd-ypS"/>
-                                    <constraint firstItem="CIo-4b-ZbY" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="e6F-HP-GFQ" secondAttribute="trailing" constant="8" id="lt0-ts-G4X"/>
-                                    <constraint firstItem="6O8-wL-tWb" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="WpA-Pl-viC" secondAttribute="trailing" constant="8" id="s2v-LY-2NX"/>
-                                    <constraint firstItem="e6F-HP-GFQ" firstAttribute="top" secondItem="WpA-Pl-viC" secondAttribute="bottom" constant="8" id="tTs-XW-EYv"/>
-                                    <constraint firstItem="VE8-Vl-r5k" firstAttribute="centerY" secondItem="RVH-YT-5f9" secondAttribute="centerY" id="uh1-q2-N0f"/>
-                                    <constraint firstAttribute="trailing" secondItem="CIo-4b-ZbY" secondAttribute="trailing" constant="8" id="v72-d5-3ep"/>
-                                    <constraint firstItem="e6F-HP-GFQ" firstAttribute="leading" secondItem="mh4-oO-Iou" secondAttribute="leading" constant="8" id="vvZ-RB-awB"/>
-                                    <constraint firstAttribute="trailing" secondItem="VE8-Vl-r5k" secondAttribute="trailing" constant="8" id="y1X-aS-RN4"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="69j-7S-5bL">
-                                <rect key="frame" x="12" y="467" width="40" height="40"/>
-                                <state key="normal" image="upload"/>
-                                <connections>
-                                    <action selector="uploadWaypoints:" destination="HAc-Jz-dH5" eventType="touchUpInside" id="p9E-Vv-XhL"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="0oz-VT-H27" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" constant="8" id="0DD-pd-sw8"/>
-                            <constraint firstItem="mh4-oO-Iou" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" constant="8" id="1oR-hX-gWb"/>
-                            <constraint firstItem="ubb-Lq-gqh" firstAttribute="top" secondItem="69j-7S-5bL" secondAttribute="bottom" constant="12" id="GHp-d1-hnd"/>
-                            <constraint firstAttribute="trailing" secondItem="vxu-7w-poj" secondAttribute="trailing" id="Mg1-6D-tHD"/>
-                            <constraint firstItem="vxu-7w-poj" firstAttribute="top" secondItem="m5b-1a-tYz" secondAttribute="bottom" id="QOy-Sc-Drh"/>
-                            <constraint firstItem="mh4-oO-Iou" firstAttribute="trailing" secondItem="h0E-f4-1lm" secondAttribute="trailing" constant="-8" id="S8J-u7-dfo"/>
-                            <constraint firstItem="69j-7S-5bL" firstAttribute="leading" secondItem="h0E-f4-1lm" secondAttribute="leading" constant="12" id="Sc2-aX-BSv"/>
-                            <constraint firstItem="vxu-7w-poj" firstAttribute="top" secondItem="h0E-f4-1lm" secondAttribute="topMargin" constant="20" id="Xx1-r3-wvn"/>
-                            <constraint firstItem="0oz-VT-H27" firstAttribute="leading" secondItem="h0E-f4-1lm" secondAttribute="leading" constant="8" id="evL-3n-LOu"/>
-                            <constraint firstItem="ubb-Lq-gqh" firstAttribute="top" secondItem="vxu-7w-poj" secondAttribute="bottom" constant="-49" id="rYQ-PC-Dmu"/>
-                            <constraint firstItem="vxu-7w-poj" firstAttribute="leading" secondItem="h0E-f4-1lm" secondAttribute="leading" id="udr-xd-oMC"/>
-                            <constraint firstItem="ubb-Lq-gqh" firstAttribute="top" secondItem="vxu-7w-poj" secondAttribute="bottom" id="wHH-9a-Qqy"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="Xx1-r3-wvn"/>
-                                <exclude reference="rYQ-PC-Dmu"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <tabBarItem key="tabBarItem" tag="1" title="Map" image="map" selectedImage="map" id="Kle-Xr-kco"/>
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="altitudeLabel" destination="CIo-4b-ZbY" id="OU5-Hr-o2g"/>
-                        <outlet property="batteryLabel" destination="GAi-C0-F6k" id="2ZC-vW-hgS"/>
-                        <outlet property="gpsLabel" destination="jKy-HN-tIO" id="d9i-XC-Ucw"/>
-                        <outlet property="mapView" destination="vxu-7w-poj" id="MA3-Fv-16b"/>
-                        <outlet property="rssiImg" destination="elJ-6m-GJk" id="nUJ-Db-ZCf"/>
-                        <outlet property="rssiLabel" destination="vEz-Uy-RIY" id="9Mh-wc-Qsi"/>
-                        <outlet property="speedLabel" destination="VE8-Vl-r5k" id="fg6-vV-m1D"/>
-                        <outlet property="timeLabel" destination="6O8-wL-tWb" id="leN-vq-LMf"/>
-                        <outlet property="uploadButton" destination="69j-7S-5bL" id="UZX-mC-IqB"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="n7f-Po-I7r" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="5" minimumPressDuration="0.5" id="zN8-5v-rhl">
-                    <connections>
-                        <action selector="longPressOnMap:" destination="HAc-Jz-dH5" id="H9i-Cs-C4u"/>
-                    </connections>
-                </pongPressGestureRecognizer>
-                <tapGestureRecognizer id="1Hg-tG-G2a">
-                    <connections>
-                        <action selector="rssiViewTapped:" destination="HAc-Jz-dH5" id="Tfr-js-hp8"/>
-                    </connections>
-                </tapGestureRecognizer>
-            </objects>
-            <point key="canvasLocation" x="-128" y="-938"/>
-        </scene>
         <!--Telemetry2-->
         <scene sceneID="PpH-wn-HC7">
             <objects>
@@ -505,7 +302,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RU2-NR-WVd" userLabel="FlightModesIcons">
-                                        <rect key="frame" x="87.5" y="426" width="146" height="18"/>
+                                        <rect key="frame" x="87" y="426" width="146" height="18"/>
                                         <subviews>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v6n-wQ-f23">
                                                 <rect key="frame" x="77" y="0.0" width="15" height="18"/>
@@ -594,7 +391,7 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DISARMED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfk-J1-JAa" customClass="ArmedLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="120.5" y="71" width="79" height="18"/>
+                                        <rect key="frame" x="121" y="71" width="79" height="18"/>
                                         <accessibility key="accessibilityConfiguration" identifier="armedMode"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                         <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -877,7 +674,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="KU3-Qm-2Go" userLabel="Amps Gauge" customClass="RoundGauge" customModule="Cleanflight_Configurator" customModuleProvider="target">
-                                        <rect key="frame" x="132.5" y="3" width="60" height="60"/>
+                                        <rect key="frame" x="132" y="3" width="60" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AMPS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfQ-z5-fZv" customClass="BlinkingLabel" customModule="Cleanflight_Configurator" customModuleProvider="target">
                                                 <rect key="frame" x="29" y="31" width="31" height="14"/>
@@ -1096,24 +893,16 @@
     <resources>
         <image name="Quad" width="30" height="30"/>
         <image name="RTH" width="15" height="15"/>
-        <image name="battery" width="15" height="15"/>
         <image name="calibrate" width="30" height="30"/>
         <image name="camera" width="15" height="15"/>
-        <image name="gps_small" width="15" height="15"/>
-        <image name="height" width="15" height="15"/>
-        <image name="map" width="30" height="30"/>
         <image name="menuw-1" width="25" height="25"/>
         <image name="recorder" width="15" height="15"/>
         <image name="satellitew" width="15" height="15"/>
         <image name="scalebug" width="18" height="18"/>
-        <image name="signal" width="15" height="15"/>
         <image name="signalw" width="15" height="15"/>
         <image name="sonar" width="15" height="15"/>
-        <image name="speed" width="15" height="15"/>
         <image name="telemetry" width="15" height="15"/>
-        <image name="time" width="15" height="15"/>
         <image name="timew" width="15" height="15"/>
         <image name="tuning" width="30" height="30"/>
-        <image name="upload" width="40" height="40"/>
     </resources>
 </document>

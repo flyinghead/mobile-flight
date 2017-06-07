@@ -20,9 +20,10 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
             viewControllers!.insert(controller, atIndex: 0)
             selectedViewController = controller
         }
-        let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
-        viewControllers!.insert(controller, atIndex: 1)
-        
+        storyboard = UIStoryboard(name: "Map", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 1)
+        }
         storyboard = UIStoryboard(name: "Calibration", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
             viewControllers!.insert(controller, atIndex: 2)

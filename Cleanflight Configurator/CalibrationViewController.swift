@@ -186,7 +186,7 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             setINavSensorStatus(sensorFlowImg, sensor: inavConfig.flowStatus)
             if let tabItems = tabBarController?.tabBar.items {
                 if tabBarController?.selectedViewController === self {
-                    tabItems[tabBarController!.selectedIndex].badgeValue = inavConfig.hardwareHealthy ? "" : "!"
+                    tabItems[tabBarController!.selectedIndex].badgeValue = inavConfig.hardwareHealthy ? nil : "!"
                 }
             }
         } else {

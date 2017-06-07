@@ -103,6 +103,7 @@
 		AE8D56D11EE863D4008A69A6 /* Receiver.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */; };
 		AE8D56D31EE86547008A69A6 /* Modes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D21EE86547008A69A6 /* Modes.storyboard */; };
 		AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */; };
+		AE8D56D71EE89534008A69A6 /* Map.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D61EE89534008A69A6 /* Map.storyboard */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -352,6 +353,7 @@
 		AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Receiver.storyboard; sourceTree = "<group>"; };
 		AE8D56D21EE86547008A69A6 /* Modes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Modes.storyboard; path = ../Modes.storyboard; sourceTree = "<group>"; };
 		AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PIDTuning.storyboard; sourceTree = "<group>"; };
+		AE8D56D61EE89534008A69A6 /* Map.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Map.storyboard; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -750,6 +752,7 @@
 				AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */,
 				AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */,
 				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
+				AE8D56D61EE89534008A69A6 /* Map.storyboard */,
 				AE8D56D21EE86547008A69A6 /* Modes.storyboard */,
 				AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */,
 				AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */,
@@ -1008,6 +1011,7 @@
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
 				AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */,
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
+				AE8D56D71EE89534008A69A6 /* Map.storyboard in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
 				AEEE2EDB1ECA237600CC3D94 /* extra_large.mcm in Resources */,
