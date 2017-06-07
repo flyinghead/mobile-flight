@@ -11,9 +11,21 @@ import SVProgressHUD
 import MapKit
 import Firebase
 
-class CalibrationViewController: StaticDataTableViewController {
+class CalibrationViewController: StaticDataTableViewController, MSPCommandSender {
     static let VTXSmartAudioPowers = [ "25 mW", "200 mW", "500 mW", "800 mW" ]
     static let VTXTrampPowers = [ "25 mW", "100 mW", "200 mW", "400 mW", "600 mW" ]
+    
+    let CfGreen = UIColor(hex6: 0x52AE06)
+    
+    @IBOutlet weak var sensorGyroImg: UIImageView!
+    @IBOutlet weak var sensorAccImg: UIImageView!
+    @IBOutlet weak var sensorMagImg: UIImageView!
+    @IBOutlet weak var sensorBaroImg: UIImageView!
+    @IBOutlet weak var sensorGpsImg: UIImageView!
+    @IBOutlet weak var sensorSonarImg: UIImageView!
+    @IBOutlet weak var sensorPitotImg: UIImageView!
+    @IBOutlet weak var sensorFlowImg: UIImageView!
+    @IBOutlet var inavSensorCells: [UITableViewCell]!
     
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
@@ -55,6 +67,7 @@ class CalibrationViewController: StaticDataTableViewController {
     var calibrationStart: NSDate?
     
     var flightModeEventHandler: Disposable?
+    var sensorStatusEventHandler: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +79,7 @@ class CalibrationViewController: StaticDataTableViewController {
             cell(accTrimCell, setHidden: true)
             reloadDataAnimated(false)
         } else {
+            cells(inavSensorCells, setHidden: true)
             accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
         
             accTrimPitchStepper.minimumValue = -100
@@ -100,6 +114,10 @@ class CalibrationViewController: StaticDataTableViewController {
             }
         }
         
+        sensorStatusEventHandler = msp.sensorStatusEvent.addHandler(self, handler: CalibrationViewController.sensorStatusChanged)
+        sensorStatusChanged()
+        appDelegate.addMSPCommandSender(self)
+       
         flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: CalibrationViewController.flightModeChanged)
         flightModeChanged()
         
@@ -117,7 +135,9 @@ class CalibrationViewController: StaticDataTableViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
+      
+        sensorStatusEventHandler?.dispose()
+        appDelegate.removeMSPCommandSender(self)
         flightModeEventHandler?.dispose()
         
         MetarManager.instance.removeObserver(self)
@@ -134,6 +154,58 @@ class CalibrationViewController: StaticDataTableViewController {
         self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }
     
+    private func setINavSensorStatus(img: UIImageView, sensor: INavSensorStatus) {
+        let color: UIColor?
+        switch sensor {
+        case .Known(let intern ):
+            switch intern {
+            case .Healthy:
+                color = CfGreen
+            case .Unhealthy, .Unavailable:
+                color = UIColor.redColor()
+            case .None:
+                color = UIColor.lightGrayColor()
+            }
+        case .Unknown:
+            color = UIColor.orangeColor()
+        }
+        img.tintColor = color
+    }
+    
+    func sensorStatusChanged() {
+        let config = Configuration.theConfig
+        if config.isINav {
+            let inavConfig = INavConfig.theINavConfig
+            setINavSensorStatus(sensorGyroImg, sensor: inavConfig.gyroStatus)
+            setINavSensorStatus(sensorAccImg, sensor: inavConfig.accStatus)
+            setINavSensorStatus(sensorBaroImg, sensor: inavConfig.baroStatus)
+            setINavSensorStatus(sensorMagImg, sensor: inavConfig.magStatus)
+            setINavSensorStatus(sensorGpsImg, sensor: inavConfig.gpsStatus)
+            setINavSensorStatus(sensorSonarImg, sensor: inavConfig.sonarStatus)
+            setINavSensorStatus(sensorPitotImg, sensor: inavConfig.pitotStatus)
+            setINavSensorStatus(sensorFlowImg, sensor: inavConfig.flowStatus)
+            if let tabItems = tabBarController?.tabBar.items {
+                if tabBarController?.selectedViewController === self {
+                    tabItems[tabBarController!.selectedIndex].badgeValue = inavConfig.hardwareHealthy ? "" : "!"
+                }
+            }
+        } else {
+            sensorGyroImg.tintColor = CfGreen
+            sensorAccImg.tintColor = config.activeSensors & 1 != 0 ? CfGreen : UIColor.lightGrayColor()
+            sensorBaroImg.tintColor = config.activeSensors & 2 != 0 ? CfGreen : UIColor.lightGrayColor()
+            sensorMagImg.tintColor = config.activeSensors & 4 != 0 ? CfGreen : UIColor.lightGrayColor()
+            sensorGpsImg.tintColor = config.activeSensors & 8 != 0 ? CfGreen : UIColor.lightGrayColor()
+            sensorSonarImg.tintColor = config.activeSensors & 16 != 0 ? CfGreen : UIColor.lightGrayColor()
+        }
+    }
+
+    func sendMSPCommands() {
+        let config = Configuration.theConfig
+        if config.isINav {
+            msp.sendMessage(.MSP_SENSOR_STATUS, data: nil)
+        }
+    }
+
     func enableAccCalibration(enabled: Bool) {
         calAccButton.enabled = enabled
         calAccImgButton.enabled = calAccButton.enabled

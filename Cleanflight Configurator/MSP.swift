@@ -51,6 +51,7 @@ class MSPParser {
     let receiverEvent = Event<Void>()
     let communicationEvent = Event<Bool>()
     let dataReceivedEvent = Event<Void>()
+    let sensorStatusEvent = Event<Void>()
     
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
@@ -181,6 +182,7 @@ class MSPParser {
             }
             config.cycleTime = readUInt16(message, index: 0)
             config.i2cError = readUInt16(message, index: 2)
+            let previousActiveSensors = config.activeSensors
             config.activeSensors = readUInt16(message, index: 4)
             let previousMode = config.mode
             config.mode = readUInt32(message, index: 6)
@@ -198,6 +200,9 @@ class MSPParser {
             }
             if previousMode != config.mode {
                 flightModeEvent.raiseDispatch()
+            }
+            if previousActiveSensors != config.activeSensors {
+                sensorStatusEvent.raiseDispatch()
             }
             
         case .MSP_RAW_IMU:
@@ -965,6 +970,7 @@ class MSPParser {
             inavConfig.sonarStatus = INavSensorStatus(value: Int(message[6]))
             inavConfig.pitotStatus = INavSensorStatus(value: Int(message[7]))
             inavConfig.flowStatus = INavSensorStatus(value: Int(message[8]))
+            sensorStatusEvent.raiseDispatch()
             
         // INav 1.6+
         case .MSP_NAV_POSHOLD:
