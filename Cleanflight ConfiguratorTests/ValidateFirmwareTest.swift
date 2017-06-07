@@ -58,6 +58,9 @@ class ValidateFirmwareTest: XCTestCase {
         let gpsData = GPSData.theGPSData
         let inavConfig = INavConfig.theINavConfig
         
+        var gpsSupported = true
+        var compassSupported = true
+        
         let commands: [SendCommand] = [
             { callback in
                 msp.sendRssiConfig(7) { success in
@@ -70,13 +73,13 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                msp.sendMixerConfiguration(1) { success in
+                msp.sendMixerConfiguration(2) { success in
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
                     // All other versions compiled for quad only will fail this test (can't change the mixer type)
                     XCTAssert(success)
                     msp.sendMessage(.MSP_MIXER_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
-                        XCTAssertEqual(settings.mixerConfiguration, 1)
+                        XCTAssertEqual(settings.mixerConfiguration, 2)
                         callback(success)
                     }
                 }
@@ -384,6 +387,40 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
+                // INav: UAV needs to be armed and have a GPS fix and home pos to set GPS hold position. So we use a regular waypoint number
+                if config.isINav {
+                    let wp = Waypoint(number: 1, action: .Known(.Waypoint), position: GPSLocation(latitude: 3.14, longitude: 6.28), altitude: 10, param1: 1, param2: 2, param3: 3, last: true)
+                    msp.sendINavWaypoint(wp) { success in
+                        XCTAssert(success)
+                        msp.sendMessage(.MSP_WP, data: [ UInt8(1) ], retry: 2) { success in
+                            XCTAssert(success)
+                            XCTAssertEqual(gpsData.waypoints[0].position.latitude, 3.14)
+                            XCTAssertEqual(gpsData.waypoints[0].position.longitude, 6.28)
+                            XCTAssertEqual(gpsData.waypoints[0].altitude, 10)
+                            XCTAssertEqual(gpsData.waypoints[0].param1, 1)
+                            XCTAssertEqual(gpsData.waypoints[0].param2, 2)
+                            XCTAssertEqual(gpsData.waypoints[0].param3, 3)
+                            callback(success)
+                        }
+                    }
+                } else {
+                    msp.setGPSHoldPosition(latitude: 3.14, longitude: 6.28, altitude: 0) { success in
+                        if !success {
+                            NSLog("ASSUMING NO GPS SUPPORT AVAILABLE")
+                            gpsSupported = false
+                            callback(true)
+                        } else {
+                            msp.sendMessage(.MSP_WP, data: [ UInt8(config.isINav ? 255 : 16) ], retry: 2) { success in
+                                XCTAssert(success)
+                                XCTAssertEqual(gpsData.posHoldPosition?.latitude, 3.14)
+                                XCTAssertEqual(gpsData.posHoldPosition?.longitude, 6.28)
+                                callback(success)
+                            }
+                        }
+                    }
+                }
+            },
+            { callback in
                 if config.isApiVersionAtLeast("1.35") {
                     callback(true)
                     return
@@ -411,8 +448,10 @@ class ValidateFirmwareTest: XCTestCase {
                         XCTAssertEqual(settings.maxThrottle, tmp.maxThrottle)
                         XCTAssertEqual(settings.minCommand, tmp.minCommand)
                         XCTAssertEqual(settings.failsafeThrottle, tmp.failsafeThrottle)
-                        XCTAssertEqual(settings.gpsType, tmp.gpsType)                       // FIXME: Fails if GPS not compiled in
-                        XCTAssertEqual(settings.gpsUbxSbas, tmp.gpsUbxSbas)                 // FIXME: Fails if GPS not compiled in
+                        if gpsSupported {
+                            XCTAssertEqual(settings.gpsType, tmp.gpsType)
+                            XCTAssertEqual(settings.gpsUbxSbas, tmp.gpsUbxSbas)
+                        }
                         XCTAssertEqual(settings.rssiChannel, tmp.rssiChannel)
                         XCTAssertEqual(settings.magDeclination, tmp.magDeclination)
                         if !config.isApiVersionAtLeast("1.24") {    // Removed in CF 1.14
@@ -422,35 +461,6 @@ class ValidateFirmwareTest: XCTestCase {
                             XCTAssertEqual(settings.vbatWarningCellVoltage, tmp.vbatWarningCellVoltage)
                         }
                         callback(success)
-                    }
-                }
-            },
-            { callback in
-                // INav: UAV needs to be armed and have a GPS fix and home pos to set GPS hold position. So we use a regular waypoint number
-                if config.isINav {
-                    let wp = Waypoint(number: 1, action: .Known(.Waypoint), position: GPSLocation(latitude: 3.14, longitude: 6.28), altitude: 10, param1: 1, param2: 2, param3: 3, last: true)
-                    msp.sendINavWaypoint(wp) { success in
-                        XCTAssert(success)
-                        msp.sendMessage(.MSP_WP, data: [ UInt8(1) ], retry: 2) { success in
-                            XCTAssert(success)
-                            XCTAssertEqual(gpsData.waypoints[0].position.latitude, 3.14)
-                            XCTAssertEqual(gpsData.waypoints[0].position.longitude, 6.28)
-                            XCTAssertEqual(gpsData.waypoints[0].altitude, 10)
-                            XCTAssertEqual(gpsData.waypoints[0].param1, 1)
-                            XCTAssertEqual(gpsData.waypoints[0].param2, 2)
-                            XCTAssertEqual(gpsData.waypoints[0].param3, 3)
-                            callback(success)
-                        }
-                    }
-                } else {
-                    msp.setGPSHoldPosition(latitude: 3.14, longitude: 6.28, altitude: 0) { success in
-                        XCTAssert(success)
-                        msp.sendMessage(.MSP_WP, data: [ UInt8(config.isINav ? 255 : 16) ], retry: 2) { success in
-                            XCTAssert(success)
-                            XCTAssertEqual(gpsData.posHoldPosition!.latitude, 3.14)
-                            XCTAssertEqual(gpsData.posHoldPosition!.longitude, 6.28)
-                            callback(success)
-                        }
                     }
                 }
             },
@@ -562,7 +572,149 @@ class ValidateFirmwareTest: XCTestCase {
                         callback(success)
                     }
                 }
-            }
+            },
+            { callback in
+                msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2, callback: callback)
+            },
+            { callback in
+                let tmp = Settings(copyOf: settings)
+                tmp.vbatScale += 1
+                tmp.vbatMaxCellVoltage = 4.8
+                tmp.vbatMinCellVoltage = 3.1
+                tmp.vbatWarningCellVoltage = 3.3
+                tmp.vbatMeterType = tmp.vbatMeterType == 0 ? 1 : 0
+                
+                tmp.vbatResistorDividerValue += 1
+                tmp.vbatResistorDividerMultiplier += 1
+                
+                msp.sendVoltageMeterConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.vbatScale, tmp.vbatScale)
+                        if !config.isApiVersionAtLeast("1.35") {
+                            XCTAssertEqual(settings.vbatMaxCellVoltage, tmp.vbatMaxCellVoltage)
+                            XCTAssertEqual(settings.vbatMinCellVoltage, tmp.vbatMinCellVoltage)
+                            XCTAssertEqual(settings.vbatWarningCellVoltage, tmp.vbatWarningCellVoltage)
+                            if config.isApiVersionAtLeast("1.31") {
+                                XCTAssertEqual(settings.vbatMeterType, tmp.vbatMeterType)
+                            }
+                        } else {
+                            XCTAssertEqual(settings.vbatResistorDividerValue, tmp.vbatResistorDividerValue)
+                            XCTAssertEqual(settings.vbatResistorDividerMultiplier, tmp.vbatResistorDividerMultiplier)
+                        }
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if !config.isApiVersionAtLeast("1.35") {
+                    callback(true)
+                    return
+                }
+                let tmp = Settings(copyOf: settings)
+                tmp.vbatMaxCellVoltage = 4.7
+                tmp.vbatMinCellVoltage = 3.3
+                tmp.vbatWarningCellVoltage = 3.6
+                tmp.batteryCapacity += 1
+                tmp.currentMeterSource = 1 - tmp.currentMeterSource
+                tmp.voltageMeterSource = 1 - tmp.voltageMeterSource
+                
+                msp.sendBatteryConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_BATTERY_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.vbatMaxCellVoltage, tmp.vbatMaxCellVoltage)
+                        XCTAssertEqual(settings.vbatMinCellVoltage, tmp.vbatMinCellVoltage)
+                        XCTAssertEqual(settings.vbatWarningCellVoltage, tmp.vbatWarningCellVoltage)
+                        XCTAssertEqual(settings.batteryCapacity, tmp.batteryCapacity)
+                        XCTAssertEqual(settings.currentMeterSource, tmp.currentMeterSource)
+                        XCTAssertEqual(settings.voltageMeterSource, tmp.voltageMeterSource)
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                let tmp = Settings(copyOf: settings)
+                tmp.currentScale = 15 - tmp.currentScale
+                tmp.currentOffset = 10 - tmp.currentOffset
+                tmp.currentMeterType = 1 - tmp.currentMeterType
+                tmp.batteryCapacity += 1
+                
+                msp.sendCurrentMeterConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_CURRENT_METER_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.currentScale, tmp.currentScale)
+                        XCTAssertEqual(settings.currentOffset, tmp.currentOffset)
+                        XCTAssertEqual(settings.currentMeterType, tmp.currentMeterType)
+                        if !config.isApiVersionAtLeast("1.35") {
+                            XCTAssertEqual(settings.batteryCapacity, tmp.batteryCapacity)
+                        }
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if !config.isApiVersionAtLeast("1.35") {
+                    callback(true)
+                }
+                let tmp = Settings(copyOf: settings)
+                tmp.minCommand = 1012
+                tmp.minThrottle = 1112
+                tmp.maxThrottle = 1995
+                
+                msp.sendMotorConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_MOTOR_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.minCommand, tmp.minCommand)
+                        XCTAssertEqual(settings.minThrottle, tmp.minThrottle)
+                        XCTAssertEqual(settings.maxThrottle, tmp.maxThrottle)
+                        callback(success)
+                    }
+                }
+            },
+            { callback in
+                if !config.isApiVersionAtLeast("1.35") {
+                    callback(true)
+                }
+                msp.sendCompassConfig(-0.9) { success in
+                    if !success {
+                        NSLog("ASSUMING NO COMPASS SUPPORT AVAILABLE")
+                        compassSupported = false
+                        callback(true)
+                    } else {
+                        msp.sendMessage(.MSP_COMPASS_CONFIG, data: nil, retry: 2) { success in
+                            XCTAssert(success)
+                            XCTAssertEqual(settings.magDeclination, -0.9)
+                            callback(success)
+                        }
+                    }
+                }
+            },
+            { callback in
+                if !config.isApiVersionAtLeast("1.35") || !gpsSupported {
+                    callback(true)
+                }
+                let tmp = Settings(copyOf: settings)
+                tmp.gpsType = 1 - tmp.gpsType
+                tmp.gpsUbxSbas = 1 - tmp.gpsUbxSbas
+                tmp.gpsAutoBaud = !tmp.gpsAutoBaud
+                tmp.gpsAutoConfig = !tmp.gpsAutoConfig
+                
+                msp.sendGpsConfig(tmp) { success in
+                    XCTAssert(success)
+                    msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
+                        XCTAssert(success)
+                        XCTAssertEqual(settings.gpsType, tmp.gpsType)
+                        XCTAssertEqual(settings.gpsUbxSbas, tmp.gpsUbxSbas)
+                        XCTAssertEqual(settings.gpsAutoBaud, tmp.gpsAutoBaud)
+                        XCTAssertEqual(settings.gpsAutoConfig, tmp.gpsAutoConfig)
+                        callback(success)
+                    }
+                }
+            },
         ]
         chainMspSend(commands) { success in
             XCTAssert(success)

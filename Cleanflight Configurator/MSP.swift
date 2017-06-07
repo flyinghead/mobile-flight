@@ -949,6 +949,7 @@ class MSPParser {
             inavConfig.activeWaypoint = Int(message[3])
             inavConfig.error = INavStatusError(value: Int(message[4]))
             sensorData.headingHold = Double(readInt16(message, index: 5))
+            NSLog("NAV_STATUS %d %d %d", inavConfig.mode.intValue, inavConfig.state.intValue, inavConfig.error.intValue)
             navigationEvent.raiseDispatch()
 
         case .MSP_SENSOR_STATUS:
@@ -1457,8 +1458,14 @@ class MSPParser {
             data.append(UInt8(settings.vbatWarningCellVoltage * 10))
             data.append(UInt8(settings.vbatMeterType))
         }
-        // FIXME: CF 2.0 always returns an error (bug)
-        sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2) { success in
+            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
+            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                callback?(success: true)
+            } else {
+                callback?(success: success)
+            }
+        }
     }
     
     func sendMixerConfiguration(mixerConfiguration: Int, callback:((success:Bool) -> Void)?) {
@@ -1482,8 +1489,14 @@ class MSPParser {
         data.append(UInt8(settings.voltageMeterSource))
         data.append(UInt8(settings.currentMeterSource))
 
-        // FIXME: CF 2.0 always returns an error (bug)
-        sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2) { success in
+            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
+            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                callback?(success: true)
+            } else {
+                callback?(success: success)
+            }
+        }
     }
     
     func sendBoardAlignment(settings: Settings, callback:((success:Bool) -> Void)?) {
@@ -1514,8 +1527,14 @@ class MSPParser {
             data.appendContentsOf(writeUInt16(settings.batteryCapacity))
         }
     
-        // FIXME: CF 2.0 always returns an error (bug)
-        sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2) { success in
+            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
+            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                callback?(success: true)
+            } else {
+                callback?(success: success)
+            }
+        }
     }
 
     // Cleanflight 2.0
@@ -1621,9 +1640,12 @@ class MSPParser {
             let position = osd.elements[index]
             data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
         }
-        // FIXME: CF 2.0 always returns an error (bug)
+
         sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
-            if success {
+            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
+            let fakedSuccess = Configuration.theConfig.isApiVersionAtLeast("1.35") ? true : success
+
+            if fakedSuccess {
                 self.sendOsdConfigRecursive(osd, index: index + 1, callback: callback)
             } else {
                 callback?(success: false)
@@ -1634,8 +1656,15 @@ class MSPParser {
     func sendOsdChar(char: Int, data: [UInt8], callback:((success:Bool) -> Void)?) {
         var msgData = [ UInt8(char) ]
         msgData.appendContentsOf(data)
-        // FIXME: CF 2.0 always returns an error (bug)
-        sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2, callback: callback)
+
+        sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2) { success in
+            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
+            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                callback?(success: true)
+            } else {
+                callback?(success: success)
+            }
+        }
     }
     
     func sendVtxConfig(vtxConfig: VTXConfig, callback:((success:Bool) -> Void)?) {

@@ -490,7 +490,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 self.msp.sendINavWaypoints(gpsData, callback: callback)
             },
             { callback in
-                self.msp.saveMission(callback)
+                self.msp.saveMission() { success in
+                    // Save waypoints to eeprom support may not be compiled in (Naze)
+                    callback(true)
+                }
             }
         ]
         chainMspSend(commands) { success in

@@ -717,9 +717,9 @@ class Settings : AutoCoded {
 
     // MSP_VOLTAGE_METER_CONFIG / MSP_BATTERY_CONFIG
     var vbatScale = 110
-    var vbatMinCellVoltage = 0.0     // V
-    var vbatMaxCellVoltage = 0.0     // V
-    var vbatWarningCellVoltage = 0.0 // V
+    var vbatMinCellVoltage = 3.3     // V
+    var vbatMaxCellVoltage = 4.3     // V
+    var vbatWarningCellVoltage = 3.5 // V
     var vbatMeterType = 0
     
     var vbatMeterId = 0
