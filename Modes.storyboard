@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="fXs-89-xxI">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Mode Ranges-->
+        <scene sceneID="ywQ-Zs-eVJ">
+            <objects>
+                <tableViewController id="cm8-K3-yQ0" userLabel="Mode Ranges" customClass="ModesViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="71" sectionHeaderHeight="18" sectionFooterHeight="18" id="etW-vB-WPH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ModeRangeCell" rowHeight="71" id="ISE-RO-Ipe" customClass="ModeRangeCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="56" width="375" height="71"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ISE-RO-Ipe" id="mTE-BO-wqc">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8SR-gF-KKY" customClass="RangeSlider" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <rect key="frame" x="109" y="12" width="203" height="29"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                    <real key="value" value="900"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                    <real key="value" value="2100"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="lowerValue">
+                                                    <real key="value" value="1250"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="upperValue">
+                                                    <real key="value" value="1750"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="rangeChanged:" destination="ISE-RO-Ipe" eventType="valueChanged" id="wVx-BY-4zw"/>
+                                            </connections>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1750" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ba0-zy-X3x">
+                                            <rect key="frame" x="109" y="45" width="32" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xYX-Bi-6mY">
+                                            <rect key="frame" x="277" y="45" width="35" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AUX 8" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="p0g-nf-1dY">
+                                            <rect key="frame" x="8" y="20" width="85" height="30"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="85" id="LD9-zl-KFO"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ba0-zy-X3x" firstAttribute="leading" secondItem="8SR-gF-KKY" secondAttribute="leading" id="0U2-cL-nLt"/>
+                                        <constraint firstItem="p0g-nf-1dY" firstAttribute="centerY" secondItem="mTE-BO-wqc" secondAttribute="centerY" id="6uf-tQ-FGy"/>
+                                        <constraint firstItem="xYX-Bi-6mY" firstAttribute="trailing" secondItem="mTE-BO-wqc" secondAttribute="trailingMargin" id="CGu-lq-8ve"/>
+                                        <constraint firstItem="ba0-zy-X3x" firstAttribute="top" secondItem="8SR-gF-KKY" secondAttribute="bottom" constant="4" id="Vei-Dq-Qrb"/>
+                                        <constraint firstItem="ba0-zy-X3x" firstAttribute="leading" secondItem="p0g-nf-1dY" secondAttribute="trailing" constant="16" id="XNP-JF-U7V"/>
+                                        <constraint firstItem="xYX-Bi-6mY" firstAttribute="centerY" secondItem="ba0-zy-X3x" secondAttribute="centerY" id="flG-qZ-IbN"/>
+                                        <constraint firstItem="p0g-nf-1dY" firstAttribute="leading" secondItem="mTE-BO-wqc" secondAttribute="leadingMargin" id="lQ1-tt-8Su"/>
+                                        <constraint firstItem="8SR-gF-KKY" firstAttribute="trailing" secondItem="mTE-BO-wqc" secondAttribute="trailingMargin" id="o3h-mo-cyG"/>
+                                        <constraint firstItem="8SR-gF-KKY" firstAttribute="top" secondItem="mTE-BO-wqc" secondAttribute="topMargin" constant="4" id="twy-Zz-G8G"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="ba0-zy-X3x" secondAttribute="bottom" id="vSg-Pu-5jb"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="channelField" destination="p0g-nf-1dY" id="QEu-yX-0v7"/>
+                                    <outlet property="lowerLabel" destination="ba0-zy-X3x" id="a5X-XP-FDk"/>
+                                    <outlet property="rangeSlider" destination="8SR-gF-KKY" id="xik-1f-pSo"/>
+                                    <outlet property="upperLabel" destination="xYX-Bi-6mY" id="fR6-L3-FzY"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="cm8-K3-yQ0" id="Uw8-JV-uDf"/>
+                            <outlet property="delegate" destination="cm8-K3-yQ0" id="ePf-Ah-KDx"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Modes" id="jjK-sy-fQA">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="iIR-HO-S8L">
+                            <connections>
+                                <action selector="saveAction:" destination="cm8-K3-yQ0" id="7z8-zl-pgu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XeG-hx-xZ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-564" y="1455"/>
+        </scene>
+        <!--Modes Navigation-->
+        <scene sceneID="Cxb-NO-VOE">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fXs-89-xxI" userLabel="Modes Navigation" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" tag="4" title="Modes" image="Modes" selectedImage="Modes" id="dya-of-Y1s"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ClY-Fm-AvR">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="cm8-K3-yQ0" kind="relationship" relationship="rootViewController" id="xEp-QQ-dor"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ga4-UB-b0O" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1318" y="1455"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Modes" width="30" height="30"/>
+    </resources>
+</document>

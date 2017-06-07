@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ija-T3-a8e">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Receiver-->
+        <scene sceneID="Ynz-oY-wmt">
+            <objects>
+                <tableViewController id="3Tw-TP-zfi" userLabel="Receiver" customClass="ReceiverViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="k1v-DK-qJm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChannelCell" id="9Qf-7U-5rf" customClass="ChannelCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="56" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9Qf-7U-5rf" id="dOa-xT-hhZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4cD-50-lhd" userLabel="receiverlChannel" customClass="ReceiverChannel" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                            <rect key="frame" x="16" y="3" width="347" height="37"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="label" value="A"/>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                                    <color key="value" red="0.94509803920000002" green="0.27058823529999998" blue="0.23921568630000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                    <real key="value" value="16"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottomMargin" secondItem="4cD-50-lhd" secondAttribute="bottom" constant="-5" id="21G-Zg-BCG"/>
+                                        <constraint firstItem="4cD-50-lhd" firstAttribute="trailing" secondItem="dOa-xT-hhZ" secondAttribute="trailingMargin" constant="-4" id="8QO-I3-M0f"/>
+                                        <constraint firstItem="4cD-50-lhd" firstAttribute="top" secondItem="dOa-xT-hhZ" secondAttribute="topMargin" constant="-5" id="r7X-uT-p03"/>
+                                        <constraint firstItem="4cD-50-lhd" firstAttribute="leading" secondItem="dOa-xT-hhZ" secondAttribute="leadingMargin" constant="8" id="xqr-Os-lai"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="channelView" destination="4cD-50-lhd" id="R0A-qK-laU"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ConfigCell" textLabel="pn2-yr-fr6" style="IBUITableViewCellStyleDefault" id="g3Z-70-Orr">
+                                <rect key="frame" x="0.0" y="100" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="g3Z-70-Orr" id="Nkq-IP-D2p">
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Configuration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pn2-yr-fr6">
+                                            <rect key="frame" x="15" y="0.0" width="325" height="43"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="YKO-q2-X7n" kind="show" id="F6r-kU-ceV">
+                                        <nil key="action"/>
+                                    </segue>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="3Tw-TP-zfi" id="qKQ-gI-uVs"/>
+                            <outlet property="delegate" destination="3Tw-TP-zfi" id="R1X-g0-HIv"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Receiver" id="jIl-8X-10A"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M7H-NC-FWI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2174" y="803"/>
+        </scene>
+        <!--Receiver Tuning-->
+        <scene sceneID="TOV-4x-Hpf">
+            <objects>
+                <tableViewController id="YKO-q2-X7n" userLabel="Receiver Tuning" customClass="ReceiverTuningViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="Dnw-tq-1f0">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="950"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <sections>
+                            <tableViewSection id="v3Y-Zj-auO">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="YNk-dT-OrF">
+                                        <rect key="frame" x="0.0" y="35" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YNk-dT-OrF" id="u6b-tv-mnl">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Channel Map" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HkH-dS-JW7">
+                                                    <rect key="frame" x="16" y="12" width="259" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GIx-Oh-gYu">
+                                                    <rect key="frame" x="287" y="7" width="25" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GIx-Oh-gYu" firstAttribute="trailing" secondItem="u6b-tv-mnl" secondAttribute="trailingMargin" id="HBo-JY-edc"/>
+                                                <constraint firstItem="HkH-dS-JW7" firstAttribute="centerY" secondItem="u6b-tv-mnl" secondAttribute="centerY" id="Ks0-Bd-iqV"/>
+                                                <constraint firstItem="GIx-Oh-gYu" firstAttribute="leading" secondItem="HkH-dS-JW7" secondAttribute="trailing" constant="12" id="Sxj-k2-TK2"/>
+                                                <constraint firstItem="HkH-dS-JW7" firstAttribute="leading" secondItem="u6b-tv-mnl" secondAttribute="leadingMargin" constant="8" id="pip-oQ-HMd"/>
+                                                <constraint firstItem="GIx-Oh-gYu" firstAttribute="centerY" secondItem="u6b-tv-mnl" secondAttribute="centerY" id="uqe-d4-17G"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="9LX-bt-ASR">
+                                        <rect key="frame" x="0.0" y="79" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9LX-bt-ASR" id="NDq-hB-DLW">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="RSSI Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3o-h3-XGs">
+                                                    <rect key="frame" x="16" y="12" width="259" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qu0-iU-oPo">
+                                                    <rect key="frame" x="287" y="7" width="25" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="a3o-h3-XGs" firstAttribute="centerY" secondItem="NDq-hB-DLW" secondAttribute="centerY" id="QR7-9s-6hz"/>
+                                                <constraint firstItem="Qu0-iU-oPo" firstAttribute="leading" secondItem="a3o-h3-XGs" secondAttribute="trailing" constant="12" id="S0R-sh-yqD"/>
+                                                <constraint firstItem="Qu0-iU-oPo" firstAttribute="centerY" secondItem="NDq-hB-DLW" secondAttribute="centerY" id="V1s-Tu-hjI"/>
+                                                <constraint firstItem="Qu0-iU-oPo" firstAttribute="trailing" secondItem="NDq-hB-DLW" secondAttribute="trailingMargin" id="VzN-Vh-LXq"/>
+                                                <constraint firstItem="a3o-h3-XGs" firstAttribute="leading" secondItem="NDq-hB-DLW" secondAttribute="leadingMargin" constant="8" id="ah3-xN-Zye"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Throttle" id="b6U-Bd-VdN">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="4Gl-7e-x6d">
+                                        <rect key="frame" x="0.0" y="180" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Gl-7e-x6d" id="a3Z-II-8qL">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="crx-KS-tvP" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="139" y="12" width="173" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Throttle Middle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r8u-6E-Kv9">
+                                                    <rect key="frame" x="16" y="12" width="111" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="r8u-6E-Kv9" firstAttribute="centerY" secondItem="a3Z-II-8qL" secondAttribute="centerY" id="Qoz-k6-gAB"/>
+                                                <constraint firstItem="crx-KS-tvP" firstAttribute="trailing" secondItem="a3Z-II-8qL" secondAttribute="trailingMargin" id="UAy-7M-Ft5"/>
+                                                <constraint firstItem="crx-KS-tvP" firstAttribute="centerY" secondItem="a3Z-II-8qL" secondAttribute="centerY" id="YMz-eA-aZx"/>
+                                                <constraint firstItem="r8u-6E-Kv9" firstAttribute="leading" secondItem="a3Z-II-8qL" secondAttribute="leadingMargin" constant="8" id="ZXv-Vm-IbU"/>
+                                                <constraint firstItem="crx-KS-tvP" firstAttribute="leading" secondItem="r8u-6E-Kv9" secondAttribute="trailing" constant="12" id="tYA-yQ-DMw"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Tdg-Uw-J8M">
+                                        <rect key="frame" x="0.0" y="224" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Tdg-Uw-J8M" id="4bV-ST-EBE">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4Wq-Oj-vss" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="126" y="12" width="186" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Throttle Expo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JDT-gS-PLT">
+                                                    <rect key="frame" x="16" y="12" width="98" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="4Wq-Oj-vss" firstAttribute="trailing" secondItem="4bV-ST-EBE" secondAttribute="trailingMargin" id="91d-e6-YN7"/>
+                                                <constraint firstItem="JDT-gS-PLT" firstAttribute="centerY" secondItem="4bV-ST-EBE" secondAttribute="centerY" id="JGG-E6-BRA"/>
+                                                <constraint firstItem="4Wq-Oj-vss" firstAttribute="leading" secondItem="JDT-gS-PLT" secondAttribute="trailing" constant="12" id="dBO-hf-CCy"/>
+                                                <constraint firstItem="4Wq-Oj-vss" firstAttribute="centerY" secondItem="4bV-ST-EBE" secondAttribute="centerY" id="gHQ-q1-Im4"/>
+                                                <constraint firstItem="JDT-gS-PLT" firstAttribute="leading" secondItem="4bV-ST-EBE" secondAttribute="leadingMargin" constant="8" id="vC0-o1-mFA"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Rate and expo" id="SDY-N1-hdS">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="WBi-Gv-hka">
+                                        <rect key="frame" x="0.0" y="325" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WBi-Gv-hka" id="iP3-zH-kmj">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WsM-Nf-7ed" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="148" y="12" width="164" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.90000000000000002"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="2.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Roll &amp; Pitch Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EV-6e-Yx0">
+                                                    <rect key="frame" x="16" y="12" width="120" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="4EV-6e-Yx0" firstAttribute="leading" secondItem="iP3-zH-kmj" secondAttribute="leadingMargin" constant="8" id="2or-x9-Kqg"/>
+                                                <constraint firstItem="WsM-Nf-7ed" firstAttribute="centerY" secondItem="iP3-zH-kmj" secondAttribute="centerY" id="8bk-IM-ctA"/>
+                                                <constraint firstItem="WsM-Nf-7ed" firstAttribute="leading" secondItem="4EV-6e-Yx0" secondAttribute="trailing" constant="12" id="D5P-EJ-7gr"/>
+                                                <constraint firstItem="4EV-6e-Yx0" firstAttribute="centerY" secondItem="iP3-zH-kmj" secondAttribute="centerY" id="i3N-sU-7wg"/>
+                                                <constraint firstItem="WsM-Nf-7ed" firstAttribute="trailing" secondItem="iP3-zH-kmj" secondAttribute="trailingMargin" id="nOd-m4-HyT"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="cgn-91-PuK">
+                                        <rect key="frame" x="0.0" y="369" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cgn-91-PuK" id="99Z-qD-J0L">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Roll &amp; Pitch Expo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9oJ-6Q-ORr">
+                                                    <rect key="frame" x="16" y="12" width="123" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Mhe-wP-z93" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="151" y="12" width="161" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.65000000000000002"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Mhe-wP-z93" firstAttribute="leading" secondItem="9oJ-6Q-ORr" secondAttribute="trailing" constant="12" id="3kf-0j-31G"/>
+                                                <constraint firstItem="Mhe-wP-z93" firstAttribute="trailing" secondItem="99Z-qD-J0L" secondAttribute="trailingMargin" id="NKg-zG-14I"/>
+                                                <constraint firstItem="9oJ-6Q-ORr" firstAttribute="leading" secondItem="99Z-qD-J0L" secondAttribute="leadingMargin" constant="8" id="cNG-HN-DjZ"/>
+                                                <constraint firstItem="9oJ-6Q-ORr" firstAttribute="centerY" secondItem="99Z-qD-J0L" secondAttribute="centerY" id="toZ-cc-pbG"/>
+                                                <constraint firstItem="Mhe-wP-z93" firstAttribute="centerY" secondItem="99Z-qD-J0L" secondAttribute="centerY" id="u3I-HA-lxv"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="32e-KZ-lW7">
+                                        <rect key="frame" x="0.0" y="413" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="32e-KZ-lW7" id="fZD-Hj-6oB">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Yaw Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ySY-9m-sZB">
+                                                    <rect key="frame" x="16" y="12" width="66.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ef5-iR-nK0" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="94.5" y="12" width="217.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.90000000000000002"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="2.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ySY-9m-sZB" firstAttribute="centerY" secondItem="fZD-Hj-6oB" secondAttribute="centerY" id="1Tu-Rh-eJc"/>
+                                                <constraint firstItem="ySY-9m-sZB" firstAttribute="leading" secondItem="fZD-Hj-6oB" secondAttribute="leadingMargin" constant="8" id="2cv-ro-Zid"/>
+                                                <constraint firstItem="ef5-iR-nK0" firstAttribute="leading" secondItem="ySY-9m-sZB" secondAttribute="trailing" constant="12" id="4c6-J2-dKS"/>
+                                                <constraint firstItem="ef5-iR-nK0" firstAttribute="centerY" secondItem="fZD-Hj-6oB" secondAttribute="centerY" id="nKo-Hd-hAr"/>
+                                                <constraint firstItem="ef5-iR-nK0" firstAttribute="trailing" secondItem="fZD-Hj-6oB" secondAttribute="trailingMargin" id="tC0-vH-gZ0"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="paV-58-IyI">
+                                        <rect key="frame" x="0.0" y="457" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="paV-58-IyI" id="wbj-Gc-48e">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Yaw Expo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pYF-5u-nV3">
+                                                    <rect key="frame" x="16" y="12" width="70" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gnd-UD-OJt" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="98" y="12" width="214" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="2"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="0.65000000000000002"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="0.01"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="pYF-5u-nV3" firstAttribute="centerY" secondItem="wbj-Gc-48e" secondAttribute="centerY" id="CES-w0-PTZ"/>
+                                                <constraint firstItem="gnd-UD-OJt" firstAttribute="centerY" secondItem="wbj-Gc-48e" secondAttribute="centerY" id="NTd-uO-P1l"/>
+                                                <constraint firstItem="pYF-5u-nV3" firstAttribute="leading" secondItem="wbj-Gc-48e" secondAttribute="leadingMargin" constant="8" id="Q1p-Rb-eSX"/>
+                                                <constraint firstItem="gnd-UD-OJt" firstAttribute="trailing" secondItem="wbj-Gc-48e" secondAttribute="trailingMargin" id="UX4-BA-fVU"/>
+                                                <constraint firstItem="gnd-UD-OJt" firstAttribute="leading" secondItem="pYF-5u-nV3" secondAttribute="trailing" constant="12" id="oJT-bl-th7"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Center and deadband" id="88n-6S-eP7">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="0S5-5u-dvO">
+                                        <rect key="frame" x="0.0" y="558" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0S5-5u-dvO" id="TFq-yu-zsR">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S8a-IQ-hLJ" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="121" y="12" width="191" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="1500"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="1200"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="1700"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Center Value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tEg-bM-Sxn">
+                                                    <rect key="frame" x="16" y="12" width="93" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="tEg-bM-Sxn" firstAttribute="leading" secondItem="TFq-yu-zsR" secondAttribute="leadingMargin" constant="8" id="6QM-cr-KtB"/>
+                                                <constraint firstItem="S8a-IQ-hLJ" firstAttribute="leading" secondItem="tEg-bM-Sxn" secondAttribute="trailing" constant="12" id="TqW-0d-Fpn"/>
+                                                <constraint firstItem="S8a-IQ-hLJ" firstAttribute="trailing" secondItem="TFq-yu-zsR" secondAttribute="trailingMargin" id="rxz-Cp-OQt"/>
+                                                <constraint firstItem="tEg-bM-Sxn" firstAttribute="centerY" secondItem="TFq-yu-zsR" secondAttribute="centerY" id="vbL-3J-66I"/>
+                                                <constraint firstItem="S8a-IQ-hLJ" firstAttribute="centerY" secondItem="TFq-yu-zsR" secondAttribute="centerY" id="wnc-2c-FCU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="b9s-67-coO">
+                                        <rect key="frame" x="0.0" y="602" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="b9s-67-coO" id="6YY-sv-Inx">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Roll &amp; Pitch Deadband" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BO2-1e-IAv">
+                                                    <rect key="frame" x="16" y="12" width="162" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="08q-9R-4Nb" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="190" y="12" width="122" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="32"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="08q-9R-4Nb" firstAttribute="trailing" secondItem="6YY-sv-Inx" secondAttribute="trailingMargin" id="A2g-RM-us7"/>
+                                                <constraint firstItem="08q-9R-4Nb" firstAttribute="leading" secondItem="BO2-1e-IAv" secondAttribute="trailing" constant="12" id="V31-Ds-Mkj"/>
+                                                <constraint firstItem="BO2-1e-IAv" firstAttribute="leading" secondItem="6YY-sv-Inx" secondAttribute="leadingMargin" constant="8" id="XbC-8p-L7X"/>
+                                                <constraint firstItem="BO2-1e-IAv" firstAttribute="centerY" secondItem="6YY-sv-Inx" secondAttribute="centerY" id="ZeV-tT-l8Y"/>
+                                                <constraint firstItem="08q-9R-4Nb" firstAttribute="centerY" secondItem="6YY-sv-Inx" secondAttribute="centerY" id="pP0-YT-xHg"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="VyZ-4D-Ncd">
+                                        <rect key="frame" x="0.0" y="646" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VyZ-4D-Ncd" id="Sro-rK-GCU">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Yaw Deadband" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fAF-GZ-qMK">
+                                                    <rect key="frame" x="16" y="12" width="108.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8Ug-8Q-cEf" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="136.5" y="12" width="175.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="100"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="8Ug-8Q-cEf" firstAttribute="centerY" secondItem="Sro-rK-GCU" secondAttribute="centerY" id="3L6-y1-mjF"/>
+                                                <constraint firstItem="fAF-GZ-qMK" firstAttribute="leading" secondItem="Sro-rK-GCU" secondAttribute="leadingMargin" constant="8" id="9tN-tT-Sqf"/>
+                                                <constraint firstItem="fAF-GZ-qMK" firstAttribute="centerY" secondItem="Sro-rK-GCU" secondAttribute="centerY" id="YIj-b8-RhY"/>
+                                                <constraint firstItem="8Ug-8Q-cEf" firstAttribute="trailing" secondItem="Sro-rK-GCU" secondAttribute="trailingMargin" id="v7N-QR-AKn"/>
+                                                <constraint firstItem="8Ug-8Q-cEf" firstAttribute="leading" secondItem="fAF-GZ-qMK" secondAttribute="trailing" constant="12" id="zKS-kS-xDb"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="RC Interpolation" id="jKV-xZ-uXg">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="qYi-5p-EBl">
+                                        <rect key="frame" x="0.0" y="747" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qYi-5p-EBl" id="eVl-3I-Gwt">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Manual" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PaZ-G2-n2q">
+                                                    <rect key="frame" x="238" y="7" width="74" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <action selector="interpolationTypeChanged:" destination="YKO-q2-X7n" eventType="editingDidEnd" id="heB-3r-tr6"/>
+                                                    </connections>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wpx-jA-PB7">
+                                                    <rect key="frame" x="16" y="12" width="210" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Wpx-jA-PB7" firstAttribute="centerY" secondItem="eVl-3I-Gwt" secondAttribute="centerY" id="7PX-3d-FG3"/>
+                                                <constraint firstItem="PaZ-G2-n2q" firstAttribute="trailing" secondItem="eVl-3I-Gwt" secondAttribute="trailingMargin" id="HEb-Re-BMT"/>
+                                                <constraint firstItem="PaZ-G2-n2q" firstAttribute="leading" secondItem="Wpx-jA-PB7" secondAttribute="trailing" constant="12" id="HpD-Pe-vMu"/>
+                                                <constraint firstItem="Wpx-jA-PB7" firstAttribute="leading" secondItem="eVl-3I-Gwt" secondAttribute="leadingMargin" constant="8" id="Vfx-VL-V5i"/>
+                                                <constraint firstItem="PaZ-G2-n2q" firstAttribute="centerY" secondItem="eVl-3I-Gwt" secondAttribute="centerY" id="jsl-YY-Np6"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="MxU-ms-hrk">
+                                        <rect key="frame" x="0.0" y="791" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MxU-ms-hrk" id="XkA-vH-Meb">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Interpolation Interval" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OlZ-Mt-S0q">
+                                                    <rect key="frame" x="16" y="12" width="149" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="o63-96-vBy" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                    <rect key="frame" x="177" y="12" width="135" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="19"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="50"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="o63-96-vBy" firstAttribute="trailing" secondItem="XkA-vH-Meb" secondAttribute="trailingMargin" id="A1Q-lH-qxP"/>
+                                                <constraint firstItem="OlZ-Mt-S0q" firstAttribute="leading" secondItem="XkA-vH-Meb" secondAttribute="leadingMargin" constant="8" id="ACw-5Y-fvj"/>
+                                                <constraint firstItem="o63-96-vBy" firstAttribute="leading" secondItem="OlZ-Mt-S0q" secondAttribute="trailing" constant="12" id="Zlb-ej-hkF"/>
+                                                <constraint firstItem="o63-96-vBy" firstAttribute="centerY" secondItem="XkA-vH-Meb" secondAttribute="centerY" id="dMG-o6-Uqv"/>
+                                                <constraint firstItem="OlZ-Mt-S0q" firstAttribute="centerY" secondItem="XkA-vH-Meb" secondAttribute="centerY" id="ymm-j3-Jtz"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="YKO-q2-X7n" id="4Bb-54-4yS"/>
+                            <outlet property="delegate" destination="YKO-q2-X7n" id="j5H-2N-fCP"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Configuration" id="2oi-6S-8Wr">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="08O-WZ-Czw">
+                            <connections>
+                                <action selector="refreshAction:" destination="YKO-q2-X7n" id="tqY-Vd-Etq"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="950"/>
+                    <connections>
+                        <outlet property="channelMapField" destination="GIx-Oh-gYu" id="ttl-Wm-uaz"/>
+                        <outlet property="interpolationInterval" destination="o63-96-vBy" id="clM-mc-Ojg"/>
+                        <outlet property="interpolationTypeField" destination="PaZ-G2-n2q" id="O3Y-K3-h81"/>
+                        <outlet property="interpolationValueCell" destination="MxU-ms-hrk" id="9fb-EK-qfa"/>
+                        <outlet property="midRC" destination="S8a-IQ-hLJ" id="DDk-ju-RuT"/>
+                        <outlet property="rcDeadband" destination="08q-9R-4Nb" id="knP-Ob-vxL"/>
+                        <outlet property="rcExpo" destination="Mhe-wP-z93" id="sV6-w1-AbG"/>
+                        <outlet property="rcRate" destination="WsM-Nf-7ed" id="H83-ub-sXw"/>
+                        <outlet property="rssiChannelField" destination="Qu0-iU-oPo" id="JxY-pd-dfb"/>
+                        <outlet property="throttleExpo" destination="4Wq-Oj-vss" id="YGC-Kl-fMc"/>
+                        <outlet property="throttleMid" destination="crx-KS-tvP" id="uJe-cg-PZS"/>
+                        <outlet property="yawDeadband" destination="8Ug-8Q-cEf" id="rK5-4x-8Ey"/>
+                        <outlet property="yawExpo" destination="gnd-UD-OJt" id="7Pb-LD-Why"/>
+                        <outlet property="yawRate" destination="ef5-iR-nK0" id="7nn-zi-6mx"/>
+                        <outletCollection property="interpolationCells" destination="qYi-5p-EBl" collectionClass="NSMutableArray" id="Xjd-SY-ZHw"/>
+                        <outletCollection property="interpolationCells" destination="MxU-ms-hrk" collectionClass="NSMutableArray" id="PHQ-jJ-dqL"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lWe-yY-lyu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3053" y="539"/>
+        </scene>
+        <!--Receiver Navigation-->
+        <scene sceneID="IA8-Gq-GaA">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ija-T3-a8e" userLabel="Receiver Navigation" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" tag="3" title="Receiver" image="Receiver" selectedImage="Receiver" id="4m1-wm-Lcb"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4TS-23-zcT">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="3Tw-TP-zfi" kind="relationship" relationship="rootViewController" id="pgR-6B-mmR"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="26W-zG-PgD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1412" y="803"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Receiver" width="30" height="30"/>
+    </resources>
+</document>

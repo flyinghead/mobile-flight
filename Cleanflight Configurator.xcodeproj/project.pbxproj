@@ -99,6 +99,10 @@
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
 		AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */; };
 		AE8D56CD1EE3179D008A69A6 /* ValidateFirmwareTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */; };
+		AE8D56CF1EE8605D008A69A6 /* Calibration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */; };
+		AE8D56D11EE863D4008A69A6 /* Receiver.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */; };
+		AE8D56D31EE86547008A69A6 /* Modes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D21EE86547008A69A6 /* Modes.storyboard */; };
+		AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -344,6 +348,10 @@
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
 		AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidateFirmwareTest.swift; sourceTree = "<group>"; };
+		AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Calibration.storyboard; sourceTree = "<group>"; };
+		AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Receiver.storyboard; sourceTree = "<group>"; };
+		AE8D56D21EE86547008A69A6 /* Modes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Modes.storyboard; path = ../Modes.storyboard; sourceTree = "<group>"; };
+		AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PIDTuning.storyboard; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -739,8 +747,12 @@
 				AEDA78B11C20A52C00AD4845 /* Utilities.swift */,
 				AE00734C1C24C2780000926F /* VoiceMessage.swift */,
 				AE72AB621C0F3D230020C4B0 /* Assets.xcassets */,
-				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
+				AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */,
 				AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */,
+				AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */,
+				AE8D56D21EE86547008A69A6 /* Modes.storyboard */,
+				AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */,
+				AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */,
 				AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */,
 				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
 				AEBA64191C332B3100783ECE /* Settings.bundle */,
@@ -980,6 +992,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */,
+				AE8D56CF1EE8605D008A69A6 /* Calibration.storyboard in Resources */,
 				AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */,
 				AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */,
 				AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */,
@@ -989,6 +1002,8 @@
 				AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */,
 				AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */,
 				AEEE2EB31EC73A4E00CC3D94 /* INav.storyboard in Resources */,
+				AE8D56D31EE86547008A69A6 /* Modes.storyboard in Resources */,
+				AE8D56D11EE863D4008A69A6 /* Receiver.storyboard in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
 				AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */,
@@ -1000,6 +1015,7 @@
 				AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AEEE2ED91ECA237600CC3D94 /* cleanflight.mcm in Resources */,
+				AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
 				0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */,

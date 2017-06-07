@@ -15,21 +15,38 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
     override func awakeFromNib() {
         self.delegate = self
         
-        var storyboard = UIStoryboard(name: "Configuration", bundle: nil)
-        if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 6)
-        }
-        storyboard = UIStoryboard(name: "Sensors", bundle: nil)
-        if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 8)
-        }
-        storyboard = UIStoryboard(name: "Telemetry", bundle: nil)
+        var storyboard = UIStoryboard(name: "Telemetry", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
             viewControllers!.insert(controller, atIndex: 0)
             selectedViewController = controller
         }
         let controller = storyboard.instantiateViewControllerWithIdentifier("MapViewController")
         viewControllers!.insert(controller, atIndex: 1)
+        
+        storyboard = UIStoryboard(name: "Calibration", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 2)
+        }
+        storyboard = UIStoryboard(name: "Receiver", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 3)
+        }
+        storyboard = UIStoryboard(name: "Modes", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 4)
+        }
+        storyboard = UIStoryboard(name: "PIDTuning", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 5)
+        }
+        storyboard = UIStoryboard(name: "Configuration", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 8)
+        }
+        storyboard = UIStoryboard(name: "Sensors", bundle: nil)
+        if let controller = storyboard.instantiateInitialViewController() {
+            viewControllers!.insert(controller, atIndex: 10)
+        }
 
         storyboard = UIStoryboard(name: "INav", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
