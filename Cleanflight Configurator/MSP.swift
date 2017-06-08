@@ -180,11 +180,13 @@ class MSPParser {
             if message.count < 11 {
                 return false
             }
+            let previousActiveSensors = config.activeSensors
+            let previousMode = config.mode
+            let previousArmingFlags = inavConfig.armingFlags
+            
             config.cycleTime = readUInt16(message, index: 0)
             config.i2cError = readUInt16(message, index: 2)
-            let previousActiveSensors = config.activeSensors
             config.activeSensors = readUInt16(message, index: 4)
-            let previousMode = config.mode
             config.mode = readUInt32(message, index: 6)
             config.profile = Int(message[10])
             if message.count >= 13 {
@@ -201,7 +203,7 @@ class MSPParser {
             if previousMode != config.mode {
                 flightModeEvent.raiseDispatch()
             }
-            if previousActiveSensors != config.activeSensors {
+            if previousActiveSensors != config.activeSensors || previousArmingFlags != inavConfig.armingFlags {
                 sensorStatusEvent.raiseDispatch()
             }
             

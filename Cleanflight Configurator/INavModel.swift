@@ -225,17 +225,17 @@ enum INavUserControlMode {
 struct INavArmingFlags : OptionSetType {
     let rawValue: Int
     
-    static let OkToArm              = BaseFlightFeature(rawValue: 1 << 0)
-    static let PreventArming        = BaseFlightFeature(rawValue: 1 << 1)
-    static let Armed                = BaseFlightFeature(rawValue: 1 << 2)
-    static let WasArmed             = BaseFlightFeature(rawValue: 1 << 3)
-    static let NotLevel             = BaseFlightFeature(rawValue: 1 << 8)
-    static let SensorsCalibrating   = BaseFlightFeature(rawValue: 1 << 9)
-    static let SystemOverloaded     = BaseFlightFeature(rawValue: 1 << 10)
-    static let NavigationSafety     = BaseFlightFeature(rawValue: 1 << 11)
-    static let CompassNotCalibrated = BaseFlightFeature(rawValue: 1 << 12)
-    static let AccNotCalibrated     = BaseFlightFeature(rawValue: 1 << 13)
-    static let HardwareFailure      = BaseFlightFeature(rawValue: 1 << 15)
+    static let OkToArm              = INavArmingFlags(rawValue: 1 << 0)
+    static let PreventArming        = INavArmingFlags(rawValue: 1 << 1)
+    static let Armed                = INavArmingFlags(rawValue: 1 << 2)
+    static let WasArmed             = INavArmingFlags(rawValue: 1 << 3)
+    static let NotLevel             = INavArmingFlags(rawValue: 1 << 8)
+    static let SensorsCalibrating   = INavArmingFlags(rawValue: 1 << 9)
+    static let SystemOverloaded     = INavArmingFlags(rawValue: 1 << 10)
+    static let NavigationSafety     = INavArmingFlags(rawValue: 1 << 11)
+    static let CompassNotCalibrated = INavArmingFlags(rawValue: 1 << 12)
+    static let AccNotCalibrated     = INavArmingFlags(rawValue: 1 << 13)
+    static let HardwareFailure      = INavArmingFlags(rawValue: 1 << 15)
 
     init(rawValue: Int) {
         self.rawValue = rawValue

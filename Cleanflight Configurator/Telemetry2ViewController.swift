@@ -69,6 +69,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
     var batteryEventHandler: Disposable?
     var gpsEventHandler: Disposable?
     var receiverEventHandler: Disposable?
+    var sensorStatusEventHandler: Disposable?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -157,6 +158,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         batteryEventHandler = msp.batteryEvent.addHandler(self, handler: Telemetry2ViewController.receivedBatteryData)
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: Telemetry2ViewController.receivedGpsData)
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: Telemetry2ViewController.receivedReceiverData)
+        sensorStatusEventHandler = msp.sensorStatusEvent.addHandler(self, handler: Telemetry2ViewController.receivedSensorStatus)
         
         appDelegate.addMSPCommandSender(self)
 
@@ -171,6 +173,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         flightModeChanged()
         receivedGpsData()
         receivedReceiverData()
+        receivedSensorStatus()
         
         startNavBarTimer()
         
@@ -235,6 +238,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         batteryEventHandler?.dispose()
         gpsEventHandler?.dispose()
         receiverEventHandler?.dispose()
+        sensorStatusEventHandler?.dispose()
 
         appDelegate.removeMSPCommandSender(self)
         
@@ -436,6 +440,14 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
             leftStick.verticalValue = constrain((Double(receiver.channels[3]) - 1500) / 500, min: -1, max: 1)
             rightStick.verticalValue = constrain((Double(receiver.channels[1]) - 1500) / 500, min: -1, max: 1)
             rightStick.horizontalValue = constrain((Double(receiver.channels[0]) - 1500 ) / 500, min: -1, max: 1)
+        }
+    }
+    
+    func receivedSensorStatus() {
+        let config = Configuration.theConfig
+        let settings = Settings.theSettings
+        if config.isINav && !settings.armed {
+            armedLabel.textColor = INavConfig.theINavConfig.armingFlags.contains(.OkToArm) ? UIColor.greenColor() : UIColor.redColor()
         }
     }
     
