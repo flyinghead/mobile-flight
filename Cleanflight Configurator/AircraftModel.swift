@@ -55,7 +55,7 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     // INav
     static let SuperExpoRates  = BaseFlightFeature(rawValue: 1 << 23)   // Not exposed?
     static let PwmServoDriver  = BaseFlightFeature(rawValue: 1 << 27)
-    static let PwmOutputEnable  = BaseFlightFeature(rawValue: 1 << 27)
+    static let PwmOutputEnable  = BaseFlightFeature(rawValue: 1 << 28)
     static let OSD_INav = BaseFlightFeature(rawValue: 1 << 29)
     
     init(rawValue: Int) {

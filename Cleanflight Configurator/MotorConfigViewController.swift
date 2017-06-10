@@ -9,6 +9,9 @@
 import UIKit
 
 class MotorConfigViewController: ConfigChildViewController {
+    @IBOutlet weak var inavEnablePwmCell: UITableViewCell!
+    @IBOutlet weak var inavEnablePWMSwitch: UISwitch!
+    
     @IBOutlet weak var escProtocolField: UITextField!
     @IBOutlet weak var UnsyncedMotorSwitch: UISwitch!
     @IBOutlet weak var motorPwmFreqField: NumberField!
@@ -41,6 +44,9 @@ class MotorConfigViewController: ConfigChildViewController {
             escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed" ])
             UnsyncedMotorSwitch.on = true
             UnsyncedMotorSwitch.enabled = false
+        }
+        if !config.isINav {
+            cell(inavEnablePwmCell, setHidden: true)
         }
         escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: escProtocols)
         escProtocolPicker!.addTarget(self, action: #selector(escProtocolChanged(_:)), forControlEvents: .ValueChanged)
@@ -75,6 +81,13 @@ class MotorConfigViewController: ConfigChildViewController {
                 settings!.features.insert(.OneShot125)
             }
         }
+        if config.isINav {
+            if inavEnablePWMSwitch.on {
+                settings.features.insert(.PwmOutputEnable)
+            } else {
+                settings.features.remove(.PwmOutputEnable)
+            }
+        }
 
         settings.motorPwmRate = Int(motorPwmFreqField.value)
         settings.digitalIdleOffsetPercent = idleThrotleField.value
@@ -99,6 +112,8 @@ class MotorConfigViewController: ConfigChildViewController {
         }
         if !config.isINav {
             UnsyncedMotorSwitch.on = settings!.useUnsyncedPwm
+        } else {
+            inavEnablePWMSwitch.on = settings.features.contains(.PwmOutputEnable)
         }
         motorPwmFreqField.value = Double(settings!.motorPwmRate)
         idleThrotleField.value = settings!.digitalIdleOffsetPercent
