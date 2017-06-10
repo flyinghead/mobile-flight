@@ -1666,6 +1666,7 @@ class AllAircraftData : NSObject, NSCoding {
     var sensorData: SensorData
     var motorData: MotorData
     var dataflash: Dataflash
+    var inavState: INavState
     
     override init() {
         settings = Settings.theSettings
@@ -1676,6 +1677,7 @@ class AllAircraftData : NSObject, NSCoding {
         sensorData = SensorData.theSensorData
         motorData = MotorData.theMotorData
         dataflash = Dataflash.theDataflash
+        inavState = INavState.theINavState
     }
     
     // MARK: NSCoding
@@ -1708,6 +1710,14 @@ class AllAircraftData : NSObject, NSCoding {
         MotorData.theMotorData = motorData
         self.dataflash = dataflash
         Dataflash.theDataflash = dataflash
+        
+        if decoder.containsValueForKey("INavState") {
+            self.inavState = decoder.decodeObjectForKey("INavState") as! INavState
+            INavState.theINavState = self.inavState
+        } else {
+            self.inavState = INavState()
+            INavState.theINavState = self.inavState
+        }
     }
     
     func encodeWithCoder(coder: NSCoder) {
@@ -1719,6 +1729,7 @@ class AllAircraftData : NSObject, NSCoding {
         coder.encodeObject(sensorData, forKey: "SensorData")
         coder.encodeObject(motorData, forKey: "MotorData")
         coder.encodeObject(dataflash, forKey: "Dataflash")
+        coder.encodeObject(inavState, forKey: "INavState")
     }
 
 }
@@ -1770,10 +1781,11 @@ func resetAircraftModel() {
     SensorData.theSensorData = SensorData()
     MotorData.theMotorData = MotorData()
     Dataflash.theDataflash = Dataflash()
+    INavState.theINavState = INavState()
     
     AllAircraftData.allAircraftData = AllAircraftData()
     
-    INavConfig.theINavConfig = INavConfig()         // FIXME some data in there need to be part of AircraftModel
+    INavConfig.theINavConfig = INavConfig()
     
     OSD.theOSD = OSD()
     VTXConfig.theVTXConfig = VTXConfig()

@@ -175,18 +175,18 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     func sensorStatusChanged() {
         let config = Configuration.theConfig
         if config.isINav {
-            let inavConfig = INavConfig.theINavConfig
-            setINavSensorStatus(sensorGyroImg, sensor: inavConfig.gyroStatus)
-            setINavSensorStatus(sensorAccImg, sensor: inavConfig.accStatus)
-            setINavSensorStatus(sensorBaroImg, sensor: inavConfig.baroStatus)
-            setINavSensorStatus(sensorMagImg, sensor: inavConfig.magStatus)
-            setINavSensorStatus(sensorGpsImg, sensor: inavConfig.gpsStatus)
-            setINavSensorStatus(sensorSonarImg, sensor: inavConfig.sonarStatus)
-            setINavSensorStatus(sensorPitotImg, sensor: inavConfig.pitotStatus)
-            setINavSensorStatus(sensorFlowImg, sensor: inavConfig.flowStatus)
+            let inavState = INavState.theINavState
+            setINavSensorStatus(sensorGyroImg, sensor: inavState.gyroStatus)
+            setINavSensorStatus(sensorAccImg, sensor: inavState.accStatus)
+            setINavSensorStatus(sensorBaroImg, sensor: inavState.baroStatus)
+            setINavSensorStatus(sensorMagImg, sensor: inavState.magStatus)
+            setINavSensorStatus(sensorGpsImg, sensor: inavState.gpsStatus)
+            setINavSensorStatus(sensorSonarImg, sensor: inavState.sonarStatus)
+            setINavSensorStatus(sensorPitotImg, sensor: inavState.pitotStatus)
+            setINavSensorStatus(sensorFlowImg, sensor: inavState.flowStatus)
             if let tabItems = tabBarController?.tabBar.items {
                 if tabBarController?.selectedViewController === self {
-                    tabItems[tabBarController!.selectedIndex].badgeValue = inavConfig.hardwareHealthy ? nil : "!"
+                    tabItems[tabBarController!.selectedIndex].badgeValue = inavState.hardwareHealthy ? nil : "!"
                 }
             }
         } else {

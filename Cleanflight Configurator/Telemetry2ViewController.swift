@@ -447,7 +447,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         let config = Configuration.theConfig
         let settings = Settings.theSettings
         if config.isINav && !settings.armed {
-            armedLabel.textColor = INavConfig.theINavConfig.armingFlags.contains(.OkToArm) ? UIColor.greenColor() : UIColor.redColor()
+            armedLabel.textColor = INavState.theINavState.armingFlags.contains(.OkToArm) ? UIColor.greenColor() : UIColor.redColor()
         }
     }
     

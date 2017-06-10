@@ -329,10 +329,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
             
         }
-        let inavConfig = INavConfig.theINavConfig
+        let inavState = INavState.theINavState
         let activeWaypoint: MKWaypoint?
-        if inavConfig.activeWaypoint >= 1 && inavConfig.activeWaypoint + 1 < waypointList.count {
-            activeWaypoint = waypointList.waypointAt(inavConfig.activeWaypoint - 1)
+        if inavState.activeWaypoint >= 1 && inavState.activeWaypoint + 1 < waypointList.count {
+            activeWaypoint = waypointList.waypointAt(inavState.activeWaypoint - 1)
         } else {
             activeWaypoint = nil
         }

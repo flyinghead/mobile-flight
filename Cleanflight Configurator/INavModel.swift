@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum INavStatusMode {
+enum INavStatusMode : DictionaryCoding {
     enum Internal : Int {
         case None = 0
         case Hold = 1
@@ -35,9 +35,21 @@ enum INavStatusMode {
             return value
         }
     }
+    
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": intValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.init(value: rawValue)
+    }
 }
 
-enum INavStatusState {
+enum INavStatusState : DictionaryCoding {
     enum Internal : Int {
         case None = 0
         case ReturnToHomeStart = 1
@@ -94,9 +106,21 @@ enum INavStatusState {
             return "Unknown"
         }
     }
+    
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": intValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.init(value: rawValue)
+    }
 }
 
-enum INavWaypointAction : Equatable {
+enum INavWaypointAction : Equatable, DictionaryCoding {
     enum Internal : Int {
         case Waypoint = 1
         case ReturnToHome = 4
@@ -120,13 +144,26 @@ enum INavWaypointAction : Equatable {
             return value
         }
     }
+    
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": intValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.init(value: rawValue)
+    }
+
 }
 
 func ==(lhs: INavWaypointAction, rhs: INavWaypointAction) -> Bool {
     return lhs.intValue == rhs.intValue
 }
 
-enum INavStatusError {
+enum INavStatusError : DictionaryCoding {
     enum Internal : Int {
         case None = 0
         case TooFar = 1
@@ -194,6 +231,18 @@ enum INavStatusError {
             }
         }
     }
+
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": intValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.init(value: rawValue)
+    }
 }
 
 enum INavUserControlMode {
@@ -222,7 +271,7 @@ enum INavUserControlMode {
     }
 }
 
-struct INavArmingFlags : OptionSetType {
+struct INavArmingFlags : OptionSetType, DictionaryCoding {
     let rawValue: Int
     
     static let OkToArm              = INavArmingFlags(rawValue: 1 << 0)
@@ -241,9 +290,20 @@ struct INavArmingFlags : OptionSetType {
         self.rawValue = rawValue
     }
     
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": rawValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.rawValue = rawValue
+    }
 }
 
-enum INavSensorStatus {
+enum INavSensorStatus : DictionaryCoding {
     enum Internal : Int {
         case None = 0
         case Healthy = 1
@@ -269,28 +329,31 @@ enum INavSensorStatus {
             return value
         }
     }
+
+    // MARK: DictionaryCoding
+    func toDict() -> NSDictionary {
+        return ["rawValue": intValue]
+    }
+    
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let rawValue = dict["rawValue"] as? Int
+            else { return nil }
+        self.init(value: rawValue)
+    }
 }
 
-class INavConfig {
-    static var theINavConfig = INavConfig()
-    
+class INavState : AutoCoded {
+    var autoEncoding = [ "activeWaypoint", "accCalibAxis", "hardwareHealthy" ]
+    static var theINavState = INavState()
+
     // MSP_NAV_STATUS
     var mode = INavStatusMode.Known(.None)
     var state = INavStatusState.Known(.None)
     var activeWaypointAction = INavWaypointAction.Known(.Waypoint)
     var activeWaypoint = 0
     var error = INavStatusError.Known(.None)
-    
-    // MSP_NAV_POSHOLD
-    var userControlMode = INavUserControlMode.Known(.Attitude)
-    var maxSpeed = 3.0
-    var maxClimbRate = 5.0
-    var maxManualSpeed = 5.0
-    var maxManualClimbRate = 2.0
-    var maxBankAngle = 30                    // (deg)
-    var useThrottleMidForAltHold = false
-    var hoverThrottle = 1500
-    
+
     // MSP_STATUS_EX
     var armingFlags = INavArmingFlags(rawValue: 1)
     var accCalibAxis = 0
@@ -305,6 +368,62 @@ class INavConfig {
     var sonarStatus = INavSensorStatus.Known(.None)
     var pitotStatus = INavSensorStatus.Known(.None)
     var flowStatus = INavSensorStatus.Known(.None)
+    
+    override init() {
+        super.init()
+    }
+    
+    // MARK: NSCoding
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        mode = INavStatusMode(fromDict: aDecoder.decodeObjectForKey("mode") as? NSDictionary)!
+        state = INavStatusState(fromDict: aDecoder.decodeObjectForKey("state") as? NSDictionary)!
+        activeWaypointAction = INavWaypointAction(fromDict: aDecoder.decodeObjectForKey("activeWaypointAction") as? NSDictionary)!
+        error = INavStatusError(fromDict: aDecoder.decodeObjectForKey("error") as? NSDictionary)!
+        armingFlags = INavArmingFlags(fromDict: aDecoder.decodeObjectForKey("armingFlags") as? NSDictionary)!
+        gyroStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("gyroStatus") as? NSDictionary)!
+        accStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("accStatus") as? NSDictionary)!
+        magStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("magStatus") as? NSDictionary)!
+        baroStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("baroStatus") as? NSDictionary)!
+        gpsStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("gpsStatus") as? NSDictionary)!
+        sonarStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("sonarStatus") as? NSDictionary)!
+        pitotStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("pitotStatus") as? NSDictionary)!
+        flowStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("flowStatus") as? NSDictionary)!
+    }
+    
+    override func encodeWithCoder(aCoder: NSCoder) {
+        super.encodeWithCoder(aCoder)
+        
+        aCoder.encodeObject(mode.toDict(), forKey: "mode")
+        aCoder.encodeObject(state.toDict(), forKey: "state")
+        aCoder.encodeObject(activeWaypointAction.toDict(), forKey: "activeWaypointAction")
+        aCoder.encodeObject(error.toDict(), forKey: "error")
+        aCoder.encodeObject(armingFlags.toDict(), forKey: "armingFlags")
+        aCoder.encodeObject(gyroStatus.toDict(), forKey: "gyroStatus")
+        aCoder.encodeObject(accStatus.toDict(), forKey: "accStatus")
+        aCoder.encodeObject(magStatus.toDict(), forKey: "magStatus")
+        aCoder.encodeObject(baroStatus.toDict(), forKey: "baroStatus")
+        aCoder.encodeObject(gpsStatus.toDict(), forKey: "gpsStatus")
+        aCoder.encodeObject(sonarStatus.toDict(), forKey: "sonarStatus")
+        aCoder.encodeObject(pitotStatus.toDict(), forKey: "pitotStatus")
+        aCoder.encodeObject(flowStatus.toDict(), forKey: "flowStatus")
+    }
+}
+
+class INavConfig {
+    static var theINavConfig = INavConfig()
+    
+    // MSP_NAV_POSHOLD
+    var userControlMode = INavUserControlMode.Known(.Attitude)
+    var maxSpeed = 3.0
+    var maxClimbRate = 5.0
+    var maxManualSpeed = 5.0
+    var maxManualClimbRate = 2.0
+    var maxBankAngle = 30                    // (deg)
+    var useThrottleMidForAltHold = false
+    var hoverThrottle = 1500
     
     // MSP_RTH_AND_LAND_CONFIG
     var minRthDistance = 5.0            // m
@@ -334,11 +453,6 @@ class INavConfig {
     }
     
     init(copyOf: INavConfig) {
-        self.mode = copyOf.mode
-        self.state = copyOf.state
-        self.activeWaypointAction = copyOf.activeWaypointAction
-        self.activeWaypoint = copyOf.activeWaypoint
-        self.error = copyOf.error
         self.userControlMode = copyOf.userControlMode
         self.maxSpeed = copyOf.maxSpeed
         self.maxClimbRate = copyOf.maxClimbRate
@@ -347,17 +461,6 @@ class INavConfig {
         self.maxBankAngle = copyOf.maxBankAngle
         self.useThrottleMidForAltHold = copyOf.useThrottleMidForAltHold
         self.hoverThrottle = copyOf.hoverThrottle
-        self.armingFlags = copyOf.armingFlags
-        self.accCalibAxis = copyOf.accCalibAxis
-        self.hardwareHealthy = copyOf.hardwareHealthy
-        self.gyroStatus = copyOf.gyroStatus
-        self.accStatus = copyOf.accStatus
-        self.magStatus = copyOf.magStatus
-        self.baroStatus = copyOf.baroStatus
-        self.gpsStatus = copyOf.gpsStatus
-        self.sonarStatus = copyOf.sonarStatus
-        self.pitotStatus = copyOf.pitotStatus
-        self.flowStatus = copyOf.flowStatus
         self.minRthDistance = copyOf.minRthDistance
         self.rthClimbFirst = copyOf.rthClimbFirst
         self.rthClimbIgnoreEmergency = copyOf.rthClimbIgnoreEmergency

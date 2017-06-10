@@ -165,6 +165,7 @@ class MSPParser {
         let sensorData = SensorData.theSensorData
         let motorData = MotorData.theMotorData
         let inavConfig = INavConfig.theINavConfig
+        let inavState = INavState.theINavState
         
         switch code {
         case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.1.8
@@ -182,7 +183,7 @@ class MSPParser {
             }
             let previousActiveSensors = config.activeSensors
             let previousMode = config.mode
-            let previousArmingFlags = inavConfig.armingFlags
+            let previousArmingFlags = inavState.armingFlags
             
             config.cycleTime = readUInt16(message, index: 0)
             config.i2cError = readUInt16(message, index: 2)
@@ -193,8 +194,8 @@ class MSPParser {
                 config.systemLoad = readUInt16(message, index: 11)
                 if message.count >= 15 {
                     if config.isINav {
-                        inavConfig.armingFlags = INavArmingFlags(rawValue: readUInt16(message, index: 13))
-                        inavConfig.accCalibAxis = Int(message[15])
+                        inavState.armingFlags = INavArmingFlags(rawValue: readUInt16(message, index: 13))
+                        inavState.accCalibAxis = Int(message[15])
                     } else {
                         config.rateProfile = Int(message[14])
                     }
@@ -203,7 +204,7 @@ class MSPParser {
             if previousMode != config.mode {
                 flightModeEvent.raiseDispatch()
             }
-            if previousActiveSensors != config.activeSensors || previousArmingFlags != inavConfig.armingFlags {
+            if previousActiveSensors != config.activeSensors || previousArmingFlags != inavState.armingFlags {
                 sensorStatusEvent.raiseDispatch()
             }
             
@@ -950,28 +951,28 @@ class MSPParser {
             if message.count < 7 {
                 return false
             }
-            inavConfig.mode = INavStatusMode(value: Int(message[0]))
-            inavConfig.state = INavStatusState(value: Int(message[1]))
-            inavConfig.activeWaypointAction = INavWaypointAction(value: Int(message[2]))
-            inavConfig.activeWaypoint = Int(message[3])
-            inavConfig.error = INavStatusError(value: Int(message[4]))
+            inavState.mode = INavStatusMode(value: Int(message[0]))
+            inavState.state = INavStatusState(value: Int(message[1]))
+            inavState.activeWaypointAction = INavWaypointAction(value: Int(message[2]))
+            inavState.activeWaypoint = Int(message[3])
+            inavState.error = INavStatusError(value: Int(message[4]))
             sensorData.headingHold = Double(readInt16(message, index: 5))
-            NSLog("NAV_STATUS %d %d %d", inavConfig.mode.intValue, inavConfig.state.intValue, inavConfig.error.intValue)
+            NSLog("NAV_STATUS %d %d %d", inavState.mode.intValue, inavState.state.intValue, inavState.error.intValue)
             navigationEvent.raiseDispatch()
 
         case .MSP_SENSOR_STATUS:
             if message.count < 9 {
                 return false
             }
-            inavConfig.hardwareHealthy = message[0] != 0
-            inavConfig.gyroStatus = INavSensorStatus(value: Int(message[1]))
-            inavConfig.accStatus = INavSensorStatus(value: Int(message[2]))
-            inavConfig.magStatus = INavSensorStatus(value: Int(message[3]))
-            inavConfig.baroStatus = INavSensorStatus(value: Int(message[4]))
-            inavConfig.gpsStatus = INavSensorStatus(value: Int(message[5]))
-            inavConfig.sonarStatus = INavSensorStatus(value: Int(message[6]))
-            inavConfig.pitotStatus = INavSensorStatus(value: Int(message[7]))
-            inavConfig.flowStatus = INavSensorStatus(value: Int(message[8]))
+            inavState.hardwareHealthy = message[0] != 0
+            inavState.gyroStatus = INavSensorStatus(value: Int(message[1]))
+            inavState.accStatus = INavSensorStatus(value: Int(message[2]))
+            inavState.magStatus = INavSensorStatus(value: Int(message[3]))
+            inavState.baroStatus = INavSensorStatus(value: Int(message[4]))
+            inavState.gpsStatus = INavSensorStatus(value: Int(message[5]))
+            inavState.sonarStatus = INavSensorStatus(value: Int(message[6]))
+            inavState.pitotStatus = INavSensorStatus(value: Int(message[7]))
+            inavState.flowStatus = INavSensorStatus(value: Int(message[8]))
             sensorStatusEvent.raiseDispatch()
             
         // INav 1.6+
