@@ -173,7 +173,7 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     }
     
     private func short(v: Int) -> NSNumber {
-        return NSNumber(short: v)
+        return NSNumber(short: Int16(v))
     }
     
     private func byte(v: Int) -> NSNumber {
@@ -181,11 +181,11 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     }
     
     private func uint(v: Int) -> NSNumber {
-        return NSNumber(unsignedInt: v)
+        return NSNumber(unsignedInt: UInt32(v))
     }
     
     private func int(v: Int) -> NSNumber {
-        return NSNumber(int: v)
+        return NSNumber(int: Int32(v))
     }
     
     private func operation(mspCode: MSP_code, message: [UInt8]) {
@@ -194,11 +194,11 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
         case .MSP_FC_VARIANT:
             send(mspCode, "CLFL")
         case .MSP_API_VERSION:
-            send(mspCode, byte(0), byte(char: 1), byte(char: 16))
+            send(mspCode, byte(0), byte(1), byte(16))
         case .MSP_ATTITUDE:
-            send(mspCode, short(roll * 10), short(pitch * 10), short(heading))
+            send(mspCode, short(Int(roll * 10)), short(Int(pitch * 10)), short(heading))
         case .MSP_ALTITUDE:
-            send(mspCode, int(altitude * 100), short(variometer * 100))
+            send(mspCode, int(Int(altitude * 100)), short(Int(variometer * 100)))
         case .MSP_UID:
             send(mspCode, uint(0xBAADF00D), uint(0xBAADF00D), uint(0xBAADF00D))
         case .MSP_BOXNAMES:
@@ -208,11 +208,11 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
             }
             send(mspCode, boxnamesString);
         case .MSP_STATUS, .MSP_STATUS_EX:
-            send(mspCode, short(3500), short(0), short(0x7FFF), uint(mode), byte(0))
+            send(mspCode, short(3500), short(0), short(0x7FFF), uint(Int(bitPattern: UInt(mode))), byte(0))
         case .MSP_ANALOG:
-            send(mspCode, byte(Int(voltage * 10.0)), short(mAh), short(rssi), short(amps * 100))
+            send(mspCode, byte(Int(voltage * 10.0)), short(mAh), short(rssi), short(Int(amps * 100)))
         case .MSP_RAW_GPS:
-            send(mspCode, byte(1), byte(numSats), int(0), int(0), short(0), short(speed * 100000 / 3600), short(heading * 10))
+            send(mspCode, byte(1), byte(numSats), int(0), int(0), short(0), short(Int(speed * 100000 / 3600)), short(heading * 10))
         case .MSP_COMP_GPS:
             send(mspCode, short(distanceToHome), short(0), byte(1))
         case .MSP_VOLTAGE_METER_CONFIG:
