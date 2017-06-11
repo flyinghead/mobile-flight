@@ -16,6 +16,8 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     static let VTXTrampPowers = [ "25 mW", "100 mW", "200 mW", "400 mW", "600 mW" ]
     
     let CfGreen = UIColor(hex6: 0x52AE06)
+    let checkmark = UIImage(named: "checkmark")
+    let crossmark = UIImage(named: "crossmark")
     
     @IBOutlet weak var sensorGyroImg: UIImageView!
     @IBOutlet weak var sensorAccImg: UIImageView!
@@ -26,6 +28,14 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     @IBOutlet weak var sensorPitotImg: UIImageView!
     @IBOutlet weak var sensorFlowImg: UIImageView!
     @IBOutlet var inavSensorCells: [UITableViewCell]!
+    
+    @IBOutlet weak var uavLevelledImg: UIImageView!
+    @IBOutlet weak var runtimeCalibImg: UIImageView!
+    @IBOutlet weak var cpuLoadImg: UIImageView!
+    @IBOutlet weak var navigationSafeImg: UIImageView!
+    @IBOutlet weak var compassCalibImg: UIImageView!
+    @IBOutlet weak var accCalibImg: UIImageView!
+    @IBOutlet weak var hardwareHealthImg: UIImageView!
     
     @IBOutlet weak var calAccButton: UIButton!
     @IBOutlet weak var calMagButton: UIButton!
@@ -184,9 +194,18 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             setINavSensorStatus(sensorSonarImg, sensor: inavState.sonarStatus)
             setINavSensorStatus(sensorPitotImg, sensor: inavState.pitotStatus)
             setINavSensorStatus(sensorFlowImg, sensor: inavState.flowStatus)
+
+            uavLevelledImg.image = inavState.armingFlags.contains(.NotLevel) ? crossmark : checkmark
+            runtimeCalibImg.image = inavState.armingFlags.contains(.SensorsCalibrating) ? crossmark : checkmark
+            cpuLoadImg.image = inavState.armingFlags.contains(.SystemOverloaded) ? crossmark : checkmark
+            navigationSafeImg.image = inavState.armingFlags.contains(.NavigationSafety) ? crossmark : checkmark
+            compassCalibImg.image = inavState.armingFlags.contains(.CompassNotCalibrated) ? crossmark : checkmark
+            accCalibImg.image = inavState.armingFlags.contains(.AccNotCalibrated) ? crossmark : checkmark
+            hardwareHealthImg.image = inavState.armingFlags.contains(.HardwareFailure) ? crossmark : checkmark
+            
             if let tabItems = tabBarController?.tabBar.items {
                 if tabBarController?.selectedViewController === self {
-                    tabItems[tabBarController!.selectedIndex].badgeValue = inavState.hardwareHealthy ? nil : "!"
+                    tabItems[tabBarController!.selectedIndex].badgeValue = (inavState.hardwareHealthy && !inavState.armingFlags.contains(.PreventArming)) ? nil : "!"
                 }
             }
         } else {

@@ -410,6 +410,47 @@ class INavState : AutoCoded {
         aCoder.encodeObject(pitotStatus.toDict(), forKey: "pitotStatus")
         aCoder.encodeObject(flowStatus.toDict(), forKey: "flowStatus")
     }
+    
+    var navStateDescription: (label: String, exception: Bool)? {
+        let emergency: Bool
+        switch mode {
+        case .Known(.Emergency):
+            emergency = true
+        default:
+            emergency = false
+        }
+        switch state {
+        case .Known(let intern):
+            switch intern {
+            case .ReturnToHomeStart, .ReturnToHomeEnRoute:
+                switch error {
+                case .Known(.WaitForRthAlt):
+                    return ("Return to Home - Climbing", false)
+                default:
+                    return ("Return to Home", false)
+                }
+            case .LandStart, .LandSettle, .LandStartDescent, .Landing:
+                return ("Landing", emergency)
+            case .Landed:
+                return ("Landed", emergency)
+            case .WaypointEnRoute:
+                switch error {
+                case .Known(.Finish):
+                    return ("Navigation Finished", false)
+                default:
+                    return (String(format: "Navigating to WP #%d", activeWaypoint), false)
+                }
+            case .HoldInfinite, .HoldTimed:
+                return ("Holding Position", false)
+            case .None:
+                return ("", false)
+            default:
+                return nil
+            }
+        case .Unknown(_):
+            return emergency ? ("Emergency", true) : ("", false)
+        }
+    }
 }
 
 class INavConfig {

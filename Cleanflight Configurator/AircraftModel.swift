@@ -1352,7 +1352,7 @@ func ==(lhs: GPSLocation, rhs: GPSLocation) -> Bool {
 }
 
 
-struct Waypoint {
+struct Waypoint : DictionaryCoding {
     var number: Int
     var action: INavWaypointAction
     var position: GPSLocation
@@ -1379,6 +1379,34 @@ struct Waypoint {
     
     static func rthWaypoint() -> Waypoint {
         return Waypoint(number: 0, action: .Known(.ReturnToHome), position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let number = dict["number"] as? Int,
+            let action = dict["action"] as? Int,
+            let position = dict["position"] as? NSDictionary,
+            let altitude = dict["altitude"] as? Double,
+            let param1 = dict["param1"] as? Int,
+            let param2 = dict["param2"] as? Int,
+            let param3 = dict["param3"] as? Int,
+            let last = dict["last"] as? Bool
+            else { return nil }
+        
+        self.init(number: number, action: INavWaypointAction(value: action), position: GPSLocation(fromDict: position), altitude: altitude, param1: param1, param2: param2, param3: param3, last: last)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "number": number,
+                 "action": action.intValue,
+                 "position": position.toDict(),
+                 "altitude": altitude,
+                 "param1": param1,
+                 "param2": param2,
+                 "param3": param3,
+                 "last": last
+        ]
     }
 }
 
@@ -1505,6 +1533,12 @@ class GPSData : AutoCoded {
         if let positionDict = aDecoder.decodeObjectForKey("posHoldPosition") as? NSDictionary {
             posHoldPosition = GPSLocation(fromDict: positionDict)!
         }
+        if let waypointDicts = aDecoder.decodeObjectForKey("waypoints") as? [NSDictionary] {
+            waypoints = [Waypoint]()
+            for dict in waypointDicts {
+                waypoints.append(Waypoint(fromDict: dict)!)
+            }
+        }
     }
     
     override func encodeWithCoder(aCoder: NSCoder) {
@@ -1522,6 +1556,11 @@ class GPSData : AutoCoded {
         if posHoldPosition != nil {
             aCoder.encodeObject(posHoldPosition!.toDict(), forKey: "posHoldPosition")
         }
+        var waypointDicts = [NSDictionary]()
+        for waypoint in waypoints {
+            waypointDicts.append(waypoint.toDict())
+        }
+        aCoder.encodeObject(waypointDicts, forKey: "waypoints")
     }
     
     func setWaypoint(waypoint: Waypoint) {

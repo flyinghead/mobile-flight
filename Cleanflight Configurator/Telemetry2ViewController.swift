@@ -46,6 +46,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
     @IBOutlet weak var speedUnitLabel: UILabel!
     @IBOutlet weak var altitudeUnitLabel: UILabel!
     @IBOutlet weak var altHoldIndicator: UILabel!
+    @IBOutlet weak var navStatusLabel: UILabel!
 
     @IBOutlet weak var camStabMode: UIButton!
     @IBOutlet weak var calibrateMode: UIButton!
@@ -295,6 +296,10 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
             headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
         }
 
+        if let (label, emergency) = INavState.theINavState.navStateDescription {
+            navStatusLabel.text = label
+            navStatusLabel.textColor = emergency ? UIColor.redColor() : UIColor.greenColor()
+        }
     }
     
     func receivedAltitudeData() {

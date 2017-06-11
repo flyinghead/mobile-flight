@@ -485,7 +485,7 @@ class MSPParser {
                 gpsEvent.raiseDispatch()
             }
             else if wpNum == 16 || wpNum == 255 {     // Cleanflight: 16, INav: 255
-                // FIXME Not sure this is the desired position/alt in INav and not the current pos/alt
+                // FIXME In INav, it's the current GPS altitude. Useless
                 gpsData.posHoldPosition = position
                 sensorData.altitudeHold = altitude
                 if !config.isINav {
@@ -957,7 +957,9 @@ class MSPParser {
             inavState.activeWaypoint = Int(message[3])
             inavState.error = INavStatusError(value: Int(message[4]))
             sensorData.headingHold = Double(readInt16(message, index: 5))
-            NSLog("NAV_STATUS %d %d %d", inavState.mode.intValue, inavState.state.intValue, inavState.error.intValue)
+            if inavState.mode.intValue != 0 || inavState.state.intValue != 0 || inavState.error.intValue != 0 {
+                NSLog("NAV_STATUS %d %d %d", inavState.mode.intValue, inavState.state.intValue, inavState.error.intValue)
+            }
             navigationEvent.raiseDispatch()
 
         case .MSP_SENSOR_STATUS:
@@ -1338,6 +1340,9 @@ class MSPParser {
     // Clear gpsData.waypoints before calling this function
     func fetchINavWaypoints(gpsData: GPSData,  callback:((success:Bool) -> Void)?) {
         if let waypoint = gpsData.waypoints.last where waypoint.last {
+            callback?(success: true)
+        } else if self.replaying {
+            // Avoid infinite recursion
             callback?(success: true)
         } else {
             sendMessage(.MSP_WP, data: [ UInt8(gpsData.waypoints.count + 1) ], retry: 2) { success in

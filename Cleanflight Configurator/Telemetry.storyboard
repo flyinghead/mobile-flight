@@ -461,7 +461,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cyG-w5-80j" userLabel="FlightModes">
                                         <rect key="frame" x="54" y="40" width="189" height="25"/>
                                         <subviews>
-                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="HDG" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lDM-8A-Y3g">
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="HDG" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lDM-8A-Y3g">
                                                 <rect key="frame" x="124" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="headingMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
@@ -475,21 +475,21 @@
                                                 <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="ALT" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Wi-Nv-Bji">
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="ALT" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Wi-Nv-Bji">
                                                 <rect key="frame" x="85" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="altMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="AIR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U98-D1-U4F">
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="AIR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U98-D1-U4F">
                                                 <rect key="frame" x="46" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="airMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="POS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="czI-ry-928">
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="POS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="czI-ry-928">
                                                 <rect key="frame" x="163" y="4" width="39" height="17"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="posMode"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
@@ -518,6 +518,13 @@
                                             <constraint firstItem="A1V-ct-DJt" firstAttribute="centerY" secondItem="cyG-w5-80j" secondAttribute="centerY" id="nSV-2o-JLs"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAN-ZY-VL4">
+                                        <rect key="frame" x="161" y="93" width="0.0" height="0.0"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="altMode"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="attitudeIndicator">
@@ -537,6 +544,7 @@
                                     <constraint firstItem="7CG-RW-afA" firstAttribute="top" secondItem="ROZ-BS-nyT" secondAttribute="bottom" constant="-1" id="AyH-NK-gXS"/>
                                     <constraint firstItem="ROZ-BS-nyT" firstAttribute="width" secondItem="7CG-RW-afA" secondAttribute="width" id="D61-Yh-BX1"/>
                                     <constraint firstAttribute="trailing" secondItem="SRd-fW-yIn" secondAttribute="trailing" id="JqT-Z3-wrN"/>
+                                    <constraint firstItem="7CG-RW-afA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="eAN-ZY-VL4" secondAttribute="trailing" constant="1" id="JwP-QB-0ea"/>
                                     <constraint firstItem="oGU-zT-X9L" firstAttribute="leading" secondItem="TE5-wJ-hyb" secondAttribute="leading" constant="-1" id="L30-Kq-9sJ"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="oGU-zT-X9L" secondAttribute="trailing" id="MwK-nn-b0X"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="top" secondItem="SRd-fW-yIn" secondAttribute="bottom" id="PFz-QE-B5i"/>
@@ -547,11 +555,14 @@
                                     <constraint firstItem="heO-K5-2mC" firstAttribute="centerX" secondItem="oGU-zT-X9L" secondAttribute="centerX" id="Z8v-jk-zIg"/>
                                     <constraint firstItem="Mtp-oQ-T8O" firstAttribute="height" secondItem="GWn-1s-XVz" secondAttribute="height" id="bzW-de-0qi"/>
                                     <constraint firstAttribute="bottom" secondItem="6wj-AC-YrA" secondAttribute="bottom" id="cAz-80-tuN"/>
+                                    <constraint firstItem="eAN-ZY-VL4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="oGU-zT-X9L" secondAttribute="trailing" constant="1" id="cPn-WF-yxM"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="centerX" secondItem="SRd-fW-yIn" secondAttribute="centerX" priority="750" id="ci7-7l-WCX"/>
                                     <constraint firstItem="H83-Ai-eZf" firstAttribute="width" secondItem="7CG-RW-afA" secondAttribute="width" id="f5r-DY-Dbj"/>
                                     <constraint firstItem="SRd-fW-yIn" firstAttribute="top" secondItem="TE5-wJ-hyb" secondAttribute="top" id="fYl-es-ma9"/>
                                     <constraint firstItem="heO-K5-2mC" firstAttribute="width" secondItem="oGU-zT-X9L" secondAttribute="width" id="h0V-cZ-ecR"/>
                                     <constraint firstItem="Dc0-c2-I9K" firstAttribute="trailing" secondItem="cyG-w5-80j" secondAttribute="trailing" id="hgT-aO-Mh2"/>
+                                    <constraint firstItem="eAN-ZY-VL4" firstAttribute="centerX" secondItem="TE5-wJ-hyb" secondAttribute="centerX" id="jK0-Bu-6N9"/>
+                                    <constraint firstItem="eAN-ZY-VL4" firstAttribute="top" secondItem="zfk-J1-JAa" secondAttribute="bottom" constant="4" id="lJG-GO-Yg4"/>
                                     <constraint firstItem="cyG-w5-80j" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="7CG-RW-afA" secondAttribute="leading" id="lPF-Ro-bBq"/>
                                     <constraint firstItem="H83-Ai-eZf" firstAttribute="centerX" secondItem="7CG-RW-afA" secondAttribute="centerX" id="mP1-eE-Jpd"/>
                                     <constraint firstAttribute="trailing" secondItem="6wj-AC-YrA" secondAttribute="trailing" constant="-1" id="odZ-Lu-tiN"/>
@@ -852,6 +863,7 @@
                         <outlet property="leftStick" destination="Mtp-oQ-T8O" id="qq5-G7-MsF"/>
                         <outlet property="mAHValueLabel" destination="6Ms-Gz-n4I" id="AEc-CK-pPQ"/>
                         <outlet property="mAhGauge" destination="wuh-Hv-O2R" id="p7e-db-f8p"/>
+                        <outlet property="navStatusLabel" destination="eAN-ZY-VL4" id="K8O-JZ-BDv"/>
                         <outlet property="posModeLabel" destination="czI-ry-928" id="bkn-l2-OdX"/>
                         <outlet property="rightStick" destination="GWn-1s-XVz" id="F5o-2r-Roc"/>
                         <outlet property="rssiImg" destination="Kcm-cx-xuh" id="M3Y-i6-ax4"/>
