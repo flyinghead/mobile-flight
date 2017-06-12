@@ -343,6 +343,65 @@ enum INavSensorStatus : DictionaryCoding {
     }
 }
 
+
+struct Waypoint : DictionaryCoding {
+    var number: Int
+    var action: INavWaypointAction
+    var position: GPSLocation
+    var altitude: Double = 0.0
+    var param1: Int
+    var param2: Int
+    var param3: Int
+    var last: Bool
+    
+    init(number: Int, action: INavWaypointAction, position: GPSLocation?, altitude: Double, param1: Int, param2: Int, param3: Int, last: Bool) {
+        self.number = number
+        self.action = action
+        self.position = position ?? GPSLocation(latitude: 0, longitude: 0)
+        self.altitude = altitude
+        self.param1 = param1
+        self.param2 = param2
+        self.param3 = param3
+        self.last = last
+    }
+    
+    init(position: GPSLocation, altitude: Double, speed: Int) {
+        self.init(number: 0, action: .Known(.Waypoint), position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
+    }
+    
+    static func rthWaypoint() -> Waypoint {
+        return Waypoint(number: 0, action: .Known(.ReturnToHome), position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
+    }
+    
+    // MARK: DictionaryCoding
+    init?(fromDict: NSDictionary?) {
+        guard let dict = fromDict,
+            let number = dict["number"] as? Int,
+            let action = dict["action"] as? Int,
+            let position = dict["position"] as? NSDictionary,
+            let altitude = dict["altitude"] as? Double,
+            let param1 = dict["param1"] as? Int,
+            let param2 = dict["param2"] as? Int,
+            let param3 = dict["param3"] as? Int,
+            let last = dict["last"] as? Bool
+            else { return nil }
+        
+        self.init(number: number, action: INavWaypointAction(value: action), position: GPSLocation(fromDict: position), altitude: altitude, param1: param1, param2: param2, param3: param3, last: last)
+    }
+    
+    func toDict() -> NSDictionary {
+        return [ "number": number,
+                 "action": action.intValue,
+                 "position": position.toDict(),
+                 "altitude": altitude,
+                 "param1": param1,
+                 "param2": param2,
+                 "param3": param3,
+                 "last": last
+        ]
+    }
+}
+
 class INavState : AutoCoded {
     var autoEncoding = [ "activeWaypoint", "accCalibAxis", "hardwareHealthy" ]
     static var theINavState = INavState()
@@ -369,6 +428,9 @@ class INavState : AutoCoded {
     var pitotStatus = INavSensorStatus.Known(.None)
     var flowStatus = INavSensorStatus.Known(.None)
     
+    // MSP_WP
+    var waypoints = [Waypoint]()
+
     override init() {
         super.init()
     }
@@ -391,6 +453,12 @@ class INavState : AutoCoded {
         sonarStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("sonarStatus") as? NSDictionary)!
         pitotStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("pitotStatus") as? NSDictionary)!
         flowStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("flowStatus") as? NSDictionary)!
+        if let waypointDicts = aDecoder.decodeObjectForKey("waypoints") as? [NSDictionary] {
+            waypoints = [Waypoint]()
+            for dict in waypointDicts {
+                waypoints.append(Waypoint(fromDict: dict)!)
+            }
+        }
     }
     
     override func encodeWithCoder(aCoder: NSCoder) {
@@ -409,6 +477,11 @@ class INavState : AutoCoded {
         aCoder.encodeObject(sonarStatus.toDict(), forKey: "sonarStatus")
         aCoder.encodeObject(pitotStatus.toDict(), forKey: "pitotStatus")
         aCoder.encodeObject(flowStatus.toDict(), forKey: "flowStatus")
+        var waypointDicts = [NSDictionary]()
+        for waypoint in waypoints {
+            waypointDicts.append(waypoint.toDict())
+        }
+        aCoder.encodeObject(waypointDicts, forKey: "waypoints")
     }
     
     var navStateDescription: (label: String, exception: Bool)? {
@@ -451,6 +524,16 @@ class INavState : AutoCoded {
             return emergency ? ("Emergency", true) : ("", false)
         }
     }
+    
+    func setWaypoint(waypoint: Waypoint) {
+        for (idx, wp) in waypoints.enumerate() {
+            if wp.number == waypoint.number {
+                waypoints[idx] = waypoint
+                return
+            }
+        }
+        waypoints.append(waypoint)
+    }
 }
 
 class INavConfig {
@@ -490,6 +573,11 @@ class INavConfig {
     var fwPitchToThrottle = 10
     var fwLoiterRadius = 50.0           // m
 
+    // MSP_WP_GETINFO
+    var maxWaypoints = 15
+    var waypointListValid = true
+    var waypointCount = 0
+    
     init() {
     }
     
@@ -522,5 +610,8 @@ class INavConfig {
         self.fwMaxDiveAngle = copyOf.fwMaxDiveAngle
         self.fwPitchToThrottle = copyOf.fwPitchToThrottle
         self.fwLoiterRadius = copyOf.fwLoiterRadius
+        self.maxWaypoints = copyOf.maxWaypoints
+        self.waypointListValid = copyOf.waypointListValid
+        self.waypointCount = copyOf.waypointCount
     }
 }

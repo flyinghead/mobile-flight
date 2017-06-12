@@ -97,6 +97,10 @@
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
+		AE7737791EEF32C20018FC2B /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7737781EEF32C20018FC2B /* Settings.swift */; };
+		AE77377B1EEF34870018FC2B /* PortConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77377A1EEF34870018FC2B /* PortConfig.swift */; };
+		AE77377D1EEF34F80018FC2B /* GPSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77377C1EEF34F80018FC2B /* GPSData.swift */; };
+		AE77377F1EEF36230018FC2B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77377E1EEF36230018FC2B /* Configuration.swift */; };
 		AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */; };
 		AE8D56CD1EE3179D008A69A6 /* ValidateFirmwareTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */; };
 		AE8D56CF1EE8605D008A69A6 /* Calibration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */; };
@@ -347,6 +351,10 @@
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
+		AE7737781EEF32C20018FC2B /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		AE77377A1EEF34870018FC2B /* PortConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfig.swift; sourceTree = "<group>"; };
+		AE77377C1EEF34F80018FC2B /* GPSData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPSData.swift; sourceTree = "<group>"; };
+		AE77377E1EEF36230018FC2B /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidateFirmwareTest.swift; sourceTree = "<group>"; };
 		AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Calibration.storyboard; sourceTree = "<group>"; };
@@ -712,13 +720,13 @@
 				AE1F73E41C18C63F0029C330 /* Configuration */,
 				AE26A1D41C41D308007498EF /* Controls */,
 				AE62AADD1EB8902400D0DEF2 /* Mission */,
+				AE7737771EEF32A00018FC2B /* Model */,
 				AEEE2EB81EC86CBC00CC3D94 /* OSD */,
 				AE1BBA391EC3B55D0081E068 /* Resource */,
 				AE1F73E31C18C5AB0029C330 /* Sensors */,
 				AE72AB671C0F3D230020C4B0 /* Info.plist */,
 				AE8D56C91EE14855008A69A6 /* GoogleService-Info.plist */,
 				AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */,
-				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
 				AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */,
 				AE1EA9EA1CAEEED600C24E2A /* AppSettingsViewController.swift */,
 				AEF190381C3E8E440066C75A /* AutoCoded.swift */,
@@ -776,6 +784,18 @@
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
 			);
 			path = "Cleanflight ConfiguratorTests";
+			sourceTree = "<group>";
+		};
+		AE7737771EEF32A00018FC2B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */,
+				AE77377C1EEF34F80018FC2B /* GPSData.swift */,
+				AE77377A1EEF34870018FC2B /* PortConfig.swift */,
+				AE7737781EEF32C20018FC2B /* Settings.swift */,
+				AE77377E1EEF36230018FC2B /* Configuration.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		AEA48A671C25CFDD006BC53E /* Communication */ = {
@@ -1226,6 +1246,7 @@
 				AE10B3F51C60D17A00662D50 /* CurrentConfigViewController.swift in Sources */,
 				AEEE2EC81EC8A2C100CC3D94 /* OSDPreview.swift in Sources */,
 				AEEE2EDE1ECA400E00CC3D94 /* OSDSettingsViewController.swift in Sources */,
+				AE7737791EEF32C20018FC2B /* Settings.swift in Sources */,
 				AE1EAA321CB0174500C24E2A /* IASKSwitch.m in Sources */,
 				AE1BBA411EC474230081E068 /* INavModel.swift in Sources */,
 				AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */,
@@ -1235,6 +1256,7 @@
 				AE3E465B1C5811F900E33E9F /* BaseVerticalScale.swift in Sources */,
 				AE1EAA2C1CB0174500C24E2A /* IASKSettingsStoreUserDefaults.m in Sources */,
 				AEDDD2671C124045004232AA /* GyroscopeViewController.swift in Sources */,
+				AE77377D1EEF34F80018FC2B /* GPSData.swift in Sources */,
 				AE1BBA301EC329BB0081E068 /* MKWaypointList.swift in Sources */,
 				AEF1903F1C3F062D0066C75A /* TryCatch.m in Sources */,
 				AEF621AE1C7B7B4F0041E5B3 /* MSPCodec.swift in Sources */,
@@ -1285,6 +1307,7 @@
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
 				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,
 				AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */,
+				AE77377F1EEF36230018FC2B /* Configuration.swift in Sources */,
 				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
 				AE1EAA2B1CB0174500C24E2A /* IASKSettingsStoreFile.m in Sources */,
 				AE1EAA351CB0174500C24E2A /* IASKTextViewCell.m in Sources */,
@@ -1292,6 +1315,7 @@
 				AE1EAA301CB0174500C24E2A /* IASKPSTextFieldSpecifierViewCell.m in Sources */,
 				AEEE2EC21EC88DF300CC3D94 /* OSD.swift in Sources */,
 				AECE8D841C1E187700FB183E /* ModesViewController.swift in Sources */,
+				AE77377B1EEF34870018FC2B /* PortConfig.swift in Sources */,
 				AE1F73E01C18A84E0029C330 /* GPSConfigViewController.swift in Sources */,
 				AEDDD2631C12316C004232AA /* BaseSensorViewController.swift in Sources */,
 				AE5BB66D1C4E9C2100CF2A7C /* AttitudeIndicator2.swift in Sources */,

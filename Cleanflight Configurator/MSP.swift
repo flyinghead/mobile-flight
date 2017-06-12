@@ -484,17 +484,20 @@ class MSPParser {
                 }
                 gpsEvent.raiseDispatch()
             }
-            else if wpNum == 16 || wpNum == 255 {     // Cleanflight: 16, INav: 255
-                // FIXME In INav, it's the current GPS altitude. Useless
+            else if (!config.isINav && wpNum == 16) || wpNum == 255 {     // Cleanflight: 16, INav: 255
+                // FIXME Not sure if it's the pos hold position In INav
                 gpsData.posHoldPosition = position
-                sensorData.altitudeHold = altitude
+                if !config.isINav {
+                    // In INav, it's the current GPS altitude..
+                    sensorData.altitudeHold = altitude
+                }
                 if !config.isINav {
                     sensorData.headingHold = Double(readInt16(message, index: offset))          // degrees - Custom firmware by Raph
                 }
                 offset += 2
                 navigationEvent.raiseDispatch()
             }
-            else if config.isINav && wpNum >= 1 && wpNum <= 15 {
+            else if config.isINav && wpNum >= 1 {
                 let p1 = Int(readInt16(message, index: offset))     // Speed for .Waypoint action in cm/s (must be > 0.5 m/s and < general.max_speed (3 m/s by default))
                 offset += 2
                 let p2 = Int(readInt16(message, index: offset))
@@ -503,7 +506,7 @@ class MSPParser {
                 offset += 2
                 let last = Int(message[offset]) != 0
                 let waypoint = Waypoint(number: wpNum, action: action!, position: position, altitude: altitude, param1: p1, param2: p2, param3: p3, last: last)
-                gpsData.setWaypoint(waypoint)
+                inavState.setWaypoint(waypoint)
             }
             
         case .MSP_BOXIDS:
@@ -1021,6 +1024,14 @@ class MSPParser {
             inavConfig.fwPitchToThrottle = Int(message[9])
             inavConfig.fwLoiterRadius = Double(readUInt16(message, index: 10)) / 100
             
+        case .MSP_WP_GETINFO:
+            if message.count < 4 {
+                return false
+            }
+            inavConfig.maxWaypoints = Int(message[1])
+            inavConfig.waypointListValid = message[2] != 0
+            inavConfig.waypointCount = Int(message[3])
+            
         // ACKs for sent commands
         case .MSP_SET_MISC,
             .MSP_SET_BF_CONFIG,
@@ -1309,18 +1320,18 @@ class MSPParser {
         sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
     }
     
-    func sendINavWaypoints(gpsData: GPSData, callback:((success:Bool) -> Void)?) {
-        sendINavWaypointsRecursive(gpsData, wpNumber: 0, callback: callback)
+    func sendINavWaypoints(inavState: INavState, callback:((success:Bool) -> Void)?) {
+        sendINavWaypointsRecursive(inavState, wpNumber: 0, callback: callback)
     }
-    private func sendINavWaypointsRecursive(gpsData: GPSData, wpNumber: Int, callback:((success:Bool) -> Void)?) {
-        if wpNumber >= gpsData.waypoints.count {
+    private func sendINavWaypointsRecursive(inavState: INavState, wpNumber: Int, callback:((success:Bool) -> Void)?) {
+        if wpNumber >= inavState.waypoints.count {
             callback?(success: true)
         } else {
-            var waypoint = gpsData.waypoints[wpNumber]
-            waypoint.last = wpNumber == gpsData.waypoints.count - 1
+            var waypoint = inavState.waypoints[wpNumber]
+            waypoint.last = wpNumber == inavState.waypoints.count - 1
             sendINavWaypoint(waypoint) { success in
                 if success {
-                    self.sendINavWaypointsRecursive(gpsData, wpNumber: wpNumber + 1, callback: callback)
+                    self.sendINavWaypointsRecursive(inavState, wpNumber: wpNumber + 1, callback: callback)
                 } else {
                     callback?(success: false)
                 }
@@ -1337,17 +1348,17 @@ class MSPParser {
         }
     }
     
-    // Clear gpsData.waypoints before calling this function
-    func fetchINavWaypoints(gpsData: GPSData,  callback:((success:Bool) -> Void)?) {
-        if let waypoint = gpsData.waypoints.last where waypoint.last {
+    // Clear inavState before calling this function
+    func fetchINavWaypoints(inavState: INavState,  callback:((success:Bool) -> Void)?) {
+        if let waypoint = inavState.waypoints.last where waypoint.last {
             callback?(success: true)
         } else if self.replaying {
             // Avoid infinite recursion
             callback?(success: true)
         } else {
-            sendMessage(.MSP_WP, data: [ UInt8(gpsData.waypoints.count + 1) ], retry: 2) { success in
+            sendMessage(.MSP_WP, data: [ UInt8(inavState.waypoints.count + 1) ], retry: 2) { success in
                 if success {
-                    self.fetchINavWaypoints(gpsData, callback: callback)
+                    self.fetchINavWaypoints(inavState, callback: callback)
                 } else {
                     callback?(success: false)
                 }

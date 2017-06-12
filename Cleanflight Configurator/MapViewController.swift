@@ -107,20 +107,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         appDelegate.addMSPCommandSender(self)
 
-        let gpsData = GPSData.theGPSData
-        if Configuration.theConfig.isINav && gpsData.waypoints.isEmpty {
-            msp.loadMission() { success in
-                self.msp.fetchINavWaypoints(gpsData) { success in
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if success {
-                            self.waypointList.setWaypoints(gpsData.waypoints)
-                        } else {
-                            SVProgressHUD.showErrorWithStatus("Error downloading waypoints")
-                            gpsData.waypoints.removeAll()   // So we try to reload them when we appear next time
-                        }
-                    })
-                }
-            }
+        if Configuration.theConfig.isINav && INavState.theINavState.waypoints.isEmpty {
+            downloadWaypoints()
         }
     }
     
@@ -157,6 +145,28 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         let coordinates = CLLocationCoordinate2D(latitude: gpsData.lastKnownGoodLatitude, longitude: gpsData.lastKnownGoodLongitude)
         
         return coordinates
+    }
+    
+    private func downloadWaypoints() {
+        SVProgressHUD.showWithStatus("Downloading waypoints")
+        appDelegate.stopTimer()
+        msp.sendMessage(.MSP_WP_GETINFO, data: nil, retry: 2) { success in
+            self.msp.loadMission() { success in
+                let inavState = INavState.theINavState
+                self.msp.fetchINavWaypoints(inavState) { success in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.appDelegate.startTimer()
+                        if success {
+                            self.waypointList.setWaypoints(inavState.waypoints)
+                            SVProgressHUD.dismiss()
+                        } else {
+                            SVProgressHUD.showErrorWithStatus("Error downloading waypoints")
+                            inavState.waypoints.removeAll()   // So we try to reload them when we appear next time
+                        }
+                    })
+                }
+            }
+        }
     }
     
     private func addWaypointsOverlay() {
@@ -415,8 +425,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         let settings = Settings.theSettings
         if sender.state == .Began {
             if config.isINav && !settings.armed {
-                if waypointList.count >= 15 {
-                    let alertController = UIAlertController(title: "Waypoint", message: "Maximum of 15 waypoints reached", preferredStyle: UIAlertControllerStyle.Alert)
+                let inavConfig = INavConfig.theINavConfig
+                if waypointList.count >= inavConfig.maxWaypoints {
+                    let message = String(format: "Maximum of %d waypoints reached", inavConfig.maxWaypoints)
+                    let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.Alert)
                     alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                     alertController.popoverPresentationController?.sourceView = mapView
                     presentViewController(alertController, animated: true, completion: nil)
@@ -477,17 +489,19 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     @IBAction func uploadWaypoints(sender: AnyObject) {
-        let gpsData = GPSData.theGPSData
-        gpsData.waypoints.removeAll()
+        appDelegate.stopTimer()
+        SVProgressHUD.showWithStatus("Uploading waypoints")
+        let inavState = INavState.theINavState
+        inavState.waypoints.removeAll()
         for (i, wpAnnot) in waypointList.enumerate() {
             var wp = wpAnnot.waypoint
             wp.number = i + 1
             wp.last = i == waypointList.count - 1
-            gpsData.waypoints.append(wp)
+            inavState.waypoints.append(wp)
         }
         let commands: [SendCommand] = [
             { callback in
-                self.msp.sendINavWaypoints(gpsData, callback: callback)
+                self.msp.sendINavWaypoints(inavState, callback: callback)
             },
             { callback in
                 self.msp.saveMission() { success in
@@ -499,12 +513,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         chainMspSend(commands) { success in
             dispatch_async(dispatch_get_main_queue()) {
                 if success {
-                    SVProgressHUD.showInfoWithStatus("Waypoints uploaded")
                     self.uploadButton.hidden = true
-                    Analytics.logEvent("waypoints_uploaded", parameters: ["count" : gpsData.waypoints.count])
+                    Analytics.logEvent("waypoints_uploaded", parameters: ["count" : inavState.waypoints.count])
+                    self.downloadWaypoints()
                 } else {
+                    self.appDelegate.startTimer()
                     SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
-                    Analytics.logEvent("waypoints_upload_failed", parameters: ["count" : gpsData.waypoints.count])
+                    Analytics.logEvent("waypoints_upload_failed", parameters: ["count" : inavState.waypoints.count])
                 }
             }
         }
