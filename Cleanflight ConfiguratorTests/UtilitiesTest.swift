@@ -46,4 +46,8 @@ class UtilitiesTest: XCTestCase {
         to = GPSLocation(latitude: lat - 1, longitude: lon)
         XCTAssertEqualWithAccuracy(getHeading(from, to: to), 180, accuracy: 0.5)
     }
+    
+    func testReadNumber() {
+        XCTAssertEqual(readUInt32([ UInt8(0x3C), UInt8(0), UInt8(0), UInt8(0x80)], index: 0), Int(bitPattern: 0x8000003C))
+    }
 }

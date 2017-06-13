@@ -13,26 +13,26 @@ func readInt8(array: [UInt8], index: Int) -> Int {
 }
 
 func readUInt16(array: [UInt8], index: Int) -> Int {
-    return Int(array[index]) + Int(array[index+1]) * 256;
+    return Int(array[index]) + Int(array[index+1]) << 8;
 }
 
 func readInt16(array: [UInt8], index: Int) -> Int {
-    return Int(array[index]) + Int(Int8(bitPattern: array[index+1])) * 256;
+    return Int(array[index]) + Int(Int8(bitPattern: array[index+1])) << 8;
 }
 
 func readUInt32(array: [UInt8], index: Int) -> Int {
     var res = Int(array[index+3])
-    res = res * 256 + Int(array[index+2])
-    res = res * 256 + Int(array[index+1])
-    res = res * 256 + Int(array[index])
+    res = res << 8 + Int(array[index+2])
+    res = res << 8 + Int(array[index+1])
+    res = res << 8 + Int(array[index])
     return res
 }
 
 func readInt32(array: [UInt8], index: Int) -> Int {
     var res = Int(Int8(bitPattern: array[index+3]))
-    res = res * 256 + Int(array[index+2])
-    res = res * 256 + Int(array[index+1])
-    res = res * 256 + Int(array[index])
+    res = res << 8 + Int(array[index+2])
+    res = res << 8 + Int(array[index+1])
+    res = res << 8 + Int(array[index])
     return res
 }
 

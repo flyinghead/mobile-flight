@@ -57,6 +57,7 @@ class ValidateFirmwareTest: XCTestCase {
         let receiver = Receiver.theReceiver
         let gpsData = GPSData.theGPSData
         let inavConfig = INavConfig.theINavConfig
+        let inavState = INavState.theINavState
         
         var gpsSupported = true
         var compassSupported = true
@@ -394,12 +395,12 @@ class ValidateFirmwareTest: XCTestCase {
                         XCTAssert(success)
                         msp.sendMessage(.MSP_WP, data: [ UInt8(1) ], retry: 2) { success in
                             XCTAssert(success)
-                            XCTAssertEqual(gpsData.waypoints[0].position.latitude, 3.14)
-                            XCTAssertEqual(gpsData.waypoints[0].position.longitude, 6.28)
-                            XCTAssertEqual(gpsData.waypoints[0].altitude, 10)
-                            XCTAssertEqual(gpsData.waypoints[0].param1, 1)
-                            XCTAssertEqual(gpsData.waypoints[0].param2, 2)
-                            XCTAssertEqual(gpsData.waypoints[0].param3, 3)
+                            XCTAssertEqual(inavState.waypoints[0].position.latitude, 3.14)
+                            XCTAssertEqual(inavState.waypoints[0].position.longitude, 6.28)
+                            XCTAssertEqual(inavState.waypoints[0].altitude, 10)
+                            XCTAssertEqual(inavState.waypoints[0].param1, 1)
+                            XCTAssertEqual(inavState.waypoints[0].param2, 2)
+                            XCTAssertEqual(inavState.waypoints[0].param3, 3)
                             callback(success)
                         }
                     }

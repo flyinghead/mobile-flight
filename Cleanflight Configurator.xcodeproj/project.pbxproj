@@ -36,6 +36,7 @@
 		AE1BBA411EC474230081E068 /* INavModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1BBA401EC474230081E068 /* INavModel.swift */; };
 		AE1CB4831C70A71A003DB117 /* CLIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4821C70A71A003DB117 /* CLIViewController.swift */; };
 		AE1CB4871C71187E003DB117 /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1CB4861C71187E003DB117 /* InsetTextField.swift */; };
+		AE1D41721EF04F5A00972888 /* ConfigurationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1D41711EF04F5900972888 /* ConfigurationTest.swift */; };
 		AE1DD68B1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */; };
 		AE1DD68D1C7E2F9100861248 /* TelemetryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */; };
 		AE1DD68E1C7E43D500861248 /* CleanflightSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */; };
@@ -253,6 +254,7 @@
 		AE1BBA401EC474230081E068 /* INavModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INavModel.swift; sourceTree = "<group>"; };
 		AE1CB4821C70A71A003DB117 /* CLIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLIViewController.swift; sourceTree = "<group>"; };
 		AE1CB4861C71187E003DB117 /* InsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
+		AE1D41711EF04F5900972888 /* ConfigurationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationTest.swift; sourceTree = "<group>"; };
 		AE1DD67D1C7E23F300861248 /* KIFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KIFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE1DD6811C7E23F300861248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE1DD6891C7E2D6400861248 /* KIFTests_bridgingheader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KIFTests_bridgingheader.h; sourceTree = "<group>"; };
@@ -782,6 +784,7 @@
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
 				AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */,
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
+				AE1D41711EF04F5900972888 /* ConfigurationTest.swift */,
 			);
 			path = "Cleanflight ConfiguratorTests";
 			sourceTree = "<group>";
@@ -1373,6 +1376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEAB37181CB1CDCD0097DC9A /* UtilitiesTest.swift in Sources */,
+				AE1D41721EF04F5A00972888 /* ConfigurationTest.swift in Sources */,
 				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
 				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
 				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
