@@ -243,6 +243,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         } else {
             // Update the weather reports
             MetarManager.instance.locationProvider = self
+            // If replaying, we won't get an event since craft is already armed so do it now
+            checkArmedStatus()
         }
     }
     
