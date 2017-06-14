@@ -88,7 +88,8 @@ enum Mode : String {
     case LLIGHTS = "LLIGHTS"
     case CALIB = "CALIB"
     case GOVERNOR = "GOVERNOR"
-    case OSDSW = "OSD SW"
+    case OSD_SW = "OSD SW"
+    case OSD_DISABLE_SW = "OSD DISABLE SW"  // BF 3.2
     case TELEMETRY = "TELEMETRY"
     case GTUNE = "GTUNE"
     case SONAR = "SONAR"
@@ -148,8 +149,8 @@ enum Mode : String {
             return "calibration mode"
         case .GOVERNOR:
             return "governor mode"
-        case .OSDSW:
-            return "on-screen display"
+        case .OSD_SW, .OSD_DISABLE_SW:
+            return "OSD disabled"
         case .TELEMETRY:
             return "telemetry"
         case .GTUNE:

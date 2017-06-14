@@ -28,7 +28,7 @@ class WaypointViewController: UIViewController {
     func indexChanged(data: Int) {
         title = String(format: "Waypoint #%d", data + 1)
         previousButton?.enabled = data > 0
-        nextButton?.enabled = data + 1 < waypointList.count || (data + 1 == waypointList.count && !waypointList.last!.returnToHome)
+        nextButton?.enabled = data + 1 < waypointList.count || (data + 1 < INavConfig.theINavConfig.maxWaypoints && data + 1 == waypointList.count && !waypointList.last!.returnToHome)
         deleteButton.enabled = data < waypointList.count && !waypointList.waypointAt(data).returnToHome
     }
     

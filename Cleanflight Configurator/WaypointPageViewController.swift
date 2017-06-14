@@ -41,7 +41,7 @@ class WaypointPageViewController: UIPageViewController, UIPageViewControllerData
             viewController.index = i
             waypointControllers.append(viewController)
         }
-        if !rthSeen {
+        if !rthSeen && waypointControllers.count < INavConfig.theINavConfig.maxWaypoints {
             let viewController = storyboard!.instantiateViewControllerWithIdentifier("ReturnToHomeDetail") as! BaseWaypointDetailViewController
             viewController.waypointList = waypointList
             viewController.index = waypointList.count

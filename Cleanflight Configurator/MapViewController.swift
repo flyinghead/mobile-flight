@@ -41,7 +41,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     private var waypointList = MKWaypointList()
     
     var aircraftLocationsOverlay: MKOverlay?
+    var previousAircraftLocationsOverlay: MKOverlay?
     var waypointsOverlay: MKOverlay?
+    
+    var mapCenterDone = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,26 +78,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         mapView.showsUserLocation = true
         
-        var coordinate = MapViewController.getAircraftCoordinates()
-        if coordinate == nil {
-            coordinate = mapView.userLocation.coordinate
-            if coordinate?.latitude == 0 && coordinate?.longitude == 0 {
-                coordinate = nil
-            }
-        }
-        if coordinate != nil {
-            // Zoom in if the map shows more than 2km x 2km. Otherwise just center
-            let currentSpan = mapView.region.span
-            var region = MKCoordinateRegionMakeWithDistance(coordinate!, 2000, 2000)
-            if currentSpan.latitudeDelta > region.span.latitudeDelta || currentSpan.longitudeDelta > region.span.longitudeDelta {
-                region = MKCoordinateRegionMakeWithDistance(coordinate!, 200, 200)
-                mapView.setRegion(region, animated: true)
-            } else {
-                // FIXME This is annoying when returning from WaypointVC
-               // mapView.setCenterCoordinate(coordinate!, animated: true)
-            }
-        }
-
+        centerOrZoomTheMap()
+        
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
         
         altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: MapViewController.receivedAltitudeData)
@@ -108,7 +93,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             let inavState = INavState.theINavState
             if inavState.waypoints.isEmpty {
                 downloadWaypoints()
-            } else {
+            } else if msp.replaying {
                 self.waypointList.setWaypoints(inavState.waypoints)
             }
         }
@@ -135,6 +120,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             locationManager?.delegate = self
             locationManager?.requestWhenInUseAuthorization()
         }
+    }
+    
+    private func centerOrZoomTheMap() {
+        if mapCenterDone {
+            // Do it once
+            return
+        }
+        var coordinate = MapViewController.getAircraftCoordinates()
+        if coordinate == nil {
+            coordinate = mapView.userLocation.coordinate
+            if coordinate?.latitude == 0 && coordinate?.longitude == 0 {
+                coordinate = nil
+            }
+        }
+        if coordinate != nil {
+            let region = MKCoordinateRegionMakeWithDistance(coordinate!, 300, 300)
+            mapView.setRegion(region, animated: true)
+            // Don't do this more than once
+            mapCenterDone = true
+        }
+
     }
     
     class func getAircraftCoordinates() -> CLLocationCoordinate2D? {
@@ -272,9 +278,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             if gpsData.positions.count != gpsPositions {
                 gpsPositions = gpsData.positions.count
                 
-                if aircraftLocationsOverlay != nil {
-                    mapView.removeOverlay(aircraftLocationsOverlay!)
+                // Keep previous overlay to prevent flashing
+                if previousAircraftLocationsOverlay != nil {
+                    mapView.removeOverlay(previousAircraftLocationsOverlay!)
                 }
+                previousAircraftLocationsOverlay = aircraftLocationsOverlay
                 aircraftLocationsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
                 mapView.addOverlay(aircraftLocationsOverlay!)
             }
@@ -291,6 +299,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 aircraftLocation!.title = "Aircraft"
                 aircraftLocation!.coordinate = coordinate
                 mapView.addAnnotation(aircraftLocation!)
+                centerOrZoomTheMap()
             }
         }
         if let homePosition = gpsData.homePosition {
@@ -383,7 +392,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
-        if self.aircraftLocationsOverlay != nil && overlay === self.aircraftLocationsOverlay! {
+        if overlay === self.aircraftLocationsOverlay || overlay === self.previousAircraftLocationsOverlay {
             renderer.lineWidth = 3.0
             renderer.strokeColor = UIColor.redColor()
         } else {
@@ -393,7 +402,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
         return renderer
     }
-
+    
+    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+        centerOrZoomTheMap()
+    }
+    
     // MARK: CLLocationManagerDelegate
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
