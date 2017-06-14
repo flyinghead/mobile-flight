@@ -151,7 +151,7 @@ class RSSILowAlarm : VoiceAlarm {
     }
     
     override func voiceAlert() -> VoiceAlert! {
-        return VoiceAlert(speech: Configuration.theConfig.rssi <= userDefaultAsInt(.RSSIAlarmCritical) ? "RF signal critical" : "RF signal low", repeatInterval: 10.0, condition: { self.enabled && self.on })
+        return VoiceAlert(speech: Configuration.theConfig.rssi <= userDefaultAsInt(.RSSIAlarmCritical) ? "R.S.S.I. critical" : "R.S.S.I. low", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 

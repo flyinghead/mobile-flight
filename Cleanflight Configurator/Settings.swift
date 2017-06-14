@@ -171,7 +171,7 @@ enum Mode : String {
         case .ANTI_GRAVITY:
             return "anti gravity"
         case .DISABLE_3D_SWITCH:
-            return "disable 3D switch"
+            return "3D disabled"
         case .FPV_ANGLE_MIX:
             return "FPV angle mix"
         case .BLACKBOX_ERASE:
@@ -187,9 +187,27 @@ enum Mode : String {
         }
     }
     
+    func impliedBy(other: Mode) -> Bool {
+        if other == .FAILSAFE {
+            return true
+        }
+        if self != .FAILSAFE && other == .ARM {
+            return true
+        }
+        switch self {
+        case .ANGLE:
+            return other == .NAV_WP || other == .NAV_RTH || other == .NAV_POSHOLD
+        case .NAV_ALTHOLD:
+            return other == .NAV_WP || other == .NAV_RTH
+        default:
+            return false
+        }
+        
+    }
+    
     var altitudeHold: Bool {
         switch self {
-        case .BARO, .NAV_ALTHOLD, .NAV_WP, .SONAR, .GCS_NAV:    // FIXME GCS_NAV can be enabled disarmed. Not sure it should be here.
+        case .BARO, .NAV_ALTHOLD, .NAV_WP, .SONAR:
             return true
         default:
             return false
@@ -198,7 +216,7 @@ enum Mode : String {
     
     var positionHold: Bool {
         switch self {
-        case .GPS_HOLD, .NAV_POSHOLD, .GCS_NAV:    // FIXME GCS_NAV can be enabled disarmed and without a GPS fix. Not sure it should be here.
+        case .GPS_HOLD, .NAV_POSHOLD:
             return true
         default:
             return false

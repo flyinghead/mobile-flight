@@ -47,27 +47,59 @@ class Configuration : AutoCoded {
                 guard let boxNames = Settings.theSettings.boxNames else {
                     return
                 }
+                var activatedModes = [Mode]()
+                var deactivatedModes = [Mode]()
+                var alreadySpoken = false
                 for (i, m) in boxNames.enumerate() {
-                    if modeChanges & (1 << i) != 0 {
-                        // Mode has changed
+                    let modeBit = 1 << i
+                    // If mode has been activated
+                    if modeChanges & modeBit != 0 {
                         guard let flightMode = Mode(rawValue: m) else {
                             continue
                         }
-                        var speech = flightMode.spokenName
-                        if mode & (1 << i) != 0 {
-                            // Activated
-                            if flightMode == .ARM {
-                                speech = "motors armed"
-                            } else {
-                                speech = speech + " activated"
-                            }
+                        if mode & modeBit != 0 {
+                            activatedModes.append(flightMode)
                         } else {
-                            // Off
-                            if flightMode == .ARM {
-                                speech = "disarmed"
-                            } else {
-                                speech = speech + " off"
+                            deactivatedModes.append(flightMode)
+                        }
+                    }
+                }
+                for flightMode in activatedModes {
+                    var implied = false
+                    for otherFlightMode in activatedModes {
+                        if flightMode.impliedBy(otherFlightMode) {
+                            implied = true
+                            break
+                        }
+                    }
+                    if implied {
+                        continue
+                    }
+                    var speech = flightMode.spokenName
+                    if flightMode == .ARM {
+                        speech = "motors armed"
+                    }
+                    VoiceMessage.theVoice.speak(speech)
+                    alreadySpoken = true
+                }
+                if !alreadySpoken {
+                    // Process deactivated modes
+                    for flightMode in deactivatedModes {
+                        var implied = false
+                        for otherFlightMode in deactivatedModes {
+                            if flightMode.impliedBy(otherFlightMode) {
+                                implied = true
+                                break
                             }
+                        }
+                        if implied {
+                            continue
+                        }
+                        var speech = flightMode.spokenName
+                        if flightMode == .ARM {
+                            speech = "disarmed"
+                        } else {
+                            speech = speech + " off"
                         }
                         VoiceMessage.theVoice.speak(speech)
                     }

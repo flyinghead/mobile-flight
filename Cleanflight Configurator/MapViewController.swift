@@ -82,8 +82,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 coordinate = nil
             }
         }
-        // FIXME This is annoying when returning from WaypointVC
-        /*
         if coordinate != nil {
             // Zoom in if the map shows more than 2km x 2km. Otherwise just center
             let currentSpan = mapView.region.span
@@ -92,10 +90,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 region = MKCoordinateRegionMakeWithDistance(coordinate!, 200, 200)
                 mapView.setRegion(region, animated: true)
             } else {
-                mapView.setCenterCoordinate(coordinate!, animated: true)
+                // FIXME This is annoying when returning from WaypointVC
+               // mapView.setCenterCoordinate(coordinate!, animated: true)
             }
         }
-         */
+
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
         
         altitudeEventHandler = msp.altitudeEvent.addHandler(self, handler: MapViewController.receivedAltitudeData)
@@ -107,8 +106,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         appDelegate.addMSPCommandSender(self)
 
-        if Configuration.theConfig.isINav && INavState.theINavState.waypoints.isEmpty {
-            downloadWaypoints()
+        if Configuration.theConfig.isINav {
+            let inavState = INavState.theINavState
+            if inavState.waypoints.isEmpty {
+                downloadWaypoints()
+            } else {
+                self.waypointList.setWaypoints(inavState.waypoints)
+            }
         }
     }
     
@@ -150,6 +154,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     private func downloadWaypoints() {
         SVProgressHUD.showWithStatus("Downloading waypoints")
         appDelegate.stopTimer()
+        INavState.theINavState.waypoints.removeAll()
         msp.sendMessage(.MSP_WP_GETINFO, data: nil, retry: 2) { success in
             self.msp.loadMission() { success in
                 let inavState = INavState.theINavState
@@ -300,23 +305,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 mapView.addAnnotation(aircraftLocation!)
             }
         }
-        if gpsData.homePosition != nil {
-            var addAnnot = true
-            if homeLocation != nil {
-                if homeLocation!.coordinate.latitude == gpsData.homePosition!.latitude && homeLocation!.coordinate.longitude == gpsData.homePosition!.longitude {
-                    addAnnot = false
-                } else {
-                    mapView.removeAnnotation(homeLocation!)
-                }
-            }
-            if addAnnot {
+        if let homePosition = gpsData.homePosition {
+            if homeLocation == nil {
                 homeLocation = MKPointAnnotation()
-                homeLocation!.coordinate = gpsData.homePosition!.toCLLocationCoordinate2D()
+                homeLocation!.coordinate = homePosition.toCLLocationCoordinate2D()
                 homeLocation!.title = "Home"
                 mapView.addAnnotation(homeLocation!)
                 addWaypointsOverlay()
+            } else if homeLocation!.coordinate.latitude != homePosition.latitude || homeLocation!.coordinate.longitude != homePosition.longitude {
+                homeLocation!.coordinate = homePosition.toCLLocationCoordinate2D()
+                addWaypointsOverlay()
             }
-            
         }
     }
     
