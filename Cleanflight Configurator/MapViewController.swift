@@ -11,7 +11,7 @@ import MapKit
 import SVProgressHUD
 import Firebase
 
-class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, MSPCommandSender {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     var locationManager: CLLocationManager?
     var gpsPositions = 0
     
@@ -104,8 +104,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         batteryEventHandler = msp.batteryEvent.addHandler(self, handler: MapViewController.receivedBatteryData)
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: MapViewController.receivedGpsData)
         
-        appDelegate.addMSPCommandSender(self)
-
         if Configuration.theConfig.isINav {
             let inavState = INavState.theINavState
             if inavState.waypoints.isEmpty {
@@ -127,8 +125,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         flightModeEventHandler?.dispose()
         batteryEventHandler?.dispose()
         gpsEventHandler?.dispose()
-        
-        appDelegate.removeMSPCommandSender(self)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -212,14 +208,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             mapView.removeAnnotation(data)
         }
         addWaypointsOverlay()
-    }
-    
-    func sendMSPCommands() {
-        let settings = Settings.theSettings
-        let config = Configuration.theConfig
-        if settings.armed && config.isINav {
-            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
-        }
     }
 
     // MARK: Event Handlers

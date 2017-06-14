@@ -484,7 +484,7 @@ class INavState : AutoCoded {
         aCoder.encodeObject(waypointDicts, forKey: "waypoints")
     }
     
-    var navStateDescription: (label: String, exception: Bool)? {
+    var navStateDescription: (label: String, spoken: String, exception: Bool)? {
         let emergency: Bool
         switch mode {
         case .Known(.Emergency):
@@ -498,30 +498,30 @@ class INavState : AutoCoded {
             case .ReturnToHomeStart, .ReturnToHomeEnRoute:
                 switch error {
                 case .Known(.WaitForRthAlt):
-                    return ("Return to Home - Climbing", false)
+                    return ("Return to Home - Climbing", "Return to Home. Climbing", false)
                 default:
-                    return ("Return to Home", false)
+                    return ("Return to Home", "Return to Home", false)
                 }
             case .LandStart, .LandSettle, .LandStartDescent, .Landing:
-                return ("Landing", emergency)
+                return ("Landing", "Landing", emergency)
             case .Landed:
-                return ("Landed", emergency)
+                return ("Landed", "Landed", emergency)
             case .WaypointEnRoute:
                 switch error {
                 case .Known(.Finish):
-                    return ("Navigation Finished", false)
+                    return ("Navigation Finished", "Navigation Finished", false)
                 default:
-                    return (String(format: "Navigating to WP #%d", activeWaypoint), false)
+                    return (String(format: "Navigating to WP #%d", activeWaypoint), String(format: "Navigating to waypoint %d", activeWaypoint), false)
                 }
             case .HoldInfinite, .HoldTimed:
-                return ("Holding Position", false)
+                return ("Holding Position", "Holding Position", false)
             case .None:
-                return ("", false)
+                return ("", "", false)
             default:
                 return nil
             }
         case .Unknown(_):
-            return emergency ? ("Emergency", true) : ("", false)
+            return emergency ? ("Emergency", "Emergency", true) : ("", "", false)
         }
     }
     

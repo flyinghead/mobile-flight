@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommandSender {
+class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     let SpeedScale = 30.0       // points per km/h
     let AltScale = 40.0         // points per m
     let VarioScale = 82.0       // points per m/s
@@ -161,8 +161,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: Telemetry2ViewController.receivedReceiverData)
         sensorStatusEventHandler = msp.sensorStatusEvent.addHandler(self, handler: Telemetry2ViewController.receivedSensorStatus)
         
-        appDelegate.addMSPCommandSender(self)
-
         // For enabled features
         msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: nil)
         
@@ -240,8 +238,6 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         gpsEventHandler?.dispose()
         receiverEventHandler?.dispose()
         sensorStatusEventHandler?.dispose()
-
-        appDelegate.removeMSPCommandSender(self)
         
         appDelegate.rcCommandsProvider = nil
         
@@ -284,7 +280,8 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
         let settings = Settings.theSettings
 
         altitudeScale.bugs.removeAll()
-        if settings.altitudeHoldMode {
+        // Unfortunately no way to get the altitude hold value with INav
+        if settings.altitudeHoldMode && !Configuration.theConfig.isINav {
             altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyanColor()))
             altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
         } else {
@@ -296,7 +293,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
             headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
         }
 
-        if let (label, emergency) = INavState.theINavState.navStateDescription {
+        if let (label, _, emergency) = INavState.theINavState.navStateDescription {
             navStatusLabel.text = label
             navStatusLabel.textColor = emergency ? UIColor.redColor() : UIColor.greenColor()
         }
@@ -522,13 +519,4 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider, MSPCommand
     func rcCommands() -> [Int] {
         return [ Int(round(rightStick.horizontalValue * 500 + 1500)), Int(round(rightStick.verticalValue * 500 + 1500)), Int(round(leftStick.verticalValue * 500 + 1500)), Int(round(leftStick.horizontalValue * 500 + 1500)) ]
     }
-    
-    func sendMSPCommands() {
-        let settings = Settings.theSettings
-        let config = Configuration.theConfig
-        if settings.armed && config.isINav {
-            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
-        }
-    }
-
 }

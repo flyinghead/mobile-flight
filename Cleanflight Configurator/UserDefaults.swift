@@ -27,6 +27,7 @@ enum UserDefault : String {
     case DisableIdleTimer = "disable_idle_timer"
     case FlightModeAlert = "flight_mode_alert"
     case OSDFont = "osd_font"
+    case INavAlert = "inav_alert"
     
     var stringValue: String? {
         get {

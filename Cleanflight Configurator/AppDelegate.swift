@@ -50,6 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     var active = false                  // True if the app is active or recording telemetry in the background
     var showBtRssi = false
+    var lastINavStatus = ""
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         FirebaseApp.configure()
@@ -68,6 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         msp.gpsEvent.addHandler(self, handler: AppDelegate.receivedGpsData)
         msp.communicationEvent.addHandler(self, handler: AppDelegate.communicationStatus)
         msp.dataReceivedEvent.addHandler(self, handler: AppDelegate.dismissNoDataReceived)
+        msp.navigationEvent.addHandler(self, handler: AppDelegate.navigationEventReceived)
         
         UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
@@ -153,9 +155,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         msp.sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
         msp.sendMessage(.MSP_ANALOG, data: nil, flush: false)
         // WP #0 = home, WP #16 (or 255 for INav) = poshold
-        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : Configuration.theConfig.isINav ? 255 : 16  ], flush: false)   // Altitude hold, mag hold
+        let config = Configuration.theConfig
+        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : config.isINav ? 255 : 16  ], flush: false)   // Altitude hold, mag hold
         msp.sendMessage(.MSP_RC, data: nil)
-        
+        if armed && config.isINav {
+            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
+        }
+
         for sender in mspCommandSenders {
             sender.sendMSPCommands()
         }
@@ -264,6 +270,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             lastArming = nil
             Analytics.logEvent("uav_disarmed", parameters: [ "duration" : _lastArmedTime ])
             stopFlightlogRecording()
+        }
+    }
+    
+    func navigationEventReceived() {
+        if Configuration.theConfig.isINav && userDefaultEnabled(.INavAlert) {
+            if let (navStatus, spoken, _) = INavState.theINavState.navStateDescription where navStatus != lastINavStatus {
+                self.lastINavStatus = navStatus
+                VoiceMessage.theVoice.speak(spoken)
+            }
         }
     }
     
