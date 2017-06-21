@@ -94,7 +94,6 @@
 		AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */; };
 		AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB891C0F3DD50020C4B0 /* MSP.swift */; };
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
-		AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */; };
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
 		AE730C0A1C481BC500CDF2F3 /* PortConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */; };
 		AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */; };
@@ -109,6 +108,7 @@
 		AE8D56D31EE86547008A69A6 /* Modes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D21EE86547008A69A6 /* Modes.storyboard */; };
 		AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */; };
 		AE8D56D71EE89534008A69A6 /* Map.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE8D56D61EE89534008A69A6 /* Map.storyboard */; };
+		AEA280C81EFAE1FB00C40DAA /* AsyncSocketComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA280C71EFAE1FB00C40DAA /* AsyncSocketComm.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
@@ -349,7 +349,6 @@
 		AE72AB721C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE72AB891C0F3DD50020C4B0 /* MSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSP.swift; sourceTree = "<group>"; };
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
-		AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPComm.swift; sourceTree = "<group>"; };
 		AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortsConfigViewController.swift; sourceTree = "<group>"; };
 		AE730C091C481BC500CDF2F3 /* PortConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PortConfigViewController.swift; sourceTree = "<group>"; };
 		AE76BCC51C372ECB00FAE4F2 /* ServoConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServoConfigViewController.swift; sourceTree = "<group>"; };
@@ -364,6 +363,7 @@
 		AE8D56D21EE86547008A69A6 /* Modes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Modes.storyboard; path = ../Modes.storyboard; sourceTree = "<group>"; };
 		AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PIDTuning.storyboard; sourceTree = "<group>"; };
 		AE8D56D61EE89534008A69A6 /* Map.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Map.storyboard; sourceTree = "<group>"; };
+		AEA280C71EFAE1FB00C40DAA /* AsyncSocketComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncSocketComm.swift; sourceTree = "<group>"; };
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -804,6 +804,7 @@
 		AEA48A671C25CFDD006BC53E /* Communication */ = {
 			isa = PBXGroup;
 			children = (
+				AEA280C71EFAE1FB00C40DAA /* AsyncSocketComm.swift */,
 				AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */,
 				AEDDD27C1C182A50004232AA /* BluetoothManager.swift */,
 				AEBA64151C312B7800783ECE /* BluetoothViewController.swift */,
@@ -814,7 +815,6 @@
 				AEBA64171C31538F00783ECE /* ReplayViewController.swift */,
 				AE5F113B1ECF7F3F00816B6D /* Simulator.swift */,
 				AE5F113D1ECF809B00816B6D /* SimulatorViewController.swift */,
-				AE72AB8D1C0F53200020C4B0 /* TCPComm.swift */,
 				AEBA64111C30A3B100783ECE /* WifiViewController.swift */,
 				AEBA640D1C3086CF00783ECE /* Connection.storyboard */,
 			);
@@ -902,6 +902,7 @@
 				04717852FD7CC47EF1D4B100 /* [CP] Check Pods Manifest.lock */,
 				AE72AB521C0F3D230020C4B0 /* Sources */,
 				AE72AB531C0F3D230020C4B0 /* Frameworks */,
+				AEF5C31C1EFB233200B45A8B /* ShellScript */,
 				AE72AB541C0F3D230020C4B0 /* Resources */,
 				AEDDD25F1C120342004232AA /* Embed Frameworks */,
 				E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */,
@@ -1193,6 +1194,19 @@
 			shellPath = /bin/sh;
 			shellScript = "./Fabric.framework/run 09b9ab9e3d80804c5c2619283c9531ef3e4c403f e7ecb56faf9afe58b7c504a52243d7c9815532101cc8bce7f7b7a6743e301cbb";
 		};
+		AEF5C31C1EFB233200B45A8B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "plutil -insert PreferenceSpecifiers.1 -json '{\"FooterText\":\"Icons designed by Freepik\\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0\\nStaticDataTableViewController Copyright 2015 Peter Paulis - min60 s.r.o. (min60.com)\\nInAppSettingsKit Copyright (c) 2009-2014: Luc Vandal, Edovia Inc., http://www.edovia.com\\nOrtwin Gentz, FutureTap GmbH, http://www.futuretap.com\\nAll rights reserved.\\nThis code is licensed under the BSD license that is available at: http://www.opensource.org/licenses/bsd-license.php\", \"Title\":\"Others\", \"Type\":\"PSGroupSpecifier\"}' Cleanflight\\ Configurator/Settings.bundle/Pods-Cleanflight\\ Configurator-settings-metadata.plist";
+		};
 		E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1295,6 +1309,7 @@
 				AE1B12BF1C84F527007755C9 /* StaticDataTableViewController.m in Sources */,
 				AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */,
 				AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */,
+				AEA280C81EFAE1FB00C40DAA /* AsyncSocketComm.swift in Sources */,
 				AEAC44ED1CB5914800D73377 /* DataLinkChartViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
 				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
@@ -1362,7 +1377,6 @@
 				AE62AAE11EB8941500D0DEF2 /* MKWaypointView.swift in Sources */,
 				AE76BCC61C372ECB00FAE4F2 /* ServoConfigViewController.swift in Sources */,
 				AEBA641C1C342BD900783ECE /* UserDefaults.swift in Sources */,
-				AE72AB8E1C0F53200020C4B0 /* TCPComm.swift in Sources */,
 				AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */,
 				AE1EAA2D1CB0174500C24E2A /* IASKSpecifier.m in Sources */,
 				AE59A1C31C4ECFB300837475 /* Telemetry2ViewController.swift in Sources */,

@@ -26,8 +26,8 @@ class WifiViewController: UIViewController {
             return
         }
         let port = Int(ipPortField.text!)
-        let tcpComm = TCPComm(msp: msp, host: host, port: port)
-        if !tcpComm.reachable {
+        let socketComm = AsyncSocketComm(msp: msp, host: host, port: port)
+        if !socketComm.reachable {
             let alertController = UIAlertController(title: nil, message: "You don't seem to be connected to the right Wi-Fi network", preferredStyle: UIAlertControllerStyle.ActionSheet)
             alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
             alertController.addAction(UIAlertAction(title: "Try Anyway", style: UIAlertActionStyle.Default, handler: { alertController in
@@ -44,21 +44,21 @@ class WifiViewController: UIViewController {
     }
     
     private func doConnectTcp(host: String, port: Int?) {
-        let tcpComm = TCPComm(msp: msp, host: host, port: port)
+        let socketComm = AsyncSocketComm(msp: msp, host: host, port: port)
         
         let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
         SVProgressHUD.showWithStatus(msg, maskType: .Black)
         
-        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(WifiViewController.connectionTimedOut(_:)), userInfo: tcpComm, repeats: false)
+        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(WifiViewController.connectionTimedOut(_:)), userInfo: socketComm, repeats: false)
 
-        tcpComm.connect({ success in
+        socketComm.connect({ success in
             timeOutTimer.invalidate()
             if success {
                 self.initiateHandShake({ success in
                     if success {
                         (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                     } else {
-                        tcpComm.close()
+                        socketComm.close()
                         SVProgressHUD.showErrorWithStatus("Handshake failed")
                     }
                 })
@@ -69,10 +69,10 @@ class WifiViewController: UIViewController {
     }
     
     func connectionTimedOut(timer: NSTimer) {
-        let tcpComm = timer.userInfo as! TCPComm
-        if !tcpComm.connected {
+        let socketComm = timer.userInfo as! AsyncSocketComm
+        if !socketComm.connected {
             SVProgressHUD.showErrorWithStatus("Connection timeout")
-            tcpComm.close()
+            socketComm.close()
         }
     }
 

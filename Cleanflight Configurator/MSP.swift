@@ -1787,7 +1787,7 @@ class MSPParser {
     }
     
     var isWifi: Bool {
-        return commChannel is TCPComm
+        return commChannel is AsyncSocketComm
     }
     
     func nextOutputMessage() -> [UInt8]? {

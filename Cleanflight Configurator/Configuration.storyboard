@@ -2472,10 +2472,10 @@
                                                             <real key="value" value="3300"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
-                                                            <real key="value" value="0.0"/>
+                                                            <integer key="value" value="-1600"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
-                                                            <real key="value" value="3300"/>
+                                                            <integer key="value" value="16000"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="increment">
                                                             <real key="value" value="1"/>
