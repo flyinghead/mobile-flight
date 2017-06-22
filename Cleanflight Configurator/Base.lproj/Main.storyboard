@@ -482,7 +482,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="cLG-yh-pT4">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AppSettingsCell" id="cLG-yh-pT4">
                                 <rect key="frame" x="0.0" y="56" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cLG-yh-pT4" id="CSB-8Y-Shc">
@@ -1084,12 +1084,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="CLI" id="uBu-yb-NmY">
-                        <barButtonItem key="leftBarButtonItem" style="plain" systemItem="stop" id="4vu-7l-XzT">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="4vu-7l-XzT">
                             <connections>
                                 <action selector="exitAction:" destination="B4e-8j-xLV" id="z7z-vf-wcU"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="save" id="fbA-GD-DyB">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="fbA-GD-DyB">
                             <connections>
                                 <action selector="saveAction:" destination="B4e-8j-xLV" id="wUm-Dk-LvL"/>
                             </connections>
