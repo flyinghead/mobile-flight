@@ -103,6 +103,9 @@ enum Mode : String {
     case DISABLE_3D_SWITCH = "DISABLE 3D SWITCH"
     case FPV_ANGLE_MIX = "FPV ANGLE MIX"
     case BLACKBOX_ERASE = "BLACKBOX ERASE (>30s)"
+    case CAMERA1 = "CAMERA CONTROL 1"
+    case CAMERA2 = "CAMERA CONTROL 2"
+    case CAMERA3 = "CAMERA CONTROL 3"
     // INav
     case NAV_WP = "NAV WP"
     case NAV_ALTHOLD = "NAV ALTHOLD"
@@ -185,6 +188,12 @@ enum Mode : String {
             return "position hold"
         case .GCS_NAV:
             return "ground countrol station"
+        case .CAMERA1:
+            return "camera wi-fi"
+        case .CAMERA2:
+            return "camera power"
+        case .CAMERA3:
+            return "camera change mode"
         }
     }
     

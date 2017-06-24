@@ -62,6 +62,12 @@ class PortsConfigViewController: ConfigChildViewController {
                 }
                 detail += "VTX"
             }
+            if functions.contains(.RuncamSplit) {
+                if !detail.isEmpty {
+                    detail += ", "
+                }
+                detail += "CAM"
+            }
             if detail.isEmpty {
                 detail = " "        // iOS8 bug
             }

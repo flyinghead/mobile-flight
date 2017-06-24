@@ -27,6 +27,7 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     static let VTXSmartAudio = PortFunction(rawValue: 1 << 11)
     static let TelemetryIBus  = PortFunction(rawValue: 1 << 12)
     static let VTXTramp  = PortFunction(rawValue: 1 << 13)
+    static let RuncamSplit = PortFunction(rawValue: 1 << 14)            // BF 3.2
     
     init(rawValue: Int) {
         self.rawValue = rawValue

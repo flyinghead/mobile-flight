@@ -44,7 +44,7 @@ class PortConfigViewController: ConfigChildViewController {
         }
         
         mspBaudratePicker = MyDownPicker(textField: mspBaudrateField, withData: baudRates)
-        peripheralsTypePicker = MyDownPicker(textField: peripheralsTypeField, withData: [ "Disabled", "Blackbox", "TBS SmartAudio", "IRC Tramp" ])
+        peripheralsTypePicker = MyDownPicker(textField: peripheralsTypeField, withData: [ "Disabled", "Blackbox", "TBS SmartAudio", "IRC Tramp", "Runcam Split" ])
         blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: baudRates)
         telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "LTM", "SmartPort", "MAVLink" ])
         telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: baudRates)
@@ -68,6 +68,8 @@ class PortConfigViewController: ConfigChildViewController {
             peripheralsTypePicker.selectedIndex = 2
         } else if port.functions.contains(.VTXTramp) {
             peripheralsTypePicker.selectedIndex = 3
+        } else if port.functions.contains(.RuncamSplit) {
+            peripheralsTypePicker.selectedIndex = 4
         } else {
             peripheralsTypePicker.selectedIndex = 0
         }
@@ -133,6 +135,7 @@ class PortConfigViewController: ConfigChildViewController {
         port.functions.remove(.Blackbox)
         port.functions.remove(.VTXSmartAudio)
         port.functions.remove(.VTXTramp)
+        port.functions.remove(.RuncamSplit)
         switch peripheralsTypePicker.selectedIndex {
         case 1:
             port.functions.insert(.Blackbox)
@@ -140,6 +143,8 @@ class PortConfigViewController: ConfigChildViewController {
             port.functions.insert(.VTXSmartAudio)
         case 3:
             port.functions.insert(.VTXTramp)
+        case 4:
+            port.functions.insert(.RuncamSplit)
         default:
             break
         }
