@@ -26,7 +26,7 @@ class ValidateFirmwareTest: XCTestCase {
         let mspExpect = expectationWithDescription("MSP-Tests")
         
         let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
-        let comm = TCPComm(msp: msp, host: "localhost", port: 8666)
+        let comm = AsyncSocketComm(msp: msp, host: "localhost", port: 8666)
         comm.connect({ success in
             if success {
                 connectExpect.fulfill()

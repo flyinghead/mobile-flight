@@ -875,10 +875,10 @@ class MSPParser {
             settings.minCommand = readInt16(message, index: 4) // 0-2000
             
         case .MSP_COMPASS_CONFIG:   // CF 2.0
-            if message.count < 1 {
+            if message.count < 2 {
                 return false
             }
-            settings.magDeclination = Double(message[0]) / 10 // -18000-18000
+            settings.magDeclination = Double(readInt16(message, index:0)) / 10  // -18000-18000
             
         case .MSP_GPS_CONFIG:       // CF 2.0
             if message.count < 4 {
