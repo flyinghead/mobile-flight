@@ -16,7 +16,7 @@ import Crashlytics
 typealias LocationCallback = (GPSLocation) -> Void
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UserLocationProvider {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UserLocationProvider, CrashlyticsDelegate {
 
     var window: UIWindow?
     var msp = MSPParser()
@@ -52,10 +52,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var showBtRssi = false
     var lastINavStatus = ""
     
+    var usageReportingEnabled = true
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        usageReportingEnabled = userDefaultEnabled(.UsageReporting)
+        
         FirebaseApp.configure()
+        AnalyticsConfiguration.shared().setAnalyticsCollectionEnabled(usageReportingEnabled)
+        
+        Crashlytics.sharedInstance().delegate = self
         Fabric.with([Crashlytics.self])
-
+        
         let pageControl = UIPageControl.appearance()
         pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
@@ -318,6 +325,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 stopFlightlogRecording()
             }
         }
+        if usageReportingEnabled != userDefaultEnabled(.UsageReporting) {
+            usageReportingEnabled = userDefaultEnabled(.UsageReporting)
+            AnalyticsConfiguration.shared().setAnalyticsCollectionEnabled(usageReportingEnabled)
+        }
     }
 
     func stayAliveTimer(timer: NSTimer) {
@@ -431,6 +442,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if let index = mspCommandSenders.indexOf({ $0 === sender }) {
             mspCommandSenders.removeAtIndex(index)
         }
+    }
+    
+    // MARK: CrashlyticsDelegate
+
+    func crashlyticsDidDetectReportForLastExecution(report: CLSReport, completionHandler: (Bool) -> Void) {
+        completionHandler(userDefaultEnabled(.UsageReporting))
     }
 }
 

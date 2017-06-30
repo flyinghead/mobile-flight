@@ -28,6 +28,7 @@ enum UserDefault : String {
     case FlightModeAlert = "flight_mode_alert"
     case OSDFont = "osd_font"
     case INavAlert = "inav_alert"
+    case UsageReporting = "usage_reporting"
     
     var stringValue: String? {
         get {
