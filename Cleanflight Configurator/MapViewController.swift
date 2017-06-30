@@ -89,7 +89,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         batteryEventHandler = msp.batteryEvent.addHandler(self, handler: MapViewController.receivedBatteryData)
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: MapViewController.receivedGpsData)
         
-        if Configuration.theConfig.isINav {
+        if Configuration.theConfig.isINav && !msp.simulating {
             let inavState = INavState.theINavState
             if inavState.waypoints.isEmpty {
                 downloadWaypoints()

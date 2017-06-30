@@ -102,7 +102,17 @@ class Simulator : CommChannel {
             position.y = y
             OSD.theOSD.elements.append(position)
         }
-
+        
+        let inavState = INavState.theINavState
+        inavState.accStatus = .Known(.Healthy)
+        inavState.gyroStatus = .Known(.Healthy)
+        inavState.baroStatus = .Known(.Healthy)
+        inavState.gpsStatus = .Known(.Healthy)
+        inavState.magStatus =  .Known(.Healthy)
+        
+        inavState.armingFlags.insert(.NavigationSafety)
+        inavState.armingFlags.remove(.OkToArm)
+        
         msp.openCommChannel(self)
         msp.communicationEvent.raise(true)
 

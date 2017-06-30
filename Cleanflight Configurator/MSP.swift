@@ -1435,7 +1435,7 @@ class MSPParser {
     }
     
     func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
-        if settings.rxFailMode!.count == 0 {
+        if settings.rxFailMode == nil || settings.rxFailMode!.count == 0 {
             // Happens when RX config is invalid
             callback?(success: true)
             return
@@ -1784,6 +1784,10 @@ class MSPParser {
     
     var replaying: Bool {
         return commChannel is ReplayComm
+    }
+    
+    var simulating: Bool {
+        return commChannel is Simulator
     }
     
     var isWifi: Bool {
