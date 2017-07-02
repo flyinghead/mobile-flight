@@ -58,7 +58,7 @@ class WifiViewController: UIViewController {
                     if success {
                         (self.parentViewController as! MainConnectionViewController).presentNextViewController()
                     } else {
-                        socketComm.close()
+                        self.msp.closeCommChannel()
                         SVProgressHUD.showErrorWithStatus("Handshake failed")
                     }
                 })

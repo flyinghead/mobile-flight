@@ -29,7 +29,6 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         self.host = host
         self.port = port ?? 23
         super.init()
-        msp.openCommChannel(self)
     }
     
     func connect(callback: ((success: Bool) -> ())?) {
@@ -68,8 +67,8 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
     
     func close() {
         shuttingDown = true
-        socket.disconnect()
-        socket.delegate = nil
+        socket?.disconnect()
+        socket?.delegate = nil
         socket = nil
     }
     
@@ -105,6 +104,7 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
     
     func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         _connected = true
+        msp.openCommChannel(self)
         dispatch_async(dispatch_get_main_queue()) {
             self.connectCallback?(success: true)
             self.connectCallback = nil
