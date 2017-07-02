@@ -86,8 +86,7 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
     }
     
     @objc private func tryToReconnect() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        if !connected && msp.communicationEstablished && appDelegate.active {
+        if !connected && msp.communicationEstablished {
             connect({ success in
                 if success {
                     NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
@@ -114,6 +113,7 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
     
     
     func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
+        NSLog("Socket did disconnect")
         _connected = false
         if connectCallback != nil {
             dispatch_async(dispatch_get_main_queue()) {
