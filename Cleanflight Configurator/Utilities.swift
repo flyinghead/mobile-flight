@@ -130,7 +130,7 @@ func compassPoint(heading: Double) -> String {
         localHeading += 360
     }
 
-    for i in 0..<17 {
+    for i in 0 ..< 17 {
         if localHeading < (Double(i) + 0.5) * 360 / 16 {
             return compassPoints[i]
         }
@@ -138,16 +138,16 @@ func compassPoint(heading: Double) -> String {
     return "?"
 }
 
-func chainMspCalls(msp: MSPParser, calls: [MSP_code], callback: (success: Bool) -> Void) {
+func chainMspCalls(msp: MSPParser, calls: [MSP_code], ignoreFailure: Bool = false, callback: (success: Bool) -> Void) {
     if calls.isEmpty {
         callback(success: true)
         return
     }
     msp.sendMessage(calls[0], data: nil, retry: 2) { success in
-        if !success {
+        if !success && !ignoreFailure {
             callback(success: false)
         } else {
-            chainMspCalls(msp, calls: Array(calls.suffixFrom(1)), callback: callback)
+            chainMspCalls(msp, calls: Array(calls.suffixFrom(1)), ignoreFailure: ignoreFailure, callback: callback)
         }
     }
 }

@@ -36,8 +36,8 @@ class DataflashController: StaticDataTableViewController {
         downloadButton?.layer.borderColor = downloadButton?.tintColor.CGColor
 
         devicePicker = MyDownPicker(textField: deviceField)
+        ratePicker = MyDownPicker(textField: rateField)
         setDeviceOptions()
-        ratePicker = MyDownPicker(textField: rateField, withData: [ "1 kHz (100%)", "500 Hz (50%)", "333 Hz (33%)", "250 Hz (25%)", "200 kHz (20%)", "167 Hz (17%)", "143 Hz (14%)", "125 Hz (13%)", "63 Hz (6%)", "31 Hz (3%)" ])
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -74,100 +74,121 @@ class DataflashController: StaticDataTableViewController {
             }
         }
         devicePicker.setData(deviceChoices)
+        
+        let settings = Settings.theSettings
+        let freq: Double
+        if Configuration.theConfig.isApiVersionAtLeast("1.24") && settings.gyroSyncDenom > 0 && Double(settings.pidProcessDenom) > 0 {
+            freq = (settings.gyroUses32KHz ? 32000.0 : 8000.0) / Double(settings.gyroSyncDenom) / Double(settings.pidProcessDenom)
+        } else if settings.loopTime > 0 {
+            freq = 1000000 / Double(settings.loopTime)
+        } else {
+            freq = 1000000
+        }
+        var rates = [String]()
+        for i in [ 1, 2, 3, 4, 5, 6, 7, 8, 16, 32 ] {
+            var f = freq / Double(i)
+            let percent = Int(round(100/Double(i)))
+            let formatted: String
+            if f >= 1000 {
+                f /= 1000
+                formatted = String(format: "%.1f kHz (%d%%)", f, percent)
+            } else {
+                formatted = String(format: "%.0f Hz (%d%%)", f, percent)
+            }
+            rates.append(formatted)
+        }
+        ratePicker.setData(rates)
+
     }
     
     private func updateSummary() {
-        msp.sendMessage(.MSP_BLACKBOX_CONFIG, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_DATAFLASH_SUMMARY, data: nil, retry: 2, callback: { success in
-                self.msp.sendMessage(.MSP_SDCARD_SUMMARY, data: nil, retry: 2, callback: { success in
-                    dispatch_async(dispatch_get_main_queue(), {
-                        SVProgressHUD.dismiss()
-                        self.setDeviceOptions()
-                        let dataflash = Dataflash.theDataflash
-                        
-                        self.devicePicker.selectedIndex = self.deviceValues.indexOf(dataflash.blackboxDevice) ?? -1
-                        if dataflash.blackboxRateNum > 1 {
-                            self.ratePicker.selectedIndex = 0
-                        } else {
-                            switch dataflash.blackboxRateDenom {
-                            case 1:
-                                self.ratePicker.selectedIndex = 0
-                            case 2:
-                                self.ratePicker.selectedIndex = 1
-                            case 3:
-                                self.ratePicker.selectedIndex = 2
-                            case 4:
-                                self.ratePicker.selectedIndex = 3
-                            case 5:
-                                self.ratePicker.selectedIndex = 4
-                            case 6:
-                                self.ratePicker.selectedIndex = 5
-                            case 7:
-                                self.ratePicker.selectedIndex = 6
-                            case 8:
-                                self.ratePicker.selectedIndex = 7
-                            case 16:
-                                self.ratePicker.selectedIndex = 8
-                            case 32:
-                                self.ratePicker.selectedIndex = 9
-                            default:
-                                self.ratePicker.selectedIndex = 0
-                            }
-                        }
-                        self.saveButton.enabled = dataflash.blackboxSupported
-
-                        if dataflash.totalSize > 0 {
-                            self.gauge.maximumValue = Double(dataflash.totalSize)
-                            self.gauge.value = Double(dataflash.usedSize)
-                            self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.usedSize)))
-                            self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.totalSize - dataflash.usedSize)))
-                            self.eraseButton.enabled = true
-                            self.downloadButton?.enabled = true
-                            self.cell(self.sdcardStateCell, setHidden: true)
-                        } else if dataflash.sdcardSupported {
-                            self.gauge.maximumValue = Double(dataflash.sdcardTotalSpace)
-                            self.gauge.value = Double(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace)
-                            self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace))
-                            self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardFreeSpace))
-                            switch dataflash.sdcardState {
-                            case 0:
-                                self.sdcardStateLabel.text = "No card inserted"
-                                self.sdcardStateImage.image = UIImage(named: "crossmark")
-                            case 1:
-                                self.sdcardStateLabel.text = "Card error"
-                                self.sdcardStateImage.image = UIImage(named: "crossmark")
-                            case 2:
-                                self.sdcardStateLabel.text = "Card initializing..."
-                                self.sdcardStateImage.image = UIImage(named: "crossmark")
-                            case 3:
-                                self.sdcardStateLabel.text = "File system initializing..."
-                                self.sdcardStateImage.image = UIImage(named: "crossmark")
-                            case 4:
-                                self.sdcardStateLabel.text = "Card ready"
-                                self.sdcardStateImage.image = UIImage(named: "checkmark")
-                            default:
-                                self.sdcardStateLabel.text = "Unknown state"
-                                self.sdcardStateImage.image = UIImage(named: "crossmark")
-                            }
-                            self.eraseButton.enabled = false
-                            self.downloadButton?.enabled = false
-                            self.cell(self.eraseCell, setHidden: true)
-                        } else {
-                            self.sdcardStateLabel.text = "No dataflash memory or SD Card"
-                            self.sdcardStateImage.image = nil
-                            self.usedLabel.text = ""
-                            self.freeLabel.text = ""
-                            self.gauge.maximumValue = 1.0
-                            self.gauge.value = 0.0
-                            self.eraseButton.enabled = false
-                            self.downloadButton?.enabled = false
-                            self.cell(self.eraseCell, setHidden: true)
-                        }
-                        self.reloadDataAnimated(false)
-                    })
-                })
-            })
-        })
+        chainMspCalls(msp, calls: [ .MSP_PID_ADVANCED_CONFIG, .MSP_LOOP_TIME, .MSP_BLACKBOX_CONFIG, .MSP_DATAFLASH_SUMMARY, .MSP_SDCARD_SUMMARY ], ignoreFailure: true) { success in
+            dispatch_async(dispatch_get_main_queue()) {
+                SVProgressHUD.dismiss()
+                self.setDeviceOptions()
+                let dataflash = Dataflash.theDataflash
+                
+                self.devicePicker.selectedIndex = self.deviceValues.indexOf(dataflash.blackboxDevice) ?? -1
+                if dataflash.blackboxRateNum > 1 {
+                    self.ratePicker.selectedIndex = -1
+                } else {
+                    switch dataflash.blackboxRateDenom {
+                    case 1:
+                        self.ratePicker.selectedIndex = 0
+                    case 2:
+                        self.ratePicker.selectedIndex = 1
+                    case 3:
+                        self.ratePicker.selectedIndex = 2
+                    case 4:
+                        self.ratePicker.selectedIndex = 3
+                    case 5:
+                        self.ratePicker.selectedIndex = 4
+                    case 6:
+                        self.ratePicker.selectedIndex = 5
+                    case 7:
+                        self.ratePicker.selectedIndex = 6
+                    case 8:
+                        self.ratePicker.selectedIndex = 7
+                    case 16:
+                        self.ratePicker.selectedIndex = 8
+                    case 32:
+                        self.ratePicker.selectedIndex = 9
+                    default:
+                        self.ratePicker.selectedIndex = -1
+                    }
+                }
+                self.saveButton.enabled = dataflash.blackboxSupported
+                
+                if dataflash.totalSize > 0 {
+                    self.gauge.maximumValue = Double(dataflash.totalSize)
+                    self.gauge.value = Double(dataflash.usedSize)
+                    self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.usedSize)))
+                    self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.totalSize - dataflash.usedSize)))
+                    self.eraseButton.enabled = true
+                    self.downloadButton?.enabled = true
+                    self.cell(self.sdcardStateCell, setHidden: true)
+                } else if dataflash.sdcardSupported {
+                    self.gauge.maximumValue = Double(dataflash.sdcardTotalSpace)
+                    self.gauge.value = Double(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace)
+                    self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace))
+                    self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardFreeSpace))
+                    switch dataflash.sdcardState {
+                    case 0:
+                        self.sdcardStateLabel.text = "No card inserted"
+                        self.sdcardStateImage.image = UIImage(named: "crossmark")
+                    case 1:
+                        self.sdcardStateLabel.text = "Card error"
+                        self.sdcardStateImage.image = UIImage(named: "crossmark")
+                    case 2:
+                        self.sdcardStateLabel.text = "Card initializing..."
+                        self.sdcardStateImage.image = UIImage(named: "crossmark")
+                    case 3:
+                        self.sdcardStateLabel.text = "File system initializing..."
+                        self.sdcardStateImage.image = UIImage(named: "crossmark")
+                    case 4:
+                        self.sdcardStateLabel.text = "Card ready"
+                        self.sdcardStateImage.image = UIImage(named: "checkmark")
+                    default:
+                        self.sdcardStateLabel.text = "Unknown state"
+                        self.sdcardStateImage.image = UIImage(named: "crossmark")
+                    }
+                    self.eraseButton.enabled = false
+                    self.downloadButton?.enabled = false
+                    self.cell(self.eraseCell, setHidden: true)
+                } else {
+                    self.sdcardStateLabel.text = "No dataflash memory or SD Card"
+                    self.sdcardStateImage.image = nil
+                    self.usedLabel.text = ""
+                    self.freeLabel.text = ""
+                    self.gauge.maximumValue = 1.0
+                    self.gauge.value = 0.0
+                    self.eraseButton.enabled = false
+                    self.downloadButton?.enabled = false
+                    self.cell(self.eraseCell, setHidden: true)
+                }
+                self.reloadDataAnimated(false)
+            }
+        }
     }
     
     @IBAction func downloadAction(sender: AnyObject) {
@@ -236,30 +257,39 @@ class DataflashController: StaticDataTableViewController {
     @IBAction func saveAction(sender: AnyObject) {
         let dataflash = Dataflash.theDataflash
         dataflash.blackboxDevice = deviceValues[devicePicker.selectedIndex]
-        dataflash.blackboxRateNum = 1
         switch ratePicker.selectedIndex {
         case 0:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 1
         case 1:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 2
         case 2:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 3
         case 3:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 4
         case 4:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 5
         case 5:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 6
         case 6:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 7
         case 7:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 8
         case 8:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 16
         case 9:
+            dataflash.blackboxRateNum = 1
             dataflash.blackboxRateDenom = 32
         default:
-            dataflash.blackboxRateDenom = 1
+            break
         }
         msp.sendBlackboxConfig(dataflash) { success in
             if success {
