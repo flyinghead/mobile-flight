@@ -44,7 +44,9 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     static let RxSpi = BaseFlightFeature(rawValue: 1 << 25)     // Not exposed?
     static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)   // exposed in INAV only?
     static let ESCSensor = BaseFlightFeature(rawValue: 1 << 27)
-    static let AntiGravity = BaseFlightFeature(rawValue: 1 << 28) // Not exposed?
+    // BF 3.2 (?)
+    static let AntiGravity = BaseFlightFeature(rawValue: 1 << 28)
+    static let DynamicFilter = BaseFlightFeature(rawValue: 1 << 29)
     
     // INav
     static let SuperExpoRates  = BaseFlightFeature(rawValue: 1 << 23)   // Not exposed?

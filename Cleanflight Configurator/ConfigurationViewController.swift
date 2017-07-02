@@ -80,7 +80,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
         hideSectionsWithHiddenRows = true
 
-        if isBetaflight {
+        if isBetaflightOrCleanflight2 {
             cells(nonBetaflightFeatures, setHidden: true)
             cells(Array(Set(iNavFeatures).subtract(Set(betaflightFeatures))), setHidden: true)
         } else if isINav {
@@ -137,7 +137,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
         }
-        if config.isApiVersionAtLeast("1.31") {    // BF 3.1
+        if isBetaflightOrCleanflight2 {    // BF 3.1 / CF 2
             mspCalls.append(.MSP_NAME)
         }
         
@@ -175,7 +175,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func fetchBetaflightConfig() {
-        if !isBetaflight && !isINav {
+        if !isBetaflightOrCleanflight2 && !isINav {
             fetchInformationSucceeded()
         } else {
             chainMspCalls(msp, calls: [.MSP_PID_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
@@ -309,11 +309,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
         saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
         saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
-        if isBetaflight || isINav {
+        if isBetaflightOrCleanflight2 || isINav {
             newSettings!.gyroSyncDenom = gyroUpdateFreqPicker!.selectedIndex + 1
             newSettings!.pidProcessDenom = pidLoopFreqPicker!.selectedIndex + 1
         }
-        if isBetaflight {
+        if isBetaflightOrCleanflight2 {
             newSettings!.gyroUses32KHz = enable32kHzSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD)
         } else if isINav {
@@ -341,7 +341,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             { callback in
                 self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
-                    if self.isBetaflight || success {
+                    if Configuration.theConfig.isBetaflight || success {
                         callback(true)
                     } else {
                         callback(false)
@@ -364,7 +364,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 self.msp.sendVoltageMeterConfig(self.newSettings!, callback: callback)
             }
         ]
-        if Configuration.theConfig.isApiVersionAtLeast("1.31") {    // BF 3.1
+        if isBetaflightOrCleanflight2 {    // BF 3.1 / CF 2
             commands.append({ callback in
                 self.msp.sendCraftName(self.newSettings!.craftName, callback: callback)
             })
@@ -457,7 +457,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private func saveBetaflightFeatures() {
-        if isBetaflight || isINav {
+        if isBetaflightOrCleanflight2 || isINav {
             let commands: [SendCommand] = [
                 { callback in
                     self.msp.sendPidAdvancedConfig(self.newSettings!, callback: callback)
@@ -551,8 +551,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         childVisible = true
     }
     
-    private var isBetaflight: Bool {
-        return Configuration.theConfig.isBetaflight
+    private var isBetaflightOrCleanflight2: Bool {
+        return Configuration.theConfig.isApiVersionAtLeast("1.31")
     }
     
     private var isINav: Bool {
