@@ -142,18 +142,18 @@
 			<key>Title</key>
 			<string>Acknowledgements</string>
 			<key>File</key>
-			<string>Pods-Cleanflight Configurator-settings-metadata</string>
+			<string>Pods-MobileFlight-settings-metadata</string>
 		</dict>
-        <dict>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-            <key>Title</key>
-            <string>Send Anonymous Usage Information</string>
-            <key>Key</key>
-            <string>usage_reporting</string>
-            <key>DefaultValue</key>
-            <true/>
-        </dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Send Anonymous Usage Information</string>
+			<key>Key</key>
+			<string>usage_reporting</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
 	</array>
 </dict>
 </plist>

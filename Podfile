@@ -14,7 +14,7 @@ def common_pods
 #pod "InAppSettingsKit"
 end
 
-target 'Cleanflight Configurator' do
+target 'MobileFlight' do
   post_install do | installer |
     # Fix for "does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64"
     installer.pods_project.targets.each do |target|
@@ -33,7 +33,7 @@ target 'KIFTests' do
     common_pods
 end
 
-target 'Cleanflight ConfiguratorTests' do
+target 'MobileFlightTests' do
     common_pods
 end
 

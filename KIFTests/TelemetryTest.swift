@@ -8,7 +8,7 @@
 
 import XCTest
 import KIF
-@testable import Cleanflight_Configurator
+@testable import MobileFlight
 
 class TelemetryTest : XCTestCase {
     static var simulatorStarted = false

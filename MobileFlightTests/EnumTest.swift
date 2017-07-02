@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Cleanflight_Configurator
+@testable import MobileFlight
 
 class EnumTest: XCTestCase {
     

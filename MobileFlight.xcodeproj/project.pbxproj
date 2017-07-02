@@ -7,17 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99C9260AEA09ECF35B486D36 /* Pods-Cleanflight Configurator-metadata.plist */; };
-		01825FA52F5658A217E11A60 /* Pods-KIFTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA843920595E4534A366A140 /* Pods-KIFTests-settings-metadata.plist */; };
-		0A1F18FFDECD44A66FA41D17 /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
+		00415200E26F462EA8389C09 /* Pods-MobileFlightTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37DA4F8150DCC5A278D38254 /* Pods-MobileFlightTests-settings-metadata.plist */; };
+		0FA3F821A83248AC2B2C3924 /* Pods-MobileFlight-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1DEBA5CB1B5389A626CF348C /* Pods-MobileFlight-settings-metadata.plist */; };
+		1990A4FAFCE4239032FAEC5C /* Pods-KIFTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9A919DE3BB8EC8F84EBDFA91 /* Pods-KIFTests-settings-metadata.plist */; };
 		1C8CFA37F2B65A4354831018 /* Pods-KIFTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 500F887352E78E56B0B1A8D9 /* Pods-KIFTests-metadata.plist */; };
 		2011414390B1527C586297D1 /* Pods_KIFTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */; };
-		28F91231F9115254ADDD4E9F /* Pods-Cleanflight ConfiguratorTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */; };
-		39EF8A153ECA020413F61F55 /* Pods-Cleanflight Configurator-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0229EA3883BEC44AAD636E2B /* Pods-Cleanflight Configurator-settings-metadata.plist */; };
-		4665D6D4F54A04C59F4A5448 /* Pods_Cleanflight_ConfiguratorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */; };
-		8F9E19C647B7247CD6AF2C10 /* Pods_Cleanflight_Configurator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */; };
-		909FC6B16F34F93CCDF9AA76 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = AEB92FCDA9D3EF3771FCE688 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist */; };
-		9166ACFB1FFD5C1A33520D35 /* Pods-Cleanflight Configurator-KIFTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F2AE1CC476F0074A2FC4EA /* Pods-Cleanflight Configurator-KIFTests-metadata.plist */; };
+		287B1278D80F75E5A699D679 /* Pods-MobileFlight-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC5A404BAF7C13E83A449811 /* Pods-MobileFlight-metadata.plist */; };
+		51520E7B74780EDBD30A3BF4 /* Pods_MobileFlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D219040F0DA1EAAABA58243A /* Pods_MobileFlight.framework */; };
+		585EC5C88E0D873E668F7E7E /* Pods-MobileFlightTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = CC70F1F50BB4B5280C8E0368 /* Pods-MobileFlightTests-metadata.plist */; };
 		AE00734D1C24C2780000926F /* VoiceMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE00734C1C24C2780000926F /* VoiceMessage.swift */; };
 		AE0216E01C1BA8F700CAB28A /* FailsafeConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */; };
 		AE0F42711C6A8D5E000C1FAF /* ArmedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */; };
@@ -91,7 +88,6 @@
 		AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB5F1C0F3D230020C4B0 /* Main.storyboard */; };
 		AE72AB631C0F3D230020C4B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB621C0F3D230020C4B0 /* Assets.xcassets */; };
 		AE72AB661C0F3D230020C4B0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE72AB641C0F3D230020C4B0 /* LaunchScreen.storyboard */; };
-		AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */; };
 		AE72AB8A1C0F3DD50020C4B0 /* MSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB891C0F3DD50020C4B0 /* MSP.swift */; };
 		AE72AB8C1C0F42960020C4B0 /* AircraftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */; };
 		AE730C081C4814ED00CDF2F3 /* PortsConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE730C071C4814ED00CDF2F3 /* PortsConfigViewController.swift */; };
@@ -187,7 +183,7 @@
 		AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */; };
 		AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA92A1C1B96F50040EC09 /* MSPCode.swift */; };
 		AEFCD6D41C6958C500A55A15 /* RssiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */; };
-		C43EB355172CCA0AD6495525 /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 720AAEA7FB260329DBBD205A /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist */; };
+		F4502A2CFF37F824E9B1FBF2 /* Pods_MobileFlightTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BDC089FD90283A8C5B09F77 /* Pods_MobileFlightTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -224,17 +220,25 @@
 		0229EA3883BEC44AAD636E2B /* Pods-Cleanflight Configurator-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-Cleanflight Configurator-settings-metadata.plist"; sourceTree = "<group>"; };
 		0605C31ABC063F21E026C673 /* Pods-Cleanflight Configurator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator.debug.xcconfig"; sourceTree = "<group>"; };
 		0ABAD2DAAE88A2D392993D02 /* Pods-Cleanflight Configurator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator.release.xcconfig"; sourceTree = "<group>"; };
+		1DEBA5CB1B5389A626CF348C /* Pods-MobileFlight-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MobileFlight-settings-metadata.plist"; path = "MobileFlight/Settings.bundle/Pods-MobileFlight-settings-metadata.plist"; sourceTree = "<group>"; };
 		21D314FEEDABF1AD10A59D2F /* Pods-KIFTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.debug.xcconfig"; sourceTree = "<group>"; };
+		37DA4F8150DCC5A278D38254 /* Pods-MobileFlightTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MobileFlightTests-settings-metadata.plist"; path = "MobileFlight/Settings.bundle/Pods-MobileFlightTests-settings-metadata.plist"; sourceTree = "<group>"; };
+		4BDC089FD90283A8C5B09F77 /* Pods_MobileFlightTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileFlightTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		500F887352E78E56B0B1A8D9 /* Pods-KIFTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-KIFTests-metadata.plist"; path = "Pods/Pods-KIFTests-metadata.plist"; sourceTree = "<group>"; };
+		54A25980BF39C084EDE4EE59 /* Pods-MobileFlightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileFlightTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MobileFlightTests/Pods-MobileFlightTests.release.xcconfig"; sourceTree = "<group>"; };
 		5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight ConfiguratorTests-metadata.plist"; path = "Pods/Pods-Cleanflight ConfiguratorTests-metadata.plist"; sourceTree = "<group>"; };
 		604E619CF803DAD034B88B11 /* Pods-Cleanflight Configurator-KIFTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator-KIFTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6FF6C1083C9FA2843553998F /* Pods-MobileFlight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileFlight.release.xcconfig"; path = "Pods/Target Support Files/Pods-MobileFlight/Pods-MobileFlight.release.xcconfig"; sourceTree = "<group>"; };
 		720AAEA7FB260329DBBD205A /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist"; sourceTree = "<group>"; };
 		7D7FE62BC642ECB2CB346F3E /* Pods_Cleanflight_Configurator_KIFTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_Configurator_KIFTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F96871AAC3D57B9D5EC912 /* Pods-KIFTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KIFTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KIFTests/Pods-KIFTests.release.xcconfig"; sourceTree = "<group>"; };
 		86F2AE1CC476F0074A2FC4EA /* Pods-Cleanflight Configurator-KIFTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-KIFTests-metadata.plist"; path = "Pods/Pods-Cleanflight Configurator-KIFTests-metadata.plist"; sourceTree = "<group>"; };
+		8757CD1535BA08CD10524F75 /* Pods-MobileFlightTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileFlightTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MobileFlightTests/Pods-MobileFlightTests.debug.xcconfig"; sourceTree = "<group>"; };
 		87B70B98D5521BAD461DA7AC /* Pods-Cleanflight Configurator-KIFTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight Configurator-KIFTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight Configurator-KIFTests/Pods-Cleanflight Configurator-KIFTests.release.xcconfig"; sourceTree = "<group>"; };
 		95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight ConfiguratorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests.release.xcconfig"; sourceTree = "<group>"; };
 		99C9260AEA09ECF35B486D36 /* Pods-Cleanflight Configurator-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Cleanflight Configurator-metadata.plist"; path = "Pods/Pods-Cleanflight Configurator-metadata.plist"; sourceTree = "<group>"; };
+		9A919DE3BB8EC8F84EBDFA91 /* Pods-KIFTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-KIFTests-settings-metadata.plist"; path = "MobileFlight/Settings.bundle/Pods-KIFTests-settings-metadata.plist"; sourceTree = "<group>"; };
+		ADD620AF4CA0964F4E1C7DF9 /* Pods-MobileFlight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileFlight.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MobileFlight/Pods-MobileFlight.debug.xcconfig"; sourceTree = "<group>"; };
 		AE00734C1C24C2780000926F /* VoiceMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMessage.swift; sourceTree = "<group>"; };
 		AE0216DF1C1BA8F700CAB28A /* FailsafeConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailsafeConfigViewController.swift; sourceTree = "<group>"; };
 		AE0F42701C6A8D5E000C1FAF /* ArmedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmedLabel.swift; sourceTree = "<group>"; };
@@ -337,15 +341,14 @@
 		AE63D5F21C240EAB0070D1D2 /* DataflashController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataflashController.swift; sourceTree = "<group>"; };
 		AE6C02001EC0EE4300D0A5B2 /* Mission.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Mission.storyboard; sourceTree = "<group>"; };
 		AE71D8201C3596C800CC0AEB /* ServosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServosViewController.swift; sourceTree = "<group>"; };
-		AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cleanflight Configurator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE72AB561C0F3D230020C4B0 /* MobileFlight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileFlight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB591C0F3D230020C4B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE72AB5D1C0F3D230020C4B0 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AE72AB601C0F3D230020C4B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE72AB621C0F3D230020C4B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE72AB651C0F3D230020C4B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE72AB671C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cleanflight ConfiguratorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cleanflight_ConfiguratorTests.swift; sourceTree = "<group>"; };
+		AE72AB6C1C0F3D230020C4B0 /* MobileFlightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileFlightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE72AB721C0F3D230020C4B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE72AB891C0F3DD50020C4B0 /* MSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSP.swift; sourceTree = "<group>"; };
 		AE72AB8B1C0F42960020C4B0 /* AircraftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AircraftModel.swift; sourceTree = "<group>"; };
@@ -439,18 +442,21 @@
 		AEF190381C3E8E440066C75A /* AutoCoded.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCoded.swift; sourceTree = "<group>"; };
 		AEF1903A1C3F05D10066C75A /* TryCatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TryCatch.h; sourceTree = "<group>"; };
 		AEF1903E1C3F062D0066C75A /* TryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TryCatch.m; sourceTree = "<group>"; };
-		AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cleanflight Configurator-Bridging-Header.h"; sourceTree = "<group>"; };
+		AEF3703B1C1C9D6200667E9D /* MobileFlight-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileFlight-Bridging-Header.h"; sourceTree = "<group>"; };
 		AEF3703F1C1CAC0B00667E9D /* NumberField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberField.swift; sourceTree = "<group>"; };
 		AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigChildViewController.swift; sourceTree = "<group>"; };
-		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CleanflightSimulator.swift; path = "../Cleanflight ConfiguratorUITests/CleanflightSimulator.swift"; sourceTree = "<group>"; };
+		AEF621AB1C7B75F80041E5B3 /* CleanflightSimulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CleanflightSimulator.swift; path = ../MobileFlightUITests/CleanflightSimulator.swift; sourceTree = "<group>"; };
 		AEF621AD1C7B7B4F0041E5B3 /* MSPCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSPCodec.swift; sourceTree = "<group>"; };
 		AEFCD6D31C6958C500A55A15 /* RssiLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RssiLabel.swift; sourceTree = "<group>"; };
 		BA843920595E4534A366A140 /* Pods-KIFTests-settings-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-KIFTests-settings-metadata.plist"; path = "Cleanflight Configurator/Settings.bundle/Pods-KIFTests-settings-metadata.plist"; sourceTree = "<group>"; };
 		C53AA28E0267FAB9D92D30A7 /* Pods-Cleanflight ConfiguratorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cleanflight ConfiguratorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CC70F1F50BB4B5280C8E0368 /* Pods-MobileFlightTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MobileFlightTests-metadata.plist"; path = "Pods/Pods-MobileFlightTests-metadata.plist"; sourceTree = "<group>"; };
+		D219040F0DA1EAAABA58243A /* Pods_MobileFlight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileFlight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_ConfiguratorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E36398CC8E2486DF5E7F3FAF /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5F941A5706210C1313BAECC /* Pods_KIFTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KIFTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cleanflight_Configurator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC5A404BAF7C13E83A449811 /* Pods-MobileFlight-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MobileFlight-metadata.plist"; path = "Pods/Pods-MobileFlight-metadata.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -466,8 +472,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F9E19C647B7247CD6AF2C10 /* Pods_Cleanflight_Configurator.framework in Frameworks */,
-				0A1F18FFDECD44A66FA41D17 /* Pods_Cleanflight_Configurator.framework in Frameworks */,
+				51520E7B74780EDBD30A3BF4 /* Pods_MobileFlight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,7 +480,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4665D6D4F54A04C59F4A5448 /* Pods_Cleanflight_ConfiguratorTests.framework in Frameworks */,
+				F4502A2CFF37F824E9B1FBF2 /* Pods_MobileFlightTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,6 +496,8 @@
 				F36493616526133E22C4FF3B /* Pods_Cleanflight_Configurator.framework */,
 				7D7FE62BC642ECB2CB346F3E /* Pods_Cleanflight_Configurator_KIFTests.framework */,
 				E0233F6D5DBDD7808E05FC93 /* Pods_Cleanflight_ConfiguratorTests.framework */,
+				D219040F0DA1EAAABA58243A /* Pods_MobileFlight.framework */,
+				4BDC089FD90283A8C5B09F77 /* Pods_MobileFlightTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -695,8 +702,8 @@
 				AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */,
 				AEA48A681C26BE6F006BC53E /* TODO.txt */,
 				AEDDD2781C1615C8004232AA /* Podfile */,
-				AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */,
-				AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
+				AE72AB581C0F3D230020C4B0 /* MobileFlight */,
+				AE72AB6F1C0F3D230020C4B0 /* MobileFlightTests */,
 				AE1DD67E1C7E23F300861248 /* KIFTests */,
 				AE1EA9EF1CB0174500C24E2A /* InAppSettingsKit */,
 				AE72AB571C0F3D230020C4B0 /* Products */,
@@ -708,14 +715,14 @@
 		AE72AB571C0F3D230020C4B0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */,
-				AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */,
+				AE72AB561C0F3D230020C4B0 /* MobileFlight.app */,
+				AE72AB6C1C0F3D230020C4B0 /* MobileFlightTests.xctest */,
 				AE1DD67D1C7E23F300861248 /* KIFTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE72AB581C0F3D230020C4B0 /* Cleanflight Configurator */ = {
+		AE72AB581C0F3D230020C4B0 /* MobileFlight */ = {
 			isa = PBXGroup;
 			children = (
 				AEA48A671C25CFDD006BC53E /* Communication */,
@@ -767,18 +774,17 @@
 				AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */,
 				AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */,
 				AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */,
-				AEF3703B1C1C9D6200667E9D /* Cleanflight Configurator-Bridging-Header.h */,
+				AEF3703B1C1C9D6200667E9D /* MobileFlight-Bridging-Header.h */,
 				AEBA64191C332B3100783ECE /* Settings.bundle */,
 				AEF1903A1C3F05D10066C75A /* TryCatch.h */,
 				AEF1903E1C3F062D0066C75A /* TryCatch.m */,
 			);
-			path = "Cleanflight Configurator";
+			path = MobileFlight;
 			sourceTree = "<group>";
 		};
-		AE72AB6F1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */ = {
+		AE72AB6F1C0F3D230020C4B0 /* MobileFlightTests */ = {
 			isa = PBXGroup;
 			children = (
-				AE72AB701C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift */,
 				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 				AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */,
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
@@ -786,7 +792,7 @@
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
 				AE1D41711EF04F5900972888 /* ConfigurationTest.swift */,
 			);
-			path = "Cleanflight ConfiguratorTests";
+			path = MobileFlightTests;
 			sourceTree = "<group>";
 		};
 		AE7737771EEF32A00018FC2B /* Model */ = {
@@ -867,6 +873,15 @@
 				95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */,
 				5AD378735EC27AD5DD5FE89D /* Pods-Cleanflight ConfiguratorTests-metadata.plist */,
 				AEB92FCDA9D3EF3771FCE688 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist */,
+				ADD620AF4CA0964F4E1C7DF9 /* Pods-MobileFlight.debug.xcconfig */,
+				6FF6C1083C9FA2843553998F /* Pods-MobileFlight.release.xcconfig */,
+				8757CD1535BA08CD10524F75 /* Pods-MobileFlightTests.debug.xcconfig */,
+				54A25980BF39C084EDE4EE59 /* Pods-MobileFlightTests.release.xcconfig */,
+				FC5A404BAF7C13E83A449811 /* Pods-MobileFlight-metadata.plist */,
+				1DEBA5CB1B5389A626CF348C /* Pods-MobileFlight-settings-metadata.plist */,
+				9A919DE3BB8EC8F84EBDFA91 /* Pods-KIFTests-settings-metadata.plist */,
+				CC70F1F50BB4B5280C8E0368 /* Pods-MobileFlightTests-metadata.plist */,
+				37DA4F8150DCC5A278D38254 /* Pods-MobileFlightTests-settings-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -895,9 +910,9 @@
 			productReference = AE1DD67D1C7E23F300861248 /* KIFTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */ = {
+		AE72AB551C0F3D230020C4B0 /* MobileFlight */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight Configurator" */;
+			buildConfigurationList = AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "MobileFlight" */;
 			buildPhases = (
 				04717852FD7CC47EF1D4B100 /* [CP] Check Pods Manifest.lock */,
 				AE72AB521C0F3D230020C4B0 /* Sources */,
@@ -914,14 +929,14 @@
 			);
 			dependencies = (
 			);
-			name = "Cleanflight Configurator";
+			name = MobileFlight;
 			productName = "Cleanflight Configurator";
-			productReference = AE72AB561C0F3D230020C4B0 /* Cleanflight Configurator.app */;
+			productReference = AE72AB561C0F3D230020C4B0 /* MobileFlight.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */ = {
+		AE72AB6B1C0F3D230020C4B0 /* MobileFlightTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorTests" */;
+			buildConfigurationList = AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "MobileFlightTests" */;
 			buildPhases = (
 				F18A59325A50E9756B3B4774 /* [CP] Check Pods Manifest.lock */,
 				AE72AB681C0F3D230020C4B0 /* Sources */,
@@ -935,9 +950,9 @@
 			dependencies = (
 				AE72AB6E1C0F3D230020C4B0 /* PBXTargetDependency */,
 			);
-			name = "Cleanflight ConfiguratorTests";
+			name = MobileFlightTests;
 			productName = "Cleanflight ConfiguratorTests";
-			productReference = AE72AB6C1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests.xctest */;
+			productReference = AE72AB6C1C0F3D230020C4B0 /* MobileFlightTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -969,7 +984,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "Cleanflight Configurator" */;
+			buildConfigurationList = AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "MobileFlight" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -995,8 +1010,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */,
-				AE72AB6B1C0F3D230020C4B0 /* Cleanflight ConfiguratorTests */,
+				AE72AB551C0F3D230020C4B0 /* MobileFlight */,
+				AE72AB6B1C0F3D230020C4B0 /* MobileFlightTests */,
 				AE1DD67C1C7E23F300861248 /* KIFTests */,
 			);
 		};
@@ -1008,9 +1023,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C8CFA37F2B65A4354831018 /* Pods-KIFTests-metadata.plist in Resources */,
-				9166ACFB1FFD5C1A33520D35 /* Pods-Cleanflight Configurator-KIFTests-metadata.plist in Resources */,
-				C43EB355172CCA0AD6495525 /* Pods-Cleanflight Configurator-KIFTests-settings-metadata.plist in Resources */,
-				01825FA52F5658A217E11A60 /* Pods-KIFTests-settings-metadata.plist in Resources */,
+				1990A4FAFCE4239032FAEC5C /* Pods-KIFTests-settings-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,8 +1059,8 @@
 				AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,
-				0061A8D52620D3DBA5B6D690 /* Pods-Cleanflight Configurator-metadata.plist in Resources */,
-				39EF8A153ECA020413F61F55 /* Pods-Cleanflight Configurator-settings-metadata.plist in Resources */,
+				287B1278D80F75E5A699D679 /* Pods-MobileFlight-metadata.plist in Resources */,
+				0FA3F821A83248AC2B2C3924 /* Pods-MobileFlight-settings-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1055,8 +1068,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28F91231F9115254ADDD4E9F /* Pods-Cleanflight ConfiguratorTests-metadata.plist in Resources */,
-				909FC6B16F34F93CCDF9AA76 /* Pods-Cleanflight ConfiguratorTests-settings-metadata.plist in Resources */,
+				585EC5C88E0D873E668F7E7E /* Pods-MobileFlightTests-metadata.plist in Resources */,
+				00415200E26F462EA8389C09 /* Pods-MobileFlightTests-settings-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1120,7 +1133,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileFlightTests/Pods-MobileFlightTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6CDE2864DF258ED97298BE89 /* [CP] Embed Pods Frameworks */ = {
@@ -1135,7 +1148,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight ConfiguratorTests/Pods-Cleanflight ConfiguratorTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileFlightTests/Pods-MobileFlightTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		806F9F3538A6C197599F5C14 /* [CP] Copy Pods Resources */ = {
@@ -1150,7 +1163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileFlight/Pods-MobileFlight-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		95DF7D4A4BF8AEBD06BD4BB8 /* [CP] Check Pods Manifest.lock */ = {
@@ -1205,7 +1218,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plutil -insert PreferenceSpecifiers.1 -json '{\"FooterText\":\"Icons designed by Freepik\\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0\\nStaticDataTableViewController Copyright 2015 Peter Paulis - min60 s.r.o. (min60.com)\\nInAppSettingsKit Copyright (c) 2009-2014: Luc Vandal, Edovia Inc., http://www.edovia.com\\nOrtwin Gentz, FutureTap GmbH, http://www.futuretap.com\\nAll rights reserved.\\nThis code is licensed under the BSD license that is available at: http://www.opensource.org/licenses/bsd-license.php\", \"Title\":\"Others\", \"Type\":\"PSGroupSpecifier\"}' Cleanflight\\ Configurator/Settings.bundle/Pods-Cleanflight\\ Configurator-settings-metadata.plist";
+			shellScript = "plutil -insert PreferenceSpecifiers.1 -json '{\"FooterText\":\"Icons designed by Freepik\\nIcons made by Yannick, SimpleIcon, Daniel Bruce and Picol from www.flaticon.com licensed under CC BY 3.0\\nStaticDataTableViewController Copyright 2015 Peter Paulis - min60 s.r.o. (min60.com)\\nInAppSettingsKit Copyright (c) 2009-2014: Luc Vandal, Edovia Inc., http://www.edovia.com\\nOrtwin Gentz, FutureTap GmbH, http://www.futuretap.com\\nAll rights reserved.\\nThis code is licensed under the BSD license that is available at: http://www.opensource.org/licenses/bsd-license.php\", \"Title\":\"Others\", \"Type\":\"PSGroupSpecifier\"}' MobileFlight/Settings.bundle/Pods-MobileFlight-settings-metadata.plist";
 		};
 		E3E5C666A848AC0144F8834A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1219,7 +1232,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cleanflight Configurator/Pods-Cleanflight Configurator-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileFlight/Pods-MobileFlight-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F18A59325A50E9756B3B4774 /* [CP] Check Pods Manifest.lock */ = {
@@ -1392,7 +1405,6 @@
 				AEAB37181CB1CDCD0097DC9A /* UtilitiesTest.swift in Sources */,
 				AE1D41721EF04F5A00972888 /* ConfigurationTest.swift in Sources */,
 				AEF621B51C7B9EEC0041E5B3 /* MSPCode.swift in Sources */,
-				AE72AB711C0F3D230020C4B0 /* Cleanflight_ConfiguratorTests.swift in Sources */,
 				AEBEE5C91C7CF97D0094FABD /* AutoCoded.swift in Sources */,
 				AE40529F1CCBF7EF00AADAF7 /* MetarReportTest.swift in Sources */,
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
@@ -1407,12 +1419,12 @@
 /* Begin PBXTargetDependency section */
 		AE1DD6831C7E23F300861248 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
+			target = AE72AB551C0F3D230020C4B0 /* MobileFlight */;
 			targetProxy = AE1DD6821C7E23F300861248 /* PBXContainerItemProxy */;
 		};
 		AE72AB6E1C0F3D230020C4B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AE72AB551C0F3D230020C4B0 /* Cleanflight Configurator */;
+			target = AE72AB551C0F3D230020C4B0 /* MobileFlight */;
 			targetProxy = AE72AB6D1C0F3D230020C4B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1470,7 +1482,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.KIFTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};
 			name = Debug;
 		};
@@ -1485,7 +1497,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.KIFTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = KIFTests/KIFTests_bridgingheader.h;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};
 			name = Release;
 		};
@@ -1583,20 +1595,20 @@
 		};
 		AE72AB811C0F3D230020C4B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0605C31ABC063F21E026C673 /* Pods-Cleanflight Configurator.debug.xcconfig */;
+			baseConfigurationReference = ADD620AF4CA0964F4E1C7DF9 /* Pods-MobileFlight.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
+				INFOPLIST_FILE = MobileFlight/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks /Applications/Xcode.app/Contents/Developer/Toolchains/Swift_2.3.xctoolchain/usr/lib/swift/iphonesimulator";
 				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileCleanflight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "MobileFlight/MobileFlight-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "InAppSettingsKit/Controllers InAppSettingsKit/Models";
 			};
@@ -1604,47 +1616,47 @@
 		};
 		AE72AB821C0F3D230020C4B0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0ABAD2DAAE88A2D392993D02 /* Pods-Cleanflight Configurator.release.xcconfig */;
+			baseConfigurationReference = 6FF6C1083C9FA2843553998F /* Pods-MobileFlight.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "Cleanflight Configurator/Info.plist";
+				INFOPLIST_FILE = MobileFlight/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileCleanflight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Cleanflight Configurator/Cleanflight Configurator-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "MobileFlight/MobileFlight-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "InAppSettingsKit/Controllers InAppSettingsKit/Models";
 			};
 			name = Release;
 		};
 		AE72AB841C0F3D230020C4B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C53AA28E0267FAB9D92D30A7 /* Pods-Cleanflight ConfiguratorTests.debug.xcconfig */;
+			baseConfigurationReference = 8757CD1535BA08CD10524F75 /* Pods-MobileFlightTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
+				INFOPLIST_FILE = MobileFlightTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};
 			name = Debug;
 		};
 		AE72AB851C0F3D230020C4B0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95BCD58FD00002B9314DF9B7 /* Pods-Cleanflight ConfiguratorTests.release.xcconfig */;
+			baseConfigurationReference = 54A25980BF39C084EDE4EE59 /* Pods-MobileFlightTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = "Cleanflight ConfiguratorTests/Info.plist";
+				INFOPLIST_FILE = MobileFlightTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cleanflight Configurator.app/Cleanflight Configurator";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};
 			name = Release;
 		};
@@ -1660,7 +1672,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "Cleanflight Configurator" */ = {
+		AE72AB511C0F3D230020C4B0 /* Build configuration list for PBXProject "MobileFlight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE72AB7E1C0F3D230020C4B0 /* Debug */,
@@ -1669,7 +1681,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight Configurator" */ = {
+		AE72AB801C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "MobileFlight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE72AB811C0F3D230020C4B0 /* Debug */,
@@ -1678,7 +1690,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "Cleanflight ConfiguratorTests" */ = {
+		AE72AB831C0F3D230020C4B0 /* Build configuration list for PBXNativeTarget "MobileFlightTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE72AB841C0F3D230020C4B0 /* Debug */,
