@@ -754,7 +754,7 @@
                                                         </connections>
                                                     </switch>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Enable Motor Control" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TS8-1C-DWo">
-                                                        <rect key="frame" x="65" y="51.5" width="106" height="31.5"/>
+                                                        <rect key="frame" x="65" y="51" width="106" height="31.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -845,11 +845,11 @@
                     <connections>
                         <segue destination="Epx-xP-oGk" kind="relationship" relationship="viewControllers" id="XTq-JH-TLt"/>
                         <segue destination="4LN-Am-iWi" kind="relationship" relationship="viewControllers" id="KUI-CU-XxD"/>
-                        <segue destination="9f6-ZM-2iM" kind="relationship" relationship="viewControllers" id="cLg-Xx-LVy"/>
                         <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
+                        <segue destination="2sj-ut-gPi" kind="relationship" relationship="viewControllers" id="Het-ER-LWx"/>
+                        <segue destination="9f6-ZM-2iM" kind="relationship" relationship="viewControllers" id="cLg-Xx-LVy"/>
                         <segue destination="LEP-hN-6U2" kind="relationship" relationship="viewControllers" id="Aef-lF-GaZ"/>
                         <segue destination="2XE-6t-X30" kind="relationship" relationship="viewControllers" id="6WR-7g-jmh"/>
-                        <segue destination="2sj-ut-gPi" kind="relationship" relationship="viewControllers" id="Het-ER-LWx"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -1058,7 +1058,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMa-Sp-xcf">
-                                                    <rect key="frame" x="129" y="6" width="63" height="30"/>
+                                                    <rect key="frame" x="128.5" y="6" width="63" height="30"/>
                                                     <inset key="contentEdgeInsets" minX="12" minY="6" maxX="12" maxY="6"/>
                                                     <state key="normal" title="Erase"/>
                                                     <userDefinedRuntimeAttributes>
@@ -1105,7 +1105,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZeC-oL-rVh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1314.375" y="1385.9154929577464"/>
+            <point key="canvasLocation" x="-1307" y="731"/>
         </scene>
         <!--CLI-->
         <scene sceneID="X95-Xl-zDL">
