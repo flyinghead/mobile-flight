@@ -72,11 +72,14 @@ class PIDViewController: StaticDataTableViewController {
     
     @IBOutlet weak var pidControllerCell: UITableViewCell!
     @IBOutlet var betaflightCells: [UITableViewCell]!
+    @IBOutlet var allPidsCells: [UITableViewCell]!
     
     var settings: Settings?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        hideSectionsWithHiddenRows = true
 
         pidProfileStepper.minimumValue = 1
         pidProfileStepper.maximumValue = 3
@@ -96,6 +99,8 @@ class PIDViewController: StaticDataTableViewController {
         } else {
             cells(betaflightCells, setHidden: true)
         }
+        cells(allPidsCells, setHidden: true)
+        reloadDataAnimated(false)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -299,5 +304,11 @@ class PIDViewController: StaticDataTableViewController {
                 }
             })
         })
+    }
+    @IBAction func showAllPidsChanged(sender: AnyObject) {
+        if let uiswitch = sender as? UISwitch {
+            cells(allPidsCells, setHidden: !uiswitch.on)
+            reloadDataAnimated(true)
+        }
     }
 }
