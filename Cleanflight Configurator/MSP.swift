@@ -149,7 +149,7 @@ class MSPParser {
                         callErrorCallback(mspCode)
                     }
                 } else {
-                    NSLog("MSP %d unsupported or invalid", mspCode.rawValue)
+                    //NSLog("MSP %d unsupported or invalid", mspCode.rawValue)
                     callErrorCallback(mspCode)
                 }
             }
@@ -684,12 +684,28 @@ class MSPParser {
             }
             settings.pidController = Int(message[0])
 
+        case .MSP_LOOP_TIME:
+            if message.count < 2 {
+                return false
+            }
+            settings.loopTime = readUInt16(message, index: 0)
+            
+        case .MSP_BLACKBOX_CONFIG:
+            if message.count < 4 {
+                return false
+            }
+            let dataflash = Dataflash.theDataflash
+            dataflash.blackboxSupported = message[0] != 0
+            dataflash.blackboxDevice = Int(message[1])
+            dataflash.blackboxRateNum = Int(message[2])
+            dataflash.blackboxRateDenom = Int(message[3])
+            
         case .MSP_DATAFLASH_SUMMARY:
             if message.count < 13 {
                 return false
             }
             let dataflash = Dataflash.theDataflash
-            dataflash.ready = Int(message[0])
+            dataflash.ready = message[0] & 1 != 0
             dataflash.sectors = readUInt32(message, index: 1)
             dataflash.totalSize = readUInt32(message, index: 5)
             dataflash.usedSize = readUInt32(message, index: 9)
@@ -697,12 +713,17 @@ class MSPParser {
         case .MSP_DATAFLASH_READ:
             // Nothing to do. Handled by the callback
             break
-        
-        case .MSP_LOOP_TIME:
-            if message.count < 2 {
+            
+        case .MSP_SDCARD_SUMMARY:
+            if message.count < 11 {
                 return false
             }
-            settings.loopTime = readUInt16(message, index: 0)
+            let dataflash = Dataflash.theDataflash
+            dataflash.sdcardSupported = message[0] != 0
+            dataflash.sdcardState = Int(message[1])
+            dataflash.sdcardLastError = Int(message[2])
+            dataflash.sdcardFreeSpace = Int64(readUInt32(message, index: 3)) * 1024
+            dataflash.sdcardTotalSpace = Int64(readUInt32(message, index: 7)) * 1024
             
         case .MSP_SIKRADIO:
             if message.count < 9 {
@@ -1079,7 +1100,8 @@ class MSPParser {
             .MSP_OSD_CHAR_WRITE,
             .MSP_SET_NAME,
             .MSP_SET_RTH_AND_LAND_CONFIG,
-            .MSP_SET_FW_CONFIG:
+            .MSP_SET_FW_CONFIG,
+            .MSP_SET_BLACKBOX_CONFIG:
             break
             
         default:
@@ -1560,6 +1582,14 @@ class MSPParser {
                 callback?(success: success)
             }
         }
+    }
+    
+    func sendBlackboxConfig(dataflash: Dataflash, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.append(UInt8(dataflash.blackboxDevice))
+        data.append(UInt8(dataflash.blackboxRateNum))
+        data.append(UInt8(dataflash.blackboxRateDenom))
+        sendMessage(.MSP_SET_BLACKBOX_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     // Cleanflight 2.0

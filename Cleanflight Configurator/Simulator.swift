@@ -103,6 +103,14 @@ class Simulator : CommChannel {
             OSD.theOSD.elements.append(position)
         }
         
+        let dataflash = Dataflash.theDataflash
+        dataflash.blackboxSupported = true
+        dataflash.blackboxDevice = 2
+        dataflash.sdcardState = 4
+        dataflash.sdcardSupported = true
+        dataflash.sdcardTotalSpace = 16 * 1024 * 1024 * 1024
+        dataflash.sdcardFreeSpace = 4 * 1024 * 1024 * 1024
+        
         let inavState = INavState.theINavState
         inavState.accStatus = .Known(.Healthy)
         inavState.gyroStatus = .Known(.Healthy)
@@ -174,6 +182,7 @@ class Simulator : CommChannel {
         motionManager.stopDeviceMotionUpdates()
         closed = true
         timer?.invalidate()
+        timer = nil
     }
     
     @objc private func timerDidFire(timer: NSTimer?) {

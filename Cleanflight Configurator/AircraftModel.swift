@@ -143,14 +143,28 @@ class MotorData : AutoCoded {
 }
 
 class Dataflash : AutoCoded {
-    var autoEncoding = [ "ready", "sectors", "usedSize", "totalSize" ]
+    var autoEncoding = [ "blackboxDevice", "blackboxRateNum", "blackboxRateDenom" ]
     static var theDataflash = Dataflash()
     
-    var ready = 0
+    // MSP_BLACKBOX_CONFIG
+    var blackboxSupported = false
+    var blackboxDevice = 0
+    var blackboxRateNum = 1
+    var blackboxRateDenom = 1
+    
+    // MSP_DATAFLASH_SUMMARY
+    var ready = false
     var sectors = 0
     var usedSize = 0
     var totalSize = 0
 
+    // MSP_SDCARD_SUMMARY
+    var sdcardSupported = false
+    var sdcardState = 0
+    var sdcardLastError = 0
+    var sdcardFreeSpace: Int64 = 0
+    var sdcardTotalSpace: Int64 = 0
+    
     private override init() {
         super.init()
     }
@@ -171,7 +185,6 @@ class AllAircraftData : NSObject, NSCoding {
     var receiver: Receiver
     var sensorData: SensorData
     var motorData: MotorData
-    var dataflash: Dataflash
     var inavState: INavState
     
     override init() {
@@ -182,7 +195,6 @@ class AllAircraftData : NSObject, NSCoding {
         receiver = Receiver.theReceiver
         sensorData = SensorData.theSensorData
         motorData = MotorData.theMotorData
-        dataflash = Dataflash.theDataflash
         inavState = INavState.theINavState
     }
     
@@ -195,8 +207,7 @@ class AllAircraftData : NSObject, NSCoding {
             let gpsData = decoder.decodeObjectForKey("GPSData") as? GPSData,
             let receiver = decoder.decodeObjectForKey("Receiver") as? Receiver,
             let sensorData = decoder.decodeObjectForKey("SensorData") as? SensorData,
-            let motorData = decoder.decodeObjectForKey("MotorData") as? MotorData,
-            let dataflash = decoder.decodeObjectForKey("Dataflash") as? Dataflash
+            let motorData = decoder.decodeObjectForKey("MotorData") as? MotorData
             else { return nil }
         
         self.init()
@@ -214,8 +225,6 @@ class AllAircraftData : NSObject, NSCoding {
         SensorData.theSensorData = sensorData
         self.motorData = motorData
         MotorData.theMotorData = motorData
-        self.dataflash = dataflash
-        Dataflash.theDataflash = dataflash
         
         if decoder.containsValueForKey("INavState") {
             self.inavState = decoder.decodeObjectForKey("INavState") as! INavState
@@ -234,7 +243,6 @@ class AllAircraftData : NSObject, NSCoding {
         coder.encodeObject(receiver, forKey: "Receiver")
         coder.encodeObject(sensorData, forKey: "SensorData")
         coder.encodeObject(motorData, forKey: "MotorData")
-        coder.encodeObject(dataflash, forKey: "Dataflash")
         coder.encodeObject(inavState, forKey: "INavState")
     }
 
@@ -286,11 +294,11 @@ func resetAircraftModel() {
     Receiver.theReceiver = Receiver()
     SensorData.theSensorData = SensorData()
     MotorData.theMotorData = MotorData()
-    Dataflash.theDataflash = Dataflash()
     INavState.theINavState = INavState()
     
     AllAircraftData.allAircraftData = AllAircraftData()
     
+    Dataflash.theDataflash = Dataflash()
     INavConfig.theINavConfig = INavConfig()
     
     OSD.theOSD = OSD()
