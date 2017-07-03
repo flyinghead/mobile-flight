@@ -1,6 +1,6 @@
 //
 //  ReceiverConfigViewController.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 11/12/15.
 //  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.

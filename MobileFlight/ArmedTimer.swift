@@ -1,6 +1,6 @@
 //
 //  ArmedTimer.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 22/05/16.
 //  Copyright © 2016 Raphael Jean-Leconte. All rights reserved.

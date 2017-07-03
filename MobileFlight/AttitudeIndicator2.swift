@@ -1,6 +1,6 @@
 //
 //  AttitudeIndicator2.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 19/01/16.
 //  Copyright © 2016 Raphael Jean-Leconte. All rights reserved.

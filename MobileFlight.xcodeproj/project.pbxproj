@@ -1641,7 +1641,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = MobileFlightTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileFlightTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};
@@ -1654,7 +1654,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = MobileFlightTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.flyinghead.Cleanflight-ConfiguratorTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flyinghead.MobileFlightTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileFlight.app/MobileFlight";
 			};

@@ -1,6 +1,6 @@
 //
 //  OSDElementView.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 14/05/17.
 //  Copyright © 2017 Raphael Jean-Leconte. All rights reserved.

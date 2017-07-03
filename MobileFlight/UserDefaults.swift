@@ -1,6 +1,6 @@
 //
 //  UserDefaults.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 30/12/15.
 //  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.

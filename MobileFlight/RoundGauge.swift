@@ -1,6 +1,6 @@
 //
 //  RoundGauge.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 21/01/16.
 //  Copyright © 2016 Raphael Jean-Leconte. All rights reserved.

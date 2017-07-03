@@ -1,6 +1,6 @@
 //
 //  ServoConfigViewController.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 01/01/16.
 //  Copyright © 2016 Raphael Jean-Leconte. All rights reserved.

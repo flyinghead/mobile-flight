@@ -1,6 +1,6 @@
 //
 //  MyDownPicker.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 14/12/15.
 //  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.

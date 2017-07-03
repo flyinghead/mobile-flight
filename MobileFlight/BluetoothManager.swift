@@ -1,6 +1,6 @@
 //
 //  BluetoothScanner.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 09/12/15.
 //  Copyright © 2015 Raphael Jean-Leconte. All rights reserved.
@@ -55,7 +55,7 @@ class BluetoothManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
     var delegate: BluetoothDelegate?
     
     override init() {
-        btQueue = dispatch_queue_create("cleanflightBluetoothQueue", DISPATCH_QUEUE_SERIAL)
+        btQueue = dispatch_queue_create("bluetoothQueue", DISPATCH_QUEUE_SERIAL)
         manager = CBCentralManager(delegate: nil, queue: btQueue, options: [CBCentralManagerOptionShowPowerAlertKey : NSNumber(integer: 1)])
         super.init()
         manager.delegate = self

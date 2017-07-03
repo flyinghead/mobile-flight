@@ -1,6 +1,6 @@
 //
 //  MotorConfigViewController.swift
-//  Cleanflight Configurator
+//  Mobile Flight
 //
 //  Created by Raphael Jean-Leconte on 27/04/17.
 //  Copyright © 2017 Raphael Jean-Leconte. All rights reserved.

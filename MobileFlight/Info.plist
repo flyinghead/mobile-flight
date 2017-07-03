@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Mobile Flight - Configuration and telemetry for drones and aircrafts running Cleanflight</string>
+	<string>Mobile Flight for Cleanflight, Betaflight, INAV</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
