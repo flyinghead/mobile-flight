@@ -363,7 +363,7 @@
 		AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidateFirmwareTest.swift; sourceTree = "<group>"; };
 		AE8D56CE1EE8605D008A69A6 /* Calibration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Calibration.storyboard; sourceTree = "<group>"; };
 		AE8D56D01EE863D4008A69A6 /* Receiver.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Receiver.storyboard; sourceTree = "<group>"; };
-		AE8D56D21EE86547008A69A6 /* Modes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Modes.storyboard; path = ../Modes.storyboard; sourceTree = "<group>"; };
+		AE8D56D21EE86547008A69A6 /* Modes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Modes.storyboard; sourceTree = "<group>"; };
 		AE8D56D41EE865E6008A69A6 /* PIDTuning.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PIDTuning.storyboard; sourceTree = "<group>"; };
 		AE8D56D61EE89534008A69A6 /* Map.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Map.storyboard; sourceTree = "<group>"; };
 		AEA280C71EFAE1FB00C40DAA /* AsyncSocketComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncSocketComm.swift; sourceTree = "<group>"; };
