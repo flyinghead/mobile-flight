@@ -29,6 +29,9 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     @IBOutlet weak var sensorFlowImg: UIImageView!
     @IBOutlet var inavSensorCells: [UITableViewCell]!
     
+    @IBOutlet weak var cycleTimeLabel: UILabel!
+    @IBOutlet weak var cpuLoadLabel: UILabel!
+    
     @IBOutlet weak var uavLevelledImg: UIImageView!
     @IBOutlet weak var runtimeCalibImg: UIImageView!
     @IBOutlet weak var cpuLoadImg: UIImageView!
@@ -78,6 +81,7 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     
     var flightModeEventHandler: Disposable?
     var sensorStatusEventHandler: Disposable?
+    var statusEventHandler: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,6 +128,8 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             }
         }
         
+        statusEventHandler = msp.statusEvent.addHandler(self, handler: CalibrationViewController.statusEventChanged)
+        
         sensorStatusEventHandler = msp.sensorStatusEvent.addHandler(self, handler: CalibrationViewController.sensorStatusChanged)
         sensorStatusChanged()
         appDelegate.addMSPCommandSender(self)
@@ -146,6 +152,7 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
       
+        statusEventHandler?.dispose()
         sensorStatusEventHandler?.dispose()
         appDelegate.removeMSPCommandSender(self)
         flightModeEventHandler?.dispose()
@@ -180,6 +187,12 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             color = UIColor.orangeColor()
         }
         img.tintColor = color
+    }
+    
+    func statusEventChanged() {
+        let config = Configuration.theConfig
+        cycleTimeLabel.text = String(config.cycleTime)
+        cpuLoadLabel.text = String(format:"%d%%", config.systemLoad)
     }
     
     func sensorStatusChanged() {

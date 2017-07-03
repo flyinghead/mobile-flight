@@ -52,6 +52,7 @@ class MSPParser {
     let communicationEvent = Event<Bool>()
     let dataReceivedEvent = Event<Void>()
     let sensorStatusEvent = Event<Void>()
+    let statusEvent = Event<Void>()     // MSP_STATUS[_EX] received, fires up to 10 times/s
     
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
@@ -201,6 +202,7 @@ class MSPParser {
                     }
                 }
             }
+            statusEvent.raiseDispatch()
             if previousMode != config.mode {
                 flightModeEvent.raiseDispatch()
             }
