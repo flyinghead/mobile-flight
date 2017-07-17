@@ -185,9 +185,22 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
         speeches.insert(speech)
         
         let utterance = AVSpeechUtterance(string: speech)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = findVoice()
         utterance.rate = (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 9.0 ? 0.52 : 0.15
         synthesizer.speakUtterance(utterance)
+    }
+    
+    func findVoice() -> AVSpeechSynthesisVoice? {
+        var englishVoice: AVSpeechSynthesisVoice? = nil
+        for voice in AVSpeechSynthesisVoice.speechVoices() {
+            if voice.language == "en-US" {
+                return voice
+            }
+            if voice.language.hasPrefix("en-") {
+                englishVoice = voice
+            }
+        }
+        return englishVoice
     }
     
     func checkAlarm(alarm: VoiceAlarm) {
