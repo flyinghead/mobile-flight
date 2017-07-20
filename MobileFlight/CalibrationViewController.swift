@@ -222,12 +222,12 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
                 }
             }
         } else {
-            sensorGyroImg.tintColor = CfGreen
-            sensorAccImg.tintColor = config.activeSensors & 1 != 0 ? CfGreen : UIColor.lightGrayColor()
-            sensorBaroImg.tintColor = config.activeSensors & 2 != 0 ? CfGreen : UIColor.lightGrayColor()
-            sensorMagImg.tintColor = config.activeSensors & 4 != 0 ? CfGreen : UIColor.lightGrayColor()
-            sensorGpsImg.tintColor = config.activeSensors & 8 != 0 ? CfGreen : UIColor.lightGrayColor()
-            sensorSonarImg.tintColor = config.activeSensors & 16 != 0 ? CfGreen : UIColor.lightGrayColor()
+            sensorGyroImg.tintColor = config.isGyroActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorAccImg.tintColor = config.isAccelerometerActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorBaroImg.tintColor = config.isBarometerActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorMagImg.tintColor = config.isMagnetometerActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorGpsImg.tintColor = config.isGPSActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorSonarImg.tintColor = config.isSonarActive() ? CfGreen : UIColor.lightGrayColor()
         }
     }
 

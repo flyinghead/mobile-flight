@@ -39,7 +39,8 @@ class Configuration : AutoCoded {
     // MSP_STATUS[_EX]
     var cycleTime = 0     // microsecond?
     var i2cError = 0
-    var activeSensors = 0
+    var activeSensors = 0   // bitmask: 0=Accelerometer, 1=Baro, 2=Mag, 3=GPS, 4=Sonar, (BF 3.2) 5=gyro
+    
     var mode = 0 {
         didSet {
             let modeChanges = oldValue ^ mode
@@ -164,22 +165,32 @@ class Configuration : AutoCoded {
     // MARK:
     
     func isAccelerometerActive() -> Bool {
-        return activeSensors & 1 != 0;
+        return activeSensors & 1 != 0
     }
     func isBarometerActive() -> Bool {
-        return activeSensors & 2 != 0;
+        return activeSensors & 2 != 0
     }
     
     func isMagnetometerActive() -> Bool {
-        return activeSensors & 4 != 0;
+        return activeSensors & 4 != 0
     }
     
     func isGPSActive() -> Bool {
-        return activeSensors & 8 != 0;
+        return activeSensors & 8 != 0
     }
     
     func isSonarActive() -> Bool {
-        return activeSensors & 16 != 0;
+        return activeSensors & 16 != 0
+    }
+    
+    // BF 3.2
+    func isGyroActive() -> Bool {
+        if isApiVersionAtLeast("1.36") {
+            return activeSensors & 32 != 0
+        } else {
+            // Assume active
+            return true
+        }
     }
     
     // INav
