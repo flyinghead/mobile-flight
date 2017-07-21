@@ -2572,6 +2572,110 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="WUB-xa-7hV" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="423" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WUB-xa-7hV" id="Mj4-vo-P5M">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Divider" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6XW-n3-3Qe">
+                                                    <rect key="frame" x="8" y="12" width="51.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KPZ-MN-oBM" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
+                                                    <rect key="frame" x="67.5" y="12" width="524.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="10"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="255"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="KPZ-MN-oBM" firstAttribute="trailing" secondItem="Mj4-vo-P5M" secondAttribute="trailingMargin" id="453-nd-Uxh"/>
+                                                <constraint firstItem="6XW-n3-3Qe" firstAttribute="centerY" secondItem="Mj4-vo-P5M" secondAttribute="centerY" id="9Lp-1w-O84"/>
+                                                <constraint firstItem="KPZ-MN-oBM" firstAttribute="leading" secondItem="6XW-n3-3Qe" secondAttribute="trailing" constant="8" id="Rk2-dS-YMY"/>
+                                                <constraint firstItem="6XW-n3-3Qe" firstAttribute="leading" secondItem="Mj4-vo-P5M" secondAttribute="leadingMargin" id="aaf-dW-cac"/>
+                                                <constraint firstItem="KPZ-MN-oBM" firstAttribute="centerY" secondItem="Mj4-vo-P5M" secondAttribute="centerY" id="v1c-83-39n"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.36"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.24"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Yiz-kX-rfh" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="467" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Yiz-kX-rfh" id="ihV-EH-2ZL">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Multiplier" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LIG-Bq-03v">
+                                                    <rect key="frame" x="8" y="12" width="67" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q7s-r5-d4m" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
+                                                    <rect key="frame" x="83" y="12" width="509" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="255"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="LIG-Bq-03v" firstAttribute="centerY" secondItem="ihV-EH-2ZL" secondAttribute="centerY" id="6T3-0p-uJV"/>
+                                                <constraint firstItem="q7s-r5-d4m" firstAttribute="leading" secondItem="LIG-Bq-03v" secondAttribute="trailing" constant="8" id="gFj-Wl-7vZ"/>
+                                                <constraint firstItem="q7s-r5-d4m" firstAttribute="centerY" secondItem="ihV-EH-2ZL" secondAttribute="centerY" id="vqH-gw-n8H"/>
+                                                <constraint firstItem="LIG-Bq-03v" firstAttribute="leading" secondItem="ihV-EH-2ZL" secondAttribute="leadingMargin" id="wX4-7f-ot9"/>
+                                                <constraint firstItem="q7s-r5-d4m" firstAttribute="trailing" secondItem="ihV-EH-2ZL" secondAttribute="trailingMargin" id="yMa-xx-Grj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.36"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.24"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -2583,9 +2687,11 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="500"/>
                     <connections>
+                        <outlet property="dividerField" destination="KPZ-MN-oBM" id="buT-yc-u3R"/>
                         <outlet property="maxVoltage" destination="Lvy-6g-YmY" id="Pjf-jq-E65"/>
                         <outlet property="meterTypeFIeld" destination="yRs-ws-lJn" id="lGu-PP-3qf"/>
                         <outlet property="minVoltage" destination="XcT-MW-zS0" id="ioX-4q-MLn"/>
+                        <outlet property="multiplierField" destination="q7s-r5-d4m" id="xET-Yk-1ZD"/>
                         <outlet property="vbatSwitch" destination="Iid-R0-Y0h" id="fMh-2N-1cK"/>
                         <outlet property="voltageScale" destination="8Hr-9w-ydE" id="53z-Rm-tGu"/>
                         <outlet property="voltageScaleCell" destination="Oey-2K-EwO" id="At3-Vd-85g"/>
@@ -2595,6 +2701,11 @@
                         <outletCollection property="hideableCells" destination="DDQ-gp-pxX" collectionClass="NSMutableArray" id="AF5-Sm-ghs"/>
                         <outletCollection property="hideableCells" destination="Oey-2K-EwO" collectionClass="NSMutableArray" id="D1q-nL-KbE"/>
                         <outletCollection property="hideableCells" destination="IVO-PK-nrn" collectionClass="NSMutableArray" id="2fC-jK-Dqn"/>
+                        <outletCollection property="hideableCells" destination="WUB-xa-7hV" collectionClass="NSMutableArray" id="yXl-s0-OFC"/>
+                        <outletCollection property="hideableCells" destination="Yiz-kX-rfh" collectionClass="NSMutableArray" id="NUb-rk-PT2"/>
+                        <outletCollection property="adcCells" destination="Oey-2K-EwO" collectionClass="NSMutableArray" id="U9t-it-d4r"/>
+                        <outletCollection property="adcCells" destination="WUB-xa-7hV" collectionClass="NSMutableArray" id="j1y-c2-WmL"/>
+                        <outletCollection property="adcCells" destination="Yiz-kX-rfh" collectionClass="NSMutableArray" id="saK-aF-fng"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Ee-w0-BuN" userLabel="First Responder" sceneMemberID="firstResponder"/>

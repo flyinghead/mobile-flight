@@ -15,8 +15,11 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBOutlet weak var maxVoltage: NumberField!
     @IBOutlet weak var voltageScale: NumberField!
     @IBOutlet var hideableCells: [UITableViewCell]!
+    @IBOutlet var adcCells: [UITableViewCell]!
     @IBOutlet weak var meterTypeFIeld: UITextField!
     @IBOutlet weak var voltageScaleCell: UITableViewCell!
+    @IBOutlet weak var dividerField: NumberField!
+    @IBOutlet weak var multiplierField: NumberField!
     
     var meterTypePicker: MyDownPicker!
 
@@ -45,8 +48,8 @@ class VBatConfigViewController: ConfigChildViewController {
         if vbatSwitch.on {
             var cellsToShow = hideableCells
             if meterTypePicker.selectedIndex > 0 {
-                cellsToShow = Array(Set(cellsToShow).subtract(Set([ voltageScaleCell ])))
-                cell(voltageScaleCell, setHidden: true)
+                cellsToShow = Array(Set(cellsToShow).subtract(Set(adcCells)))
+                cells(adcCells, setHidden: true)
             }
             showCells(cellsToShow, show: true)
         } else {
@@ -87,6 +90,8 @@ class VBatConfigViewController: ConfigChildViewController {
         } else {
             meterTypePicker.selectedIndex = settings.vbatMeterType
         }
+        dividerField.value = Double(settings.vbatResistorDividerValue)
+        multiplierField.value = Double(settings.vbatResistorDividerMultiplier)
         cells(hideableCells, setHidden: !vbatSwitch.on)
         hideCellsAsNeeded()
         reloadDataAnimated(false)
@@ -108,6 +113,8 @@ class VBatConfigViewController: ConfigChildViewController {
         } else {
             settings?.vbatMeterType = meterTypePicker.selectedIndex
         }
+        settings?.vbatResistorDividerValue = Int(dividerField.value)
+        settings?.vbatResistorDividerMultiplier = Int(multiplierField.value)
         configViewController?.refreshUI()
     }
     
