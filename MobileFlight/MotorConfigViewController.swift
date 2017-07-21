@@ -9,13 +9,13 @@
 import UIKit
 
 class MotorConfigViewController: ConfigChildViewController {
-    @IBOutlet weak var inavEnablePwmCell: UITableViewCell!
     @IBOutlet weak var inavEnablePWMSwitch: UISwitch!
     
     @IBOutlet weak var escProtocolField: UITextField!
     @IBOutlet weak var UnsyncedMotorSwitch: UISwitch!
     @IBOutlet weak var motorPwmFreqField: NumberField!
-    @IBOutlet weak var motorPwmFreqCell: UITableViewCell!
+    @IBOutlet weak var motorPwmFreqCell: ConditionalTableViewCell!
+    @IBOutlet weak var servoPwmFreqField: NumberField!
     
     @IBOutlet weak var minimumCommandField: ThrottleField!
     @IBOutlet weak var minimumThrottleField: ThrottleField!
@@ -30,6 +30,7 @@ class MotorConfigViewController: ConfigChildViewController {
     @IBOutlet weak var disarmMotorsSwitch: UISwitch!
     
     @IBOutlet var analogCells: [UITableViewCell]!
+    @IBOutlet var conditionalCells: [ConditionalTableViewCell]!
     
     var escProtocolPicker: MyDownPicker?
     
@@ -38,18 +39,20 @@ class MotorConfigViewController: ConfigChildViewController {
 
         var escProtocols = [ "PWM", "OneShot125" ]
         let config = Configuration.theConfig
-        if config.isApiVersionAtLeast("1.31") {
-            escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600" ])
+        if (config.isBetaflight && config.isApiVersionAtLeast("1.31")) || (!config.isINav && !config.isBetaflight && config.isApiVersionAtLeast("1.35")) {
+            escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600", "DShot1200" ])
         } else if config.isINav {
             escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed" ])
             UnsyncedMotorSwitch.on = true
             UnsyncedMotorSwitch.enabled = false
         }
-        if !config.isINav {
-            cell(inavEnablePwmCell, setHidden: true)
+        if config.isApiVersionAtLeast("1.36") {
+            escProtocols.append("ProShot1000")
         }
         escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: escProtocols)
         escProtocolPicker!.addTarget(self, action: #selector(escProtocolChanged(_:)), forControlEvents: .ValueChanged)
+        
+        showCells(conditionalCells, show: true)
     }
 
     private func viewHideCells() {
@@ -62,7 +65,7 @@ class MotorConfigViewController: ConfigChildViewController {
                 cellsToShow.remove(motorPwmFreqCell)
                 cell(motorPwmFreqCell, setHidden: true)
             }
-            cells(Array(cellsToShow), setHidden: false)
+            showCells(Array(cellsToShow), show: true)
             cell(idleThrotleCell, setHidden: true)
         }
         cell(disarmDelayCell, setHidden: !stopMotorSwitch.on)
@@ -87,6 +90,7 @@ class MotorConfigViewController: ConfigChildViewController {
             } else {
                 settings.features.remove(.PwmOutputEnable)
             }
+            settings.servoPwmRate = Int(servoPwmFreqField.value)
         }
 
         settings.motorPwmRate = Int(motorPwmFreqField.value)
@@ -114,8 +118,9 @@ class MotorConfigViewController: ConfigChildViewController {
             UnsyncedMotorSwitch.on = settings!.useUnsyncedPwm
         } else {
             inavEnablePWMSwitch.on = settings.features.contains(.PwmOutputEnable)
+            servoPwmFreqField.value = Double(settings.servoPwmRate)
         }
-        motorPwmFreqField.value = Double(settings!.motorPwmRate)
+        motorPwmFreqField.value = Double(settings.motorPwmRate)
         idleThrotleField.value = settings!.digitalIdleOffsetPercent
         
         minimumCommandField.value = Double(settings!.minCommand ?? 0)

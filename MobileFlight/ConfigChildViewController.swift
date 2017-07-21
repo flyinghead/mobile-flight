@@ -88,4 +88,14 @@ class ConfigChildViewController: StaticDataTableViewController, UITextFieldDeleg
     func textFieldDidEndEditing(textField: UITextField) {
         activeField = nil
     }
+
+    func showCells(cells: [UITableViewCell], show: Bool) {
+        for c in cells {
+            if let condCell = c as? ConditionalTableViewCell {
+                cell(condCell, setHidden: !show || !condCell.visible)
+            } else {
+                cell(c, setHidden: !show)
+            }
+        }
+    }
 }

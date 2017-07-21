@@ -102,7 +102,7 @@ class DataflashController: StaticDataTableViewController {
     }
     
     private func updateSummary() {
-        chainMspCalls(msp, calls: [ .MSP_PID_ADVANCED_CONFIG, .MSP_LOOP_TIME, .MSP_BLACKBOX_CONFIG, .MSP_DATAFLASH_SUMMARY, .MSP_SDCARD_SUMMARY ], ignoreFailure: true) { success in
+        chainMspCalls(msp, calls: [ .MSP_ADVANCED_CONFIG, .MSP_LOOP_TIME, .MSP_BLACKBOX_CONFIG, .MSP_DATAFLASH_SUMMARY, .MSP_SDCARD_SUMMARY ], ignoreFailure: true) { success in
             dispatch_async(dispatch_get_main_queue()) {
                 SVProgressHUD.dismiss()
                 self.setDeviceOptions()

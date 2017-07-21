@@ -19,10 +19,18 @@ class CurrentConfigViewController: ConfigChildViewController {
 
     var meterTypePicker: MyDownPicker!
     
+    class func isCurrentMonitoringEnabled(settings: Settings) -> Bool {
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            return settings.currentMeterSource > 0
+        } else {
+            return settings.features.contains(.CurrentMeter)
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        meterTypePicker = MyDownPicker(textField: meterTypeField, withData: [ "None", "Onboard ADC", "Virtual", "ESC Sensor" ])
+        meterTypePicker = MyDownPicker(textField: meterTypeField, withData: [ "Onboard ADC", "Virtual", "ESC Sensor" ])
         meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
 
         meterScaleField.delegate = self
@@ -32,7 +40,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     private func hideCellsAsNeeded() {
         if currentMeterSwitch.on {
             var cellsToShow = hideableCells
-            if meterTypePicker.selectedIndex < 1 || meterTypePicker.selectedIndex > 2 {
+            if meterTypePicker.selectedIndex > 1 {
                 cellsToShow = Array(Set(cellsToShow).subtract(Set(currentScaleCells)))
                 cells(currentScaleCells, setHidden: true)
             }
@@ -43,10 +51,16 @@ class CurrentConfigViewController: ConfigChildViewController {
     }
     
     @IBAction func currentMeterSwitchChanged(sender: AnyObject) {
-        if currentMeterSwitch.on {
-            settings?.features.insert(.CurrentMeter)
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if !currentMeterSwitch.on {
+                settings.currentMeterSource = 0
+            }
         } else {
-            settings?.features.remove(.CurrentMeter)
+            if currentMeterSwitch.on {
+                settings?.features.insert(.CurrentMeter)
+            } else {
+                settings?.features.remove(.CurrentMeter)
+            }
         }
         hideCellsAsNeeded()
         reloadDataAnimated(true)
@@ -55,10 +69,16 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        currentMeterSwitch.on = settings.features.contains(.CurrentMeter)
+        currentMeterSwitch.on = CurrentConfigViewController.isCurrentMonitoringEnabled(settings)
         meterScaleField.value = Double(settings.currentScale)
         meterOffsetField.value = Double(settings.currentOffset)
-        meterTypePicker.selectedIndex = settings.currentMeterType
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if currentMeterSwitch.on {
+                meterTypePicker.selectedIndex = settings.currentMeterSource - 1
+            }
+        } else {
+            meterTypePicker.selectedIndex = settings.currentMeterType - 1
+        }
         batteryCapacityField.value = Double(settings.batteryCapacity)
         hideCellsAsNeeded()
         reloadDataAnimated(false)
@@ -67,9 +87,17 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if currentMeterSwitch.on {
+                settings.currentMeterSource = meterTypePicker.selectedIndex + 1
+            } else {
+                settings.currentMeterSource = 0
+            }
+        } else {
+            settings.currentMeterType = meterTypePicker.selectedIndex + 1
+        }
         settings.currentScale = Int(meterScaleField.value)
         settings.currentOffset = Int(meterOffsetField.value)
-        settings.currentMeterType = meterTypePicker.selectedIndex
         settings.batteryCapacity = Int(round(batteryCapacityField.value))
         configViewController?.refreshUI()
     }

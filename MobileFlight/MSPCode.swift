@@ -72,8 +72,8 @@ enum MSP_code : Int {
     case MSP_OSD_CHAR_WRITE =         87
     case MSP_VTX_CONFIG =             88
     case MSP_SET_VTX_CONFIG =         89
-    case MSP_PID_ADVANCED_CONFIG =    90    // aka MSP_ADVANCED_CONFIG in bf code
-    case MSP_SET_PID_ADVANCED_CONFIG = 91   // aka ...
+    case MSP_ADVANCED_CONFIG =        90
+    case MSP_SET_ADVANCED_CONFIG =    91
     case MSP_FILTER_CONFIG =          92
     case MSP_SET_FILTER_CONFIG =      93
     case MSP_ADVANCED_TUNING =        94    // aka MSP_PID_ADVANCED in bf code

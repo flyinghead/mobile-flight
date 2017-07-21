@@ -14,7 +14,7 @@
         <!--Motor Config-->
         <scene sceneID="GU6-FS-y0H">
             <objects>
-                <tableViewController id="eR2-Vv-qXE" userLabel="Motor Config" customClass="MotorConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="eR2-Vv-qXE" userLabel="Motor Config" customClass="MotorConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="iAh-8q-6pt">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -22,11 +22,11 @@
                         <sections>
                             <tableViewSection id="MQS-st-86C">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="JkD-mY-Cep" userLabel="INav Enable PWM">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="JkD-mY-Cep" userLabel="INav Enable PWM" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="35" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JkD-mY-Cep" id="f32-Ln-OQc">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Enable Motors and Servos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dzt-S8-qpt">
@@ -50,6 +50,11 @@
                                                 <constraint firstItem="ZB8-iQ-6n1" firstAttribute="centerY" secondItem="f32-Ln-OQc" secondAttribute="centerY" id="xTY-af-x38"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="6cA-Ir-c3v" userLabel="ESC Protocol">
                                         <rect key="frame" x="0.0" y="79" width="600" height="44"/>
@@ -79,11 +84,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Wnp-Mg-QM5" userLabel="Motor PWM different">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Wnp-Mg-QM5" userLabel="Motor PWM different" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="123" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Wnp-Mg-QM5" id="ovO-aD-E3r">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Set Motor PWM Frequency" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xPE-rv-AhG">
@@ -107,12 +112,18 @@
                                                 <constraint firstItem="xPE-rv-AhG" firstAttribute="leading" secondItem="ovO-aD-E3r" secondAttribute="leadingMargin" constant="6" id="uE6-T5-hcD"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="jN5-q5-ikL" userLabel="Motor PWM Speed">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="jN5-q5-ikL" userLabel="Motor PWM Speed" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="167" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jN5-q5-ikL" id="lDf-AH-z9B">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Motor PWM Frequency" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x5s-EO-yqX">
@@ -121,7 +132,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="400" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qmD-vc-Mg3" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="400" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qmD-vc-Mg3" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="189" y="12" width="375" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -160,19 +171,83 @@
                                                 <constraint firstItem="x5s-EO-yqX" firstAttribute="leading" secondItem="lDf-AH-z9B" secondAttribute="leadingMargin" constant="6" id="ir4-pZ-0LM"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="B5a-lM-Ru4" userLabel="Servo PWM Speed" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="211" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B5a-lM-Ru4" id="RkM-RH-slg">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Servo PWM Frequency" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IGQ-Ij-wYL">
+                                                    <rect key="frame" x="14" y="12" width="165.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="400" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L5V-Dv-0Cs" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
+                                                    <rect key="frame" x="187.5" y="12" width="376.5" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                            <real key="value" value="50"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                            <real key="value" value="498"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="increment">
+                                                            <real key="value" value="10"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                            <real key="value" value="50"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="decimalDigits">
+                                                            <integer key="value" value="0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hz" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ip-YY-ybJ">
+                                                    <rect key="frame" x="572" y="12" width="20" height="19.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="L5V-Dv-0Cs" firstAttribute="centerY" secondItem="RkM-RH-slg" secondAttribute="centerY" id="25y-OM-7nT"/>
+                                                <constraint firstItem="5ip-YY-ybJ" firstAttribute="centerY" secondItem="RkM-RH-slg" secondAttribute="centerY" id="4Fd-Q3-Qmv"/>
+                                                <constraint firstItem="IGQ-Ij-wYL" firstAttribute="leading" secondItem="RkM-RH-slg" secondAttribute="leadingMargin" constant="6" id="G6l-td-HXp"/>
+                                                <constraint firstItem="5ip-YY-ybJ" firstAttribute="trailing" secondItem="RkM-RH-slg" secondAttribute="trailingMargin" id="Nyf-1j-uNt"/>
+                                                <constraint firstItem="L5V-Dv-0Cs" firstAttribute="leading" secondItem="IGQ-Ij-wYL" secondAttribute="trailing" constant="8" id="YEb-zd-rne"/>
+                                                <constraint firstItem="IGQ-Ij-wYL" firstAttribute="centerY" secondItem="RkM-RH-slg" secondAttribute="centerY" id="dJL-SO-EZu"/>
+                                                <constraint firstItem="5ip-YY-ybJ" firstAttribute="leading" secondItem="L5V-Dv-0Cs" secondAttribute="trailing" constant="8" id="k9Q-HE-HqS"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="ESC VALUES" id="xGE-4A-WBN">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="fUS-e4-3dn">
-                                        <rect key="frame" x="0.0" y="268" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="312" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fUS-e4-3dn" id="RIA-bD-nkb">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1100" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bIr-wU-xDW" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1100" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bIr-wU-xDW" customClass="ThrottleField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="150" y="11" width="442" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -205,13 +280,13 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="rBd-Qt-Nlc">
-                                        <rect key="frame" x="0.0" y="312" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="356" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rBd-Qt-Nlc" id="VQx-UF-ZtD">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1850" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iVN-3t-coB" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1850" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iVN-3t-coB" customClass="ThrottleField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="154" y="12" width="438" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -244,7 +319,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="fqi-eO-ldm">
-                                        <rect key="frame" x="0.0" y="356" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="400" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fqi-eO-ldm" id="059-Tk-Edp">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -256,7 +331,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="9999" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ymr-3P-8vL" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="9999" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ymr-3P-8vL" customClass="ThrottleField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="167" y="12" width="425" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -283,7 +358,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Bp2-Ot-K9b" userLabel="Throttle Idle Percent">
-                                        <rect key="frame" x="0.0" y="400" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="444" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bp2-Ot-K9b" id="ce6-7c-0jK">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -295,7 +370,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="400" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I0b-Kh-j9F" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="400" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I0b-Kh-j9F" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="153.5" y="12" width="438.5" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -332,7 +407,7 @@
                             <tableViewSection headerTitle="MOTOR STOP" id="eE8-7x-nXW">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Moe-DK-owl">
-                                        <rect key="frame" x="0.0" y="501" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="545" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Moe-DK-owl" id="3X7-WU-ljL">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -361,7 +436,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="qP1-wk-rvi">
-                                        <rect key="frame" x="0.0" y="545" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="589" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qP1-wk-rvi" id="U3e-4m-scd">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -390,7 +465,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="k52-fc-n7F">
-                                        <rect key="frame" x="0.0" y="589" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="633" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="k52-fc-n7F" id="ybf-1Q-pg9">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -435,18 +510,22 @@
                         <outlet property="idleThrotleCell" destination="Bp2-Ot-K9b" id="Xg1-Cn-Pnk"/>
                         <outlet property="idleThrotleField" destination="I0b-Kh-j9F" id="322-wz-isT"/>
                         <outlet property="inavEnablePWMSwitch" destination="ZB8-iQ-6n1" id="lOc-dv-fbx"/>
-                        <outlet property="inavEnablePwmCell" destination="JkD-mY-Cep" id="J3z-xH-Vi3"/>
                         <outlet property="maximumThrottleFIeld" destination="iVN-3t-coB" id="PdX-mA-oFL"/>
                         <outlet property="minimumCommandField" destination="Ymr-3P-8vL" id="zLB-3z-YTC"/>
                         <outlet property="minimumThrottleField" destination="bIr-wU-xDW" id="agx-Ln-lvb"/>
                         <outlet property="motorPwmFreqCell" destination="jN5-q5-ikL" id="4vs-a4-QJH"/>
                         <outlet property="motorPwmFreqField" destination="qmD-vc-Mg3" id="i99-TL-zk5"/>
+                        <outlet property="servoPwmFreqField" destination="L5V-Dv-0Cs" id="mY2-dI-2G7"/>
                         <outlet property="stopMotorSwitch" destination="hSV-EF-vzR" id="Sll-yr-mbB"/>
                         <outletCollection property="analogCells" destination="Wnp-Mg-QM5" collectionClass="NSMutableArray" id="nGF-nc-KwQ"/>
                         <outletCollection property="analogCells" destination="jN5-q5-ikL" collectionClass="NSMutableArray" id="ghk-mY-6V5"/>
                         <outletCollection property="analogCells" destination="fUS-e4-3dn" collectionClass="NSMutableArray" id="RqK-Lf-9ew"/>
                         <outletCollection property="analogCells" destination="rBd-Qt-Nlc" collectionClass="NSMutableArray" id="EqP-SH-H8b"/>
                         <outletCollection property="analogCells" destination="fqi-eO-ldm" collectionClass="NSMutableArray" id="oda-Sk-CCt"/>
+                        <outletCollection property="conditionalCells" destination="JkD-mY-Cep" collectionClass="NSMutableArray" id="yKI-UH-ogw"/>
+                        <outletCollection property="conditionalCells" destination="Wnp-Mg-QM5" collectionClass="NSMutableArray" id="J4E-oG-RDd"/>
+                        <outletCollection property="conditionalCells" destination="jN5-q5-ikL" collectionClass="NSMutableArray" id="m60-Ur-rlD"/>
+                        <outletCollection property="conditionalCells" destination="B5a-lM-Ru4" collectionClass="NSMutableArray" id="3Ec-ox-gRC"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nxf-TC-8LK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -456,7 +535,7 @@
         <!--Ports Config-->
         <scene sceneID="bRb-1f-2l5">
             <objects>
-                <tableViewController id="G2h-eu-ddt" userLabel="Ports Config" customClass="PortsConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="G2h-eu-ddt" userLabel="Ports Config" customClass="PortsConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="KAa-DN-6XH">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -505,7 +584,7 @@
         <!--Port Config-->
         <scene sceneID="pbB-kj-wWk">
             <objects>
-                <tableViewController id="iHo-B3-jBQ" userLabel="Port Config" customClass="PortConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="iHo-B3-jBQ" userLabel="Port Config" customClass="PortConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="LL5-2p-Tx3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -806,7 +885,7 @@
         <!--Configuration-->
         <scene sceneID="std-RH-l0Z">
             <objects>
-                <tableViewController id="nuR-kD-jb9" userLabel="Configuration" customClass="ConfigurationViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="nuR-kD-jb9" userLabel="Configuration" customClass="ConfigurationViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="1NH-OF-gTU">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="2400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -902,7 +981,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2Pl-Ik-fQN" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2Pl-Ik-fQN" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="71" y="12" width="521" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -942,7 +1021,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ml6-EI-pBd" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ml6-EI-pBd" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="81" y="12" width="511" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -982,7 +1061,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="-270" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="60D-bm-YCH" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="-270" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="60D-bm-YCH" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="73" y="12" width="519" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation"/>
@@ -1127,11 +1206,11 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="System Configuration" id="s2f-lI-JnB" userLabel="System Configuration">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nns-wr-N5L" userLabel="Loop Time">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nns-wr-N5L" userLabel="Loop Time" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="870" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nns-wr-N5L" id="n6z-Fy-atO">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Flight Controller Loop Time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o0F-m4-x1q">
@@ -1140,7 +1219,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="500" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qu1-NE-STG" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="500" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qu1-NE-STG" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="219" y="12" width="373" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -1171,12 +1250,18 @@
                                                 <constraint firstItem="Qu1-NE-STG" firstAttribute="trailing" secondItem="n6z-Fy-atO" secondAttribute="trailingMargin" id="cNj-hU-54z"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxCleanflightVersion" value="1.24"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="krv-Xy-iQr" userLabel="CyclesPerSec">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="krv-Xy-iQr" userLabel="CyclesPerSec" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="914" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="krv-Xy-iQr" id="mhe-PF-phY">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gQn-0z-LO5">
@@ -1200,12 +1285,18 @@
                                                 <constraint firstItem="gQn-0z-LO5" firstAttribute="centerY" secondItem="mhe-PF-phY" secondAttribute="centerY" id="hOR-cS-zFg"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxCleanflightVersion" value="1.24"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1iq-L5-jjq" userLabel="Use32KHz">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1iq-L5-jjq" userLabel="Use32KHz" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="958" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1iq-L5-jjq" id="hDy-0N-rLJ">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cCF-5K-7Xr">
@@ -1229,12 +1320,19 @@
                                                 <constraint firstItem="cCF-5K-7Xr" firstAttribute="leading" secondItem="xgz-5l-ihT" secondAttribute="trailing" constant="8" id="qMb-eq-OPv"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.31"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="dYY-JJ-RKp" userLabel="BetaGyroFreq">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="dYY-JJ-RKp" userLabel="BetaGyroFreq" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="1002" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dYY-JJ-RKp" id="9a3-5a-DSZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Gyro Update Frequency" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ryx-Tf-DYJ">
@@ -1257,12 +1355,18 @@
                                                 <constraint firstItem="PpS-iw-aVn" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ryx-Tf-DYJ" secondAttribute="trailing" constant="8" id="sJ8-4W-oQE"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nkT-eL-PeF" userLabel="BetaPidFreq">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nkT-eL-PeF" userLabel="BetaPidFreq" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="1046" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nkT-eL-PeF" id="clY-rN-Hl9">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="PID Loop Frequency" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bud-HU-2al">
@@ -1285,12 +1389,52 @@
                                                 <constraint firstItem="Bud-HU-2al" firstAttribute="centerY" secondItem="clY-rN-Hl9" secondAttribute="centerY" id="zCr-wU-9ec"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="qUF-yC-NjU" userLabel="BetaAccelerometer">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Tg5-PZ-MK7" userLabel="inavSyncLoopGyro" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="1090" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Tg5-PZ-MK7" id="33X-km-m7v">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uzp-cj-Jk5">
+                                                    <rect key="frame" x="543" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="enable32kHzChanged:" destination="nuR-kD-jb9" eventType="valueChanged" id="cdR-nA-WLH"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Synchronize PID loop and gyroscope" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A9I-Hm-fvl">
+                                                    <rect key="frame" x="14" y="12" width="521" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Uzp-cj-Jk5" firstAttribute="leading" secondItem="A9I-Hm-fvl" secondAttribute="trailing" constant="8" id="Dee-dz-a8a"/>
+                                                <constraint firstItem="Uzp-cj-Jk5" firstAttribute="trailing" secondItem="33X-km-m7v" secondAttribute="trailingMargin" id="Jfn-a5-KZU"/>
+                                                <constraint firstItem="A9I-Hm-fvl" firstAttribute="centerY" secondItem="33X-km-m7v" secondAttribute="centerY" id="aEk-yn-4Ij"/>
+                                                <constraint firstItem="A9I-Hm-fvl" firstAttribute="leading" secondItem="33X-km-m7v" secondAttribute="leadingMargin" constant="6" id="hV1-Na-vYt"/>
+                                                <constraint firstItem="Uzp-cj-Jk5" firstAttribute="centerY" secondItem="33X-km-m7v" secondAttribute="centerY" id="nhW-Sk-MA5"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="qUF-yC-NjU" userLabel="BetaAccelerometer" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1134" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qUF-yC-NjU" id="aF6-5O-Ayq">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jzo-UA-lQ1">
@@ -1311,12 +1455,18 @@
                                                 <constraint firstItem="QgL-c6-qIX" firstAttribute="leading" secondItem="aF6-5O-Ayq" secondAttribute="leadingMargin" constant="6" id="sye-hU-fL1"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="NfU-0g-rD1" userLabel="BetaBarometer">
-                                        <rect key="frame" x="0.0" y="1134" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="NfU-0g-rD1" userLabel="BetaBarometer" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1178" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NfU-0g-rD1" id="H2K-Sl-AAa">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JCH-bm-nQH">
@@ -1337,12 +1487,18 @@
                                                 <constraint firstItem="JCH-bm-nQH" firstAttribute="centerY" secondItem="H2K-Sl-AAa" secondAttribute="centerY" id="zbq-Wi-qeP"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="fzh-oh-yZb" userLabel="BetaMagnetometer">
-                                        <rect key="frame" x="0.0" y="1178" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="fzh-oh-yZb" userLabel="BetaMagnetometer" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1222" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fzh-oh-yZb" id="Oj6-Oi-yBk">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yNf-Jw-YQU">
@@ -1363,12 +1519,18 @@
                                                 <constraint firstItem="yNf-Jw-YQU" firstAttribute="trailing" secondItem="Oj6-Oi-yBk" secondAttribute="trailingMargin" id="v78-Ff-4Q0"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="VCg-ch-nUs" userLabel="PitotTube">
-                                        <rect key="frame" x="0.0" y="1222" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="VCg-ch-nUs" userLabel="PitotTube" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1266" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VCg-ch-nUs" id="6ql-92-y5P">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kB0-G7-l58">
@@ -1389,12 +1551,17 @@
                                                 <constraint firstItem="lH0-aU-I6E" firstAttribute="centerY" secondItem="6ql-92-y5P" secondAttribute="centerY" id="jiA-3i-D2a"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="CMu-8n-XnG" userLabel="Sonar">
-                                        <rect key="frame" x="0.0" y="1266" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="CMu-8n-XnG" userLabel="Sonar" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1310" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CMu-8n-XnG" id="LLL-Ld-omb">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cux-mk-ARF">
@@ -1415,13 +1582,18 @@
                                                 <constraint firstItem="cux-mk-ARF" firstAttribute="centerY" secondItem="LLL-Ld-omb" secondAttribute="centerY" id="qfy-Vf-eOR"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Other features" id="Mhc-fS-hIn">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="706-5b-fGK">
-                                        <rect key="frame" x="0.0" y="1367" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1411" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="706-5b-fGK" id="dmk-P4-Jci">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -1455,7 +1627,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="xhF-sq-FnO">
-                                        <rect key="frame" x="0.0" y="1411" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1455" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xhF-sq-FnO" id="EBG-fq-vw5">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -1488,11 +1660,11 @@
                                             </segue>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="UXb-L2-cOz">
-                                        <rect key="frame" x="0.0" y="1455" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="UXb-L2-cOz" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1499" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UXb-L2-cOz" id="QEV-NP-mOM">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wkE-uE-MLt">
@@ -1513,9 +1685,15 @@
                                                 <constraint firstItem="wkE-uE-MLt" firstAttribute="trailing" secondItem="QEV-NP-mOM" secondAttribute="trailingMargin" id="hDR-gO-BaT"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxInavVersion" value="1.24"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Cre-XZ-P3P">
-                                        <rect key="frame" x="0.0" y="1499" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1543" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Cre-XZ-P3P" id="SAt-bs-zBW">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1541,7 +1719,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="xAz-tM-Fll">
-                                        <rect key="frame" x="0.0" y="1543" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1587" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xAz-tM-Fll" id="Txh-fC-nAd">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1567,7 +1745,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="r7v-ed-1he">
-                                        <rect key="frame" x="0.0" y="1587" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1631" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r7v-ed-1he" id="x5Z-1E-Hcx">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1593,7 +1771,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="tPh-HD-wtf">
-                                        <rect key="frame" x="0.0" y="1631" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1675" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tPh-HD-wtf" id="Qgv-EW-Pz1">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1619,7 +1797,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Fxq-rn-w4c">
-                                        <rect key="frame" x="0.0" y="1675" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1719" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Fxq-rn-w4c" id="5fU-2I-Esz">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1644,11 +1822,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="gxQ-W3-aNj">
-                                        <rect key="frame" x="0.0" y="1719" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="gxQ-W3-aNj" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1763" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gxQ-W3-aNj" id="PjX-yO-M7o">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Blackbox Flight Data Recorder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B5D-8R-Gu8">
@@ -1669,9 +1847,16 @@
                                                 <constraint firstItem="QWh-ld-PTY" firstAttribute="centerY" secondItem="PjX-yO-M7o" secondAttribute="centerY" id="vmR-Yo-NFi"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxBetaflightVersion" value="1.36"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="35p-VP-kvs">
-                                        <rect key="frame" x="0.0" y="1763" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1807" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="35p-VP-kvs" id="5l0-Tz-Dd5">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1697,7 +1882,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="ti1-g8-GdB">
-                                        <rect key="frame" x="0.0" y="1807" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1851" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ti1-g8-GdB" id="6ah-FZ-fvS">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1723,7 +1908,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="eWM-0c-QlQ">
-                                        <rect key="frame" x="0.0" y="1851" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1895" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eWM-0c-QlQ" id="t9L-dJ-c9l">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1749,7 +1934,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="GAR-j6-9zg">
-                                        <rect key="frame" x="0.0" y="1895" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1939" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GAR-j6-9zg" id="ZrX-MP-Xoy">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1775,7 +1960,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="VMh-xv-VdM">
-                                        <rect key="frame" x="0.0" y="1939" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="1983" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VMh-xv-VdM" id="bo6-d6-OfG">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -1800,11 +1985,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="lBf-2G-nrP">
-                                        <rect key="frame" x="0.0" y="1983" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="lBf-2G-nrP" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2027" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lBf-2G-nrP" id="9rK-rv-k1s">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Permanent Air Mode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pl7-kh-O6O">
@@ -1825,12 +2010,18 @@
                                                 <constraint firstItem="Pl7-kh-O6O" firstAttribute="leading" secondItem="9rK-rv-k1s" secondAttribute="leadingMargin" constant="6" id="c1V-vI-zBQ"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="xl5-h0-SFN">
-                                        <rect key="frame" x="0.0" y="2027" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="xl5-h0-SFN" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2071" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xl5-h0-SFN" id="o09-pr-dWW">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="OSD" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gjl-tt-Qte">
@@ -1851,12 +2042,18 @@
                                                 <constraint firstItem="Gjl-tt-Qte" firstAttribute="leading" secondItem="o09-pr-dWW" secondAttribute="leadingMargin" constant="6" id="yIQ-E4-gdf"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.25"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nJu-1B-c0u">
-                                        <rect key="frame" x="0.0" y="2071" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nJu-1B-c0u" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2115" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nJu-1B-c0u" id="xgG-9Z-GfK">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Video Transmitter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SRF-vJ-8mO">
@@ -1877,12 +2074,19 @@
                                                 <constraint firstItem="IrN-Pf-1yB" firstAttribute="trailing" secondItem="xgG-9Z-GfK" secondAttribute="trailingMargin" id="gAJ-oP-TjA"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.20"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="maxBetaflightVersion" value="1.36"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Vuf-aX-5Nb">
-                                        <rect key="frame" x="0.0" y="2115" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Vuf-aX-5Nb" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2159" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Vuf-aX-5Nb" id="6Ld-tI-Ha9">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="ESC Sensor" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sh7-CZ-aVO">
@@ -1903,16 +2107,85 @@
                                                 <constraint firstItem="6oz-CX-cin" firstAttribute="trailing" secondItem="6Ld-tI-Ha9" secondAttribute="trailingMargin" id="sh1-MB-bgc"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.31"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="4Fv-Km-B4V" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2203" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Fv-Km-B4V" id="JPD-O1-2Qh">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Anti Gravity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Ar-sE-iIx">
+                                                    <rect key="frame" x="14" y="12" width="521" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ta7-fc-nmJ">
+                                                    <rect key="frame" x="543" y="6" width="51" height="31"/>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Ta7-fc-nmJ" firstAttribute="leading" secondItem="3Ar-sE-iIx" secondAttribute="trailing" constant="8" id="EEQ-Y5-uOu"/>
+                                                <constraint firstItem="Ta7-fc-nmJ" firstAttribute="centerY" secondItem="JPD-O1-2Qh" secondAttribute="centerY" id="KUA-A3-KUR"/>
+                                                <constraint firstItem="Ta7-fc-nmJ" firstAttribute="trailing" secondItem="JPD-O1-2Qh" secondAttribute="trailingMargin" id="SgH-iT-CUX"/>
+                                                <constraint firstItem="3Ar-sE-iIx" firstAttribute="centerY" secondItem="JPD-O1-2Qh" secondAttribute="centerY" id="oRJ-GC-ErB"/>
+                                                <constraint firstItem="3Ar-sE-iIx" firstAttribute="leading" secondItem="JPD-O1-2Qh" secondAttribute="leadingMargin" constant="6" id="ovA-uT-3fj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.31"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="NXG-e3-Q81" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2247" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NXG-e3-Q81" id="uMp-fV-KpH">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Dynamic Filter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNj-sW-hMD">
+                                                    <rect key="frame" x="14" y="12" width="521" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ec0-VO-aJY">
+                                                    <rect key="frame" x="543" y="6" width="51" height="31"/>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ec0-VO-aJY" firstAttribute="centerY" secondItem="uMp-fV-KpH" secondAttribute="centerY" id="60i-ad-SKM"/>
+                                                <constraint firstItem="ec0-VO-aJY" firstAttribute="leading" secondItem="aNj-sW-hMD" secondAttribute="trailing" constant="8" id="HEQ-Gr-6bn"/>
+                                                <constraint firstItem="ec0-VO-aJY" firstAttribute="trailing" secondItem="uMp-fV-KpH" secondAttribute="trailingMargin" id="kM4-Ae-T7p"/>
+                                                <constraint firstItem="aNj-sW-hMD" firstAttribute="centerY" secondItem="uMp-fV-KpH" secondAttribute="centerY" id="nCP-zR-zMh"/>
+                                                <constraint firstItem="aNj-sW-hMD" firstAttribute="leading" secondItem="uMp-fV-KpH" secondAttribute="leadingMargin" constant="6" id="z1a-Ov-4DY"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minApiVersion" value="1.36"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Misc" id="UtB-fP-Mps">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="SFf-pv-yhk">
-                                        <rect key="frame" x="0.0" y="2216" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="SFf-pv-yhk" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="2348" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SFf-pv-yhk" id="erl-8s-C7T">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Craft Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MXR-1j-LdU">
@@ -1936,6 +2209,12 @@
                                                 <constraint firstItem="nDX-lj-0Xp" firstAttribute="leading" secondItem="MXR-1j-LdU" secondAttribute="trailing" constant="8" id="zax-NF-aSP"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -1957,6 +2236,7 @@
                     <size key="freeformSize" width="600" height="2400"/>
                     <connections>
                         <outlet property="airModeSwitch" destination="NKC-3A-tgu" id="Y7t-uY-aB4"/>
+                        <outlet property="antiGravitySwitch" destination="Ta7-fc-nmJ" id="Abq-9M-q4l"/>
                         <outlet property="blackboxSwitch" destination="QWh-ld-PTY" id="Nwg-Zj-ghU"/>
                         <outlet property="boardPitchField" destination="Ml6-EI-pBd" id="XuY-Qk-zxC"/>
                         <outlet property="boardRollField" destination="2Pl-Ik-fQN" id="w4U-Hc-JIk"/>
@@ -1966,6 +2246,7 @@
                         <outlet property="currentMeterField" destination="xT9-z2-nHU" id="DDT-Z6-PS2"/>
                         <outlet property="cyclesPerSecLabel" destination="gQn-0z-LO5" id="s0q-iQ-Sqh"/>
                         <outlet property="displaySwitch" destination="QQa-7f-qSB" id="x3w-GI-CK4"/>
+                        <outlet property="dynamicFilterSwitch" destination="ec0-VO-aJY" id="uGc-GD-6C9"/>
                         <outlet property="enable32kHzSwitch" destination="cCF-5K-7Xr" id="FlB-gL-Yyc"/>
                         <outlet property="enableAccelerometer" destination="jzo-UA-lQ1" id="dLz-IW-7ca"/>
                         <outlet property="enableBarometer" destination="JCH-bm-nQH" id="iTm-Ox-mev"/>
@@ -1988,32 +2269,32 @@
                         <outlet property="servoGimbalSwitch" destination="hQx-XX-7tJ" id="O34-YN-hfc"/>
                         <outlet property="softSerialSwitch" destination="t35-Mh-7AN" id="ZVH-hE-c0M"/>
                         <outlet property="sonarSwitch" destination="wkE-uE-MLt" id="Dk6-Rf-Sfn"/>
+                        <outlet property="syncPidLoopWithGyro" destination="Uzp-cj-Jk5" id="cpt-qU-O9D"/>
                         <outlet property="telemetrySwitch" destination="cpL-fF-vac" id="gwk-4L-u5M"/>
                         <outlet property="threeDModeSwitch" destination="eec-gM-04Y" id="TJT-FY-dYJ"/>
                         <outlet property="transponderSwitch" destination="yoX-pS-AGu" id="pQM-6V-m4h"/>
                         <outlet property="vbatField" destination="88v-bl-EgJ" id="IZu-2k-N4U"/>
                         <outlet property="vtxSwitch" destination="IrN-Pf-1yB" id="tEJ-RZ-so8"/>
-                        <outletCollection property="betaflightFeatures" destination="qUF-yC-NjU" collectionClass="NSMutableArray" id="Pcb-qD-Cl7"/>
-                        <outletCollection property="betaflightFeatures" destination="NfU-0g-rD1" collectionClass="NSMutableArray" id="JBy-eS-Z8U"/>
-                        <outletCollection property="betaflightFeatures" destination="fzh-oh-yZb" collectionClass="NSMutableArray" id="WEK-lT-2jV"/>
-                        <outletCollection property="nonBetaflightFeatures" destination="nns-wr-N5L" collectionClass="NSMutableArray" id="obe-8X-gac"/>
-                        <outletCollection property="nonBetaflightFeatures" destination="krv-Xy-iQr" collectionClass="NSMutableArray" id="rGa-ZV-YiY"/>
-                        <outletCollection property="betaflightFeatures" destination="dYY-JJ-RKp" collectionClass="NSMutableArray" id="jsj-g3-eUX"/>
-                        <outletCollection property="betaflightFeatures" destination="nkT-eL-PeF" collectionClass="NSMutableArray" id="UQG-hK-iDL"/>
-                        <outletCollection property="betaflightFeatures" destination="lBf-2G-nrP" collectionClass="NSMutableArray" id="CCG-0d-KrS"/>
-                        <outletCollection property="betaflightFeatures" destination="xl5-h0-SFN" collectionClass="NSMutableArray" id="BcB-cD-oea"/>
-                        <outletCollection property="betaflightFeatures" destination="nJu-1B-c0u" collectionClass="NSMutableArray" id="5mk-Wp-Ofq"/>
-                        <outletCollection property="betaflightFeatures" destination="Vuf-aX-5Nb" collectionClass="NSMutableArray" id="CoZ-Eb-oGa"/>
-                        <outletCollection property="betaflightFeatures" destination="1iq-L5-jjq" collectionClass="NSMutableArray" id="JsP-7i-4zZ"/>
-                        <outletCollection property="iNavFeatures" destination="dYY-JJ-RKp" collectionClass="NSMutableArray" id="gNZ-ml-htI"/>
-                        <outletCollection property="iNavFeatures" destination="qUF-yC-NjU" collectionClass="NSMutableArray" id="25x-vL-AC7"/>
-                        <outletCollection property="iNavFeatures" destination="NfU-0g-rD1" collectionClass="NSMutableArray" id="tri-8G-hd2"/>
-                        <outletCollection property="iNavFeatures" destination="fzh-oh-yZb" collectionClass="NSMutableArray" id="uM4-jv-b1u"/>
-                        <outletCollection property="iNavFeatures" destination="VCg-ch-nUs" collectionClass="NSMutableArray" id="iQM-e3-F0u"/>
-                        <outletCollection property="iNavFeatures" destination="xl5-h0-SFN" collectionClass="NSMutableArray" id="Fwl-F5-U4s"/>
-                        <outletCollection property="iNavFeatures" destination="nkT-eL-PeF" collectionClass="NSMutableArray" id="afY-DC-aI1"/>
-                        <outletCollection property="iNavFeatures" destination="CMu-8n-XnG" collectionClass="NSMutableArray" id="xlw-s1-v9o"/>
-                        <outletCollection property="betaflightFeatures" destination="SFf-pv-yhk" collectionClass="NSMutableArray" id="cgE-5v-UbX"/>
+                        <outletCollection property="conditionalCells" destination="NXG-e3-Q81" collectionClass="NSMutableArray" id="S7d-w5-5Mb"/>
+                        <outletCollection property="conditionalCells" destination="4Fv-Km-B4V" collectionClass="NSMutableArray" id="UkA-BW-lhi"/>
+                        <outletCollection property="conditionalCells" destination="Vuf-aX-5Nb" collectionClass="NSMutableArray" id="LkA-0z-sFm"/>
+                        <outletCollection property="conditionalCells" destination="nJu-1B-c0u" collectionClass="NSMutableArray" id="buB-ct-P4a"/>
+                        <outletCollection property="conditionalCells" destination="xl5-h0-SFN" collectionClass="NSMutableArray" id="7Xy-Z8-0rn"/>
+                        <outletCollection property="conditionalCells" destination="lBf-2G-nrP" collectionClass="NSMutableArray" id="Cna-hk-wP9"/>
+                        <outletCollection property="conditionalCells" destination="gxQ-W3-aNj" collectionClass="NSMutableArray" id="d6S-Po-fti"/>
+                        <outletCollection property="conditionalCells" destination="UXb-L2-cOz" collectionClass="NSMutableArray" id="V78-se-mz8"/>
+                        <outletCollection property="conditionalCells" destination="SFf-pv-yhk" collectionClass="NSMutableArray" id="RD4-Po-cLj"/>
+                        <outletCollection property="conditionalCells" destination="CMu-8n-XnG" collectionClass="NSMutableArray" id="dLd-hV-Nsl"/>
+                        <outletCollection property="conditionalCells" destination="VCg-ch-nUs" collectionClass="NSMutableArray" id="Cec-7X-40b"/>
+                        <outletCollection property="conditionalCells" destination="fzh-oh-yZb" collectionClass="NSMutableArray" id="YSP-RL-QUI"/>
+                        <outletCollection property="conditionalCells" destination="NfU-0g-rD1" collectionClass="NSMutableArray" id="fcx-lt-s52"/>
+                        <outletCollection property="conditionalCells" destination="qUF-yC-NjU" collectionClass="NSMutableArray" id="suw-Hi-vhD"/>
+                        <outletCollection property="conditionalCells" destination="nkT-eL-PeF" collectionClass="NSMutableArray" id="hjw-nt-aEa"/>
+                        <outletCollection property="conditionalCells" destination="dYY-JJ-RKp" collectionClass="NSMutableArray" id="LBO-db-BD8"/>
+                        <outletCollection property="conditionalCells" destination="1iq-L5-jjq" collectionClass="NSMutableArray" id="InY-Yy-5il"/>
+                        <outletCollection property="conditionalCells" destination="krv-Xy-iQr" collectionClass="NSMutableArray" id="YZh-yG-s3g"/>
+                        <outletCollection property="conditionalCells" destination="nns-wr-N5L" collectionClass="NSMutableArray" id="FuM-6v-fme"/>
+                        <outletCollection property="conditionalCells" destination="Tg5-PZ-MK7" collectionClass="NSMutableArray" id="HNQ-Jg-aVf"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lao-8r-PuV" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2023,7 +2304,7 @@
         <!--Battery Voltage Config-->
         <scene sceneID="hEr-vg-UBH">
             <objects>
-                <tableViewController id="h0W-qe-64a" userLabel="Battery Voltage Config" customClass="VBatConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="h0W-qe-64a" userLabel="Battery Voltage Config" customClass="VBatConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="NFF-Ty-EYp">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2071,7 +2352,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XcT-MW-zS0" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XcT-MW-zS0" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="173" y="12" width="419" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2122,7 +2403,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cEw-Lp-ffH" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cEw-Lp-ffH" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="182" y="12" width="410" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2167,7 +2448,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Lvy-6g-YmY" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Lvy-6g-YmY" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="158" y="12" width="434" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2203,11 +2484,11 @@
                             </tableViewSection>
                             <tableViewSection id="LGo-UN-ruT">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="IVO-PK-nrn">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="IVO-PK-nrn" customClass="ConditionalTableViewCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="335" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IVO-PK-nrn" id="fjz-Zk-FTL">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Meter Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lmk-RG-SFo">
@@ -2244,6 +2525,13 @@
                                                 <constraint firstItem="yRs-ws-lJn" firstAttribute="trailing" secondItem="fjz-Zk-FTL" secondAttribute="trailingMargin" id="wxE-CV-IcF"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="inavSupported" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="betaflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="cleanflightSupported" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minBetaflightVersion" value="1.31"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="minCleanflightVersion" value="1.35"/>
+                                        </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Oey-2K-EwO">
                                         <rect key="frame" x="0.0" y="379" width="600" height="44"/>
@@ -2258,7 +2546,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8Hr-9w-ydE" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8Hr-9w-ydE" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="115" y="12" width="477" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2316,7 +2604,7 @@
         <!--Battery Current Config-->
         <scene sceneID="kyv-CR-Suk">
             <objects>
-                <tableViewController id="nsb-rB-W0A" userLabel="Battery Current Config" customClass="CurrentConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="nsb-rB-W0A" userLabel="Battery Current Config" customClass="CurrentConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="hLG-HA-SPt">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2415,7 +2703,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7dw-EG-k0B" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7dw-EG-k0B" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="133" y="12" width="459" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2460,7 +2748,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kpC-go-rn8" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kpC-go-rn8" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="100" y="11" width="492" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2509,7 +2797,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oyp-96-tWd" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oyp-96-tWd" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="128" y="12" width="464" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -2572,7 +2860,7 @@
         <!--Receiver Config-->
         <scene sceneID="Eq3-Co-ZyF">
             <objects>
-                <tableViewController id="2Nx-T6-MDv" userLabel="Receiver Config" customClass="ReceiverConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="2Nx-T6-MDv" userLabel="Receiver Config" customClass="ReceiverConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="5WX-PW-sWK">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2975,7 +3263,7 @@
         <!--GPS Config-->
         <scene sceneID="Vrx-z1-OUd">
             <objects>
-                <tableViewController id="tRr-Y3-USX" userLabel="GPS Config" customClass="GPSConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="tRr-Y3-USX" userLabel="GPS Config" customClass="GPSConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="CHc-de-Aks">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3085,7 +3373,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uNr-2e-zTI" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uNr-2e-zTI" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="169" y="12" width="423" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3162,7 +3450,7 @@
         <!--Failsafe Config-->
         <scene sceneID="HUR-uz-VdF">
             <objects>
-                <tableViewController id="7CO-Kl-F7y" userLabel="Failsafe Config" customClass="FailsafeConfigViewController" customModule="Cleanflight_Configurator" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="7CO-Kl-F7y" userLabel="Failsafe Config" customClass="FailsafeConfigViewController" customModule="MobileFlight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="6wN-pv-OET">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="1700"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3183,7 +3471,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="REg-6K-hPk" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="REg-6K-hPk" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="90" y="12" width="502" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3222,7 +3510,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EcP-sc-o9N" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EcP-sc-o9N" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="94" y="12" width="498" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3372,7 +3660,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="8sz-NN-a6N" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="8sz-NN-a6N" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="377" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8sz-NN-a6N" id="ij2-AZ-jB1">
@@ -3395,7 +3683,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="H0k-mf-tJY"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GWg-QL-Mvf" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GWg-QL-Mvf" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="67" y="14" width="430" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3426,7 +3714,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="589-Sc-Uke" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="589-Sc-Uke" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="421" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="589-Sc-Uke" id="KNK-0f-8ig">
@@ -3449,7 +3737,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="Pb2-wY-KJr"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2pH-kJ-Ewz" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2pH-kJ-Ewz" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="69" y="13" width="428" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3480,7 +3768,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="GdP-uR-TeE" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="GdP-uR-TeE" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="465" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GdP-uR-TeE" id="Y4f-jL-TxP">
@@ -3503,7 +3791,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="L0c-vy-z3C"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JgH-8w-SkM" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JgH-8w-SkM" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3534,7 +3822,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="STz-Av-xWF" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="STz-Av-xWF" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="509" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="STz-Av-xWF" id="RmT-rJ-5dZ">
@@ -3557,7 +3845,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="rKw-21-76E"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lXW-L5-KzF" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lXW-L5-KzF" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3588,7 +3876,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="XDk-pt-vTl" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="XDk-pt-vTl" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="553" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XDk-pt-vTl" id="LQR-Fx-fni">
@@ -3611,7 +3899,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="mOc-Ej-Nxi"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="veq-fG-tXe" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="veq-fG-tXe" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3642,7 +3930,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1Tz-MR-RKP" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1Tz-MR-RKP" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="597" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Tz-MR-RKP" id="BPF-Ht-PQU">
@@ -3665,7 +3953,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="8wr-ss-Hjk"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jzz-xA-Cn0" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jzz-xA-Cn0" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3696,7 +3984,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="0cV-V5-uuD" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="0cV-V5-uuD" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="641" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0cV-V5-uuD" id="2rG-NH-8I5">
@@ -3719,7 +4007,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="o2D-qo-JaN"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vql-8y-7rB" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vql-8y-7rB" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="69" y="13" width="428" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3750,7 +4038,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Oqz-c8-SCg" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Oqz-c8-SCg" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="685" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Oqz-c8-SCg" id="KSn-AY-1x1">
@@ -3773,7 +4061,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="w90-ui-Czg"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ua7-Q6-5iP" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ua7-Q6-5iP" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3804,7 +4092,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="qdZ-qh-9Fn" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="qdZ-qh-9Fn" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="729" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qdZ-qh-9Fn" id="3ov-vg-nqY">
@@ -3827,7 +4115,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="qhl-3n-eSj"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0Pa-I0-LzY" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0Pa-I0-LzY" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="70" y="13" width="427" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3858,7 +4146,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="6AH-aw-h9r" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="6AH-aw-h9r" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="773" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6AH-aw-h9r" id="5Ri-JI-Tkm">
@@ -3881,7 +4169,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="xkM-wY-iW4"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jnp-6S-7Yz" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jnp-6S-7Yz" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="77" y="13" width="420" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3912,7 +4200,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Slo-NM-75S" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Slo-NM-75S" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="817" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Slo-NM-75S" id="KMp-zR-l8u">
@@ -3935,7 +4223,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="6Kr-Nt-T1d"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="e3l-Yj-4lE" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="e3l-Yj-4lE" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="74" y="13" width="423" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -3966,7 +4254,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="cIo-gQ-9tW" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="cIo-gQ-9tW" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="861" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cIo-gQ-9tW" id="yag-Pk-aBw">
@@ -3989,7 +4277,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="qJy-9m-vfq"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aV6-z8-Eoz" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aV6-z8-Eoz" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="77" y="13" width="420" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4020,7 +4308,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1Cw-yw-Ovh" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="1Cw-yw-Ovh" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="905" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Cw-yw-Ovh" id="DfY-dD-gYU">
@@ -4043,7 +4331,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="kHp-Rq-jJx"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="b8a-FO-sVe" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="b8a-FO-sVe" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="77" y="13" width="420" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4074,7 +4362,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="uSe-cc-zGa" customClass="AuxChannelSettingCell" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="uSe-cc-zGa" customClass="AuxChannelSettingCell" customModule="MobileFlight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="949" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uSe-cc-zGa" id="zhN-U7-xRE">
@@ -4097,7 +4385,7 @@
                                                         <action selector="auxChannelSetHoldChanged:" destination="7CO-Kl-F7y" eventType="valueChanged" id="k5B-nb-aoh"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cjL-Ov-ncU" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cjL-Ov-ncU" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="77" y="13" width="420" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4200,7 +4488,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WdE-hG-IRH" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WdE-hG-IRH" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="148" y="14" width="444" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4245,7 +4533,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9YC-ak-8Lk" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9YC-ak-8Lk" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="199" y="13" width="393" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4328,7 +4616,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fkE-lT-Hdl" customClass="ThrottleField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fkE-lT-Hdl" customClass="ThrottleField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="197" y="14" width="395" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -4373,7 +4661,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2aA-9N-AwZ" customClass="NumberField" customModule="Cleanflight_Configurator" customModuleProvider="target">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2aA-9N-AwZ" customClass="NumberField" customModule="MobileFlight" customModuleProvider="target">
                                                     <rect key="frame" x="196.5" y="13" width="395.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>

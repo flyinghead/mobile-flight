@@ -37,12 +37,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var cyclesPerSecLabel: UILabel!
     @IBOutlet weak var transponderSwitch: UISwitch!
     
-    @IBOutlet var betaflightFeatures: [UITableViewCell]!
-    @IBOutlet var nonBetaflightFeatures: [UITableViewCell]!
-    @IBOutlet var iNavFeatures: [UITableViewCell]!
+    @IBOutlet var conditionalCells: [ConditionalTableViewCell]!
     @IBOutlet weak var enable32kHzSwitch: UISwitch!
     @IBOutlet weak var gyroUpdateFreqField: UITextField!
     @IBOutlet weak var pidLoopFreqField: UITextField!
+    @IBOutlet weak var syncPidLoopWithGyro: UISwitch!
     @IBOutlet weak var enableAccelerometer: UISwitch!
     @IBOutlet weak var enableBarometer: UISwitch!
     @IBOutlet weak var enableMagnetometer: UISwitch!
@@ -52,6 +51,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     @IBOutlet weak var osdSwitch: UISwitch!
     @IBOutlet weak var vtxSwitch: UISwitch!
     @IBOutlet weak var escSensor: UISwitch!
+    @IBOutlet weak var antiGravitySwitch: UISwitch!
+    @IBOutlet weak var dynamicFilterSwitch: UISwitch!
     @IBOutlet weak var craftNameField: UITextField!
     
     var gyroUpdateFreqPicker: MyDownPicker?
@@ -80,14 +81,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
         hideSectionsWithHiddenRows = true
 
-        if isBetaflightOrCleanflight2 {
-            cells(nonBetaflightFeatures, setHidden: true)
-            cells(Array(Set(iNavFeatures).subtract(Set(betaflightFeatures))), setHidden: true)
-        } else if isINav {
-            cells(nonBetaflightFeatures, setHidden: true)
-            cells(Array(Set(betaflightFeatures).subtract(Set(iNavFeatures))), setHidden: true)
-        } else {
-            cells(Array(Set(betaflightFeatures).union(Set(iNavFeatures))), setHidden: true)
+        for condCell in conditionalCells {
+            cell(condCell, setHidden: !condCell.visible)
         }
 
         gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 kHz", "4 kHz", "2.67 kHz", "2 kHz", "1.6 kHz", "1.33 kHz", "1.14 kHz", "1 kHz" ])
@@ -178,7 +173,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if !isBetaflightOrCleanflight2 && !isINav {
             fetchInformationSucceeded()
         } else {
-            chainMspCalls(msp, calls: [.MSP_PID_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
+            chainMspCalls(msp, calls: [.MSP_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
                 if success {
                     // SUCCESS
                     self.fetchInformationSucceeded()
@@ -260,19 +255,24 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
                 enablePitotSwitch.on = !newSettings!.pitotDisabled
                 enableSonarSwitch.on = !newSettings!.sonarDisabled
+                syncPidLoopWithGyro.on = newSettings!.syncLoopWithGyro
+            } else if Configuration.theConfig.apiVersion == "1.25" {
+                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_CF1_14_2)
             } else {
                 osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
             }
 
             vtxSwitch.on = newSettings!.features.contains(BaseFlightFeature.VTX)
             escSensor.on = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
+            antiGravitySwitch.on = newSettings!.features.contains(.AntiGravity)
+            dynamicFilterSwitch.on = newSettings!.features.contains(.DynamicFilter)
             craftNameField.text = newSettings!.craftName
         }
         
         gpsField.text = (newSettings!.features.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
-        vbatField.text = (newSettings!.features.contains(BaseFlightFeature.VBat) ?? false) ? "On" : "Off"
-        currentMeterField.text = (newSettings!.features.contains(BaseFlightFeature.CurrentMeter) ?? false) ? "On" : "Off"
-        failsafeField.text = (newSettings!.features.contains(BaseFlightFeature.Failsafe) ?? false) ? "On" : "Off"
+        vbatField.text = VBatConfigViewController.isVBatMonitoringEnabled(newSettings!) ? "On" : "Off"
+        currentMeterField.text = CurrentConfigViewController.isCurrentMonitoringEnabled(newSettings!) ? "On" : "Off"
+        failsafeField.text = FailsafeConfigViewController.isFailsafeEnabled(newSettings!) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
     }
     
@@ -309,17 +309,24 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
         saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
         saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
-        if isBetaflightOrCleanflight2 || isINav {
+        saveFeatureSwitchValue(antiGravitySwitch, feature: .AntiGravity)
+        saveFeatureSwitchValue(dynamicFilterSwitch, feature: .DynamicFilter)
+        if isBetaflightOrCleanflight2 {
             newSettings!.gyroSyncDenom = gyroUpdateFreqPicker!.selectedIndex + 1
             newSettings!.pidProcessDenom = pidLoopFreqPicker!.selectedIndex + 1
         }
         if isBetaflightOrCleanflight2 {
             newSettings!.gyroUses32KHz = enable32kHzSwitch.on
-            saveFeatureSwitchValue(osdSwitch, feature: .OSD)
+            if Configuration.theConfig.apiVersion == "1.25" {
+                saveFeatureSwitchValue(osdSwitch, feature: .OSD_CF1_14_2)
+            } else {
+                saveFeatureSwitchValue(osdSwitch, feature: .OSD)
+            }
         } else if isINav {
             newSettings!.pitotDisabled = !enablePitotSwitch.on
             newSettings!.sonarDisabled = !enableSonarSwitch.on
             saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
+            newSettings!.syncLoopWithGyro = syncPidLoopWithGyro.on
         }
         var craftName = craftNameField.text!
         if craftName.characters.count > 16 {
@@ -460,7 +467,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if isBetaflightOrCleanflight2 || isINav {
             let commands: [SendCommand] = [
                 { callback in
-                    self.msp.sendPidAdvancedConfig(self.newSettings!, callback: callback)
+                    self.msp.sendAdvancedConfig(self.newSettings!, callback: callback)
                 },
                 { callback in
                     self.msp.sendSensorConfig(self.newSettings!, callback: callback)

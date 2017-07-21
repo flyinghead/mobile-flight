@@ -741,7 +741,7 @@ class MSPParser {
             rssiEvent.raiseDispatch()
         
         // Betaflight
-        case .MSP_PID_ADVANCED_CONFIG:
+        case .MSP_ADVANCED_CONFIG:
             if message.count < 6 {
                 return false
             }
@@ -751,11 +751,17 @@ class MSPParser {
             settings.motorPwmProtocol = Int(message[3])
             settings.motorPwmRate = readUInt16(message, index: 4)
             if message.count >= 8 {
-                // INav servoPwmRate (2)
-                settings.digitalIdleOffsetPercent = Double(readUInt16(message, index: 6)) / 100
-                if message.count >= 9 && !config.isINav {
-                    // INav gyroSync (1)
-                    settings.gyroUses32KHz = message[8] != 0
+                if config.isINav {
+                    settings.servoPwmRate = readUInt16(message, index: 8)
+                } else {
+                    settings.digitalIdleOffsetPercent = Double(readUInt16(message, index: 6)) / 100
+                }
+                if message.count >= 9 {
+                    if config.isINav {
+                        settings.syncLoopWithGyro = message[8] != 0
+                    } else {
+                        settings.gyroUses32KHz = message[8] != 0
+                    }
                 }
             }
             
@@ -822,7 +828,7 @@ class MSPParser {
                 return false
             }
             if message.count >= 7 {
-                // Cleanflight 2.0 / Betaflight 3.1.8
+                // Cleanflight 2.0 / Betaflight 3.2
                 settings.vbatMeterId = Int(message[2])
                 settings.vbatScale = Int(message[4]) // 10-200
                 settings.vbatResistorDividerValue = Int(message[5])
@@ -1080,7 +1086,7 @@ class MSPParser {
             .MSP_SET_FAILSAFE_CONFIG,
             .MSP_SET_RXFAIL_CONFIG,
             .MSP_SET_LOOP_TIME,
-            .MSP_SET_PID_ADVANCED_CONFIG,
+            .MSP_SET_ADVANCED_CONFIG,
             .MSP_SET_SENSOR_CONFIG,
             .MSP_SET_RSSI_CONFIG,
             .MSP_SET_VOLTAGE_METER_CONFIG,
@@ -1630,16 +1636,21 @@ class MSPParser {
 
     // Betaflight
     
-    func sendPidAdvancedConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendAdvancedConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.gyroSyncDenom))
         data.append(UInt8(settings.pidProcessDenom))
         data.append(UInt8(settings.useUnsyncedPwm ? 1 : 0))
         data.append(UInt8(settings.motorPwmProtocol))
         data.appendContentsOf(writeUInt16(settings.motorPwmRate))
-        data.appendContentsOf(writeUInt16(Int(round(settings.digitalIdleOffsetPercent * 100))))
-        data.append(UInt8(settings.gyroUses32KHz ? 1 : 0))
-        sendMessage(.MSP_SET_PID_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
+        if Configuration.theConfig.isINav {
+            data.appendContentsOf(writeUInt16(settings.servoPwmRate))
+            data.append(UInt8(settings.syncLoopWithGyro ? 1 : 0))
+        } else {
+            data.appendContentsOf(writeUInt16(Int(round(settings.digitalIdleOffsetPercent * 100))))
+            data.append(UInt8(settings.gyroUses32KHz ? 1 : 0))
+        }
+        sendMessage(.MSP_SET_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     func sendSensorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {

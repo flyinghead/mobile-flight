@@ -29,6 +29,15 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet var channelsSettings: [UISegmentedControl]!
     @IBOutlet var auxChannelsValueFields: [NumberField]!
 
+    class func isFailsafeEnabled(settings: Settings) -> Bool {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.36") || (config.isINav && config.isApiVersionAtLeast("1.24")) {
+            return true
+        } else {
+            return settings.features.contains(.Failsafe)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -55,6 +64,10 @@ class FailsafeConfigViewController: ConfigChildViewController {
             cell(rthCell, setHidden: true)
             stage2ActiveCells.removeAtIndex(stage2ActiveCells.indexOf(rthCell)!)
         }
+        if config.isApiVersionAtLeast("1.36") || (config.isINav && config.isApiVersionAtLeast("1.24")) {
+            failsafeSwitch.on = true
+            failsafeSwitch.enabled = false
+        }
     }
     
     @IBAction func failsafeSwitchChanged(sender: AnyObject) {
@@ -73,10 +86,12 @@ class FailsafeConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if failsafeSwitch.on {
-            settings!.features.insert(.Failsafe)
-        } else {
-            settings!.features.remove(.Failsafe)
+        if failsafeSwitch.enabled {
+            if failsafeSwitch.on {
+                settings!.features.insert(.Failsafe)
+            } else {
+                settings!.features.remove(.Failsafe)
+            }
         }
         settings.failsafeThrottle = Int(throttleField.value)
         settings.rxMinUsec = Int(minimumPulseField.value)
@@ -115,7 +130,9 @@ class FailsafeConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        failsafeSwitch.on = settings!.features.contains(.Failsafe)
+        if failsafeSwitch.enabled {
+            failsafeSwitch.on = settings!.features.contains(.Failsafe)
+        }
         throttleField.value = Double(settings!.failsafeThrottle)
         
         minimumPulseField.value = Double(settings.rxMinUsec)
@@ -153,7 +170,6 @@ class FailsafeConfigViewController: ConfigChildViewController {
                 }
             }
         }
-        
         failsafeSwitchChanged(self)
     }
 

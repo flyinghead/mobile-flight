@@ -20,6 +20,14 @@ class VBatConfigViewController: ConfigChildViewController {
     
     var meterTypePicker: MyDownPicker!
 
+    class func isVBatMonitoringEnabled(settings: Settings) -> Bool {
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            return settings.voltageMeterSource > 0
+        } else {
+            return settings.features.contains(.VBat)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,7 +38,7 @@ class VBatConfigViewController: ConfigChildViewController {
         warningVoltage.delegate = self
         maxVoltage.delegate = self
         voltageScale.delegate = self
-
+        showCells(hideableCells, show: true)
     }
 
     private func hideCellsAsNeeded() {
@@ -40,17 +48,25 @@ class VBatConfigViewController: ConfigChildViewController {
                 cellsToShow = Array(Set(cellsToShow).subtract(Set([ voltageScaleCell ])))
                 cell(voltageScaleCell, setHidden: true)
             }
-            cells(cellsToShow, setHidden: false)
+            showCells(cellsToShow, show: true)
         } else {
             cells(hideableCells, setHidden: true)
         }
     }
     
     @IBAction func vbatSwitchChanged(sender: AnyObject) {
-        if vbatSwitch.on {
-            settings?.features.insert(.VBat)
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if vbatSwitch.on {
+                settings.voltageMeterSource = 1
+            } else {
+                settings.voltageMeterSource = 0
+            }
         } else {
-            settings?.features.remove(.VBat)
+            if vbatSwitch.on {
+                settings?.features.insert(.VBat)
+            } else {
+                settings?.features.remove(.VBat)
+            }
         }
         hideCellsAsNeeded()
         reloadDataAnimated(true)
@@ -59,12 +75,18 @@ class VBatConfigViewController: ConfigChildViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        vbatSwitch.on = settings!.features.contains(.VBat)
+        vbatSwitch.on = VBatConfigViewController.isVBatMonitoringEnabled(settings)
         minVoltage.value = settings!.vbatMinCellVoltage
         warningVoltage.value = settings!.vbatWarningCellVoltage
         maxVoltage.value = settings!.vbatMaxCellVoltage
         voltageScale.value = Double(settings!.vbatScale)
-        meterTypePicker.selectedIndex = settings.vbatMeterType
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if vbatSwitch.on {
+                meterTypePicker.selectedIndex = settings.voltageMeterSource - 1
+            }
+        } else {
+            meterTypePicker.selectedIndex = settings.vbatMeterType
+        }
         cells(hideableCells, setHidden: !vbatSwitch.on)
         hideCellsAsNeeded()
         reloadDataAnimated(false)
@@ -77,7 +99,15 @@ class VBatConfigViewController: ConfigChildViewController {
         settings?.vbatWarningCellVoltage = warningVoltage.value
         settings?.vbatMaxCellVoltage = maxVoltage.value
         settings?.vbatScale = Int(voltageScale.value)
-        settings?.vbatMeterType = meterTypePicker.selectedIndex
+        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if vbatSwitch.on {
+                settings.voltageMeterSource = meterTypePicker.selectedIndex + 1
+            } else {
+                settings.voltageMeterSource = 0
+            }
+        } else {
+            settings?.vbatMeterType = meterTypePicker.selectedIndex
+        }
         configViewController?.refreshUI()
     }
     

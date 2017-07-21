@@ -149,6 +149,7 @@
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
+		AEE8476A1F12D3170064D657 /* ConditionalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */; };
 		AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */; };
 		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
 		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
@@ -414,6 +415,7 @@
 		AEDDD2781C1615C8004232AA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
+		AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalTableViewCell.swift; sourceTree = "<group>"; };
 		AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearGauge.swift; sourceTree = "<group>"; };
 		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
@@ -631,6 +633,7 @@
 			isa = PBXGroup;
 			children = (
 				AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */,
+				AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */,
 				AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */,
 				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
 				AE10B3F41C60D17A00662D50 /* CurrentConfigViewController.swift */,
@@ -1325,6 +1328,7 @@
 				AEA280C81EFAE1FB00C40DAA /* AsyncSocketComm.swift in Sources */,
 				AEAC44ED1CB5914800D73377 /* DataLinkChartViewController.swift in Sources */,
 				AECE8D861C1EA2A200FB183E /* RangeSliderReferenceThumbLayer.swift in Sources */,
+				AEE8476A1F12D3170064D657 /* ConditionalTableViewCell.swift in Sources */,
 				AEBA64101C30891F00783ECE /* MainConnectionViewController.swift in Sources */,
 				AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */,
 				AEDDD26D1C12EE9B004232AA /* BarometerViewController.swift in Sources */,

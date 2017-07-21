@@ -32,25 +32,27 @@ struct BaseFlightFeature : OptionSetType, DictionaryCoding {
     static let LedStrip  = BaseFlightFeature(rawValue: 1 << 16)
     static let Display  = BaseFlightFeature(rawValue: 1 << 17)
     static let OneShot125  = BaseFlightFeature(rawValue: 1 << 18)
-    static let Blackbox  = BaseFlightFeature(rawValue: 1 << 19)
+    static let Blackbox  = BaseFlightFeature(rawValue: 1 << 19)             // Unused in BF 3.2 / CF 2
     static let ChannelForwarding  = BaseFlightFeature(rawValue: 1 << 20)
     static let Transponder  = BaseFlightFeature(rawValue: 1 << 21)
-    
+    // CF 1.14.2 only
+    static let OSD_CF1_14_2  = BaseFlightFeature(rawValue: 1 << 22)
     // Betaflight / CF 2.0
     static let OSD  = BaseFlightFeature(rawValue: 1 << 18)
     static let AirMode  = BaseFlightFeature(rawValue: 1 << 22)
-    static let SDCard  = BaseFlightFeature(rawValue: 1 << 23)
-    static let VTX  = BaseFlightFeature(rawValue: 1 << 24)      // Not exposed in BF?
-    static let RxSpi = BaseFlightFeature(rawValue: 1 << 25)     // Not exposed?
-    static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)   // exposed in INAV only?
+    static let SDCard  = BaseFlightFeature(rawValue: 1 << 23)               // Unused in BF 3.2 / CF 2
+    static let VTX  = BaseFlightFeature(rawValue: 1 << 24)                  // Unused in BF 3.2 / CF 2
+    static let RxSpi = BaseFlightFeature(rawValue: 1 << 25)                 // Not exposed?
+    static let SoftSpi = BaseFlightFeature(rawValue: 1 << 26)               // exposed in INAV config only
     static let ESCSensor = BaseFlightFeature(rawValue: 1 << 27)
-    // BF 3.2 (?)
+    // BF 3.1.7
     static let AntiGravity = BaseFlightFeature(rawValue: 1 << 28)
+    // BF 3.2
     static let DynamicFilter = BaseFlightFeature(rawValue: 1 << 29)
     
     // INav
-    static let SuperExpoRates  = BaseFlightFeature(rawValue: 1 << 23)   // Not exposed?
-    static let PwmServoDriver  = BaseFlightFeature(rawValue: 1 << 27)
+    static let SuperExpoRates  = BaseFlightFeature(rawValue: 1 << 23)   // Not exposed (old betaflight feature)
+    static let PwmServoDriver  = BaseFlightFeature(rawValue: 1 << 27)   // Exposed
     static let PwmOutputEnable  = BaseFlightFeature(rawValue: 1 << 28)
     static let OSD_INav = BaseFlightFeature(rawValue: 1 << 29)
     
@@ -102,12 +104,14 @@ enum Mode : String {
     case FAILSAFE = "FAILSAFE"
     case AIR = "AIR MODE"
     case ANTI_GRAVITY = "ANTI GRAVITY"
-    case DISABLE_3D_SWITCH = "DISABLE 3D SWITCH"
+    case DISABLE_3D_SWITCH = "DISABLE 3D SWITCH"    // BF 3.0, 3.1
+    case DISABLE_3D = "DISABLE 3D"                  // BF 3.2 (renamed)
     case FPV_ANGLE_MIX = "FPV ANGLE MIX"
     case BLACKBOX_ERASE = "BLACKBOX ERASE (>30s)"
     case CAMERA1 = "CAMERA CONTROL 1"
     case CAMERA2 = "CAMERA CONTROL 2"
     case CAMERA3 = "CAMERA CONTROL 3"
+    case DSHOT_REVERSE_MOTORS = "DSHOT REVERSE MOTORS"  // BF 3.2
     // INav
     case NAV_WP = "NAV WP"
     case NAV_ALTHOLD = "NAV ALTHOLD"
@@ -176,7 +180,7 @@ enum Mode : String {
             return "air mode"
         case .ANTI_GRAVITY:
             return "anti gravity"
-        case .DISABLE_3D_SWITCH:
+        case .DISABLE_3D_SWITCH, .DISABLE_3D:
             return "3D disabled"
         case .FPV_ANGLE_MIX:
             return "FPV angle mix"
@@ -196,6 +200,8 @@ enum Mode : String {
             return "camera power"
         case .CAMERA3:
             return "camera change mode"
+        case .DSHOT_REVERSE_MOTORS:
+            return "motors reversed"
         }
     }
     
@@ -361,7 +367,7 @@ class Settings : AutoCoded {
                          "spektrumSatBind",
                          "rxMinUsec", "rxMaxUsec", "rcInterpolation", "rcInterpolationInterval", "airmodeActivateThreshold", "rxSpiProtocol", "rxSpiId", "rxSpiChannelCount", "fpvCamAngleDegrees",
                          "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
-                         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "gyroLowpassFrequency",
+                         "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "servoPwmRate", "syncLoopWithGyro", "gyroLowpassFrequency",
                          "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
                          "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "pitotDisabled", "sonarDisabled",
                          "rssiChannel",
@@ -462,7 +468,7 @@ class Settings : AutoCoded {
     
     // Betaflight
     
-    // MSP_[PID_]ADVANCED_CONFIG / MSP_SET_[PID_]ADVANCED_CONFIG
+    // MSP_ADVANCED_CONFIG / MSP_SET_ADVANCED_CONFIG
     var gyroSyncDenom = 8
     var pidProcessDenom = 1
     var useUnsyncedPwm = false
@@ -470,6 +476,8 @@ class Settings : AutoCoded {
     var motorPwmRate = 400
     var digitalIdleOffsetPercent = 0.0
     var gyroUses32KHz = false
+    var servoPwmRate = 50           // INAV
+    var syncLoopWithGyro = false    // INAV
     
     // MSP_FILTER_CONFIG / MSP_SET_FILTER_CONFIG
     var gyroLowpassFrequency = 90
@@ -511,13 +519,13 @@ class Settings : AutoCoded {
     var vbatMeterId = 0
     var vbatResistorDividerValue = 10
     var vbatResistorDividerMultiplier = 1
-    var batteryCapacity = 0
-    var voltageMeterSource = 0
-    var currentMeterSource = 0
+    var batteryCapacity = 0         // mAh
+    var voltageMeterSource = 0      // 0=none, 1=ADC, 2=ESC
+    var currentMeterSource = 0      // 0=none, 1=ADC, 3=virtual, 4=ESC
     
     // MSP_CURRENT_METER_CONFIG
-    var currentMeterId = 0
-    var currentMeterType = 0
+    var currentMeterId = 0          // 0=none, 10=battery 1, 50=ESC combined, 60=ESC 1, 61=ESC 2, ..., 71=ESC 12, 80=virtual 1, 90=MSP 1
+    var currentMeterType = 0        // 0=virtual, 1=ADC, 2=ESC, 3=MSP
     var currentScale = 400
     var currentOffset = 0
     
@@ -615,6 +623,8 @@ class Settings : AutoCoded {
         self.motorPwmRate = copyOf.motorPwmRate
         self.digitalIdleOffsetPercent = copyOf.digitalIdleOffsetPercent
         self.gyroUses32KHz = copyOf.gyroUses32KHz
+        self.servoPwmRate = copyOf.servoPwmRate
+        self.syncLoopWithGyro = copyOf.syncLoopWithGyro
         
         self.gyroLowpassFrequency = copyOf.gyroLowpassFrequency
         self.dTermLowpassFrequency = copyOf.dTermLowpassFrequency
