@@ -191,6 +191,10 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
     }
     
     func findVoice() -> AVSpeechSynthesisVoice? {
+        if AVSpeechSynthesisVoice.currentLanguageCode().hasPrefix("en-") {
+            // Use default voice
+            return nil
+        }
         var englishVoice: AVSpeechSynthesisVoice? = nil
         for voice in AVSpeechSynthesisVoice.speechVoices() {
             if voice.language == "en-US" {
