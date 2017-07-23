@@ -25,10 +25,10 @@ class Simulator : CommChannel {
         resetAircraftModel()
         
         let config = Configuration.theConfig
-        config.apiVersion = "1.31"
+        config.apiVersion = "1.36"
         config.fcIdentifier = "BTFL SIM"
-        config.fcVersion = "3.1.7"
-        config.buildInfo = "May 19 2017 22:15:22"
+        config.fcVersion = "3.2.0"
+        config.buildInfo = "Jul 23 2017 17:41:04"
         config.boardInfo = "IOS"
         config.boardVersion = 0
         config.uid = "1234567890"
@@ -43,6 +43,10 @@ class Simulator : CommChannel {
         settings.vbatWarningCellVoltage = 3.5
         settings.vbatMaxCellVoltage = 4.3
         settings.batteryCapacity = 1500
+        settings.currentMeterType = 1       // ADC
+
+        settings.voltageMeterSource = 1       // ADC
+        settings.currentMeterSource = 1       // ADC
         
         settings.modeRanges = [ ModeRange(id: 3, auxChannelId: 2, start: 900, end: 1500) ]
         settings.modeRangeSlots = 16
@@ -60,6 +64,12 @@ class Simulator : CommChannel {
             [ 40, 0, 0 ],
             [ 55, 55, 75 ]
         ]
+        
+        settings.rcInterpolation = 2    // Auto
+        settings.rcInterpolationInterval = 19
+        
+        settings.motorPwmProtocol = 8   // DShot1200
+        settings.digitalIdleOffsetPercent = 4.5
         
         settings.portConfigs = [
             PortConfig(portIdentifier: .Known(.USART1), functions: PortFunction.None, mspBaudRate: .Auto, gpsBaudRate: .Auto, telemetryBaudRate: .Auto, blackboxBaudRate: .Auto),

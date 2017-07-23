@@ -30,7 +30,13 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        meterTypePicker = MyDownPicker(textField: meterTypeField, withData: [ "Onboard ADC", "Virtual", "ESC Sensor" ])
+        let sensorTypes: [String]
+        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+            sensorTypes = [ "Onboard ADC", "Virtual", "ESC Sensor" ]
+        } else {
+            sensorTypes = [ "Onboard ADC", "Virtual" ]
+        }
+        meterTypePicker = MyDownPicker(textField: meterTypeField, withData: sensorTypes)
         meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
 
         meterScaleField.delegate = self

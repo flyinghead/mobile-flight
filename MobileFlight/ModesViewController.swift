@@ -109,6 +109,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         
         initialFetch()
         
+        receivedReceiverData()
         flightModeEventHandler = msp.flightModeEvent.addHandler(self, handler: ModesViewController.flightModeChanged)
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: ModesViewController.receivedReceiverData)
     }

@@ -525,7 +525,9 @@ class Settings : AutoCoded {
     
     // MSP_CURRENT_METER_CONFIG
     var currentMeterId = 0          // 0=none, 10=battery 1, 50=ESC combined, 60=ESC 1, 61=ESC 2, ..., 71=ESC 12, 80=virtual 1, 90=MSP 1
-    var currentMeterType = 0        // 0=virtual, 1=ADC, 2=ESC, 3=MSP
+    var currentMeterType = 0        // <1.35: 0=none, 1=ADC, 2=virtual
+                                    // >=1.31:                     ... , 3=ESC
+                                    // >= 1.35: 0=virtual, 1=ADC, 2=ESC, 3=MSP
     var currentScale = 400
     var currentOffset = 0
     

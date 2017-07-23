@@ -150,6 +150,8 @@
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
 		AEE8476A1F12D3170064D657 /* ConditionalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */; };
+		AEE847871F24F52F0064D657 /* betaflight in Resources */ = {isa = PBXBuildFile; fileRef = AEE847861F24F52F0064D657 /* betaflight */; };
+		AEE847891F24F53B0064D657 /* cleanflight in Resources */ = {isa = PBXBuildFile; fileRef = AEE847881F24F53B0064D657 /* cleanflight */; };
 		AEEDA9251C1AEF0B0040EC09 /* LinearGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */; };
 		AEEDA9271C1B8A790040EC09 /* VBatConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */; };
 		AEEDA9291C1B8ABD0040EC09 /* ReceiverConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */; };
@@ -162,15 +164,9 @@
 		AEEE2EC01EC88CDD00CC3D94 /* OSDElementPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EBF1EC88CDD00CC3D94 /* OSDElementPosition.swift */; };
 		AEEE2EC21EC88DF300CC3D94 /* OSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC11EC88DF300CC3D94 /* OSD.swift */; };
 		AEEE2EC41EC8905200CC3D94 /* OSDElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC31EC8905200CC3D94 /* OSDElementView.swift */; };
-		AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EC51EC8A18200CC3D94 /* default.mcm */; };
 		AEEE2EC81EC8A2C100CC3D94 /* OSDPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EC71EC8A2C100CC3D94 /* OSDPreview.swift */; };
 		AEEE2ECA1EC8A88200CC3D94 /* OSD.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2EC91EC8A88200CC3D94 /* OSD.storyboard */; };
 		AEEE2ECC1EC8E60300CC3D94 /* OSDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2ECB1EC8E60300CC3D94 /* OSDViewController.swift */; };
-		AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED31ECA237600CC3D94 /* bold.mcm */; };
-		AEEE2ED91ECA237600CC3D94 /* cleanflight.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */; };
-		AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED51ECA237600CC3D94 /* digital.mcm */; };
-		AEEE2EDB1ECA237600CC3D94 /* extra_large.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */; };
-		AEEE2EDC1ECA237600CC3D94 /* large.mcm in Resources */ = {isa = PBXBuildFile; fileRef = AEEE2ED71ECA237600CC3D94 /* large.mcm */; };
 		AEEE2EDE1ECA400E00CC3D94 /* OSDSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEE2EDD1ECA400D00CC3D94 /* OSDSettingsViewController.swift */; };
 		AEEF2B091C2C43F90026228D /* BlinkingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */; };
 		AEEF2B0B1C2D38E70026228D /* ReplayComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */; };
@@ -416,6 +412,8 @@
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
 		AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalTableViewCell.swift; sourceTree = "<group>"; };
+		AEE847861F24F52F0064D657 /* betaflight */ = {isa = PBXFileReference; lastKnownFileType = folder; path = betaflight; sourceTree = "<group>"; };
+		AEE847881F24F53B0064D657 /* cleanflight */ = {isa = PBXFileReference; lastKnownFileType = folder; path = cleanflight; sourceTree = "<group>"; };
 		AEEDA9241C1AEF0B0040EC09 /* LinearGauge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearGauge.swift; sourceTree = "<group>"; };
 		AEEDA9261C1B8A790040EC09 /* VBatConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VBatConfigViewController.swift; sourceTree = "<group>"; };
 		AEEDA9281C1B8ABD0040EC09 /* ReceiverConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiverConfigViewController.swift; sourceTree = "<group>"; };
@@ -428,15 +426,9 @@
 		AEEE2EBF1EC88CDD00CC3D94 /* OSDElementPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDElementPosition.swift; sourceTree = "<group>"; };
 		AEEE2EC11EC88DF300CC3D94 /* OSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSD.swift; sourceTree = "<group>"; };
 		AEEE2EC31EC8905200CC3D94 /* OSDElementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDElementView.swift; sourceTree = "<group>"; };
-		AEEE2EC51EC8A18200CC3D94 /* default.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = default.mcm; sourceTree = "<group>"; };
 		AEEE2EC71EC8A2C100CC3D94 /* OSDPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDPreview.swift; sourceTree = "<group>"; };
 		AEEE2EC91EC8A88200CC3D94 /* OSD.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = OSD.storyboard; sourceTree = "<group>"; };
 		AEEE2ECB1EC8E60300CC3D94 /* OSDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDViewController.swift; sourceTree = "<group>"; };
-		AEEE2ED31ECA237600CC3D94 /* bold.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bold.mcm; sourceTree = "<group>"; };
-		AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cleanflight.mcm; sourceTree = "<group>"; };
-		AEEE2ED51ECA237600CC3D94 /* digital.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = digital.mcm; sourceTree = "<group>"; };
-		AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = extra_large.mcm; sourceTree = "<group>"; };
-		AEEE2ED71ECA237600CC3D94 /* large.mcm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = large.mcm; sourceTree = "<group>"; };
 		AEEE2EDD1ECA400D00CC3D94 /* OSDSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSDSettingsViewController.swift; sourceTree = "<group>"; };
 		AEEF2B081C2C43F90026228D /* BlinkingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlinkingLabel.swift; sourceTree = "<group>"; };
 		AEEF2B0A1C2D38E70026228D /* ReplayComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplayComm.swift; sourceTree = "<group>"; };
@@ -516,15 +508,11 @@
 		AE1BBA391EC3B55D0081E068 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				AEEE2ED31ECA237600CC3D94 /* bold.mcm */,
-				AEEE2ED41ECA237600CC3D94 /* cleanflight.mcm */,
-				AEEE2ED51ECA237600CC3D94 /* digital.mcm */,
-				AEEE2ED61ECA237600CC3D94 /* extra_large.mcm */,
-				AEEE2ED71ECA237600CC3D94 /* large.mcm */,
-				AEEE2EC51EC8A18200CC3D94 /* default.mcm */,
+				AEE847881F24F53B0064D657 /* cleanflight */,
+				AEE847861F24F52F0064D657 /* betaflight */,
 				AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */,
 			);
-			name = Resource;
+			path = Resource;
 			sourceTree = "<group>";
 		};
 		AE1DD67E1C7E23F300861248 /* KIFTests */ = {
@@ -1034,11 +1022,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEEE2ED81ECA237600CC3D94 /* bold.mcm in Resources */,
 				AE8D56CF1EE8605D008A69A6 /* Calibration.storyboard in Resources */,
-				AEEE2EC61EC8A18200CC3D94 /* default.mcm in Resources */,
 				AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */,
-				AEEE2EDA1ECA237600CC3D94 /* digital.mcm in Resources */,
 				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
 				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
 				AEEE2ECA1EC8A88200CC3D94 /* OSD.storyboard in Resources */,
@@ -1049,16 +1034,15 @@
 				AE8D56D11EE863D4008A69A6 /* Receiver.storyboard in Resources */,
 				AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */,
 				AE1EA9ED1CB00F3F00C24E2A /* InAppSettingsKit in Resources */,
+				AEE847891F24F53B0064D657 /* cleanflight in Resources */,
 				AEBB7A0E1ECCEF4F00F56D6C /* StepperWithLabel.xib in Resources */,
+				AEE847871F24F52F0064D657 /* betaflight in Resources */,
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE8D56D71EE89534008A69A6 /* Map.storyboard in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
 				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
-				AEEE2EDB1ECA237600CC3D94 /* extra_large.mcm in Resources */,
-				AEEE2EDC1ECA237600CC3D94 /* large.mcm in Resources */,
 				AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
-				AEEE2ED91ECA237600CC3D94 /* cleanflight.mcm in Resources */,
 				AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */,
 				AEBA641A1C332B3100783ECE /* Settings.bundle in Resources */,
 				AE72AB611C0F3D230020C4B0 /* Main.storyboard in Resources */,

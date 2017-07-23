@@ -39,7 +39,7 @@ class OSD {
     var videoMode = VideoMode.Auto
     var unitMode = UnitMode.Imperial
     var elements = [OSDElementPosition]()
-    var fontDefinition: FontDefinition!
+    private var _fontDefinition: FontDefinition!
     var fontName: String!
     
     var rssiAlarm = 20
@@ -47,9 +47,14 @@ class OSD {
     var minutesAlarm = 10
     var altitudeAlarm = 100
     
+    var fontDefinition: FontDefinition {
+        if _fontDefinition == nil {
+            loadFont(UserDefault.OSDFont.stringValue ?? "digital")
+        }
+        return _fontDefinition!
+    }
+    
     init() {
-        loadFont(UserDefault.OSDFont.stringValue ?? "digital")
-        
         // For Debug
         /*
         elements = [OSDElementPosition]()
@@ -69,8 +74,14 @@ class OSD {
         if fontName != nil && fontName == name {
             return
         }
-        let url = NSBundle.mainBundle().URLForResource(name, withExtension: "mcm")!
-        fontDefinition = FontDefinition.load(url)
+        var fontPath: String
+        if Configuration.theConfig.isBetaflight {
+            fontPath = "betaflight/" + (name == "cleanflight" ? "betaflight" : name)
+        } else {
+            fontPath = "cleanflight/" + (name == "betaflight" ? "cleanflight" : name)
+        }
+        let url = NSBundle.mainBundle().URLForResource(fontPath, withExtension: "mcm")!
+        _fontDefinition = FontDefinition.load(url)
         fontName = name
         UserDefault.OSDFont.setValue(name)
     }

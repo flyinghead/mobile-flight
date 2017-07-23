@@ -8,7 +8,13 @@
 
 import Foundation
 
-let FONTS = [ "default", "digital", "cleanflight", "bold", "large", "extra_large" ]
+var FONTS: [String] {
+    if Configuration.theConfig.isBetaflight {
+        return  [ "default", "digital", "betaflight", "bold", "large", "extra_large" ]
+    } else {
+        return  [ "default", "digital", "cleanflight", "bold", "large", "extra_large" ]
+    }
+}
 
 enum PixelColor : Int {
     case Black = 0
