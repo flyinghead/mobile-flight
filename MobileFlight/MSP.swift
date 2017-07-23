@@ -169,7 +169,7 @@ class MSPParser {
         let inavState = INavState.theINavState
         
         switch code {
-        case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.1.8
+        case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.2
             if message.count < 7 {
                 return false
             }
