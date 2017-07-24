@@ -14,6 +14,7 @@ import Firebase
 class ConfigurationViewController: StaticDataTableViewController, UITextFieldDelegate {
     @IBOutlet weak var mixerTypeTextField: UITextField!
     @IBOutlet weak var mixerTypeView: UIImageView!
+    @IBOutlet weak var motorsReversedSwitch: UISwitch!
     @IBOutlet weak var boardRollField: NumberField!
     @IBOutlet weak var boardPitchField: NumberField!
     @IBOutlet weak var boardYawField: NumberField!
@@ -220,6 +221,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if fullRefresh {
             mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
             mixerTypeChanged(self)
+            motorsReversedSwitch.on = newSettings!.yawMotorsReversed
             
             boardPitchField.value = Double(isINav ? newSettings!.boardAlignPitch / 10 : newSettings!.boardAlignPitch)
             boardRollField.value = Double(isINav ? newSettings!.boardAlignRoll / 10 : newSettings!.boardAlignRoll)
@@ -282,6 +284,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if mixerTypePicker!.selectedIndex >= 0 {
             newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
         }
+        newSettings!.yawMotorsReversed = motorsReversedSwitch.on
 
         newSettings!.boardAlignPitch = Int(round(isINav ? boardPitchField.value * 10 : boardPitchField.value))
         newSettings!.boardAlignRoll = Int(round(isINav ? boardRollField.value * 10 : boardRollField.value))
@@ -346,9 +349,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
                 self.msp.sendSerialConfig(self.newSettings!, callback: callback)
             },
             { callback in
-                self.msp.sendMixerConfiguration(self.newSettings!.mixerConfiguration) { success in
+                self.msp.sendMixerConfiguration(self.newSettings!) { success in
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
-                    if Configuration.theConfig.isBetaflight || success {
+                    let config = Configuration.theConfig
+                    if (config.isBetaflight && !config.isApiVersionAtLeast("1.36")) || success {
                         callback(true)
                     } else {
                         callback(false)

@@ -849,6 +849,9 @@ class MSPParser {
                 return false
             }
             settings.mixerConfiguration = Int(message[0])
+            if message.count >= 2 {
+                settings.yawMotorsReversed = message[1] != 0
+            }
             
         case .MSP_FEATURE:
             if message.count < 4 {
@@ -1523,8 +1526,8 @@ class MSPParser {
         }
     }
     
-    func sendMixerConfiguration(mixerConfiguration: Int, callback:((success:Bool) -> Void)?) {
-        let data = [UInt8(mixerConfiguration)]
+    func sendMixerConfiguration(settings: Settings, callback:((success:Bool) -> Void)?) {
+        let data = [UInt8(settings.mixerConfiguration), UInt8(settings.yawMotorsReversed ? 1 : 0)]
         sendMessage(.MSP_SET_MIXER_CONFIG, data: data, retry: 2, callback: callback)
     }
     

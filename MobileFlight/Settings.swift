@@ -362,7 +362,8 @@ enum PIDName : String {
  */
 
 class Settings : AutoCoded {
-    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds", "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "yawRate",
+    var autoEncoding = [ "autoDisarmDelay", "disarmKillSwitch", "mixerConfiguration", "yawMotorsReversed", "boardAlignRoll", "boardAlignPitch", "boardAlignYaw", "boxNames", "boxIds",
+                         "modeRangeSlots", "rcExpo", "yawExpo", "rcRate", "yawRate",
                          "rollSuperRate", "pitchSuperRate", "yawSuperRate", "throttleMid", "throttleExpo", "tpaRate", "tpaBreakpoint", "pidNames", "pidValues", "pidController", "serialRxType", "maxCheck", "midRC", "minCheck",
                          "spektrumSatBind",
                          "rxMinUsec", "rxMaxUsec", "rcInterpolation", "rcInterpolationInterval", "airmodeActivateThreshold", "rxSpiProtocol", "rxSpiId", "rxSpiChannelCount", "fpvCamAngleDegrees",
@@ -382,6 +383,7 @@ class Settings : AutoCoded {
     
     // MSP_MIXER_CONFIG
     var mixerConfiguration = 3              // Quad X by default
+    var yawMotorsReversed = false           // BF 3.2
     
     // MSP_FEATURE
     var features = BaseFlightFeature.None {
@@ -563,6 +565,8 @@ class Settings : AutoCoded {
         self.disarmKillSwitch = copyOf.disarmKillSwitch
         
         self.mixerConfiguration = copyOf.mixerConfiguration
+        self.yawMotorsReversed = copyOf.yawMotorsReversed
+        
         self.features = copyOf.features
         self.serialRxType = copyOf.serialRxType
         self.boardAlignRoll = copyOf.boardAlignRoll
