@@ -965,6 +965,24 @@ class MSPParser {
                         osd.elements.append(pos)
                         i += 2
                     }
+                    if message.count > i {
+                        // Stats
+                        var count = Int(message[i])
+                        i += 1
+                        osd.displayedStats = [Bool]()
+                        while i < message.count && osd.displayedStats!.count < count {
+                            osd.displayedStats!.append(message[i] != 0)
+                            i += 1
+                        }
+                        // Timers
+                        count = Int(message[i])
+                        i += 1
+                        osd.timers = [OSDTimer]()
+                        while i + 1 < message.count && osd.timers!.count < count {
+                            osd.timers!.append(OSDTimer.parse(readInt16(message, index: i)))
+                            i += 2
+                        }
+                    }
                 }
             }
         
@@ -1690,16 +1708,21 @@ class MSPParser {
     }
     
     func sendOsdConfig(osd: OSD, callback:((success: Bool) -> Void)?) {
-        sendOsdConfigRecursive(osd, index: -1, callback: callback)
+        sendOsdConfigRecursive(osd, index: osd.timers != nil ? -2 : -1, index2: 0, callback: callback)
     }
     
-    private func sendOsdConfigRecursive(osd: OSD, index: Int, callback:((success:Bool) -> Void)?) {
+    private func sendOsdConfigRecursive(osd: OSD, index: Int, index2: Int, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        if index >= osd.elements.count {
-            callback?(success: true)
-            return
+        if index == -2 {
+            if index2 >= osd.timers!.count {
+                sendOsdConfigRecursive(osd, index: -1, index2: 0, callback: callback)
+                return
+            }
+            data.append(UInt8(0xFE))    // -2
+            data.append(UInt8(index2))
+            data.appendContentsOf(writeUInt16(osd.timers![index2].rawValue))
         } else if index == -1 {
-            data.append(UInt8(0xFF))
+            data.append(UInt8(0xFF))    // -1
             data.append(UInt8(osd.videoMode.rawValue))
             data.append(UInt8(osd.unitMode.rawValue))
             data.append(UInt8(osd.rssiAlarm))
@@ -1707,9 +1730,25 @@ class MSPParser {
             data.appendContentsOf(writeUInt16(osd.minutesAlarm))
             data.appendContentsOf(writeUInt16(osd.altitudeAlarm))
         } else {
-            data.append(UInt8(index))
-            let position = osd.elements[index]
-            data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
+            if index2 == 0 {
+                // Element
+                if index >= osd.elements.count {
+                    callback?(success: true)
+                    return
+                }
+                data.append(UInt8(index))
+                let position = osd.elements[index]
+                data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
+            } else {
+                // Flight Stat
+                if index >= osd.displayedStats!.count {
+                    callback?(success: true)
+                    return
+                }
+                data.append(UInt8(index))
+                data.appendContentsOf(writeUInt16(osd.displayedStats![index] ? 1 : 0))
+                data.append(UInt8(0))       // Screen 0 -> selects flight stat screen
+            }
         }
 
         sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
@@ -1717,7 +1756,22 @@ class MSPParser {
             let fakedSuccess = Configuration.theConfig.isApiVersionAtLeast("1.35") ? true : success
 
             if fakedSuccess {
-                self.sendOsdConfigRecursive(osd, index: index + 1, callback: callback)
+                var newIndex = index + 1
+                var newIndex2 = index2
+                if index == -2 {
+                    // Timers
+                    if index2 + 1 >= osd.timers!.count {
+                        newIndex = -1
+                        newIndex2 = 0
+                    } else {
+                        newIndex = -2
+                        newIndex2 = index2 + 1
+                    }
+                } else if newIndex >= osd.elements.count && index2 == 0 && osd.displayedStats != nil && osd.displayedStats!.count > 0 {
+                    newIndex = 0
+                    newIndex2 = 1
+                }
+                self.sendOsdConfigRecursive(osd, index: newIndex, index2: newIndex2, callback: callback)
             } else {
                 callback?(success: false)
             }

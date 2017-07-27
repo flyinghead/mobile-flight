@@ -32,6 +32,66 @@ enum UnitMode : Int {
     static let descriptions = [ "Imperial", "Metric" ]
 }
 
+enum FlightStats : Int {
+    case MaxSpeed = 0
+    case MinBattery = 1
+    case MinRssi = 2
+    case MaxCurrent = 3
+    case UsedMAh = 4
+    case MaxAltitude = 5
+    case Blackbox = 6
+    case EndBattery = 7
+    case Timer1 = 8
+    case Timer2 = 9
+    case MaxDistance = 10
+    case BlackboxNumber = 11
+    
+    var label: String {
+        switch self {
+        case .MaxSpeed:
+            return "Max Speed"
+        case .MinBattery:
+            return "Min Battery"
+        case .MinRssi:
+            return "Min RSSI"
+        case .MaxCurrent:
+            return "Max Current"
+        case .UsedMAh:
+            return "Used mAh"
+        case .MaxAltitude:
+            return "Max Altitude"
+        case .Blackbox:
+            return "Blackbox"
+        case .EndBattery:
+            return "End Battery"
+        case .Timer1:
+            return "Timer1"
+        case .Timer2:
+            return "Timer2"
+        case .MaxDistance:
+            return "Max Distance"
+        case .BlackboxNumber:
+            return "Blackbox Log Number"
+        }
+    }
+}
+
+let OSDTimerSources = [ "On Time", "Total Armed Time", "Last Armed Time" ]
+
+struct OSDTimer {
+    var source: Int     // 0=On Time, 1=Total Armed Time, 2=Last Armed Time
+    var precision: Int  // 0=1 second, 1=1/100 second
+    var alarm: Int      // In minutes
+    
+    static func parse(rawValue: Int) -> OSDTimer {
+        return OSDTimer(source: rawValue & 0xF, precision: (rawValue >> 4) & 0xF, alarm: (rawValue >> 8) & 0xFF)
+    }
+    
+    var rawValue: Int {
+        return (source & 0x0F) | ((precision & 0x0F) << 4) | ((alarm & 0xFF ) << 8)
+    }
+}
+
 class OSD {
     static var theOSD = OSD()
     
@@ -44,8 +104,11 @@ class OSD {
     
     var rssiAlarm = 20
     var capacityAlarm = 2200
-    var minutesAlarm = 10
+    var minutesAlarm = 10       // api < 1.36
     var altitudeAlarm = 100
+    
+    var displayedStats: [Bool]?
+    var timers: [OSDTimer]?
     
     var fontDefinition: FontDefinition {
         if _fontDefinition == nil {

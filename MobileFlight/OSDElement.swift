@@ -38,6 +38,14 @@ let SYM_PB_EMPTY = "\u{8D}"
 let SYM_PB_END = "\u{8E}"
 let SYM_PB_CLOSE = "\u{8F}"
 let SYM_BATTERY = "\u{96}"
+let SYM_ARROW_SOUTH = "\u{60}"
+let SYM_ARROW_NORTH_WEST = "\u{6A}"
+let SYM_HEADING_W = "\u{1B}"
+let SYM_HEADING_N = "\u{18}"
+let SYM_HEADING_E = "\u{1A}"
+let SYM_HEADING_LINE = "\u{1D}"
+let SYM_HEADING_DIVIDED_LINE = "\u{1C}"
+let SYM_TEMP_C = "\u{0E}"
 
 enum OSDElement {
     case RSSI
@@ -78,19 +86,35 @@ enum OSDElement {
     case Vario
     case VarioNum
     
+    case HeadingNum
+    case Disarmed
+    case CompassBar
+    case EscTemperature
+    case EscRpm
+    
     case Unknown(index: Int)
     
-    private static let betaflight31Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw, .MAhDrawn,
-                                        .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power ]
-    private static let inav16Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw, .MAhDrawn,
-                                        .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .GpsLongitude, .GpsLatitude, .HomeDirection, .HomeDistance, .Heading, .Vario, .VarioNum ]
-    private static let cf2Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw, .MAhDrawn,
-                                  .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning, .AvgCellVoltage, .GpsLongitude, .GpsLatitude, .Debug, .PitchAngle, .RollAngle, .MainBattUsage ]
+    private static let betaflight31Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
+                                                .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning ]
+    private static let inav16Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
+                                          .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power,
+                                          .GpsLongitude, .GpsLatitude, .HomeDirection, .HomeDistance, .Heading, .Vario, .VarioNum ]
+    private static let cf2Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
+                                       .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning,
+                                       .AvgCellVoltage, .GpsLongitude, .GpsLatitude ]
+    private static let betaflight32Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
+                                                .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning,
+                                                .AvgCellVoltage, .GpsLongitude, .GpsLatitude, .Debug, .PitchAngle, .RollAngle, .MainBattUsage, .Disarmed, .HomeDirection, .HomeDistance, .HeadingNum, .VarioNum,
+                                                .CompassBar, .EscTemperature, .EscRpm ]
+    
     
     static var Elements: [OSDElement] {
         let config = Configuration.theConfig
         
-        if config.isApiVersionAtLeast("1.35") {
+        if config.isApiVersionAtLeast("1.36") {
+            return betaflight32Elements
+        }
+        else if config.isApiVersionAtLeast("1.35") {
             return cf2Elements
         }
         else if config.isINav {
@@ -172,7 +196,7 @@ enum OSDElement {
             return SYM_PB_START + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_END + SYM_PB_EMPTY + SYM_PB_CLOSE
         
         case .HomeDirection:
-            return "165"
+            return SYM_ARROW_NORTH_WEST
         case .HomeDistance:
             return "300m"
         case .Heading:
@@ -180,8 +204,16 @@ enum OSDElement {
         case .Vario:
             return "-"
         case .VarioNum:
-            return "2"
-        
+            return SYM_ARROW_SOUTH + "2.2"
+        case .CompassBar:
+            return SYM_HEADING_W + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_N + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_E
+        case .Disarmed:
+            return "DISARMED"
+        case .EscTemperature:
+            return SYM_TEMP_C + "37"
+        case .EscRpm:
+            return "29000"
+            
         case .Unknown(let index):
             return String(format: "UNKNOWN%d", index)
             
@@ -239,29 +271,39 @@ enum OSDElement {
         case .BatteryWarning:
             return (9, 10, true)
         case .Debug:
-            return (7, 12, true)
+            return (7, 12, false)
         case .PitchAngle:
             return (1, 8, true)
         case .RollAngle:
             return (1, 9, true)
         
         case .HomeDistance:
-            return (1, 1, false)
+            return (15, 9, true)
         case .Heading:
             return (12, 1, false)
         case .Vario:
             return (22, 5, false)
         case .VarioNum:
-            return (23, 7, false)
+            return (23, 8, true)
         case .HomeDirection:
-            return (14, 11, false)
+            return (14, 9, true)
         case .GpsLatitude:
-            return (18, 14, true)
+            return (25, 14, true)
         case .GpsLongitude:
-            return (18, 15, true)
+            return (25, 15, true)
         case .MainBattUsage:
-            return (15, 10, true)
-
+            return (8, 12, true)
+        case .CompassBar:
+            return (10, 8, true)
+        case .Disarmed:
+            return (10, 4, true)
+        case .HeadingNum:
+            return (23, 9, true)
+        case .EscTemperature:
+            return (18, 2, true)
+        case .EscRpm:
+            return (19, 2, true)
+            
         default:
             return (10, 10, true)
         }
@@ -357,6 +399,17 @@ enum OSDElement {
             return "Variometer"
         case .VarioNum:
             return "Digital Variometer"
+            
+        case .HeadingNum:
+            return "Digital Heading"
+        case .CompassBar:
+            return "Compass Bar"
+        case .Disarmed:
+            return "Disarmed"
+        case .EscTemperature:
+            return "ESC Temperature"
+        case .EscRpm:
+            return "ESC RPM"
             
         case .Unknown(let index):
             return String(format: "Unknown %d", index)

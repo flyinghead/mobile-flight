@@ -102,7 +102,8 @@ class Simulator : CommChannel {
         motorData.nMotors = 4
         motorData.throttle = [ settings.minCommand, settings.minCommand, settings.minCommand, settings.minCommand, 1000, 1000, 1000, 1000]
         
-        OSD.theOSD.elements = [OSDElementPosition]()
+        let osd = OSD.theOSD
+        osd.elements = [OSDElementPosition]()
         for e in OSDElement.Elements {
             let (x, y, visible) = e.defaultPosition()
             let position = OSDElementPosition()
@@ -110,8 +111,10 @@ class Simulator : CommChannel {
             position.visible = visible
             position.x = x
             position.y = y
-            OSD.theOSD.elements.append(position)
+            osd.elements.append(position)
         }
+        osd.timers = [ OSDTimer(source: 0, precision: 0, alarm: 0), OSDTimer(source: 1, precision: 0, alarm: 0) ]
+        osd.displayedStats = [ false, true, true, true, true, true, true, true, true, true, false, true ]
         
         let dataflash = Dataflash.theDataflash
         dataflash.blackboxSupported = true

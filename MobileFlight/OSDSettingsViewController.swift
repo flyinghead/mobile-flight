@@ -21,24 +21,105 @@ class ElementCell : UITableViewCell {
     }
 }
 
-class RssiCell : UITableViewCell {
-    @IBOutlet weak var rssiField: NumberField!
+class FlightStatCell : ConditionalTableViewCell {
+    @IBOutlet weak var statLabel: UILabel!
+    @IBOutlet weak var statSwitch: UISwitch!
+    
+    var statIndex = 0
+    
+    @IBAction func switchChanged(sender: AnyObject) {
+        if let stats = OSD.theOSD.displayedStats where statIndex < stats.count {
+            OSD.theOSD.displayedStats![statIndex] = statSwitch.on
+        }
+    }
 }
 
-class CapacityCell : UITableViewCell {
+class TimerCell : UITableViewCell, UITextFieldDelegate {
+    @IBOutlet weak var TimerLabel: UILabel!
+    @IBOutlet weak var timerTypeField: UITextField!
+    @IBOutlet weak var precisionField: UITextField!
+    @IBOutlet weak var alarmField: NumberField!
+    
+    var timerTypePicker: MyDownPicker!
+    var precisionPicker: MyDownPicker!
+    var timerIndex = 0
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        timerTypePicker = MyDownPicker(textField: timerTypeField, withData: OSDTimerSources)
+        timerTypePicker.addTarget(self, action: #selector(TimerCell.timerTypeChanged(_:)), forControlEvents: .ValueChanged)
+        precisionPicker = MyDownPicker(textField: precisionField, withData: [ "1 second", "1/100 second" ])
+        precisionPicker.addTarget(self, action: #selector(TimerCell.precisionChanged(_:)), forControlEvents: .ValueChanged)
+        alarmField.delegate = self
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        let osd = OSD.theOSD
+        osd.timers![timerIndex].alarm = Int(alarmField.value)
+    }
+    
+    @objc func timerTypeChanged(sender: NSObject) {
+        let osd = OSD.theOSD
+        osd.timers![timerIndex].source = timerTypePicker.selectedIndex
+    }
+    
+    @objc func precisionChanged(sender: NSObject) {
+        let osd = OSD.theOSD
+        osd.timers![timerIndex].precision = precisionPicker.selectedIndex
+    }
+}
+
+class RssiCell : UITableViewCell, UITextFieldDelegate {
+    @IBOutlet weak var rssiField: NumberField!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        rssiField.delegate = self
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        OSD.theOSD.rssiAlarm = Int(round(rssiField.value))
+    }
+}
+
+class CapacityCell : UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var capacityField: NumberField!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        capacityField.delegate = self
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        OSD.theOSD.capacityAlarm = Int(round(capacityField.value))
+    }
 }
 
-class MinutesCell : UITableViewCell {
+class MinutesCell : UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var minutesField: NumberField!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        minutesField.delegate = self
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        OSD.theOSD.minutesAlarm = Int(round(minutesField.value))
+    }
 }
 
-class AltitudeCell : UITableViewCell {
+class AltitudeCell : UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var altitudeField: NumberField!
     @IBOutlet weak var altitudeLabel: UILabel!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        altitudeField.delegate = self
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        OSD.theOSD.altitudeAlarm = Int(round(altitudeField.value))
+    }
 }
 
 class VideoFormatCell : UITableViewCell {
@@ -49,6 +130,11 @@ class VideoFormatCell : UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         videoFormatPicker = MyDownPicker(textField: videoFormatField!, withData: VideoMode.descriptions)
+        videoFormatPicker.addTarget(self, action: #selector(VideoFormatCell.videoFormatChanged(_:)), forControlEvents: .ValueChanged)
+    }
+    
+    @objc func videoFormatChanged(sender: NSObject) {
+        OSD.theOSD.videoMode = VideoMode(rawValue: videoFormatPicker.selectedIndex)!
     }
 }
 
@@ -59,6 +145,11 @@ class UnitsCell : UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         unitsPicker = MyDownPicker(textField: unitsField!, withData: UnitMode.descriptions)
+        unitsPicker.addTarget(self, action: #selector(UnitsCell.unitsChanged(_:)), forControlEvents: .ValueChanged)
+    }
+    
+    @objc func unitsChanged(sender: NSObject) {
+        OSD.theOSD.unitMode = UnitMode(rawValue: unitsPicker.selectedIndex)!
     }
 }
 
@@ -69,6 +160,11 @@ class FontCell : UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         fontPicker = MyDownPicker(textField: fontField!, withData: FONTS)
+        fontPicker.addTarget(self, action: #selector(FontCell.fontChanged(_:)), forControlEvents: .ValueChanged)
+    }
+    
+    @objc func fontChanged(sender: NSObject) {
+        OSD.theOSD.loadFont(FONTS[fontPicker.selectedIndex])
     }
 }
 
@@ -78,53 +174,42 @@ class OSDSettingsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 44.0
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        let osd = OSD.theOSD
-        
-        if let rssiCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? RssiCell {
-            osd.rssiAlarm = Int(round(rssiCell.rssiField.value))
-        }
-        if let capacityCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1)) as? CapacityCell {
-            osd.capacityAlarm = Int(round(capacityCell.capacityField.value))
-        }
-        if let minutesCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 1)) as? MinutesCell {
-            osd.minutesAlarm = Int(round(minutesCell.minutesField.value))
-        }
-        if let altitudeCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 3, inSection: 1)) as? AltitudeCell {
-            osd.altitudeAlarm = Int(round(altitudeCell.altitudeField.value))
-        }
-
-        
-        if let videoFormatCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 2)) as? VideoFormatCell {
-            osd.videoMode = VideoMode(rawValue: videoFormatCell.videoFormatPicker.selectedIndex)!
-        }
-        if let unitsCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 2)) as? UnitsCell {
-            osd.unitMode = UnitMode(rawValue: unitsCell.unitsPicker.selectedIndex)!
-        }
-        if let fontCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2)) as? FontCell {
-            osd.loadFont(FONTS[fontCell.fontPicker.selectedIndex])
-        }
-        
         osdViewController.refreshUI()
     }
 
+    var hasFlightStatsAndTimers: Bool {
+        return (OSD.theOSD.displayedStats?.count ?? 0) > 0
+    }
+    
     // MARK: - Table view data source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return hasFlightStatsAndTimers ? 5 : 3
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
+        var fixedSection = section
+        if !hasFlightStatsAndTimers && fixedSection > 0 {
+            fixedSection += 2
+        }
+        let osd = OSD.theOSD
+        switch fixedSection {
         case 0:     // elements
-            return OSD.theOSD.elements.count
-        case 1:     // Alarms
-            return 4
-        case 2:     // Others
+            return osd.elements.count
+        case 1:     // Flight Stats
+            return osd.displayedStats!.count
+        case 2:     // Timers
+            return osd.timers!.count
+        case 3:     // Alarms
+            return hasFlightStatsAndTimers ? 3 : 4
+        case 4:     // Others
             return 4
         default:
             return 0
@@ -132,12 +217,20 @@ class OSDSettingsViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
+        var fixedSection = section
+        if !hasFlightStatsAndTimers && fixedSection > 0 {
+            fixedSection += 2
+        }
+        switch fixedSection {
         case 0:     // elements
             return "Elements"
-        case 1:     // Alarms
+        case 1:     // Flight Stats
+            return "Flight Statistics"
+        case 2:     // Timers
+            return "Timers"
+        case 3:     // Alarms
             return "Alarms"
-        case 2:     // Others
+        case 4:     // Others
             return "Other"
         default:
             return nil
@@ -147,7 +240,11 @@ class OSDSettingsViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let osd = OSD.theOSD
         
-        switch indexPath.section {
+        var section = indexPath.section
+        if !hasFlightStatsAndTimers && section > 0 {
+            section += 2
+        }
+        switch section {
         case 0:     // elements
             let cell = tableView.dequeueReusableCellWithIdentifier("elementCell", forIndexPath: indexPath) as! ElementCell
             let position = osd.elements[indexPath.row]
@@ -155,9 +252,34 @@ class OSDSettingsViewController: UITableViewController {
             cell.elementLabel.text = position.element.description
             cell.elementSwitch.on = position.visible
             return cell
+        
+        case 1:     // Flight Stats
+            let cell = tableView.dequeueReusableCellWithIdentifier("flightStatCell", forIndexPath: indexPath) as! FlightStatCell
+            cell.statIndex = indexPath.row
+            if let stat = FlightStats(rawValue: indexPath.row) {
+                cell.statLabel.text = stat.label
+            } else {
+                cell.statLabel.text = String(format: "Stat %d", indexPath.row)
+            }
+            cell.statSwitch.on = osd.displayedStats![indexPath.row]
+            return cell
             
-        case 1:     // Alarms
-            switch indexPath.row {
+        case 2:     // Timers
+            let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerCell
+            cell.timerIndex = indexPath.row
+            cell.TimerLabel.text = String(format: "Timer %d", indexPath.row + 1)
+            let timer = osd.timers![indexPath.row]
+            cell.timerTypePicker.selectedIndex = timer.source
+            cell.precisionPicker.selectedIndex = timer.precision
+            cell.alarmField.value = Double(timer.alarm)
+            return cell
+
+        case 3:     // Alarms
+            var row = indexPath.row
+            if hasFlightStatsAndTimers && row == 2 {
+                row = 3
+            }
+            switch row {
             case 0:
                 let cell = tableView.dequeueReusableCellWithIdentifier("rssiCell", forIndexPath: indexPath) as! RssiCell
                 cell.rssiField.value = Double(osd.rssiAlarm)
@@ -170,6 +292,7 @@ class OSDSettingsViewController: UITableViewController {
                 let cell = tableView.dequeueReusableCellWithIdentifier("minutesCell", forIndexPath: indexPath) as! MinutesCell
                 cell.minutesField.value = Double(osd.minutesAlarm)
                 return cell
+                
             default:
                 let cell = tableView.dequeueReusableCellWithIdentifier("altitudeCell", forIndexPath: indexPath) as! AltitudeCell
                 cell.altitudeField.value = Double(osd.altitudeAlarm)
@@ -195,6 +318,8 @@ class OSDSettingsViewController: UITableViewController {
             }
         }
     }
+
+    // MARK:
     
     @IBAction func uploadFontAction(sender: AnyObject) {
         if let fontCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2)) as? FontCell {
