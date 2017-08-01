@@ -149,6 +149,7 @@
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
+		AEE2EA821F307492001DA530 /* BeeperConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2EA811F307492001DA530 /* BeeperConfigViewController.swift */; };
 		AEE8476A1F12D3170064D657 /* ConditionalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */; };
 		AEE847871F24F52F0064D657 /* betaflight in Resources */ = {isa = PBXBuildFile; fileRef = AEE847861F24F52F0064D657 /* betaflight */; };
 		AEE847891F24F53B0064D657 /* cleanflight in Resources */ = {isa = PBXBuildFile; fileRef = AEE847881F24F53B0064D657 /* cleanflight */; };
@@ -411,6 +412,7 @@
 		AEDDD2781C1615C8004232AA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
+		AEE2EA811F307492001DA530 /* BeeperConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeeperConfigViewController.swift; sourceTree = "<group>"; };
 		AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalTableViewCell.swift; sourceTree = "<group>"; };
 		AEE847861F24F52F0064D657 /* betaflight */ = {isa = PBXFileReference; lastKnownFileType = folder; path = betaflight; sourceTree = "<group>"; };
 		AEE847881F24F53B0064D657 /* cleanflight */ = {isa = PBXFileReference; lastKnownFileType = folder; path = cleanflight; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 			isa = PBXGroup;
 			children = (
 				AE63D5EC1C2166890070D1D2 /* Configuration.storyboard */,
+				AEE2EA811F307492001DA530 /* BeeperConfigViewController.swift */,
 				AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */,
 				AEF370411C1CDA8000667E9D /* ConfigChildViewController.swift */,
 				AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */,
@@ -1326,6 +1329,7 @@
 				AEDDD2691C12DCE3004232AA /* XYZSensorViewController.swift in Sources */,
 				AEDDD23F1C10BDF1004232AA /* GPSViewController.swift in Sources */,
 				AE72AB5A1C0F3D230020C4B0 /* AppDelegate.swift in Sources */,
+				AEE2EA821F307492001DA530 /* BeeperConfigViewController.swift in Sources */,
 				AE77377F1EEF36230018FC2B /* Configuration.swift in Sources */,
 				AEDDD2451C11AE0F004232AA /* ReceiverViewController.swift in Sources */,
 				AE1EAA2B1CB0174500C24E2A /* IASKSettingsStoreFile.m in Sources */,

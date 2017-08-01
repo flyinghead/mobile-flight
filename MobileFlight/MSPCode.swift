@@ -108,6 +108,9 @@ enum MSP_code : Int {
     case MSP_GPS_CONFIG =         132
     case MSP_COMPASS_CONFIG =     133
     
+    case MSP_BEEPER_CONFIG =      184
+    case MSP_SET_BEEPER_CONFIG =  185
+    
     case MSP_SET_RAW_RC =         200
     case MSP_SET_RAW_GPS =        201
     case MSP_SET_PID =            202

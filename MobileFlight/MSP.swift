@@ -999,6 +999,12 @@ class MSPParser {
                 vtxConfig.pitMode = message[4] != 0
             }
             
+        case .MSP_BEEPER_CONFIG:
+            if message.count < 4 {
+                return false
+            }
+            settings.beeperMask = readUInt32(message, index: 0)
+            
         // INav
         case .MSP_NAV_STATUS:
             if message.count < 7 {
@@ -1130,7 +1136,8 @@ class MSPParser {
             .MSP_SET_NAME,
             .MSP_SET_RTH_AND_LAND_CONFIG,
             .MSP_SET_FW_CONFIG,
-            .MSP_SET_BLACKBOX_CONFIG:
+            .MSP_SET_BLACKBOX_CONFIG,
+            .MSP_SET_BEEPER_CONFIG:
             break
             
         default:
@@ -1799,6 +1806,12 @@ class MSPParser {
         data.append(UInt8(vtxConfig.powerIdx))
         data.append(UInt8(vtxConfig.pitMode ? 1 : 0))
         sendMessage(.MSP_SET_VTX_CONFIG, data: data, retry: 2, callback: callback)
+    }
+    
+    func sendBeeperConfig(beeperMask: Int, callback:((success:Bool) -> Void)?) {
+        var data = [UInt8]()
+        data.appendContentsOf(writeUInt32(beeperMask))
+        sendMessage(.MSP_SET_BEEPER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     // INav

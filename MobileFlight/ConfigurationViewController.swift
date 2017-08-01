@@ -129,6 +129,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if config.isApiVersionAtLeast("1.35") {    // CF 2.0 / BF 3.2
             mspCalls.append(.MSP_MOTOR_CONFIG)
             mspCalls.append(.MSP_BATTERY_CONFIG)
+            if config.isApiVersionAtLeast("1.36") {    // CF 2.1 / BF 3.2
+                mspCalls.append(.MSP_BEEPER_CONFIG)
+            }
         } else {
             mspCalls.append(.MSP_MISC)
             mspCalls.append(.MSP_LOOP_TIME)
@@ -318,9 +321,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             newSettings!.gyroSyncDenom = gyroUpdateFreqPicker!.selectedIndex + 1
             newSettings!.pidProcessDenom = pidLoopFreqPicker!.selectedIndex + 1
         }
+        let config = Configuration.theConfig
+        
         if isBetaflightOrCleanflight2 {
             newSettings!.gyroUses32KHz = enable32kHzSwitch.on
-            if Configuration.theConfig.apiVersion == "1.25" {
+            if config.apiVersion == "1.25" {
                 saveFeatureSwitchValue(osdSwitch, feature: .OSD_CF1_14_2)
             } else {
                 saveFeatureSwitchValue(osdSwitch, feature: .OSD)
@@ -351,7 +356,6 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             { callback in
                 self.msp.sendMixerConfiguration(self.newSettings!) { success in
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
-                    let config = Configuration.theConfig
                     if (config.isBetaflight && !config.isApiVersionAtLeast("1.36")) || success {
                         callback(true)
                     } else {
@@ -379,6 +383,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
             commands.append({ callback in
                 self.msp.sendCraftName(self.newSettings!.craftName, callback: callback)
             })
+            if config.isApiVersionAtLeast("1.36") {
+                commands.append({ callback in
+                    self.msp.sendBeeperConfig(self.newSettings!.beeperMask, callback: callback)
+                })
+            }
         }
         chainMspSend(commands) { success in
             if success {

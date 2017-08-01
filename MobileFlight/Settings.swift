@@ -374,7 +374,7 @@ class Settings : AutoCoded {
                          "rssiChannel",
                          "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
                          "voltageMeterSource", "currentMeterSource", "currentMeterId", "currentMeterType", "currentScale", "currentOffset", "minThrottle", "maxThrottle", "minCommand", "magDeclination",
-                         "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud", "rcDeadband", "yawDeadband", "altHoldDeadband", "throttle3dDeadband", "craftName"]
+                         "gpsType", "gpsUbxSbas", "gpsAutoConfig", "gpsAutoBaud", "rcDeadband", "yawDeadband", "altHoldDeadband", "throttle3dDeadband", "craftName", "beeperMask" ]
     static var theSettings = Settings()
     
     // MSP_ARMING_CONFIG / MSP_SET_ARMING_CONFIG
@@ -556,6 +556,9 @@ class Settings : AutoCoded {
     // MSP_NAME
     var craftName = ""
     
+    // MSP_BEEPER_CONFIG
+    var beeperMask = 0          // bit set to 1 if corresponding beep is disabled
+    
     override init() {
         super.init()
     }
@@ -691,6 +694,8 @@ class Settings : AutoCoded {
         self.throttle3dDeadband = copyOf.throttle3dDeadband
 
         self.craftName = copyOf.craftName
+        
+        self.beeperMask = copyOf.beeperMask
         
         super.init()
     }
