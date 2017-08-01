@@ -780,6 +780,9 @@ class MSPParser {
                 settings.gyroNotchFrequency2 = readUInt16(message, index: 13)
                 if message.count >= 17 {
                     settings.gyroNotchCutoff2 = readUInt16(message, index: 15)
+                    if message.count >= 18 {
+                        settings.dtermFilterType = Int(message[17])
+                    }
                 }
             }
 
@@ -1707,6 +1710,9 @@ class MSPParser {
         data.appendContentsOf(writeUInt16(settings.dTermNotchCutoff))
         data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
         data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
+        if Configuration.theConfig.isApiVersionAtLeast("1.36") {
+            data.append(UInt8(settings.dtermFilterType))
+        }
         sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
     }
     

@@ -14,7 +14,6 @@ import Firebase
 class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var pidControllerField: UITextField!
     var pidControllerPicker: MyDownPicker!
-    @IBOutlet weak var resetPIDValuesCell: UITableViewCell!
     @IBOutlet weak var pidProfileLabel: UILabel!
     @IBOutlet weak var pidProfileStepper: UIStepper!
     @IBOutlet weak var rateProfileLabel: UILabel!
@@ -65,16 +64,17 @@ class PIDViewController: StaticDataTableViewController {
     @IBOutlet weak var gyroNotchFrequency2: NumberField!
     @IBOutlet weak var gyroNotchCutoff2: NumberField!
     // PID FILTERS
+    @IBOutlet weak var dTermFilterTypeField: UITextField!
     @IBOutlet weak var dTermLowpassFrequency: NumberField!
     @IBOutlet weak var dTermNotchFrequency: NumberField!
     @IBOutlet weak var dTermNotchCutoff: NumberField!
     @IBOutlet weak var yawLowpassFrequency: NumberField!
     
-    @IBOutlet weak var pidControllerCell: UITableViewCell!
-    @IBOutlet var betaflightCells: [UITableViewCell]!
     @IBOutlet var allPidsCells: [UITableViewCell]!
+    @IBOutlet var conditionalCells: [ConditionalTableViewCell]!
     
     var settings: Settings?
+    var dTermFilterTypePicker: MyDownPicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,17 +92,23 @@ class PIDViewController: StaticDataTableViewController {
         rateProfileLabel.text = String(1)
         
         pidControllerPicker = MyDownPicker(textField: pidControllerField, withData:  [ "MultiWii (2.3)", "MultiWii (Rewrite)", "LuxFloat" ])
+        dTermFilterTypePicker = MyDownPicker(textField: dTermFilterTypeField, withData: [ "PT1", "BIQUAD", "FIR" ])
         
-        let config = Configuration.theConfig
-        if config.isApiVersionAtLeast("1.31") || config.isINav {
-            cell(pidControllerCell, setHidden: true)
-        } else {
-            cells(betaflightCells, setHidden: true)
-        }
-        cells(allPidsCells, setHidden: true)
+        showCells(conditionalCells, show: true)
+        showCells(allPidsCells, show: false)
         reloadDataAnimated(false)
     }
     
+    func showCells(cells: [UITableViewCell], show: Bool) {
+        for c in cells {
+            if let condCell = c as? ConditionalTableViewCell {
+                cell(condCell, setHidden: !show || !condCell.visible)
+            } else {
+                cell(c, setHidden: !show)
+            }
+        }
+    }
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -110,11 +116,13 @@ class PIDViewController: StaticDataTableViewController {
     }
 
     private func fetchData() {
-        var calls:[MSP_code] = [.MSP_RC_TUNING, .MSP_PIDNAMES, .MSP_PID_CONTROLLER, .MSP_PID]
+        var calls:[MSP_code] = [.MSP_RC_TUNING, .MSP_PIDNAMES, .MSP_PID]
 
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {
             calls.append(.MSP_FILTER_CONFIG)
+        } else {
+            calls.append(.MSP_PID_CONTROLLER)
         }
         
         chainMspCalls(msp, calls: calls) { success in
@@ -183,6 +191,7 @@ class PIDViewController: StaticDataTableViewController {
                     self.dTermNotchFrequency.value = Double(settings.dTermNotchFrequency)
                     self.dTermNotchCutoff.value = Double(settings.dTermNotchCutoff)
                     self.yawLowpassFrequency.value = Double(settings.yawLowpassFrequency)
+                    self.dTermFilterTypePicker.selectedIndex = settings.dtermFilterType
                     
                     SVProgressHUD.dismiss()
                 } else {
@@ -224,6 +233,7 @@ class PIDViewController: StaticDataTableViewController {
         settings?.dTermNotchFrequency = Int(round(dTermNotchFrequency.value))
         settings?.dTermNotchCutoff = Int(round(dTermNotchCutoff.value))
         settings?.yawLowpassFrequency = Int(round(yawLowpassFrequency.value))
+        settings?.dtermFilterType = dTermFilterTypePicker.selectedIndex
         
         Analytics.logEvent("pid_saved", parameters: nil)
         
@@ -233,16 +243,17 @@ class PIDViewController: StaticDataTableViewController {
             },
             { callback in
                 self.msp.sendPid(self.settings!, callback: callback)
-            },
-            { callback in
-                self.msp.sendPidController(self.settings!.pidController, callback: callback)
-            },
+            }
         ]
         
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {
             commands.append({ callback in
                 self.msp.sendFilterConfig(self.settings!, callback: callback)
+            })
+        } else {
+            commands.append({ callback in
+                self.msp.sendPidController(self.settings!.pidController, callback: callback)
             })
         }
         commands.append({ callback in
@@ -307,7 +318,7 @@ class PIDViewController: StaticDataTableViewController {
     }
     @IBAction func showAllPidsChanged(sender: AnyObject) {
         if let uiswitch = sender as? UISwitch {
-            cells(allPidsCells, setHidden: !uiswitch.on)
+            showCells(allPidsCells, show: uiswitch.on)
             reloadDataAnimated(true)
         }
     }

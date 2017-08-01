@@ -369,7 +369,7 @@ class Settings : AutoCoded {
                          "rxMinUsec", "rxMaxUsec", "rcInterpolation", "rcInterpolationInterval", "airmodeActivateThreshold", "rxSpiProtocol", "rxSpiId", "rxSpiChannelCount", "fpvCamAngleDegrees",
                          "failsafeDelay", "failsafeOffDelay", "failsafeThrottleLowDelay", "failsafeThrottle", "failsafeKillSwitch", "failsafeProcedure", "rxFailMode", "rxFailValue", "loopTime", "gyroSyncDenom",
                          "pidProcessDenom", "useUnsyncedPwm", "motorPwmProtocol", "motorPwmRate", "digitalIdleOffsetPercent", "gyroUses32KHz", "servoPwmRate", "syncLoopWithGyro", "gyroLowpassFrequency",
-                         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "vbatPidCompensation",
+                         "dTermLowpassFrequency", "yawLowpassFrequency", "gyroNotchFrequency", "gyroNotchCutoff", "dTermNotchFrequency", "dTermNotchCutoff", "gyroNotchFrequency2", "gyroNotchCutoff2", "dtermFilterType", "vbatPidCompensation",
                          "setpointRelaxRatio", "dTermSetpointWeight", "rateAccelLimit", "yawRateAccelLimit", "levelAngleLimit", "levelSensitivity", "accelerometerDisabled", "barometerDisabled", "magnetometerDisabled", "pitotDisabled", "sonarDisabled",
                          "rssiChannel",
                          "vbatScale", "vbatMinCellVoltage", "vbatMaxCellVoltage", "vbatWarningCellVoltage", "vbatMeterType", "vbatMeterId", "vbatResistorDividerValue", "vbatResistorDividerMultiplier", "batteryCapacity",
@@ -491,6 +491,7 @@ class Settings : AutoCoded {
     var dTermNotchCutoff = 160
     var gyroNotchFrequency2 = 200
     var gyroNotchCutoff2 = 100
+    var dtermFilterType = 1         // BF 3.2. 0=PT1, 1=BIQUAD, 2=FIR
     
     // MSP_PID_ADVANCED / MSP_SET_PID_ADVANCED
     var vbatPidCompensation = false
@@ -644,6 +645,7 @@ class Settings : AutoCoded {
         self.dTermNotchCutoff = copyOf.dTermNotchCutoff
         self.gyroNotchFrequency2 = copyOf.gyroNotchFrequency2
         self.gyroNotchCutoff2 = copyOf.gyroNotchCutoff2
+        self.dtermFilterType = copyOf.dtermFilterType
         
         self.vbatPidCompensation = copyOf.vbatPidCompensation
         self.setpointRelaxRatio = copyOf.setpointRelaxRatio
