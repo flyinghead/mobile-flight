@@ -20,7 +20,7 @@ class AboutViewController: UITableViewController {
                     self.msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: 2, callback: { success in
                         dispatch_async(dispatch_get_main_queue(), {
                             let config = Configuration.theConfig
-                            Analytics.logEvent("about_info", parameters: [ "fcIdentifier" :  config.fcIdentifier!, "fcVersion" : config.fcVersion!, "buildDate" : config.buildInfo!, "boardType" : config.boardInfo!])
+                            Analytics.logEvent("about_info", parameters: [ "fcIdentifier" :  config.fcIdentifier!, "fcVersion" : config.fcVersion ?? "(unknown)", "buildDate" : config.buildInfo ?? "(unknown)", "boardType" : config.boardInfo ?? "(unknown)"])
                             self.tableView.reloadData()
                         })
                     })
