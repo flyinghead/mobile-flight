@@ -54,7 +54,7 @@ class HeadingStrip: UIView {
         
         CGContextClipToRect(context, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
         
-        var left = Double(rect.width) / 2.0 / scale + heading
+        var left = heading - Double(rect.width) / 2.0 / scale
         
         if subTicksInterval != 0 {
             left = ceil(left / subTicksInterval) * subTicksInterval
@@ -71,7 +71,7 @@ class HeadingStrip: UIView {
         CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
         
         while true {
-            let x = CGFloat(Double(rect.width) / 2.0 - (left - heading) * scale) + rect.minX
+            let x = CGFloat(Double(rect.width) / 2.0 - (heading - left) * scale) + rect.minX
             
             var width: CGFloat
             var length: CGFloat
@@ -112,9 +112,9 @@ class HeadingStrip: UIView {
             CGContextFillRect(context, CGRect(x: x, y: rect.maxY - length, width: width, height: length))
             
             if subTicksInterval != 0 {
-                left = round((left - subTicksInterval) / subTicksInterval) * subTicksInterval
+                left = round((left + subTicksInterval) / subTicksInterval) * subTicksInterval
             } else {
-                left = round((left - mainTicksInterval) / mainTicksInterval) * mainTicksInterval
+                left = round((left + mainTicksInterval) / mainTicksInterval) * mainTicksInterval
             }
         }
         
