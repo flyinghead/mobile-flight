@@ -752,7 +752,7 @@ class MSPParser {
             settings.motorPwmRate = readUInt16(message, index: 4)
             if message.count >= 8 {
                 if config.isINav {
-                    settings.servoPwmRate = readUInt16(message, index: 8)
+                    settings.servoPwmRate = readUInt16(message, index: 6)
                 } else {
                     settings.digitalIdleOffsetPercent = Double(readUInt16(message, index: 6)) / 100
                 }
