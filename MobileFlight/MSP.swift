@@ -200,6 +200,8 @@ class MSPParser {
                     } else {
                         config.rateProfile = Int(message[14])
                     }
+                    // TODO Additional flightModeFlags
+                    // TODO Arming Disable Flags
                 }
             }
             statusEvent.raiseDispatch()
