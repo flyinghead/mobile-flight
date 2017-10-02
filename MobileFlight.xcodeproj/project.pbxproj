@@ -72,7 +72,6 @@
 		AE5BB6731C4EC66E00CF2A7C /* TurnRateIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5BB6721C4EC66E00CF2A7C /* TurnRateIndicator.swift */; };
 		AE5F113C1ECF7F3F00816B6D /* Simulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F113B1ECF7F3F00816B6D /* Simulator.swift */; };
 		AE5F113E1ECF809B00816B6D /* SimulatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F113D1ECF809B00816B6D /* SimulatorViewController.swift */; };
-		AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE62AAD41EAE8EFB00D0DEF2 /* Cleanflight-versions.txt */; };
 		AE62AAD71EB291D400D0DEF2 /* MotorConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AAD61EB291D300D0DEF2 /* MotorConfigViewController.swift */; };
 		AE62AADC1EB5DED900D0DEF2 /* MessageStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AADB1EB5DED900D0DEF2 /* MessageStream.swift */; };
 		AE62AADF1EB8905100D0DEF2 /* MKWaypoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE62AADE1EB8905100D0DEF2 /* MKWaypoint.swift */; };
@@ -1050,7 +1049,6 @@
 				AE1EAA2E1CB0174500C24E2A /* IASKLocalizable.strings in Resources */,
 				AE8D56D71EE89534008A69A6 /* Map.storyboard in Resources */,
 				AE63D5ED1C2166890070D1D2 /* Configuration.storyboard in Resources */,
-				AE62AAD51EAE8EFB00D0DEF2 /* Cleanflight-versions.txt in Resources */,
 				AE1BBA3B1EC3B5750081E068 /* home-waypoint.svg in Resources */,
 				AE63D5F11C216DC90070D1D2 /* Sensors.storyboard in Resources */,
 				AE8D56D51EE865E6008A69A6 /* PIDTuning.storyboard in Resources */,
