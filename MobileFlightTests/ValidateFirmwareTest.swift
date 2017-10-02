@@ -74,7 +74,7 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                msp.sendMixerConfiguration(2) { success in
+                msp.sendMixerConfiguration(settings) { success in
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
                     // All other versions compiled for quad only will fail this test (can't change the mixer type)
                     XCTAssert(success)

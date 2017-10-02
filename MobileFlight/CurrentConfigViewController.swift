@@ -20,7 +20,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     var meterTypePicker: MyDownPicker!
     
     class func isCurrentMonitoringEnabled(settings: Settings) -> Bool {
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if hasMultipleCurrentMeters() {
             return settings.currentMeterSource > 0
         } else {
             return settings.features.contains(.CurrentMeter)
@@ -31,7 +31,8 @@ class CurrentConfigViewController: ConfigChildViewController {
         super.viewDidLoad()
 
         let sensorTypes: [String]
-        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") && !config.isINav {
             sensorTypes = [ "Onboard ADC", "Virtual", "ESC Sensor" ]
         } else {
             sensorTypes = [ "Onboard ADC", "Virtual" ]
@@ -57,7 +58,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     }
     
     @IBAction func currentMeterSwitchChanged(sender: AnyObject) {
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if CurrentConfigViewController.hasMultipleCurrentMeters() {
             if !currentMeterSwitch.on {
                 settings.currentMeterSource = 0
             }
@@ -78,7 +79,8 @@ class CurrentConfigViewController: ConfigChildViewController {
         currentMeterSwitch.on = CurrentConfigViewController.isCurrentMonitoringEnabled(settings)
         meterScaleField.value = Double(settings.currentScale)
         meterOffsetField.value = Double(settings.currentOffset)
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+
+        if CurrentConfigViewController.hasMultipleCurrentMeters() {
             if currentMeterSwitch.on {
                 meterTypePicker.selectedIndex = settings.currentMeterSource - 1
             }
@@ -93,7 +95,7 @@ class CurrentConfigViewController: ConfigChildViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if CurrentConfigViewController.hasMultipleCurrentMeters() {
             if currentMeterSwitch.on {
                 settings.currentMeterSource = meterTypePicker.selectedIndex + 1
             } else {
@@ -111,5 +113,10 @@ class CurrentConfigViewController: ConfigChildViewController {
     @IBAction func meterTypeChanged(sender: AnyObject) {
         hideCellsAsNeeded()
         reloadDataAnimated(true)
+    }
+    
+    private class func hasMultipleCurrentMeters() -> Bool {
+        let config = Configuration.theConfig
+        return config.isApiVersionAtLeast("1.35") && !config.isINav
     }
 }

@@ -431,7 +431,8 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     private func fetchVtxConfig() {
         // FIXME Not sure that data can be read from the VTX in most cases. It seems that band/channel/power are reset to default
         // every time. Check how the OSD "CMS" menu works.
-        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") && !config.isINav {
             msp.sendMessage(.MSP_VTX_CONFIG, data: nil, retry: 2) { success in
                 dispatch_async(dispatch_get_main_queue()) {
                     if success {

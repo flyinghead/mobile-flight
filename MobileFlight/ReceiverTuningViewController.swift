@@ -49,7 +49,8 @@ class ReceiverTuningViewController: StaticDataTableViewController {
         
         rssiChannelPicker = MyDownPicker(textField: rssiChannelField)
 
-        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") && !config.isINav {
             interpolationPicker = MyDownPicker(textField: interpolationTypeField, withData: ["Off", "Preset", "Auto", "Manual"])
         } else {
             cells(interpolationCells, setHidden: true)
@@ -115,7 +116,8 @@ class ReceiverTuningViewController: StaticDataTableViewController {
                     self.rcDeadband.value = Double(self.settings!.rcDeadband)
                     self.yawDeadband.value = Double(self.settings!.yawDeadband)
                     
-                    if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+                    let config = Configuration.theConfig
+                    if config.isApiVersionAtLeast("1.31") && !config.isINav {
                         self.interpolationPicker?.selectedIndex = self.settings!.rcInterpolation
                         self.interpolationInterval.value = Double(self.settings!.rcInterpolationInterval)
                         self.cell(self.interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
@@ -190,7 +192,8 @@ class ReceiverTuningViewController: StaticDataTableViewController {
         somethingChanged = somethingChanged || settings!.yawDeadband != Int(yawDeadband.value)
         settings!.yawDeadband = Int(yawDeadband.value)
 
-        if Configuration.theConfig.isApiVersionAtLeast("1.31") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.31") && !config.isINav {
             somethingChanged = somethingChanged || settings!.rcInterpolation != interpolationPicker!.selectedIndex
             settings!.rcInterpolation = interpolationPicker!.selectedIndex
             somethingChanged = somethingChanged || settings!.rcInterpolationInterval != Int(interpolationInterval.value)

@@ -17,6 +17,7 @@ class PortsConfigViewController: ConfigChildViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("PortCell", forIndexPath: indexPath)
 
+        let config = Configuration.theConfig
         let i = indexPath.row
         if i < settings.portConfigs?.count ??  0 {
             cell.textLabel?.text = settings.portConfigs![i].portIdentifier.name
@@ -44,7 +45,7 @@ class PortsConfigViewController: ConfigChildViewController {
                 }
                 detail += "GPS"
             }
-            if functions.contains(.ESCSensor) {
+            if !config.isINav && functions.contains(.ESCSensor) {
                 if !detail.isEmpty {
                     detail += ", "
                 }
@@ -56,13 +57,13 @@ class PortsConfigViewController: ConfigChildViewController {
                 }
                 detail += "Blackbox"
             }
-            if functions.contains(.VTXSmartAudio) || functions.contains(.VTXTramp) {
+            if !config.isINav && functions.contains(.VTXSmartAudio) || functions.contains(.VTXTramp) {
                 if !detail.isEmpty {
                     detail += ", "
                 }
                 detail += "VTX"
             }
-            if functions.contains(.RuncamSplit) {
+            if (!config.isINav && functions.contains(.RuncamSplit)) || (config.isINav && functions.contains(.RuncamSplitINAV)) {
                 if !detail.isEmpty {
                     detail += ", "
                 }

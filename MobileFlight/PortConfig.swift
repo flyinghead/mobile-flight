@@ -28,7 +28,10 @@ struct PortFunction : OptionSetType, DictionaryCoding {
     static let TelemetryIBus  = PortFunction(rawValue: 1 << 12)
     static let VTXTramp  = PortFunction(rawValue: 1 << 13)
     static let RuncamSplit = PortFunction(rawValue: 1 << 14)            // BF 3.2
-    
+
+    static let TelemetryIBusINAV  = PortFunction(rawValue: 1 << 9)
+    static let RuncamSplitINAV = PortFunction(rawValue: 1 << 10)        // iNav 1.7.3
+
     init(rawValue: Int) {
         self.rawValue = rawValue
     }
@@ -199,7 +202,7 @@ enum BaudRate : Equatable {
         if config.isINav && config.isApiVersionAtLeast("1.25") {    // INav 1.7
             return inav17Values
         }
-        else if config.isApiVersionAtLeast("1.31") {    // BF3.1, CF2
+        else if !config.isINav && config.isApiVersionAtLeast("1.31") {    // BF3.1, CF2
             return bfValues
         }
         else {

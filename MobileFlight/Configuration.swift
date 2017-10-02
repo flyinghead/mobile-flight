@@ -185,7 +185,7 @@ class Configuration : AutoCoded {
     
     // BF 3.2
     func isGyroActive() -> Bool {
-        if isApiVersionAtLeast("1.36") {
+        if isApiVersionAtLeast("1.36") && !isINav {
             return activeSensors & 32 != 0
         } else {
             // Assume active

@@ -126,7 +126,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_VOLTAGE_METER_CONFIG]
         
         let config = Configuration.theConfig
-        if config.isApiVersionAtLeast("1.35") {    // CF 2.0 / BF 3.2
+        if config.isApiVersionAtLeast("1.35") && !config.isINav {    // CF 2.0 / BF 3.2
             mspCalls.append(.MSP_MOTOR_CONFIG)
             mspCalls.append(.MSP_BATTERY_CONFIG)
             if config.isApiVersionAtLeast("1.36") {    // CF 2.1 / BF 3.2
@@ -142,7 +142,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         
         chainMspCalls(msp, calls: mspCalls) { success in
             if success {
-                if config.isApiVersionAtLeast("1.35") {    // CF 2.0
+                if config.isApiVersionAtLeast("1.35") && !config.isINav {    // CF 2.0
                     self.msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
                         self.supportsGPS = success
                         self.msp.sendMessage(.MSP_COMPASS_CONFIG, data: nil, retry: 2) { success in
@@ -400,7 +400,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
 
     private func saveMiscOrEquivalent() {
         var commands: [SendCommand]
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.35") && !config.isINav {
             commands = [
                 { callback in
                     self.msp.sendMotorConfig(self.newSettings!, callback: callback)
@@ -572,7 +573,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     private var isBetaflightOrCleanflight2: Bool {
-        return Configuration.theConfig.isApiVersionAtLeast("1.31")
+        let config = Configuration.theConfig
+        return config.isApiVersionAtLeast("1.31") && !config.isINav;
     }
     
     private var isINav: Bool {

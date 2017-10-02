@@ -95,7 +95,7 @@ enum MSP_code : Int {
     case MSP_ANALOG =             110
     case MSP_RC_TUNING =          111
     case MSP_PID =                112
-    case MSP_BOX =                113
+    case MSP_ACTIVEBOXES =        113   // INAV 1.7.3: to use when more than 32 modes are available (not yet in 1.7.3)
     case MSP_MISC =               114
     case MSP_MOTOR_PINS =         115
     case MSP_BOXNAMES =           116
@@ -107,6 +107,11 @@ enum MSP_code : Int {
     case MSP_MOTOR_CONFIG =       131
     case MSP_GPS_CONFIG =         132
     case MSP_COMPASS_CONFIG =     133
+    case MSP_ESC_SENSOR_DATA =    134   // Extra ESC data from 32-bit ESCs (Temperature, RPM)
+    
+    case MSP_DISPLAYPORT =        182
+
+    case MSP_COPY_PROFILE =       183
     
     case MSP_BEEPER_CONFIG =      184
     case MSP_SET_BEEPER_CONFIG =  185

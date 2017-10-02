@@ -112,7 +112,10 @@ class OSD {
     
     var fontDefinition: FontDefinition {
         if _fontDefinition == nil {
-            loadFont(UserDefault.OSDFont.stringValue ?? "digital")
+            loadFont(UserDefault.OSDFont.stringValue ?? "default")
+            if _fontDefinition == nil && UserDefault.OSDFont.stringValue  != nil {
+                loadFont("default")
+            }
         }
         return _fontDefinition!
     }
@@ -138,14 +141,21 @@ class OSD {
             return
         }
         var fontPath: String
-        if Configuration.theConfig.isBetaflight {
+        let config = Configuration.theConfig
+        if config.isBetaflight {
             fontPath = "betaflight/" + (name == "cleanflight" ? "betaflight" : name)
+        }
+        else if config.isINav {
+            fontPath = "inav/" + name
         } else {
             fontPath = "cleanflight/" + (name == "betaflight" ? "cleanflight" : name)
         }
-        let url = NSBundle.mainBundle().URLForResource(fontPath, withExtension: "mcm")!
-        _fontDefinition = FontDefinition.load(url)
-        fontName = name
-        UserDefault.OSDFont.setValue(name)
+        if let url = NSBundle.mainBundle().URLForResource(fontPath, withExtension: "mcm") {
+            _fontDefinition = FontDefinition.load(url)
+            fontName = name
+            UserDefault.OSDFont.setValue(name)
+        } else {
+            NSLog("Cannot load font " + fontPath)
+        }
     }
 }

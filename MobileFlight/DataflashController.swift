@@ -48,7 +48,8 @@ class DataflashController: StaticDataTableViewController {
     private func setDeviceOptions() {
         let dataflash = Dataflash.theDataflash
         var deviceChoices: [String]
-        if Configuration.theConfig.isApiVersionAtLeast("1.33") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.33") && !config.isINav {
             deviceChoices = [ "None" ]
             deviceValues = [ 0 ]
             if dataflash.ready {

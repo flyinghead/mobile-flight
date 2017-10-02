@@ -46,6 +46,7 @@ let SYM_HEADING_E = "\u{1A}"
 let SYM_HEADING_LINE = "\u{1D}"
 let SYM_HEADING_DIVIDED_LINE = "\u{1C}"
 let SYM_TEMP_C = "\u{0E}"
+let SYM_KMH = Configuration.theConfig.isINav ? "\u{A1}" : "\u{A5}"
 
 enum OSDElement {
     case RSSI
@@ -85,6 +86,7 @@ enum OSDElement {
     case Heading
     case Vario
     case VarioNum
+    case AirSpeed
     
     case HeadingNum
     case Disarmed
@@ -98,7 +100,7 @@ enum OSDElement {
                                                 .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning ]
     private static let inav16Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
                                           .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power,
-                                          .GpsLongitude, .GpsLatitude, .HomeDirection, .HomeDistance, .Heading, .Vario, .VarioNum ]
+                                          .GpsLongitude, .GpsLatitude, .HomeDirection, .HomeDistance, .Heading, .Vario, .VarioNum, .AirSpeed ]
     private static let cf2Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
                                        .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning,
                                        .AvgCellVoltage, .GpsLongitude, .GpsLatitude ]
@@ -111,14 +113,14 @@ enum OSDElement {
     static var Elements: [OSDElement] {
         let config = Configuration.theConfig
         
-        if config.isApiVersionAtLeast("1.36") {
+        if config.isINav {
+            return inav16Elements
+        }
+        else if config.isApiVersionAtLeast("1.36") {
             return betaflight32Elements
         }
         else if config.isApiVersionAtLeast("1.35") {
             return cf2Elements
-        }
-        else if config.isINav {
-            return inav16Elements
         }
         else {
             return betaflight31Elements
@@ -205,6 +207,8 @@ enum OSDElement {
             return "-"
         case .VarioNum:
             return SYM_ARROW_SOUTH + "2.2"
+        case .AirSpeed:
+            return " 34" + SYM_KMH
         case .CompassBar:
             return SYM_HEADING_W + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_N + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_E
         case .Disarmed:
@@ -303,7 +307,8 @@ enum OSDElement {
             return (18, 2, true)
         case .EscRpm:
             return (19, 2, true)
-            
+        case .AirSpeed:
+            return (1, 13, false)
         default:
             return (10, 10, true)
         }
@@ -399,6 +404,8 @@ enum OSDElement {
             return "Variometer"
         case .VarioNum:
             return "Digital Variometer"
+        case .AirSpeed:
+            return "Air Speed"
             
         case .HeadingNum:
             return "Digital Heading"

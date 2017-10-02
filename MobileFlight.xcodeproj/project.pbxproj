@@ -107,6 +107,7 @@
 		AEA280C81EFAE1FB00C40DAA /* AsyncSocketComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA280C71EFAE1FB00C40DAA /* AsyncSocketComm.swift */; };
 		AEA48A771C29D6EC006BC53E /* Telemetry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */; };
 		AEA48A791C29E421006BC53E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA48A781C29E421006BC53E /* MapViewController.swift */; };
+		AEA848A01F82671800B515E4 /* inav in Resources */ = {isa = PBXBuildFile; fileRef = AEA8489F1F82671800B515E4 /* inav */; };
 		AEAB37161CB16F330097DC9A /* MetarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37151CB16F330097DC9A /* MetarManager.swift */; };
 		AEAB37181CB1CDCD0097DC9A /* UtilitiesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */; };
 		AEAC44ED1CB5914800D73377 /* DataLinkChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAC44EC1CB5914800D73377 /* DataLinkChartViewController.swift */; };
@@ -149,6 +150,7 @@
 		AEDDD2771C1611B9004232AA /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD2761C1611B9004232AA /* ConfigurationViewController.swift */; };
 		AEDDD27D1C182A50004232AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27C1C182A50004232AA /* BluetoothManager.swift */; };
 		AEDDD27F1C1875DB004232AA /* BluetoothComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */; };
+		AEE05C261F30F36D00B5A04F /* BluetoothCommTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE05C251F30F36D00B5A04F /* BluetoothCommTest.swift */; };
 		AEE2EA821F307492001DA530 /* BeeperConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2EA811F307492001DA530 /* BeeperConfigViewController.swift */; };
 		AEE8476A1F12D3170064D657 /* ConditionalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */; };
 		AEE847871F24F52F0064D657 /* betaflight in Resources */ = {isa = PBXBuildFile; fileRef = AEE847861F24F52F0064D657 /* betaflight */; };
@@ -368,6 +370,7 @@
 		AEA48A681C26BE6F006BC53E /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		AEA48A761C29D6EB006BC53E /* Telemetry.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Telemetry.storyboard; sourceTree = "<group>"; };
 		AEA48A781C29E421006BC53E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		AEA8489F1F82671800B515E4 /* inav */ = {isa = PBXFileReference; lastKnownFileType = folder; path = inav; sourceTree = "<group>"; };
 		AEAB37151CB16F330097DC9A /* MetarManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetarManager.swift; sourceTree = "<group>"; };
 		AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilitiesTest.swift; sourceTree = "<group>"; };
 		AEAC44EC1CB5914800D73377 /* DataLinkChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLinkChartViewController.swift; sourceTree = "<group>"; };
@@ -412,6 +415,7 @@
 		AEDDD2781C1615C8004232AA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AEDDD27C1C182A50004232AA /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AEDDD27E1C1875DB004232AA /* BluetoothComm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothComm.swift; sourceTree = "<group>"; };
+		AEE05C251F30F36D00B5A04F /* BluetoothCommTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothCommTest.swift; sourceTree = "<group>"; };
 		AEE2EA811F307492001DA530 /* BeeperConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeeperConfigViewController.swift; sourceTree = "<group>"; };
 		AEE847691F12D3170064D657 /* ConditionalTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalTableViewCell.swift; sourceTree = "<group>"; };
 		AEE847861F24F52F0064D657 /* betaflight */ = {isa = PBXFileReference; lastKnownFileType = folder; path = betaflight; sourceTree = "<group>"; };
@@ -510,6 +514,7 @@
 		AE1BBA391EC3B55D0081E068 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				AEA8489F1F82671800B515E4 /* inav */,
 				AEE847881F24F53B0064D657 /* cleanflight */,
 				AEE847861F24F52F0064D657 /* betaflight */,
 				AE1BBA3A1EC3B5750081E068 /* home-waypoint.svg */,
@@ -779,6 +784,7 @@
 		AE72AB6F1C0F3D230020C4B0 /* MobileFlightTests */ = {
 			isa = PBXGroup;
 			children = (
+				AEE05C251F30F36D00B5A04F /* BluetoothCommTest.swift */,
 				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 				AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */,
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
@@ -1026,6 +1032,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE8D56CF1EE8605D008A69A6 /* Calibration.storyboard in Resources */,
+				AEA848A01F82671800B515E4 /* inav in Resources */,
 				AE8D56CA1EE14856008A69A6 /* GoogleService-Info.plist in Resources */,
 				AEBA640E1C3086CF00783ECE /* Connection.storyboard in Resources */,
 				AE6C02011EC0EE4300D0A5B2 /* Mission.storyboard in Resources */,
@@ -1402,6 +1409,7 @@
 				AEF621B21C7B9DE10041E5B3 /* UserDefaults.swift in Sources */,
 				AEF621B31C7B9EE70041E5B3 /* MSPCodec.swift in Sources */,
 				AE8D56CD1EE3179D008A69A6 /* ValidateFirmwareTest.swift in Sources */,
+				AEE05C261F30F36D00B5A04F /* BluetoothCommTest.swift in Sources */,
 				AEBBC6621EC4CFBA00EE958A /* EnumTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

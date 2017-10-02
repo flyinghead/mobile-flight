@@ -32,15 +32,22 @@ extension UIViewController {
                         }
                     } else {
                         var msgs = [ MSP_code.MSP_FC_VARIANT, .MSP_BOXNAMES ]
-                        if config.isApiVersionAtLeast("1.35") {
-                            msgs.append(.MSP_BATTERY_CONFIG)
-                        }
-                        else {
-                            msgs.append(.MSP_VOLTAGE_METER_CONFIG)
-                            msgs.append(.MSP_CURRENT_METER_CONFIG)
-                        }
                         chainMspCalls(msp, calls: msgs) { success in
-                            self.finishHandshake(success, callback: callback)
+                            if !success {
+                                self.finishHandshake(false, callback: callback)
+                            } else {
+                                msgs = [ ]
+                                if config.isApiVersionAtLeast("1.35") && !config.isINav {       // iNav 1.7.3 bumped api version to 2.0!
+                                    msgs.append(.MSP_BATTERY_CONFIG)
+                                }
+                                else {
+                                    msgs.append(.MSP_VOLTAGE_METER_CONFIG)
+                                    msgs.append(.MSP_CURRENT_METER_CONFIG)
+                                }
+                                chainMspCalls(msp, calls: msgs, ignoreFailure: true) { success in
+                                    self.finishHandshake(true, callback: callback)
+                                }
+                            }
                         }
                     }
                 } else {

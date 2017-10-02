@@ -31,13 +31,19 @@ class PortConfigViewController: ConfigChildViewController {
     var portsConfigViewController: PortsConfigViewController!
 
     var telemetryMAVLink: PortFunction!
+    var telemetryIBus: PortFunction!
+    var peripheralRuncamSplit: PortFunction!
+    
     var baudRates = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        telemetryMAVLink = Configuration.theConfig.isApiVersionAtLeast("1.31") ? .TelemetryMAVLink : .TelemetryMAVLinkOld
-  
+        let config = Configuration.theConfig
+        telemetryMAVLink = (config.isApiVersionAtLeast("1.31") && !config.isINav) ? .TelemetryMAVLink : .TelemetryMAVLinkOld
+        telemetryIBus = config.isINav ? .TelemetryIBusINAV : .TelemetryIBus
+        peripheralRuncamSplit = config.isINav ? .RuncamSplitINAV : .RuncamSplit
+        
         baudRates.removeAll()
         for e in BaudRate.values() {
             baudRates.append(e.description)
@@ -46,7 +52,7 @@ class PortConfigViewController: ConfigChildViewController {
         mspBaudratePicker = MyDownPicker(textField: mspBaudrateField, withData: baudRates)
         peripheralsTypePicker = MyDownPicker(textField: peripheralsTypeField, withData: [ "Disabled", "Blackbox", "TBS SmartAudio", "IRC Tramp", "Runcam Split" ])
         blackboxBaudratePicker = MyDownPicker(textField: blackboxBaudrateField, withData: baudRates)
-        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "LTM", "SmartPort", "MAVLink" ])
+        telemetryTypePicker = MyDownPicker(textField: telemetryTypeField, withData: [ "Disabled", "Frsky", "Hott", "LTM", "SmartPort", "MAVLink", "IBUS" ])
         telemetryBaudratePicker = MyDownPicker(textField: telemetryBaudrateField, withData: baudRates)
         sensorTypePicker = MyDownPicker(textField: sensorTypeField, withData: [ "Disabled", "GPS", "ESC" ])
         gpsBaudratePicker = MyDownPicker(textField: gpsBaudrateField, withData: baudRates)
@@ -68,7 +74,7 @@ class PortConfigViewController: ConfigChildViewController {
             peripheralsTypePicker.selectedIndex = 2
         } else if port.functions.contains(.VTXTramp) {
             peripheralsTypePicker.selectedIndex = 3
-        } else if port.functions.contains(.RuncamSplit) {
+        } else if port.functions.contains(peripheralRuncamSplit) {
             peripheralsTypePicker.selectedIndex = 4
         } else {
             peripheralsTypePicker.selectedIndex = 0
@@ -85,6 +91,8 @@ class PortConfigViewController: ConfigChildViewController {
             telemetryTypePicker.selectedIndex = 4
         } else if port.functions.contains(telemetryMAVLink) {
             telemetryTypePicker.selectedIndex = 5
+        } else if port.functions.contains(telemetryIBus) {
+            telemetryTypePicker.selectedIndex = 6
         } else {
             telemetryTypePicker.selectedIndex = 0
         }
@@ -92,9 +100,10 @@ class PortConfigViewController: ConfigChildViewController {
         
         enableRx.on = port.functions.contains(.RxSerial)
         
+        let config = Configuration.theConfig
         if port.functions.contains(.GPS) {
             sensorTypePicker.selectedIndex = 1
-        } else if port.functions.contains(.ESCSensor) {
+        } else if port.functions.contains(.ESCSensor) && !config.isINav {
             sensorTypePicker.selectedIndex = 2
         } else {
             sensorTypePicker.selectedIndex = 0
@@ -135,7 +144,7 @@ class PortConfigViewController: ConfigChildViewController {
         port.functions.remove(.Blackbox)
         port.functions.remove(.VTXSmartAudio)
         port.functions.remove(.VTXTramp)
-        port.functions.remove(.RuncamSplit)
+        port.functions.remove(peripheralRuncamSplit)
         switch peripheralsTypePicker.selectedIndex {
         case 1:
             port.functions.insert(.Blackbox)
@@ -144,7 +153,7 @@ class PortConfigViewController: ConfigChildViewController {
         case 3:
             port.functions.insert(.VTXTramp)
         case 4:
-            port.functions.insert(.RuncamSplit)
+            port.functions.insert(peripheralRuncamSplit)
         default:
             break
         }
@@ -157,6 +166,7 @@ class PortConfigViewController: ConfigChildViewController {
         port.functions.remove(.TelemetryLTM)
         port.functions.remove(.TelemetrySmartPort)
         port.functions.remove(telemetryMAVLink)
+        port.functions.remove(telemetryIBus)
         switch telemetryTypePicker.selectedIndex {
         case 1:
             port.functions.insert(.TelemetryFrsky)
@@ -168,6 +178,8 @@ class PortConfigViewController: ConfigChildViewController {
             port.functions.insert(.TelemetrySmartPort)
         case 5:
             port.functions.insert(telemetryMAVLink)
+        case 6:
+            port.functions.insert(telemetryIBus)
         default:
             break
         }
@@ -181,16 +193,23 @@ class PortConfigViewController: ConfigChildViewController {
             port.functions.remove(.RxSerial)
         }
         
+        let config = Configuration.theConfig
         switch sensorTypePicker.selectedIndex {
         case 1:
             port.functions.insert(.GPS)
-            port.functions.remove(.ESCSensor)
+            if !config.isINav {
+                port.functions.remove(.ESCSensor)
+            }
         case 2:
             port.functions.remove(.GPS)
-            port.functions.insert(.ESCSensor)
+            if !config.isINav {
+                port.functions.insert(.ESCSensor)
+            }
         default:
             port.functions.remove(.GPS)
-            port.functions.remove(.ESCSensor)
+            if !config.isINav {
+                port.functions.remove(.ESCSensor)
+            }
         }
         if gpsBaudratePicker.enabled {
             port.gpsBaudRate = BaudRate.values()[gpsBaudratePicker.selectedIndex]

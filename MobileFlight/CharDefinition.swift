@@ -9,9 +9,14 @@
 import Foundation
 
 var FONTS: [String] {
-    if Configuration.theConfig.isBetaflight {
-        return  [ "default", "digital", "betaflight", "bold", "large", "extra_large" ]
-    } else {
+    let config = Configuration.theConfig
+    if config.isBetaflight {
+        return  [ "default", "digital", "betaflight", "bold", "large", "extra_large", "clarity" ]
+    }
+    else if config.isINav {
+        return  [ "default", "bold", "large" ]
+    }
+    else {
         return  [ "default", "digital", "cleanflight", "bold", "large", "extra_large" ]
     }
 }

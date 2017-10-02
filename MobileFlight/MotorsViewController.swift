@@ -174,7 +174,8 @@ class MotorsViewController: UIViewController, MSPCommandSender {
                     self.slider8.minimumValue = Float(settings.minCommand)
                     self.slider8.maximumValue = Float(settings.maxThrottle)
                 }
-                if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+                let config = Configuration.theConfig
+                if config.isApiVersionAtLeast("1.35") && !config.isINav {
                     self.msp.sendMessage(.MSP_MOTOR_CONFIG, data: nil, retry: 2, callback: callback)
                 } else {
                     self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: callback)

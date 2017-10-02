@@ -500,7 +500,7 @@ class Settings : AutoCoded {
     var rateAccelLimit = 0
     var yawRateAccelLimit = 100
     var levelAngleLimit = 55
-    var levelSensitivity = 55
+    var levelSensitivity = 55       // Gone in 3.2-RC6
     
     // MSP_SENSOR_CONFIG / MSP_SET_SENSOR_CONFIG
     var accelerometerDisabled = false

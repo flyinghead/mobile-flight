@@ -1533,7 +1533,8 @@ class MSPParser {
 
     func sendVoltageMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.35") && !config.isINav {
             // CF 2 / BF 3.2
             data.append(UInt8(settings.vbatMeterId))
             data.append(UInt8(settings.vbatScale))
@@ -1548,7 +1549,7 @@ class MSPParser {
         }
         sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2) { success in
             // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if config.isApiVersionAtLeast("1.35") && !config.isINav {
                 callback?(success: true)
             } else {
                 callback?(success: success)
@@ -1598,7 +1599,8 @@ class MSPParser {
     
     func sendCurrentMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
         var data = [UInt8]()
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        let config = Configuration.theConfig
+        if config.isApiVersionAtLeast("1.35") && !config.isINav {
             // CF 2 / BF 3.2
             if settings.currentMeterType == 1 {     // CURRENT_METER_ADC
                 // regular
@@ -1617,7 +1619,7 @@ class MSPParser {
     
         sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2) { success in
             // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            if config.isApiVersionAtLeast("1.35") && !config.isINav {
                 callback?(success: true)
             } else {
                 callback?(success: success)
@@ -1712,7 +1714,7 @@ class MSPParser {
         data.appendContentsOf(writeUInt16(settings.dTermNotchCutoff))
         data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
         data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
-        if Configuration.theConfig.isApiVersionAtLeast("1.36") {
+        if Configuration.theConfig.isApiVersionAtLeast("1.36") {    // Not supported by INav 1.7.3 but it doesn't hurt
             data.append(UInt8(settings.dtermFilterType))
         }
         sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
@@ -1768,7 +1770,8 @@ class MSPParser {
 
         sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
             // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            let fakedSuccess = Configuration.theConfig.isApiVersionAtLeast("1.35") ? true : success
+            let config = Configuration.theConfig
+            let fakedSuccess = (config.isApiVersionAtLeast("1.35") && !config.isINav) ? true : success
 
             if fakedSuccess {
                 var newIndex = index + 1
@@ -1799,7 +1802,8 @@ class MSPParser {
 
         sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2) { success in
             // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+            let config = Configuration.theConfig
+            if config.isApiVersionAtLeast("1.35") && !config.isINav {
                 callback?(success: true)
             } else {
                 callback?(success: success)

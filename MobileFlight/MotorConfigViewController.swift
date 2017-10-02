@@ -46,7 +46,7 @@ class MotorConfigViewController: ConfigChildViewController {
             UnsyncedMotorSwitch.on = true
             UnsyncedMotorSwitch.enabled = false
         }
-        if config.isApiVersionAtLeast("1.36") {
+        if config.isApiVersionAtLeast("1.36") && !config.isINav {
             escProtocols.append("ProShot1000")
         }
         escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: escProtocols)

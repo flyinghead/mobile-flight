@@ -24,7 +24,7 @@ class VBatConfigViewController: ConfigChildViewController {
     var meterTypePicker: MyDownPicker!
 
     class func isVBatMonitoringEnabled(settings: Settings) -> Bool {
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if hasMultipleVoltageMeters() {
             return settings.voltageMeterSource > 0
         } else {
             return settings.features.contains(.VBat)
@@ -58,7 +58,7 @@ class VBatConfigViewController: ConfigChildViewController {
     }
     
     @IBAction func vbatSwitchChanged(sender: AnyObject) {
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if VBatConfigViewController.hasMultipleVoltageMeters() {
             if vbatSwitch.on {
                 settings.voltageMeterSource = 1
             } else {
@@ -83,7 +83,7 @@ class VBatConfigViewController: ConfigChildViewController {
         warningVoltage.value = settings!.vbatWarningCellVoltage
         maxVoltage.value = settings!.vbatMaxCellVoltage
         voltageScale.value = Double(settings!.vbatScale)
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if VBatConfigViewController.hasMultipleVoltageMeters() {
             if vbatSwitch.on {
                 meterTypePicker.selectedIndex = settings.voltageMeterSource - 1
             }
@@ -104,7 +104,7 @@ class VBatConfigViewController: ConfigChildViewController {
         settings?.vbatWarningCellVoltage = warningVoltage.value
         settings?.vbatMaxCellVoltage = maxVoltage.value
         settings?.vbatScale = Int(voltageScale.value)
-        if Configuration.theConfig.isApiVersionAtLeast("1.35") {
+        if VBatConfigViewController.hasMultipleVoltageMeters() {
             if vbatSwitch.on {
                 settings.voltageMeterSource = meterTypePicker.selectedIndex + 1
             } else {
@@ -121,5 +121,10 @@ class VBatConfigViewController: ConfigChildViewController {
     @IBAction func meterTypeChanged(sender: AnyObject) {
         hideCellsAsNeeded()
         reloadDataAnimated(true)
+    }
+    
+    private class func hasMultipleVoltageMeters() -> Bool {
+        let config = Configuration.theConfig
+        return config.isApiVersionAtLeast("1.35") && !config.isINav
     }
 }
