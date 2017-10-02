@@ -841,10 +841,15 @@ class MSPParser {
             settings.rssiChannel = Int(message[0])
             
         case .MSP_VOLTAGE_METER_CONFIG:
-            if message.count < 4 {
+            if message.count < 3 {
                 return false
             }
-            if message.count >= 7 {
+            if message.count == 3 {
+                // CF 1.14
+                settings.vbatScale = Int(message[0]) // 10-200
+                settings.vbatResistorDividerValue = Int(message[1])
+                settings.vbatResistorDividerMultiplier = Int(message[2])
+            } else if message.count >= 7 {
                 // Cleanflight 2.0 / Betaflight 3.2
                 settings.vbatMeterId = Int(message[2])
                 settings.vbatScale = Int(message[4]) // 10-200
