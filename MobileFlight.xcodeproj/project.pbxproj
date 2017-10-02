@@ -785,12 +785,12 @@
 			isa = PBXGroup;
 			children = (
 				AEE05C251F30F36D00B5A04F /* BluetoothCommTest.swift */,
+				AE1D41711EF04F5900972888 /* ConfigurationTest.swift */,
 				AEBBC6611EC4CFBA00EE958A /* EnumTest.swift */,
 				AE40529E1CCBF7EF00AADAF7 /* MetarReportTest.swift */,
 				AEAB37171CB1CDCD0097DC9A /* UtilitiesTest.swift */,
 				AE8D56CC1EE3179D008A69A6 /* ValidateFirmwareTest.swift */,
 				AE72AB721C0F3D230020C4B0 /* Info.plist */,
-				AE1D41711EF04F5900972888 /* ConfigurationTest.swift */,
 			);
 			path = MobileFlightTests;
 			sourceTree = "<group>";
