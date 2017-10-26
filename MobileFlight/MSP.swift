@@ -1453,8 +1453,11 @@ class MSPParser {
         data.append(contentsOf: writeInt16(servoConfig.maximumRC))
         data.append(contentsOf: writeInt16(servoConfig.middleRC))
         data.append(writeInt8(servoConfig.rate))
-        data.append(UInt8(servoConfig.minimumAngle))
-        data.append(UInt8(servoConfig.maximumAngle))
+        let config = Configuration.theConfig
+        if !config.isApiVersionAtLeast("1.35") || config.isINav {
+            data.append(UInt8(servoConfig.minimumAngle))
+            data.append(UInt8(servoConfig.maximumAngle))
+        }
         data.append(UInt8(servoConfig.rcChannel == nil ? CHANNEL_FORWARDING_DISABLED : servoConfig.rcChannel!))
         data.append(contentsOf: writeUInt32(servoConfig.reversedSources))
         

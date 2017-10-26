@@ -308,8 +308,8 @@ struct ServoConfig : DictionaryCoding {
     var middleRC = 0
     var maximumRC = 0
     var rate = 0
-    var minimumAngle = 0
-    var maximumAngle = 0
+    var minimumAngle = 0    // Gone in BF 3.2
+    var maximumAngle = 0    // Gone in BF 3.2
     var rcChannel: Int?
     var reversedSources = 0
     

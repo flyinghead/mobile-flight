@@ -38,10 +38,10 @@ class XYZSensorViewController: BaseSensorViewController {
         var yValsZ = [ChartDataEntry]()
         let initialOffset = xSensor.count - MaxSampleCount
         
-        for i in 0..<xSensor.count {
-            yValsX.append(ChartDataEntry(x: xSensor[i], y: Double(i - initialOffset)))
-            yValsY.append(ChartDataEntry(x: ySensor[i], y: Double(i - initialOffset)))
-            yValsZ.append(ChartDataEntry(x: zSensor[i], y: Double(i - initialOffset)))
+        for i in 0 ..< xSensor.count {
+            yValsX.append(ChartDataEntry(x: Double(i - initialOffset), y: xSensor[i]))
+            yValsY.append(ChartDataEntry(x: Double(i - initialOffset), y: ySensor[i]))
+            yValsZ.append(ChartDataEntry(x: Double(i - initialOffset), y: zSensor[i]))
         }
         
         let dataSetX = makeDataSet(yValsX, label: "X", color: UIColor.blue);

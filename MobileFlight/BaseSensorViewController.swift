@@ -24,7 +24,7 @@ import Charts
 class BaseSensorViewController: UIViewController, MSPCommandSender {
     var eventHandler: Disposable?
     
-    let MaxSampleCount = 300
+    let MaxSampleCount = 200
     
     var chartView: LineChartView!
     
@@ -34,6 +34,8 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
         chartView.rightAxis.enabled = false;
         
         chartView.xAxis.enabled = false
+        chartView.xAxis.axisMinimum = 0.0
+        chartView.xAxis.axisMaximum = Double(MaxSampleCount)
         
         chartView.chartDescription?.text = ""
         
@@ -65,7 +67,7 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.mode = .cubicBezier
+        dataSet.mode = .linear
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)

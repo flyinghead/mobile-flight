@@ -63,7 +63,7 @@ class BarometerViewController: BaseSensorViewController {
         let initialOffset = samples.count - MaxSampleCount
         
         for i in 0 ..< samples.count {
-            yVals.append(ChartDataEntry(x: samples[i], y: Double(i - initialOffset)))
+            yVals.append(ChartDataEntry(x: Double(i - initialOffset), y: samples[i]))
         }
         
         let dataSet = makeDataSet(yVals)
@@ -92,6 +92,8 @@ class BarometerViewController: BaseSensorViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        eventHandler?.dispose()
+        eventHandler = nil
         samples.removeAll()
     }
     

@@ -23,7 +23,7 @@ import Charts
 
 class DataLinkChartViewController: UIViewController {
 
-    let MaxSampleCount = 300
+    let MaxSampleCount = 200
     
     var latencies = [Double]()
     var dataRates = [Double]()
@@ -39,6 +39,8 @@ class DataLinkChartViewController: UIViewController {
         chartView.rightAxis.enabled = false;
         
         chartView.xAxis.enabled = false
+        chartView.xAxis.axisMinimum = 0.0
+        chartView.xAxis.axisMaximum = Double(MaxSampleCount)
         
         chartView.chartDescription?.text = ""
         
@@ -75,7 +77,7 @@ class DataLinkChartViewController: UIViewController {
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.mode = .cubicBezier
+        dataSet.mode = .linear
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)
@@ -90,8 +92,8 @@ class DataLinkChartViewController: UIViewController {
         let initialOffset = latencies.count - MaxSampleCount
         
         for i in 0 ..< latencies.count {
-            yVals1.append(ChartDataEntry(x: latencies[i], y: Double(i - initialOffset)))
-            yVals2.append(ChartDataEntry(x: dataRates[i], y: Double(i - initialOffset)))
+            yVals1.append(ChartDataEntry(x: Double(i - initialOffset), y: latencies[i]))
+            yVals2.append(ChartDataEntry(x: Double(i - initialOffset), y: dataRates[i]))
         }
         
         let dataSet1 = makeDataSet(yVals1, label: "Latency (ms)", color: UIColor.blue)
