@@ -52,21 +52,21 @@ class AttitudeIndicator2: UIView {
         }
     }
     
-    @IBInspectable var groundColor: UIColor =  UIColor.brownColor() {
+    @IBInspectable var groundColor: UIColor =  UIColor.brown {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
-        CGContextClipToRect(ctx, rect)
+        ctx.clip(to: rect)
         
         let horizonY = self.horizonY * Double(bounds.height) + Double(bounds.minY)
-        let roll = self.roll * M_PI / 180
+        let roll = self.roll * .pi / 180
 
-        let topRollMarkHeight = 15 * CGFloat(sin(M_PI / 2.7))
+        let topRollMarkHeight = 15 * CGFloat(sin(.pi / 2.7))
         
         var indicatorWidth = min(bounds.midX - bounds.minX - layoutMargins.left, bounds.maxX - layoutMargins.right - bounds.midX)
         indicatorWidth = min(indicatorWidth, CGFloat(horizonY) - bounds.minY - layoutMargins.top - topRollMarkHeight)
@@ -74,101 +74,101 @@ class AttitudeIndicator2: UIView {
 
         let pitchScale = Double(indicatorWidth) / 100.0 as Double         // pixels per degree
         
-        CGContextTranslateCTM(ctx, bounds.midX, CGFloat(horizonY - pitch * pitchScale))
-        CGContextRotateCTM(ctx, CGFloat(-roll))
+        ctx.translateBy(x: bounds.midX, y: CGFloat(horizonY - pitch * pitchScale))
+        ctx.rotate(by: CGFloat(-roll))
         
         // Sky
-        CGContextSetFillColorWithColor(ctx, skyColor.CGColor)
-        CGContextFillRect(ctx, CGRect(x: -bounds.width * 1.5, y: -bounds.height * 1.5, width: bounds.width * 3, height: bounds.height * 1.5))
+        ctx.setFillColor(skyColor.cgColor)
+        ctx.fill(CGRect(x: -bounds.width * 1.5, y: -bounds.height * 1.5, width: bounds.width * 3, height: bounds.height * 1.5))
         
         // Ground
-        CGContextSetFillColorWithColor(ctx, groundColor.CGColor)
-        CGContextFillRect(ctx, CGRect(x: -bounds.width * 1.5, y: 0, width: bounds.width * 3, height: bounds.height * 1.5))
+        ctx.setFillColor(groundColor.cgColor)
+        ctx.fill(CGRect(x: -bounds.width * 1.5, y: 0, width: bounds.width * 3, height: bounds.height * 1.5))
         
         // Horizon
-        CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextFillRect(ctx, CGRect(x: -bounds.width * 1.5, y: -0.5, width: bounds.width * 3, height: 1))
+        ctx.setFillColor(UIColor.white.cgColor)
+        ctx.fill(CGRect(x: -bounds.width * 1.5, y: -0.5, width: bounds.width * 3, height: 1))
         
         // Pitch angle scale
-        CGContextSetStrokeColorWithColor(ctx, UIColor.whiteColor().CGColor)
+        ctx.setStrokeColor(UIColor.white.cgColor)
         let scaleFont = UIFont(name: "Verdana", size: fontSize)!
-        let attributes: [String : AnyObject]? = [ NSFontAttributeName : scaleFont, NSForegroundColorAttributeName : UIColor.whiteColor()]
+        let attributes: [String : Any]? = [ NSFontAttributeName : scaleFont, NSForegroundColorAttributeName : UIColor.white]
         for pitch in [-20, -10, 10, 20] {
             let y = CGFloat(Double(pitch) * pitchScale)
-            CGContextMoveToPoint(ctx, -20, y)
-            CGContextAddLineToPoint(ctx, 20, y)
+            ctx.move(to: CGPoint(x: -20, y: y))
+            ctx.addLine(to: CGPoint(x: 20, y: y))
             
             let legend = String(format: "%d", abs(pitch)) as NSString
-            let legendSize = legend.sizeWithAttributes(attributes)
-            legend.drawInRect(CGRect(origin: CGPoint(x: -24 - legendSize.width, y: y - legendSize.height / 2), size: legendSize), withAttributes: attributes)
-            legend.drawInRect(CGRect(origin: CGPoint(x: 24, y: y - legendSize.height / 2), size: legendSize), withAttributes: attributes)
+            let legendSize = legend.size(attributes: attributes)
+            legend.draw(in: CGRect(origin: CGPoint(x: -24 - legendSize.width, y: y - legendSize.height / 2), size: legendSize), withAttributes: attributes)
+            legend.draw(in: CGRect(origin: CGPoint(x: 24, y: y - legendSize.height / 2), size: legendSize), withAttributes: attributes)
         }
         for pitch in [-25, -15, -5, 5, 15, 25] {
             let y = CGFloat(Double(pitch) * pitchScale)
-            CGContextMoveToPoint(ctx, -10, y)
-            CGContextAddLineToPoint(ctx, 10, y)
+            ctx.move(to: CGPoint(x: -10, y: y))
+            ctx.addLine(to: CGPoint(x: 10, y: y))
         }
-        CGContextStrokePath(ctx)
+        ctx.strokePath()
         
         // Roll angle scale
-        CGContextRotateCTM(ctx, CGFloat(roll))
-        CGContextTranslateCTM(ctx, 0, CGFloat(pitch * pitchScale))
-        CGContextRotateCTM(ctx, CGFloat(-roll))
+        ctx.rotate(by: CGFloat(roll))
+        ctx.translateBy(x: 0, y: CGFloat(pitch * pitchScale))
+        ctx.rotate(by: CGFloat(-roll))
         
-        CGContextSetStrokeColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextAddArc(ctx, 0, 0, indicatorWidth / 2, CGFloat(-5 * M_PI / 6.0), CGFloat(-M_PI / 6.0), 0)
+        ctx.setStrokeColor(UIColor.white.cgColor)
+        ctx.addArc(center: CGPoint(x: 0, y: indicatorWidth / 2), radius: 0, startAngle: CGFloat(-5 * .pi / 6.0), endAngle: CGFloat(-.pi / 6.0), clockwise: false)
         
         for a in [-5.0, -4.0, -2.0, -1.0] {
-            CGContextMoveToPoint(ctx, CGFloat(cos(a * M_PI / 6.0)) * (indicatorWidth / 2), CGFloat(sin(a * M_PI / 6.0)) * (indicatorWidth / 2))
-            CGContextAddLineToPoint(ctx, CGContextGetPathCurrentPoint(ctx).x + CGFloat(cos(a * M_PI / 6.0)) * 10, CGContextGetPathCurrentPoint(ctx).y + CGFloat(sin(a * M_PI / 6.0)) * 10)
+            ctx.move(to: CGPoint(x: CGFloat(cos(a * .pi / 6.0)) * (indicatorWidth / 2), y: CGFloat(sin(a * .pi / 6.0)) * (indicatorWidth / 2)))
+            ctx.addLine(to: CGPoint(x: ctx.currentPointOfPath.x + CGFloat(cos(a * .pi / 6.0)) * 10, y: ctx.currentPointOfPath.y + CGFloat(sin(a * .pi / 6.0)) * 10))
         }
         for a in [-4.5, -3.6666, -3.3333, -2.6666, -2.3333, -1.5] {
-            CGContextMoveToPoint(ctx, CGFloat(cos(a * M_PI / 6.0)) * (indicatorWidth / 2), CGFloat(sin(a * M_PI / 6.0)) * (indicatorWidth / 2))
-            CGContextAddLineToPoint(ctx, CGContextGetPathCurrentPoint(ctx).x + CGFloat(cos(a * M_PI / 6.0)) * 6, CGContextGetPathCurrentPoint(ctx).y + CGFloat(sin(a * M_PI / 6.0)) * 6)
+            ctx.move(to: CGPoint(x: CGFloat(cos(a * .pi / 6.0)) * (indicatorWidth / 2), y: CGFloat(sin(a * .pi / 6.0)) * (indicatorWidth / 2)))
+            ctx.addLine(to: CGPoint(x: ctx.currentPointOfPath.x + CGFloat(cos(a * .pi / 6.0)) * 6, y: ctx.currentPointOfPath.y + CGFloat(sin(a * .pi / 6.0)) * 6))
         }
-        CGContextMoveToPoint(ctx, 0, -indicatorWidth / 2)
+        ctx.move(to: CGPoint(x: 0, y: -indicatorWidth / 2))
         
-        let topRollMarkHalfWidth = 15 * CGFloat(cos(M_PI / 2.7))
-        CGContextAddLineToPoint(ctx, CGContextGetPathCurrentPoint(ctx).x + topRollMarkHalfWidth, CGContextGetPathCurrentPoint(ctx).y - topRollMarkHeight)
-        CGContextAddLineToPoint(ctx, CGContextGetPathCurrentPoint(ctx).x - topRollMarkHalfWidth * 2, CGContextGetPathCurrentPoint(ctx).y)
-        CGContextAddLineToPoint(ctx, CGContextGetPathCurrentPoint(ctx).x + topRollMarkHalfWidth, CGContextGetPathCurrentPoint(ctx).y + topRollMarkHeight)
+        let topRollMarkHalfWidth = 15 * CGFloat(cos(.pi / 2.7))
+        ctx.addLine(to: CGPoint(x: ctx.currentPointOfPath.x + topRollMarkHalfWidth, y: ctx.currentPointOfPath.y - topRollMarkHeight))
+        ctx.addLine(to: CGPoint(x: ctx.currentPointOfPath.x - topRollMarkHalfWidth * 2, y: ctx.currentPointOfPath.y))
+        ctx.addLine(to: CGPoint(x: ctx.currentPointOfPath.x + topRollMarkHalfWidth, y: ctx.currentPointOfPath.y + topRollMarkHeight))
         
-        CGContextStrokePath(ctx)
+        ctx.strokePath()
         
-        CGContextRotateCTM(ctx, CGFloat(roll))
-        CGContextTranslateCTM(ctx, -bounds.midX, CGFloat(-horizonY))
+        ctx.rotate(by: CGFloat(roll))
+        ctx.translateBy(x: -bounds.midX, y: CGFloat(-horizonY))
         
         // Yellow roll reference
         let cornerRadius: CGFloat = 2
 
-        CGContextSetStrokeColorWithColor(ctx, UIColor.yellowColor().CGColor)
-        CGContextSetLineWidth(ctx, 3)
-        CGContextMoveToPoint(ctx, bounds.midX, CGFloat(horizonY - Double(indicatorWidth) / 2 + 3))
-        let dx = 15 * CGFloat(cos(M_PI / 2.7))
-        let dy = 15 * sin(M_PI / 2.7)
-        CGContextAddLineToPoint(ctx, bounds.midX + dx, CGFloat(horizonY - Double(indicatorWidth) / 2 + 3 + dy))
-        CGContextAddLineToPoint(ctx, bounds.midX - dx, CGFloat(horizonY - Double(indicatorWidth) / 2 + 3 + dy))
-        CGContextClosePath(ctx)
-        CGContextStrokePath(ctx)
+        ctx.setStrokeColor(UIColor.yellow.cgColor)
+        ctx.setLineWidth(3)
+        ctx.move(to: CGPoint(x: bounds.midX, y: CGFloat(horizonY - Double(indicatorWidth) / 2 + 3)))
+        let dx = 15 * CGFloat(cos(.pi / 2.7))
+        let dy = 15 * sin(.pi / 2.7)
+        ctx.addLine(to: CGPoint(x: bounds.midX + dx, y: CGFloat(horizonY - Double(indicatorWidth) / 2 + 3 + dy)))
+        ctx.addLine(to: CGPoint(x: bounds.midX - dx, y: CGFloat(horizonY - Double(indicatorWidth) / 2 + 3 + dy)))
+        ctx.closePath()
+        ctx.strokePath()
         
         // Yellow horizon reference
-        CGContextSetLineWidth(ctx, 1)
-        CGContextSetFillColorWithColor(ctx, UIColor.yellowColor().CGColor)
-        CGContextMoveToPoint(ctx, bounds.midX - indicatorWidth / 2 + cornerRadius, CGFloat(horizonY) - cornerRadius)
-        CGContextAddLineToPoint(ctx, bounds.midX - 30 - cornerRadius, CGFloat(horizonY) - cornerRadius)
-        CGContextAddArc(ctx, bounds.midX - 30 - cornerRadius, CGFloat(horizonY), cornerRadius, CGFloat(-M_PI / 2), CGFloat(M_PI / 2), 0)
-        CGContextAddLineToPoint(ctx, bounds.midX - indicatorWidth / 2 + cornerRadius, CGFloat(horizonY) + cornerRadius)
-        CGContextAddArc(ctx, bounds.midX - indicatorWidth / 2 + cornerRadius, CGFloat(horizonY), cornerRadius, CGFloat(M_PI / 2), CGFloat(-M_PI / 2), 0)
-        CGContextFillPath(ctx)
+        ctx.setLineWidth(1)
+        ctx.setFillColor(UIColor.yellow.cgColor)
+        ctx.move(to: CGPoint(x: bounds.midX - indicatorWidth / 2 + cornerRadius, y: CGFloat(horizonY) - cornerRadius))
+        ctx.addLine(to: CGPoint(x: bounds.midX - 30 - cornerRadius, y: CGFloat(horizonY) - cornerRadius))
+        ctx.addArc(center: CGPoint(x: bounds.midX - 30 - cornerRadius, y: CGFloat(horizonY)), radius: cornerRadius, startAngle: CGFloat(-Float.pi / 2), endAngle: CGFloat(Float.pi / 2), clockwise: false)
+        ctx.addLine(to: CGPoint(x: bounds.midX - indicatorWidth / 2 + cornerRadius, y: CGFloat(horizonY) + cornerRadius))
+        ctx.addArc(center: CGPoint(x: bounds.midX - indicatorWidth / 2 + cornerRadius, y: CGFloat(horizonY)), radius: cornerRadius, startAngle: CGFloat(Float.pi / 2), endAngle: CGFloat(-Float.pi / 2), clockwise: false)
+        ctx.fillPath()
         
-        CGContextMoveToPoint(ctx, bounds.midX + indicatorWidth / 2 - cornerRadius, CGFloat(horizonY) - cornerRadius)
-        CGContextAddLineToPoint(ctx, bounds.midX + 30 + cornerRadius, CGFloat(horizonY) - cornerRadius)
-        CGContextAddArc(ctx, bounds.midX + 30 + cornerRadius, CGFloat(horizonY), cornerRadius, CGFloat(-M_PI / 2), CGFloat(M_PI / 2), 1)
-        CGContextAddLineToPoint(ctx, bounds.midX + indicatorWidth / 2 - cornerRadius, CGFloat(horizonY) + cornerRadius)
-        CGContextAddArc(ctx, bounds.midX + indicatorWidth / 2 - cornerRadius, CGFloat(horizonY), cornerRadius, CGFloat(M_PI / 2), CGFloat(-M_PI / 2), 1)
-        CGContextFillPath(ctx)
+        ctx.move(to: CGPoint(x: bounds.midX + indicatorWidth / 2 - cornerRadius, y: CGFloat(horizonY) - cornerRadius))
+        ctx.addLine(to: CGPoint(x: bounds.midX + 30 + cornerRadius, y: CGFloat(horizonY) - cornerRadius))
+        ctx.addArc(center: CGPoint(x: bounds.midX + 30 + cornerRadius, y: CGFloat(horizonY)), radius: cornerRadius, startAngle: CGFloat(-Float.pi / 2), endAngle: CGFloat(Float.pi / 2), clockwise: true)
+        ctx.addLine(to: CGPoint(x: bounds.midX + indicatorWidth / 2 - cornerRadius, y: CGFloat(horizonY) + cornerRadius))
+        ctx.addArc(center: CGPoint(x: bounds.midX + indicatorWidth / 2 - cornerRadius, y: CGFloat(horizonY)), radius: cornerRadius, startAngle: CGFloat(Float.pi / 2), endAngle: CGFloat(-Float.pi / 2), clockwise: true)
+        ctx.fillPath()
         
-        CGContextFillEllipseInRect(ctx, CGRect(x: bounds.midX - cornerRadius, y: CGFloat(horizonY) - cornerRadius, width: cornerRadius * 2, height: cornerRadius * 2))
+        ctx.fillEllipse(in: CGRect(x: bounds.midX - cornerRadius, y: CGFloat(horizonY) - cornerRadius, width: cornerRadius * 2, height: cornerRadius * 2))
     }
     
     override func layoutSubviews() {

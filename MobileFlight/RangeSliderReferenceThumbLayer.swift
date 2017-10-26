@@ -23,7 +23,7 @@ import UIKit
 class RangeSliderReferenceThumbLayer: CALayer {
     weak var rangeSlider: RangeSlider?
     
-    override func drawInContext(ctx: CGContext) {
+    override func draw(in ctx: CGContext) {
         if let slider = rangeSlider {
             let thumbFrame = bounds.insetBy(dx: 3.0, dy: 3.0)
             let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
@@ -31,9 +31,9 @@ class RangeSliderReferenceThumbLayer: CALayer {
             
             //let shadowColor = slider.trackTintColor.CGColor
             //CGContextSetShadowWithColor(ctx, CGSize(width: 0.0, height: 1.0), 1.0, shadowColor.CGColor)
-            CGContextSetFillColorWithColor(ctx, slider.trackHighlightTintColor.CGColor)
-            CGContextAddPath(ctx, thumbPath.CGPath)
-            CGContextFillPath(ctx)
+            ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
+            ctx.addPath(thumbPath.cgPath)
+            ctx.fillPath()
             
             // Outline
 /*            CGContextSetStrokeColorWithColor(ctx, shadowColor.CGColor)

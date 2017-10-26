@@ -23,19 +23,19 @@ import SVProgressHUD
 import Firebase
 
 class ReplayComm : NSObject, CommChannel {
-    let datalog: NSFileHandle
+    let datalog: FileHandle
     let msp: MSPParser
-    let datalogStart: NSDate
+    let datalogStart: Date
 
     var closed = false
     var array: [UInt8]?
     
     var connected: Bool { return !closed }
     
-    init(datalog: NSFileHandle, msp: MSPParser) {
+    init(datalog: FileHandle, msp: MSPParser) {
         self.datalog = datalog
         self.msp = msp
-        self.datalogStart = NSDate()
+        self.datalogStart = Date()
         super.init()
         Analytics.logEvent("replay_started", parameters: nil)
         msp.openCommChannel(self)
@@ -54,46 +54,46 @@ class ReplayComm : NSObject, CommChannel {
         closed = true
     }
     
-    private func closeAndDismissViewController() {
+    fileprivate func closeAndDismissViewController() {
         msp.closeCommChannel()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     func read() {
         if closed {
             return
         }
-        var data = datalog.readDataOfLength(6)
-        if data.length < 6 {
+        var data = datalog.readData(ofLength: 6)
+        if data.count < 6 {
             closeAndDismissViewController()
             return
         }
-        var array = [UInt8](count: 6, repeatedValue: 0)
-        data.getBytes(&array, length:array.count)
+        var array = [UInt8](repeating: 0, count: 6)
+        (data as NSData).getBytes(&array, length:array.count)
         let timestamp = readUInt32(array, index: 0)
         let size = readUInt16(array, index: 4)
         
-        data = datalog.readDataOfLength(size)
-        if data.length < size {
+        data = datalog.readData(ofLength: size)
+        if data.count < size {
             closeAndDismissViewController()
             return
         }
-        self.array = [UInt8](count: size, repeatedValue: 0)
-        data.getBytes(&self.array!, length:size)
+        self.array = [UInt8](repeating: 0, count: size)
+        (data as NSData).getBytes(&self.array!, length:size)
         
         let delay = Double(timestamp)/1000 + datalogStart.timeIntervalSinceNow
         
         if delay <= 0 {
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 self.processData(nil)
             })
             return
         }
-        _ = NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: #selector(ReplayComm.processData(_:)), userInfo: nil, repeats: false)
+        _ = Timer.scheduledTimer(timeInterval: delay, target: self, selector: #selector(ReplayComm.processData(_:)), userInfo: nil, repeats: false)
     }
     
-    func processData(timer: NSTimer?) {
+    func processData(_ timer: Timer?) {
         msp.read(array!)
         
         read()

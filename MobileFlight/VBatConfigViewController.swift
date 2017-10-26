@@ -35,7 +35,7 @@ class VBatConfigViewController: ConfigChildViewController {
     
     var meterTypePicker: MyDownPicker!
 
-    class func isVBatMonitoringEnabled(settings: Settings) -> Bool {
+    class func isVBatMonitoringEnabled(_ settings: Settings) -> Bool {
         if hasMultipleVoltageMeters() {
             return settings.voltageMeterSource > 0
         } else {
@@ -47,7 +47,7 @@ class VBatConfigViewController: ConfigChildViewController {
         super.viewDidLoad()
 
         meterTypePicker = MyDownPicker(textField: meterTypeFIeld, withData: [ "Onboard ADC", "ESC Sensor" ])
-        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
+        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), for: .valueChanged)
 
         minVoltage.delegate = self
         warningVoltage.delegate = self
@@ -56,11 +56,11 @@ class VBatConfigViewController: ConfigChildViewController {
         showCells(hideableCells, show: true)
     }
 
-    private func hideCellsAsNeeded() {
-        if vbatSwitch.on {
-            var cellsToShow = hideableCells
+    fileprivate func hideCellsAsNeeded() {
+        if vbatSwitch.isOn {
+            var cellsToShow = hideableCells!
             if meterTypePicker.selectedIndex > 0 {
-                cellsToShow = Array(Set(cellsToShow).subtract(Set(adcCells)))
+                cellsToShow = Array(Set(cellsToShow).subtracting(Set(adcCells)))
                 cells(adcCells, setHidden: true)
             }
             showCells(cellsToShow, show: true)
@@ -69,34 +69,34 @@ class VBatConfigViewController: ConfigChildViewController {
         }
     }
     
-    @IBAction func vbatSwitchChanged(sender: AnyObject) {
+    @IBAction func vbatSwitchChanged(_ sender: Any) {
         if VBatConfigViewController.hasMultipleVoltageMeters() {
-            if vbatSwitch.on {
+            if vbatSwitch.isOn {
                 settings.voltageMeterSource = 1
             } else {
                 settings.voltageMeterSource = 0
             }
         } else {
-            if vbatSwitch.on {
+            if vbatSwitch.isOn {
                 settings?.features.insert(.VBat)
             } else {
                 settings?.features.remove(.VBat)
             }
         }
         hideCellsAsNeeded()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        vbatSwitch.on = VBatConfigViewController.isVBatMonitoringEnabled(settings)
+        vbatSwitch.isOn = VBatConfigViewController.isVBatMonitoringEnabled(settings)
         minVoltage.value = settings!.vbatMinCellVoltage
         warningVoltage.value = settings!.vbatWarningCellVoltage
         maxVoltage.value = settings!.vbatMaxCellVoltage
         voltageScale.value = Double(settings!.vbatScale)
         if VBatConfigViewController.hasMultipleVoltageMeters() {
-            if vbatSwitch.on {
+            if vbatSwitch.isOn {
                 meterTypePicker.selectedIndex = settings.voltageMeterSource - 1
             }
         } else {
@@ -104,12 +104,12 @@ class VBatConfigViewController: ConfigChildViewController {
         }
         dividerField.value = Double(settings.vbatResistorDividerValue)
         multiplierField.value = Double(settings.vbatResistorDividerMultiplier)
-        cells(hideableCells, setHidden: !vbatSwitch.on)
+        cells(hideableCells, setHidden: !vbatSwitch.isOn)
         hideCellsAsNeeded()
-        reloadDataAnimated(false)
+        reloadData(animated: false)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         settings?.vbatMinCellVoltage = minVoltage.value
@@ -117,7 +117,7 @@ class VBatConfigViewController: ConfigChildViewController {
         settings?.vbatMaxCellVoltage = maxVoltage.value
         settings?.vbatScale = Int(voltageScale.value)
         if VBatConfigViewController.hasMultipleVoltageMeters() {
-            if vbatSwitch.on {
+            if vbatSwitch.isOn {
                 settings.voltageMeterSource = meterTypePicker.selectedIndex + 1
             } else {
                 settings.voltageMeterSource = 0
@@ -130,12 +130,12 @@ class VBatConfigViewController: ConfigChildViewController {
         configViewController?.refreshUI()
     }
     
-    @IBAction func meterTypeChanged(sender: AnyObject) {
+    @IBAction func meterTypeChanged(_ sender: Any) {
         hideCellsAsNeeded()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
     
-    private class func hasMultipleVoltageMeters() -> Bool {
+    fileprivate class func hasMultipleVoltageMeters() -> Bool {
         let config = Configuration.theConfig
         return config.isApiVersionAtLeast("1.35") && !config.isINav
     }

@@ -37,26 +37,26 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
         
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if OSD.theOSD.elements.isEmpty {
-            msp.sendMessage(.MSP_OSD_CONFIG, data: nil, retry: 2) { success in
-                dispatch_async(dispatch_get_main_queue()) {
+            msp.sendMessage(.msp_OSD_CONFIG, data: nil, retry: 2) { success in
+                DispatchQueue.main.async {
                     if success {
                         if !OSD.theOSD.supported {
-                            self.saveButton.enabled = false
-                            self.plusButton.enabled = false
-                            SVProgressHUD.showInfoWithStatus("This flight controller doesn't support OSD")
+                            self.saveButton.isEnabled = false
+                            self.plusButton.isEnabled = false
+                            SVProgressHUD.showInfo(withStatus: "This flight controller doesn't support OSD")
                         } else {
                             self.osdView.createElementViews()
-                            self.saveButton.enabled = true
-                            self.plusButton.enabled = true
+                            self.saveButton.isEnabled = true
+                            self.plusButton.isEnabled = true
                         }
                     } else {
-                        self.saveButton.enabled = false
-                        self.plusButton.enabled = false
-                        SVProgressHUD.showErrorWithStatus("Communication error")
+                        self.saveButton.isEnabled = false
+                        self.plusButton.isEnabled = false
+                        SVProgressHUD.showError(withStatus: "Communication error")
                     }
                 }
             }
@@ -69,15 +69,15 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
         updateMinZoomScaleForSize(scrollView.bounds.size)
     }
     
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return osdView
     }
     
-    func scrollViewDidZoom(scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateConstraintsForSize(scrollView.bounds.size)
     }
     
-    private func updateMinZoomScaleForSize(size: CGSize) {
+    fileprivate func updateMinZoomScaleForSize(_ size: CGSize) {
         let widthScale = size.width / osdView.bounds.width
         let heightScale = size.height / osdView.bounds.height
         let minScale = min(widthScale, heightScale)
@@ -90,7 +90,7 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentOffset.y = scrollView.contentSize.height / 2 - size.height / 2
     }
     
-    private func updateConstraintsForSize(size: CGSize) {
+    fileprivate func updateConstraintsForSize(_ size: CGSize) {
         
         let yOffset = max(0, (size.height - osdView.frame.height) / 2)
         osdViewTopConstraint.constant = yOffset
@@ -107,25 +107,25 @@ class OSDViewController: UIViewController, UIScrollViewDelegate {
         osdView.updateVisibleViews()
     }
     
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         Analytics.logEvent("osd_saved", parameters: nil)
-        SVProgressHUD.showWithStatus("Saving OSD configuration", maskType: .Black)
+        SVProgressHUD.show(withStatus: "Saving OSD configuration", maskType: .black)
         appDelegate.stopTimer()
         msp.sendOsdConfig(OSD.theOSD) { success in
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 if success {
                     SVProgressHUD.dismiss()
                 } else {
                     Analytics.logEvent("osd_saved_failed", parameters: nil)
-                    SVProgressHUD.showErrorWithStatus("Save failed")
+                    SVProgressHUD.showError(withStatus: "Save failed")
                 }
                 self.appDelegate.startTimer()
             }
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let vc = segue.destinationViewController as? OSDSettingsViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? OSDSettingsViewController {
             vc.osdViewController = self
         }
     }

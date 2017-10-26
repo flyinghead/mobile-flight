@@ -31,7 +31,7 @@ class CurrentConfigViewController: ConfigChildViewController {
 
     var meterTypePicker: MyDownPicker!
     
-    class func isCurrentMonitoringEnabled(settings: Settings) -> Bool {
+    class func isCurrentMonitoringEnabled(_ settings: Settings) -> Bool {
         if hasMultipleCurrentMeters() {
             return settings.currentMeterSource > 0
         } else {
@@ -50,17 +50,17 @@ class CurrentConfigViewController: ConfigChildViewController {
             sensorTypes = [ "Onboard ADC", "Virtual" ]
         }
         meterTypePicker = MyDownPicker(textField: meterTypeField, withData: sensorTypes)
-        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), forControlEvents: .ValueChanged)
+        meterTypePicker.addTarget(self, action: #selector(meterTypeChanged(_:)), for: .valueChanged)
 
         meterScaleField.delegate = self
         meterOffsetField.delegate = self
     }
 
-    private func hideCellsAsNeeded() {
-        if currentMeterSwitch.on {
+    fileprivate func hideCellsAsNeeded() {
+        if currentMeterSwitch.isOn {
             var cellsToShow = hideableCells
             if meterTypePicker.selectedIndex > 1 {
-                cellsToShow = Array(Set(cellsToShow).subtract(Set(currentScaleCells)))
+                cellsToShow = Array(Set(cellsToShow!).subtracting(Set(currentScaleCells)))
                 cells(currentScaleCells, setHidden: true)
             }
             cells(cellsToShow, setHidden: false)
@@ -69,31 +69,31 @@ class CurrentConfigViewController: ConfigChildViewController {
         }
     }
     
-    @IBAction func currentMeterSwitchChanged(sender: AnyObject) {
+    @IBAction func currentMeterSwitchChanged(_ sender: Any) {
         if CurrentConfigViewController.hasMultipleCurrentMeters() {
-            if !currentMeterSwitch.on {
+            if !currentMeterSwitch.isOn {
                 settings.currentMeterSource = 0
             }
         } else {
-            if currentMeterSwitch.on {
+            if currentMeterSwitch.isOn {
                 settings?.features.insert(.CurrentMeter)
             } else {
                 settings?.features.remove(.CurrentMeter)
             }
         }
         hideCellsAsNeeded()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        currentMeterSwitch.on = CurrentConfigViewController.isCurrentMonitoringEnabled(settings)
+        currentMeterSwitch.isOn = CurrentConfigViewController.isCurrentMonitoringEnabled(settings)
         meterScaleField.value = Double(settings.currentScale)
         meterOffsetField.value = Double(settings.currentOffset)
 
         if CurrentConfigViewController.hasMultipleCurrentMeters() {
-            if currentMeterSwitch.on {
+            if currentMeterSwitch.isOn {
                 meterTypePicker.selectedIndex = settings.currentMeterSource - 1
             }
         } else {
@@ -101,14 +101,14 @@ class CurrentConfigViewController: ConfigChildViewController {
         }
         batteryCapacityField.value = Double(settings.batteryCapacity)
         hideCellsAsNeeded()
-        reloadDataAnimated(false)
+        reloadData(animated: false)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         if CurrentConfigViewController.hasMultipleCurrentMeters() {
-            if currentMeterSwitch.on {
+            if currentMeterSwitch.isOn {
                 settings.currentMeterSource = meterTypePicker.selectedIndex + 1
             } else {
                 settings.currentMeterSource = 0
@@ -122,12 +122,12 @@ class CurrentConfigViewController: ConfigChildViewController {
         configViewController?.refreshUI()
     }
     
-    @IBAction func meterTypeChanged(sender: AnyObject) {
+    @IBAction func meterTypeChanged(_ sender: Any) {
         hideCellsAsNeeded()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
     
-    private class func hasMultipleCurrentMeters() -> Bool {
+    fileprivate class func hasMultipleCurrentMeters() -> Bool {
         let config = Configuration.theConfig
         return config.isApiVersionAtLeast("1.35") && !config.isINav
     }

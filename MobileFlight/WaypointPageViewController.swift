@@ -23,12 +23,12 @@ import UIKit
 class WaypointPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     var waypointList: MKWaypointList! {
         didSet {
-            waypointList.indexChangedEvent.addHandler(self, handler: WaypointPageViewController.indexChanged)
-            waypointList.waypointDeletedEvent.addHandler(self, handler: WaypointPageViewController.waypointDeleted)
+            _ = waypointList.indexChangedEvent.addHandler(self, handler: WaypointPageViewController.indexChanged)
+            _ = waypointList.waypointDeletedEvent.addHandler(self, handler: WaypointPageViewController.waypointDeleted)
         }
     }
     
-    private var waypointControllers = [UIViewController]()
+    fileprivate var waypointControllers = [UIViewController]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +36,7 @@ class WaypointPageViewController: UIPageViewController, UIPageViewControllerData
         delegate = self
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         waypointControllers.removeAll()
@@ -44,9 +44,9 @@ class WaypointPageViewController: UIPageViewController, UIPageViewControllerData
         for (i, waypoint) in waypointList.enumerate() {
             let viewController: BaseWaypointDetailViewController
             if !waypoint.returnToHome {
-                viewController = storyboard!.instantiateViewControllerWithIdentifier("WaypointDetail") as! BaseWaypointDetailViewController
+                viewController = storyboard!.instantiateViewController(withIdentifier: "WaypointDetail") as! BaseWaypointDetailViewController
             } else {
-                viewController = storyboard!.instantiateViewControllerWithIdentifier("ReturnToHomeDetail") as! BaseWaypointDetailViewController
+                viewController = storyboard!.instantiateViewController(withIdentifier: "ReturnToHomeDetail") as! BaseWaypointDetailViewController
                 rthSeen = true
             }
             viewController.waypointList = waypointList
@@ -54,50 +54,50 @@ class WaypointPageViewController: UIPageViewController, UIPageViewControllerData
             waypointControllers.append(viewController)
         }
         if !rthSeen && waypointControllers.count < INavConfig.theINavConfig.maxWaypoints {
-            let viewController = storyboard!.instantiateViewControllerWithIdentifier("ReturnToHomeDetail") as! BaseWaypointDetailViewController
+            let viewController = storyboard!.instantiateViewController(withIdentifier: "ReturnToHomeDetail") as! BaseWaypointDetailViewController
             viewController.waypointList = waypointList
             viewController.index = waypointList.count
             waypointControllers.append(viewController)
         }
-        setViewControllers([ waypointControllers[waypointList.index] ], direction: .Forward, animated: false, completion: nil)
+        setViewControllers([ waypointControllers[waypointList.index] ], direction: .forward, animated: false, completion: nil)
     }
     
     // MARK: UIPageViewControllerDataSource
     
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let index = waypointControllers.indexOf(viewController) where index > 0 {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        if let index = waypointControllers.index(of: viewController), index > 0 {
             return waypointControllers[index - 1]
         } else {
             return nil
         }
     }
     
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let index = waypointControllers.indexOf(viewController) where index < waypointControllers.count - 1 {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        if let index = waypointControllers.index(of: viewController), index < waypointControllers.count - 1 {
             return waypointControllers[index + 1]
         } else {
             return nil
         }
     }
     
-    func indexChanged(data: Int) {
+    func indexChanged(_ data: Int) {
         if data >= 0 && data < waypointControllers.count {
-            var direction = UIPageViewControllerNavigationDirection.Reverse
+            var direction = UIPageViewControllerNavigationDirection.reverse
             if let currentVC = viewControllers?.first {
-                if let index = waypointControllers.indexOf(currentVC) where index < data {
-                    direction = UIPageViewControllerNavigationDirection.Forward
+                if let index = waypointControllers.index(of: currentVC), index < data {
+                    direction = UIPageViewControllerNavigationDirection.forward
                 }
             }
             setViewControllers([waypointControllers[data]], direction: direction, animated: true, completion: nil)
         }
     }
 
-    func waypointDeleted(data: MKWaypoint) {
+    func waypointDeleted(_ data: MKWaypoint) {
         if data.returnToHome {
             return
         }
         if let index = waypointList.indexOf(data) {
-            waypointControllers.removeAtIndex(index)
+            waypointControllers.remove(at: index)
             for i in index ..< waypointControllers.count {
                 (waypointControllers[i] as! BaseWaypointDetailViewController).index -= 1
             }
@@ -106,12 +106,12 @@ class WaypointPageViewController: UIPageViewController, UIPageViewControllerData
     
     // MARK: UIPageViewControllerDelegate
     
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if !completed {
             return
         }
         if let currentVC = viewControllers?.first {
-            if let index = waypointControllers.indexOf(currentVC) {
+            if let index = waypointControllers.index(of: currentVC) {
                 waypointList.index = index
             }
         }

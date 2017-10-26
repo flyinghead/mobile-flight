@@ -22,10 +22,10 @@ import UIKit
 
 @IBDesignable
 class LinearGauge: UIView {
-    private var _value = 0.0
-    private var _minimumValue = 0.0
-    private var _maximumValue = 1.0
-    private var _color = UIColor.greenColor()
+    fileprivate var _value = 0.0
+    fileprivate var _minimumValue = 0.0
+    fileprivate var _maximumValue = 1.0
+    fileprivate var _color = UIColor.green
 
     @IBInspectable var value: Double {
         get {
@@ -96,7 +96,7 @@ class LinearGauge: UIView {
         clipsToBounds = true
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         _color.setFill()
         
         let normalizedValue = (min(max(_value, _minimumValue), _maximumValue) - _minimumValue) / abs(_maximumValue - _minimumValue)
@@ -107,16 +107,16 @@ class LinearGauge: UIView {
             let label = NSString(format: "%.0f", value)
             
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = NSTextAlignment.Center
+            paragraphStyle.alignment = NSTextAlignment.center
             
             let font = UIFont(name: "Helvetica Neue", size: 14)
             let textRect = CGRect(x: rect.origin.x, y: rect.origin.y + rect.height / 2 - font!.pointSize / 2, width: rect.width, height: font!.pointSize)
             
-            label.drawInRect(textRect, withAttributes: [NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : font!])
+            label.draw(in: textRect, withAttributes: [NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : font!])
         }
     }
 
-    override func sizeThatFits(size: CGSize) -> CGSize {
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
         return size
     }
 }

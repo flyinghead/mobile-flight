@@ -25,16 +25,16 @@ class MultiTypes {
     static let custom = "custom"
     static let drawings = [ "tri", "quad_p", "quad_x", "bicopter", custom, "y6", "hex_p", "flying_wing", "y4", "hex_x", "octo_x8", "octo_flat_p", "octo_flat_x", "airplane", custom, custom, "vtail_quad", custom, custom, custom, custom, "atail_quad", custom, custom, custom, "quad_x_1234" ]
     
-    static func getDescription(multiType: Int) -> String {
+    static func getDescription(_ multiType: Int) -> String {
         if multiType < 1 || multiType > label.count {
             return "Unknown"
         }
         return label[multiType - 1];
     }
-    static func getImage(multiType: Int) -> UIImage {
+    static func getImage(_ multiType: Int) -> UIImage {
         if multiType < 1 || multiType > label.count {
-            return UIImage(imageLiteral: custom)
+            return UIImage(named: custom)!
         }
-        return UIImage(imageLiteral: drawings[multiType - 1])
+        return UIImage(named: drawings[multiType - 1])!
     }
 }

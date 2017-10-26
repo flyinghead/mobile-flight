@@ -4,9 +4,9 @@ plugin 'cocoapods-acknowledgements', :settings_bundle => true
 
 def common_pods
     pod 'DownPicker'
-    pod 'Charts', '~> 2.0'
+    pod 'Charts', '~> 3.0.3'
     pod 'SVProgressHUD'
-    pod 'SwiftSVG'
+    pod 'SwiftSVG', '~> 2.0'
     pod 'Firebase/Core'
     pod 'Fabric'
     pod 'Crashlytics'

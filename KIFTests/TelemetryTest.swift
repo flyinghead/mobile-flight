@@ -41,32 +41,33 @@ class TelemetryTest : XCTestCase {
         super.tearDown()
     }
     
-    private func connect() {
-        tester().tapViewWithAccessibilityLabel("Wi-Fi")
-        tester().clearTextFromAndThenEnterText("127.0.0.1", intoViewWithAccessibilityIdentifier: "ipAddress")
-        tester().clearTextFromAndThenEnterText("8777", intoViewWithAccessibilityIdentifier: "ipPort")
-        tester().tapViewWithAccessibilityIdentifier("connect")
+    fileprivate func connect() {
+        tester().tapView(withAccessibilityLabel: "Wi-Fi")
+        tester().clearText(fromAndThenEnterText: "localhost", intoViewWithAccessibilityIdentifier: "ipAddress")
+        tester().clearText(fromAndThenEnterText: "8777", intoViewWithAccessibilityIdentifier: "ipPort")
+        tester().tapView(withAccessibilityIdentifier: "connect")
+        UIAutomationHelper.acknowledgeSystemAlert()
         
-        tester().waitForViewWithAccessibilityLabel("menuw 1")
+        tester().waitForView(withAccessibilityLabel: "menuw 1")
     }
     
-    private func disconnect() {
+    fileprivate func disconnect() {
         // Disconnect from simulator
-        if UIApplication.sharedApplication().keyWindow!.accessibilityElementWithLabel("Wi-Fi") == nil {
-            tester().tapViewWithAccessibilityLabel("menuw 1")
-            tester().tapViewWithAccessibilityLabel("Disconnect")
-            tester().waitForTappableViewWithAccessibilityLabel("Wi-Fi")
+        if UIApplication.shared.keyWindow!.accessibilityElement(withLabel: "Wi-Fi") == nil {
+            tester().tapView(withAccessibilityLabel: "menuw 1")
+            tester().tapView(withAccessibilityLabel: "Disconnect")
+            tester().waitForTappableView(withAccessibilityLabel: "Wi-Fi")
         }
     }
     
     func testConnectDisconnect() {
         connect()
-        tester().tapViewWithAccessibilityLabel("menuw 1")
-        tester().tapViewWithAccessibilityLabel("Disconnect")
-        tester().waitForTappableViewWithAccessibilityLabel("Wi-Fi")
+        tester().tapView(withAccessibilityLabel: "menuw 1")
+        tester().tapView(withAccessibilityLabel: "Disconnect")
+        tester().waitForTappableView(withAccessibilityLabel: "Wi-Fi")
     }
     
-    private func colorsEqual(color1: UIColor, _ color2: UIColor) -> Bool {
+    fileprivate func colorsEqual(_ color1: UIColor, _ color2: UIColor) -> Bool {
         var red1: CGFloat = 0, green1: CGFloat = 0, blue1: CGFloat = 0, alpha1: CGFloat = 0
         color1.getRed(&red1, green: &green1, blue: &blue1, alpha: &alpha1)
         var red2: CGFloat = 0, green2: CGFloat = 0, blue2: CGFloat = 0, alpha2: CGFloat = 0
@@ -77,102 +78,102 @@ class TelemetryTest : XCTestCase {
     
     func testRssi() {
         connect()
-        NSUserDefaults().setBool(true, forKey: "rssialarm_enabled")
-        NSUserDefaults().setInteger(20, forKey: "rssialarm_low")
-        NSUserDefaults().setInteger(10, forKey: "rssialarm_critical")
+        UserDefaults().set(true, forKey: "rssialarm_enabled")
+        UserDefaults().set(20, forKey: "rssialarm_low")
+        UserDefaults().set(10, forKey: "rssialarm_critical")
 
-        let rssi = tester().waitForViewWithAccessibilityIdentifier("rssi") as! UILabel
-        XCTAssert(colorsEqual(rssi.textColor, UIColor.redColor()))
+        let rssi = tester().waitForView(withAccessibilityIdentifier: "rssi") as! UILabel
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.red))
         // Check blink
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'rssi'"), tappable: false)
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'rssi'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'rssi'"), tappable: false)
 
         CleanflightSimulator.instance.rssi = 676    // 676 / 1023 = 66%
         
-        tester().waitForViewWithAccessibilityLabel("66%")
-        XCTAssert(colorsEqual(rssi.textColor, UIColor.whiteColor()))
+        tester().waitForView(withAccessibilityLabel: "66%")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.white))
         
-        NSUserDefaults().setInteger(70, forKey: "rssialarm_low")
-        XCTAssert(colorsEqual(rssi.textColor, UIColor.yellowColor()))
+        UserDefaults().set(70, forKey: "rssialarm_low")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.yellow))
         
-        NSUserDefaults().setInteger(70, forKey: "rssialarm_critical")
-        XCTAssert(colorsEqual(rssi.textColor, UIColor.redColor()))
+        UserDefaults().set(70, forKey: "rssialarm_critical")
+        XCTAssert(colorsEqual(rssi.textColor, UIColor.red))
     }
 
     func testBatteryIndicators() {
         connect()
 
         CleanflightSimulator.instance.voltage = 12.3
-        tester().waitForViewWithAccessibilityLabel("12.3")
+        tester().waitForView(withAccessibilityLabel: "12.3")
         
         CleanflightSimulator.instance.amps = 21.0
-        tester().waitForViewWithAccessibilityLabel("21")
+        tester().waitForView(withAccessibilityLabel: "21")
         
         CleanflightSimulator.instance.mAh = 982
-        tester().waitForViewWithAccessibilityLabel("982")
+        tester().waitForView(withAccessibilityLabel: "982")
     }
 
     func testFlightModes() {
         connect()
 
-        tester().waitForViewWithAccessibilityLabel("DISARMED")
+        tester().waitForView(withAccessibilityLabel: "DISARMED")
 
-        tester().waitForAbsenceOfViewWithAccessibilityIdentifier("acroMode")
-        tester().waitForAbsenceOfViewWithAccessibilityIdentifier("altMode")
-        tester().waitForAbsenceOfViewWithAccessibilityIdentifier("posMode")
-        tester().waitForAbsenceOfViewWithAccessibilityIdentifier("headingMode")
-        tester().waitForAbsenceOfViewWithAccessibilityIdentifier("failsafeMode")
+        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "acroMode")
+        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "altMode")
+        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "posMode")
+        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "headingMode")
+        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "failsafeMode")
         
         // Arm
         CleanflightSimulator.instance.setMode(.ARM)
         
-        tester().waitForAbsenceOfViewWithAccessibilityLabel("DISARMED")
-        tester().waitForViewWithAccessibilityLabel("ARMED")
-        tester().waitForAbsenceOfViewWithAccessibilityLabel("ARMED")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "DISARMED")
+        tester().waitForView(withAccessibilityLabel: "ARMED")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "ARMED")
         
         // Check that timer started by waiting for 2sec mark
-        tester().waitForViewWithAccessibilityLabel("00:02")
+        tester().waitForView(withAccessibilityLabel: "00:02")
         
         // Horizon / Angle
         CleanflightSimulator.instance.setMode(.HORIZON)
-        tester().waitForViewWithAccessibilityLabel("HOZN")
+        tester().waitForView(withAccessibilityLabel: "HOZN")
         
         CleanflightSimulator.instance.setMode(.ANGLE)
-        tester().waitForAbsenceOfViewWithAccessibilityLabel("HOZN")
-        tester().waitForViewWithAccessibilityLabel("ANGL")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "HOZN")
+        tester().waitForView(withAccessibilityLabel: "ANGL")
         
         // Pos
         CleanflightSimulator.instance.setMode(.GPS_HOLD)
-        tester().waitForViewWithAccessibilityLabel("POS")
+        tester().waitForView(withAccessibilityLabel: "POS")
         CleanflightSimulator.instance.setMode(.GPS_HOME)
-        tester().waitForAbsenceOfViewWithAccessibilityLabel("POS")
-        tester().waitForViewWithAccessibilityLabel("RTH")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "POS")
+        tester().waitForView(withAccessibilityLabel: "RTH")
         
         // Alt
-        let sonarButton = tester().waitForViewWithAccessibilityIdentifier("sonarMode")
-        XCTAssertEqual(sonarButton.tintColor, UIColor.blackColor())
+        let sonarButton = tester().waitForView(withAccessibilityIdentifier: "sonarMode")
+        XCTAssertEqual(sonarButton?.tintColor, UIColor.black)
         
         CleanflightSimulator.instance.setMode(.BARO)
-        tester().waitForViewWithAccessibilityLabel("ALT")
-        XCTAssertEqual(sonarButton.tintColor, UIColor.blackColor())
+        tester().waitForView(withAccessibilityLabel: "ALT")
+        XCTAssertEqual(sonarButton?.tintColor, UIColor.black)
         CleanflightSimulator.instance.unsetMode(.BARO)
-        tester().waitForAbsenceOfViewWithAccessibilityLabel("ALT")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "ALT")
         CleanflightSimulator.instance.setMode(.SONAR)
-        tester().waitForViewWithAccessibilityLabel("ALT")
-        XCTAssertEqual(sonarButton.tintColor, UIColor.greenColor())
+        tester().waitForView(withAccessibilityLabel: "ALT")
+        XCTAssertEqual(sonarButton?.tintColor, UIColor.green)
         
         // Heading
         CleanflightSimulator.instance.setMode(.MAG)
-        tester().waitForViewWithAccessibilityLabel("HDG")
+        tester().waitForView(withAccessibilityLabel: "HDG")
         
         // Failsafe
         CleanflightSimulator.instance.setMode(.FAILSAFE)
-        tester().waitForViewWithAccessibilityLabel("RX FAIL")
+        tester().waitForView(withAccessibilityLabel: "RX FAIL")
         
         // Air Mode
         CleanflightSimulator.instance.setMode(.AIR)
-        tester().waitForViewWithAccessibilityLabel("AIR")
+        tester().waitForView(withAccessibilityLabel: "AIR")
     }
     
     func testSecondaryFlightModes() {
@@ -184,24 +185,24 @@ class TelemetryTest : XCTestCase {
         doTestSecondaryFlightMode(.GTUNE, viewId: "autotuneMode")
         
     }
-    private func doTestSecondaryFlightMode(mode: Mode, viewId: String) {
-        let view = tester().waitForViewWithAccessibilityIdentifier(viewId)
-        XCTAssertEqual(view.tintColor, UIColor.blackColor())
+    fileprivate func doTestSecondaryFlightMode(_ mode: Mode, viewId: String) {
+        let view = tester().waitForView(withAccessibilityIdentifier: viewId)
+        XCTAssertEqual(view?.tintColor, UIColor.black)
         CleanflightSimulator.instance.setMode(mode)
-        tester().waitForTimeInterval(0.3)
-        XCTAssertEqual(view.tintColor, UIColor.greenColor())
+        tester().wait(forTimeInterval: 0.3)
+        XCTAssertEqual(view?.tintColor, UIColor.green)
         CleanflightSimulator.instance.unsetMode(mode)
-        tester().waitForTimeInterval(0.3)
-        XCTAssertEqual(view.tintColor, UIColor.blackColor())
+        tester().wait(forTimeInterval: 0.3)
+        XCTAssertEqual(view?.tintColor, UIColor.black)
     }
     
     func testIndicators() {
         connect()
-        let attitude = tester().waitForViewWithAccessibilityIdentifier("attitudeIndicator") as! AttitudeIndicator2
-        let heading = tester().waitForViewWithAccessibilityIdentifier("headingIndicator") as! HeadingStrip
-        let altitude = tester().waitForViewWithAccessibilityIdentifier("altitudeIndicator") as! VerticalScale
-        let variometer = tester().waitForViewWithAccessibilityIdentifier("variometerIndicator") as! SimpleVerticalScale
-        let speed = tester().waitForViewWithAccessibilityIdentifier("speedIndicator") as! VerticalScale
+        let attitude = tester().waitForView(withAccessibilityIdentifier: "attitudeIndicator") as! AttitudeIndicator2
+        let heading = tester().waitForView(withAccessibilityIdentifier: "headingIndicator") as! HeadingStrip
+        let altitude = tester().waitForView(withAccessibilityIdentifier: "altitudeIndicator") as! VerticalScale
+        let variometer = tester().waitForView(withAccessibilityIdentifier: "variometerIndicator") as! SimpleVerticalScale
+        let speed = tester().waitForView(withAccessibilityIdentifier: "speedIndicator") as! VerticalScale
         
         CleanflightSimulator.instance.roll = 15.0
         CleanflightSimulator.instance.pitch = -22.0
@@ -213,7 +214,7 @@ class TelemetryTest : XCTestCase {
         CleanflightSimulator.instance.numSats = 5
         CleanflightSimulator.instance.speed = 8.7
         
-        tester().waitForTimeInterval(0.3)
+        tester().wait(forTimeInterval: 0.3)
         XCTAssertEqual(attitude.roll, 15.0)
         XCTAssertEqual(attitude.pitch, -22.0)
         XCTAssertEqual(heading.heading, 172.0)
@@ -227,27 +228,27 @@ class TelemetryTest : XCTestCase {
         
         CleanflightSimulator.instance.numSats = 4
         
-        let gpsSats = tester().waitForViewWithAccessibilityIdentifier("gpsSats") as! UILabel
-        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.redColor()))
+        let gpsSats = tester().waitForView(withAccessibilityIdentifier: "gpsSats") as! UILabel
+        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.red))
         // Check blink
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
-        tester().waitForAccessibilityElement(nil, view: nil, withElementMatchingPredicate: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 1 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
+        tester().wait(for: nil, view: nil, withElementMatching: NSPredicate(format: "alpha == 0 && accessibilityIdentifier == 'gpsSats'"), tappable: false)
 
-        tester().tapViewWithAccessibilityLabel("menuw 1")
-        let followMe = tester().waitForViewWithAccessibilityLabel("Follow Me") as! UIButton
-        XCTAssert(!followMe.enabled)
+        tester().tapView(withAccessibilityLabel: "menuw 1")
+        let followMe = tester().waitForView(withAccessibilityLabel: "Follow Me") as! UIButton
+        XCTAssert(!followMe.isEnabled)
 
         CleanflightSimulator.instance.numSats = 17
         CleanflightSimulator.instance.distanceToHome = 88
         
-        tester().waitForViewWithAccessibilityLabel("17")
-        tester().waitForViewWithAccessibilityLabel("289 ft") // = 88m
-        tester().tapViewWithAccessibilityLabel("menuw 1")
-        XCTAssert(followMe.enabled)
-        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.whiteColor()))
+        tester().waitForView(withAccessibilityLabel: "17")
+        tester().waitForView(withAccessibilityLabel: "289 ft") // = 88m
+        tester().tapView(withAccessibilityLabel: "menuw 1")
+        XCTAssert(followMe.isEnabled)
+        XCTAssert(colorsEqual(gpsSats.textColor, UIColor.white))
         
         CleanflightSimulator.instance.distanceToHome = Int(METER_PER_MILE * 1.5)
-        tester().waitForViewWithAccessibilityLabel("1.5 mi")
+        tester().waitForView(withAccessibilityLabel: "1.5 mi")
     }
 }

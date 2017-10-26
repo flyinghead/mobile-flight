@@ -19,98 +19,122 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import Foundation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
 
-enum ParserState : Int { case Sync1 = 0, Sync2, Direction, Length, Code, Payload, Checksum };
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
 
-public class MSPCodec {
+
+enum ParserState : Int { case sync1 = 0, sync2, direction, length, code, payload, checksum };
+
+open class MSPCodec {
     var errors: Int = 0
     var gcsMode = true
     
-    private var state: ParserState = .Sync1
-    private var directionOut: Bool = false
-    private var unsupportedMSPCode = false
-    private var expectedMsgLength: Int = 0
-    private var checksum: UInt8 = 0
-    private var messageBuffer: [UInt8]?
-    private var code: UInt8 = 0
+    fileprivate var state: ParserState = .sync1
+    fileprivate var directionOut: Bool = false
+    fileprivate var unsupportedMSPCode = false
+    fileprivate var expectedMsgLength: Int = 0
+    fileprivate var checksum: UInt8 = 0
+    fileprivate var messageBuffer: [UInt8]?
+    fileprivate var code: UInt8 = 0
 
-    func decode(b: UInt8) -> (success: Bool, code: MSP_code, message: [UInt8])? {
+    func decode(_ b: UInt8) -> (success: Bool, code: MSP_code, message: [UInt8])? {
         var bbuf = b
-        let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: NSASCIIStringEncoding)! : NSString(format: "[%d]", b)
+        let bstr = b >= 32 && b < 128 ? NSString(bytes: &bbuf, length: 1, encoding: String.Encoding.ascii.rawValue)! : NSString(format: "[%d]", b)
         //NSLog("%@", bstr)
         
         switch state {
-        case .Sync1:
+        case .sync1:
             if b == 36 { // $
-                state = .Sync2
+                state = .sync2
             } else {
                 NSLog("MSP expected '$', got %@", bstr)
             }
-        case .Sync2:
+        case .sync2:
             if b == 77 { // M
-                state = .Direction
+                state = .direction
             } else {
                 NSLog("MSP expected 'M', got %@", bstr)
-                state = .Sync1
+                state = .sync1
             }
-        case .Direction:
+        case .direction:
             if b == 62 { // >
                 unsupportedMSPCode = false
                 directionOut = false
-                state = .Length
+                state = .length
             } else if b == 60 {     // <
                 unsupportedMSPCode = false
                 directionOut = true
-                state = .Length
+                state = .length
             } else if b == 33 {     // !
                 unsupportedMSPCode = true
-                state = .Length
+                state = .length
             } else {
                 NSLog("MSP expected '>', got %@", bstr)
-                state = .Sync1
+                state = .sync1
             }
-        case .Length:
+        case .length:
             expectedMsgLength = Int(b);
             checksum = b;
             
             messageBuffer = [UInt8]()
-            state = .Code
-        case .Code:
+            state = .code
+        case .code:
             code = b
             checksum ^= b
             if expectedMsgLength > 0 {
-                state = .Payload
+                state = .payload
             } else {
-                state = .Checksum       // No payload
+                state = .checksum       // No payload
             }
-        case .Payload:
+        case .payload:
             messageBuffer?.append(b);
             checksum ^= b
             if messageBuffer?.count >= expectedMsgLength {
-                state = .Checksum
+                state = .checksum
             }
-        case .Checksum:
-            state = .Sync1
-            let mspCode = MSP_code(rawValue: Int(code)) ?? .MSP_UNKNOWN
-            if checksum == b && mspCode != .MSP_UNKNOWN && directionOut != gcsMode && !unsupportedMSPCode {
+        case .checksum:
+            state = .sync1
+            let mspCode = MSP_code(rawValue: Int(code)) ?? .msp_UNKNOWN
+            if checksum == b && mspCode != .msp_UNKNOWN && directionOut != gcsMode && !unsupportedMSPCode {
                 //NSLog("Received MSP %d", mspCode.rawValue)
                 return (true, mspCode, messageBuffer!)
             } else {
                 if unsupportedMSPCode {
                     return (false, mspCode, messageBuffer!)
                 } else {
-                    let datalog = NSData(bytes: messageBuffer!, length: expectedMsgLength)
+                    let datalog = Data(bytes: UnsafePointer<UInt8>(messageBuffer!), count: expectedMsgLength)
                     if checksum != b {
-                        NSLog("MSP code %d - checksum failed: %@", code, datalog)
+                        NSLog("MSP code %d - checksum failed: %@", code, String(data: datalog, encoding: String.Encoding.utf8) ?? "?")
                     } else if directionOut {
                         NSLog("MSP code %d - received outgoing message", code)
                     } else {
-                        NSLog("Unknown MSP code %d: %@", code, datalog)
+                        NSLog("Unknown MSP code %d: %@", code, String(data: datalog, encoding: String.Encoding.utf8) ?? "?")
                     }
                     errors += 1
                     // 3DR radios often loose a byte. So we try to resync on the received data in case it contains the beginning of a subsequent message
                     if checksum != b && b == 36 {     // $
-                        state = .Sync2
+                        state = .sync2
                     }
                 }
             }
@@ -119,14 +143,14 @@ public class MSPCodec {
         return nil
     }
     
-    func encode(mspCode: MSP_code, message: [UInt8]?) -> [UInt8] {
+    func encode(_ mspCode: MSP_code, message: [UInt8]?) -> [UInt8] {
         let dataSize = message?.count ?? 0
         //                      $    M   < or >
         var buffer: [UInt8] = [36 , 77, gcsMode ? 60 : 62, UInt8(dataSize), UInt8(mspCode.rawValue)]
         var checksum: UInt8 = UInt8(mspCode.rawValue) ^ buffer[3]
         
         if (message != nil) {
-            buffer.appendContentsOf(message!)
+            buffer.append(contentsOf: message!)
             for b in message! {
                 checksum ^= b
             }

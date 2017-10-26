@@ -27,13 +27,13 @@ class AccelerometerViewController: XYZSensorViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis;
-        leftAxis.axisMaxValue = 2.0;
-        leftAxis.axisMinValue = -2.0;
+        leftAxis.axisMaximum = 2.0;
+        leftAxis.axisMinimum = -2.0;
         
-        let nf = NSNumberFormatter()
-        nf.locale = NSLocale.currentLocale()
+        let nf = NumberFormatter()
+        nf.locale = Locale.current
         nf.maximumFractionDigits = 1
-        chartView.leftAxis.valueFormatter = nf
+        chartView.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: nf)
     }
 
     override func updateSensorData() {

@@ -23,7 +23,7 @@ import UIKit
 @IBDesignable
 class RCStick: UIView {
 
-    private var refX: CGFloat = 0, refY: CGFloat = 0
+    fileprivate var refX: CGFloat = 0, refY: CGFloat = 0
     var horizontalValue = 0.0 {
         didSet {
             setNeedsDisplay()
@@ -35,7 +35,7 @@ class RCStick: UIView {
         }
     }
 
-    private var verticalOrigin = 0.0
+    fileprivate var verticalOrigin = 0.0
     
     @IBInspectable
     var verticalSpring: Bool = true {
@@ -74,31 +74,31 @@ class RCStick: UIView {
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         let borderRect = bounds.insetBy(dx: borderWidth / 2, dy: borderWidth / 2)
         let radius = centerRadius - borderWidth / 2
-        CGContextMoveToPoint(ctx, borderRect.minX + radius, borderRect.minY)
-        CGContextAddLineToPoint(ctx, borderRect.maxX - radius, borderRect.minY)
-        CGContextAddArcToPoint(ctx, borderRect.maxX, borderRect.minY, borderRect.maxX, borderRect.minY + radius, radius)
-        CGContextAddLineToPoint(ctx, borderRect.maxX, borderRect.maxY - radius)
-        CGContextAddArcToPoint(ctx, borderRect.maxX, borderRect.maxY, borderRect.maxX - radius, borderRect.maxY, radius)
-        CGContextAddLineToPoint(ctx, borderRect.minX + radius, borderRect.maxY)
-        CGContextAddArcToPoint(ctx, borderRect.minX, borderRect.maxY, borderRect.minX, borderRect.maxY - radius, radius)
-        CGContextAddLineToPoint(ctx, borderRect.minX, borderRect.minY + radius)
-        CGContextAddArcToPoint(ctx, borderRect.minX, borderRect.minY, borderRect.minX + radius, borderRect.minY, radius)
+        ctx.move(to: CGPoint(x: borderRect.minX + radius, y: borderRect.minY))
+        ctx.addLine(to: CGPoint(x: borderRect.maxX - radius, y: borderRect.minY))
+        ctx.addArc(tangent1End: CGPoint(x: borderRect.maxX, y: borderRect.minY), tangent2End: CGPoint(x: borderRect.maxX, y: borderRect.minY + radius), radius: radius)
+        ctx.addLine(to: CGPoint(x: borderRect.maxX, y: borderRect.maxY - radius))
+        ctx.addArc(tangent1End: CGPoint(x: borderRect.maxX, y: borderRect.maxY), tangent2End: CGPoint(x: borderRect.maxX - radius, y: borderRect.maxY), radius: radius)
+        ctx.addLine(to: CGPoint(x: borderRect.minX + radius, y: borderRect.maxY))
+        ctx.addArc(tangent1End: CGPoint(x: borderRect.minX, y: borderRect.maxY), tangent2End: CGPoint(x: borderRect.minX, y: borderRect.maxY - radius), radius: radius)
+        ctx.addLine(to: CGPoint(x: borderRect.minX, y: borderRect.minY + radius))
+        ctx.addArc(tangent1End: CGPoint(x: borderRect.minX, y: borderRect.minY), tangent2End: CGPoint(x: borderRect.minX + radius, y: borderRect.minY), radius: radius)
         
-        CGContextSetStrokeColorWithColor(ctx, tintColor.CGColor)
-        CGContextSetLineWidth(ctx, borderWidth)
-        CGContextStrokePath(ctx)
+        ctx.setStrokeColor(tintColor.cgColor)
+        ctx.setLineWidth(borderWidth)
+        ctx.strokePath()
         
-        CGContextSetFillColorWithColor(ctx, tintColor.CGColor)
-        CGContextFillEllipseInRect(ctx, CGRect(x: bounds.midX - centerRadius, y: bounds.midY - centerRadius, width: centerRadius * 2, height: centerRadius * 2).offsetBy(dx: CGFloat(horizontalValue) * (bounds.width / 2 - centerRadius), dy: CGFloat(-verticalValue) * (bounds.height / 2 - centerRadius)))
+        ctx.setFillColor(tintColor.cgColor)
+        ctx.fillEllipse(in: CGRect(x: bounds.midX - centerRadius, y: bounds.midY - centerRadius, width: centerRadius * 2, height: centerRadius * 2).offsetBy(dx: CGFloat(horizontalValue) * (bounds.width / 2 - centerRadius), dy: CGFloat(-verticalValue) * (bounds.height / 2 - centerRadius)))
     }
     
-    func panAction(sender: UIPanGestureRecognizer) {
-        let point = sender.translationInView(self)
-        if sender.state == .Began {
+    func panAction(_ sender: UIPanGestureRecognizer) {
+        let point = sender.translation(in: self)
+        if sender.state == .began {
             refX = point.x
             refY = point.y
             horizontalValue = 0
@@ -107,7 +107,7 @@ class RCStick: UIView {
             } else {
                 verticalOrigin = verticalValue
             }
-        } else if sender.state == .Changed {
+        } else if sender.state == .changed {
             horizontalValue = constrain(Double((point.x - refX) / (bounds.width / 2 - centerRadius)), min: -1, max: 1)
             verticalValue = constrain(verticalOrigin - Double((point.y - refY) / (bounds.height / 2 - centerRadius)), min: -1, max: 1)
             setNeedsDisplay()

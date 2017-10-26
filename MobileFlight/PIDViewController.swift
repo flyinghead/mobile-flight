@@ -108,10 +108,10 @@ class PIDViewController: StaticDataTableViewController {
         
         showCells(conditionalCells, show: true)
         showCells(allPidsCells, show: false)
-        reloadDataAnimated(false)
+        reloadData(animated: false)
     }
     
-    func showCells(cells: [UITableViewCell], show: Bool) {
+    func showCells(_ cells: [UITableViewCell], show: Bool) {
         for c in cells {
             if let condCell = c as? ConditionalTableViewCell {
                 cell(condCell, setHidden: !show || !condCell.visible)
@@ -121,24 +121,24 @@ class PIDViewController: StaticDataTableViewController {
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         fetchData()
     }
 
-    private func fetchData() {
-        var calls:[MSP_code] = [.MSP_RC_TUNING, .MSP_PIDNAMES, .MSP_PID]
+    fileprivate func fetchData() {
+        var calls:[MSP_code] = [.msp_RC_TUNING, .msp_PIDNAMES, .msp_PID]
 
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") || config.isINav {
-            calls.append(.MSP_FILTER_CONFIG)
+            calls.append(.msp_FILTER_CONFIG)
         } else {
-            calls.append(.MSP_PID_CONTROLLER)
+            calls.append(.msp_PID_CONTROLLER)
         }
         
         chainMspCalls(msp, calls: calls) { success in
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 if success {
                     let settings = Settings.theSettings
                     self.settings = settings
@@ -207,13 +207,13 @@ class PIDViewController: StaticDataTableViewController {
                     
                     SVProgressHUD.dismiss()
                 } else {
-                    SVProgressHUD.showErrorWithStatus("Communication error")
+                    SVProgressHUD.showError(withStatus: "Communication error")
                 }
             }
         }
      }
 
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         if pidControllerPicker.selectedIndex >= 0 {
             settings!.pidController = pidControllerPicker.selectedIndex
         }
@@ -269,12 +269,12 @@ class PIDViewController: StaticDataTableViewController {
             })
         }
         commands.append({ callback in
-            self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
+            self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
         })
         chainMspSend(commands) { success in
             if success {
-                dispatch_async(dispatch_get_main_queue(), {
-                    SVProgressHUD.showSuccessWithStatus("Settings saved")
+                DispatchQueue.main.async(execute: {
+                    SVProgressHUD.showSuccess(withStatus: "Settings saved")
                     self.fetchData()
                 })
             } else {
@@ -284,54 +284,54 @@ class PIDViewController: StaticDataTableViewController {
     }
     
     func saveFailedAlert() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             Analytics.logEvent("pid_saved_failed", parameters: nil)
-            SVProgressHUD.showErrorWithStatus("Save failed")
+            SVProgressHUD.showError(withStatus: "Save failed")
         })
     }
     
-    @IBAction func resetPIDParams(sender: AnyObject) {
-        let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
+    @IBAction func resetPIDParams(_ sender: Any) {
+        let alertController = UIAlertController(title: nil, message: "This will reset the parameters of all PID controllers in the current profile to their default values. Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.destructive, handler: { alertController in
             Analytics.logEvent("pid_reset", parameters: nil)
-            self.msp.sendMessage(.MSP_SET_RESET_CURR_PID, data: nil, retry: 3, callback: { success in
+            self.msp.sendMessage(.msp_SET_RESET_CURR_PID, data: nil, retry: 3, callback: { success in
                 self.fetchData()
             })
         }))
         alertController.popoverPresentationController?.sourceView = (sender as! UIView)
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
-    @IBAction func pidProfileChanged(sender: AnyObject) {
-        SVProgressHUD.showWithStatus("Changing PID Profile")
+    @IBAction func pidProfileChanged(_ sender: Any) {
+        SVProgressHUD.show(withStatus: "Changing PID Profile")
         Analytics.logEvent("pid_profile_changed", parameters: nil)
         msp.sendSelectProfile(Int(pidProfileStepper.value) - 1, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 if success {
                     self.fetchData()
                 } else {
-                    SVProgressHUD.showErrorWithStatus("Profile change failed")
+                    SVProgressHUD.showError(withStatus: "Profile change failed")
                 }
             })
         })
     }
-    @IBAction func rateProfileChanged(sender: AnyObject) {
-        SVProgressHUD.showWithStatus("Changing Rate Profile")
+    @IBAction func rateProfileChanged(_ sender: Any) {
+        SVProgressHUD.show(withStatus: "Changing Rate Profile")
         Analytics.logEvent("rate_profile_changed", parameters: nil)
         msp.sendSelectRateProfile(Int(rateProfileStepper.value) - 1, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 if success {
                     self.fetchData()
                 } else {
-                    SVProgressHUD.showErrorWithStatus("Rate profile change failed")
+                    SVProgressHUD.showError(withStatus: "Rate profile change failed")
                 }
             })
         })
     }
-    @IBAction func showAllPidsChanged(sender: AnyObject) {
+    @IBAction func showAllPidsChanged(_ sender: Any) {
         if let uiswitch = sender as? UISwitch {
-            showCells(allPidsCells, show: uiswitch.on)
-            reloadDataAnimated(true)
+            showCells(allPidsCells, show: uiswitch.isOn)
+            reloadData(animated: true)
         }
     }
 }

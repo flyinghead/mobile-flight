@@ -29,7 +29,7 @@ class BluetoothCommTest: XCTestCase, BluetoothDelegate {
 
     override func setUp() {
         super.setUp()
-        foundDeviceExpect = expectationWithDescription("FoundBluetoothDevice")
+        foundDeviceExpect = expectation(description: "FoundBluetoothDevice")
         btManager.delegate = self
     }
     
@@ -38,7 +38,7 @@ class BluetoothCommTest: XCTestCase, BluetoothDelegate {
         super.tearDown()
     }
     
-    func foundPeripheral(peripheral: BluetoothPeripheral) {
+    func foundPeripheral(_ peripheral: BluetoothPeripheral) {
         device = peripheral
         btManager.connect(peripheral)
     }
@@ -47,12 +47,12 @@ class BluetoothCommTest: XCTestCase, BluetoothDelegate {
         
     }
     
-    func connectedPeripheral(peripheral: BluetoothPeripheral) {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+    func connectedPeripheral(_ peripheral: BluetoothPeripheral) {
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         comm = BluetoothComm(withBluetoothManager: btManager, andPeripheral: peripheral, andMSP: msp)
         btManager.delegate = comm
         
-        msp.sendMessage(.MSP_FILTER_CONFIG, data: nil, retry: 0, flush: true) { success in
+        msp.sendMessage(.msp_FILTER_CONFIG, data: nil, retry: 0, flush: true) { success in
             if !success {
                 XCTFail("send MSP_FILTER_CONFIG failed")
             } else {
@@ -61,17 +61,17 @@ class BluetoothCommTest: XCTestCase, BluetoothDelegate {
         }
     }
     
-    func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
+    func failedToConnectToPeripheral(_ peripheral: BluetoothPeripheral, error: Error?) {
         
     }
-    func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
+    func disconnectedPeripheral(_ peripheral: BluetoothPeripheral) {
         
     }
-    func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
+    func receivedData(_ peripheral: BluetoothPeripheral, data: [UInt8]) {
     }
 
     func sendMessage() {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         msp.sendFilterConfig(Settings.theSettings) { success in
             if !success {
                 XCTFail("send MSP_SET_FILTER_CONFIG failed")
@@ -85,9 +85,9 @@ class BluetoothCommTest: XCTestCase, BluetoothDelegate {
         
         
         btManager.startScanning()
-        waitForExpectationsWithTimeout(60) { error in
+        waitForExpectations(timeout: 60) { error in
             if error != nil {
-                XCTFail("waitForExpectationsWithTimeout errored: \(error)")
+                XCTFail("waitForExpectationsWithTimeout errored: \(String(describing: error))")
             }
         }
     }

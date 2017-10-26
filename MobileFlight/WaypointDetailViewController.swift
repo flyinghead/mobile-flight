@@ -33,51 +33,51 @@ class WaypointDetailViewController: BaseWaypointDetailViewController {
         speedField.minimumValue = msToLocaleSpeed(0.5)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         refreshUI()
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         if index >= waypointList.count {
             return
         }
         let waypoint = waypointList.waypointAt(index)
-        waypoint.altitude = sameAltitudeSwitch.on ? 0.0 : localeAltToMeter(altitudeField.value)
-        waypoint.speed = defaultSpeedSwitch.on ? 0.0 : localeSpeedToMs(speedField.value)
+        waypoint.altitude = sameAltitudeSwitch.isOn ? 0.0 : localeAltToMeter(altitudeField.value)
+        waypoint.speed = defaultSpeedSwitch.isOn ? 0.0 : localeSpeedToMs(speedField.value)
     }
     
-    private func refreshUI() {
+    fileprivate func refreshUI() {
         let waypoint = waypointList.waypointAt(index)
-        sameAltitudeSwitch.on = waypoint.altitude == 0.0
+        sameAltitudeSwitch.isOn = waypoint.altitude == 0.0
         if waypoint.altitude > 0.0 {
             altitudeField.value = meterToLocaleAlt(waypoint.altitude)
         }
         sameAltitudeChanged(self)
         
-        defaultSpeedSwitch.on = waypoint.speed == 0.0
+        defaultSpeedSwitch.isOn = waypoint.speed == 0.0
         if waypoint.speed > 0.0 {
             speedField.value = msToLocaleSpeed(waypoint.speed)
         }
         defaultSpeedChanged(self)
     }
     
-    @IBAction func sameAltitudeChanged(sender: AnyObject) {
-        cell(altitudeCell, setHidden: sameAltitudeSwitch.on)
-        reloadDataAnimated(sender !== self)
+    @IBAction func sameAltitudeChanged(_ sender: AnyObject) {
+        cell(altitudeCell, setHidden: sameAltitudeSwitch.isOn)
+        reloadData(animated: sender !== self)
     }
     
-    @IBAction func defaultSpeedChanged(sender: AnyObject) {
-        cell(speedCell, setHidden: defaultSpeedSwitch.on)
-        reloadDataAnimated(sender !== self)
+    @IBAction func defaultSpeedChanged(_ sender: AnyObject) {
+        cell(speedCell, setHidden: defaultSpeedSwitch.isOn)
+        reloadData(animated: sender !== self)
     }
     
-    private func meterToLocaleAlt(alt: Double) -> Double {
+    fileprivate func meterToLocaleAlt(_ alt: Double) -> Double {
         switch selectedUnitSystem() {
-        case .Imperial, .Aviation:
+        case .imperial, .aviation:
             // feet
             return alt * FEET_PER_METER
         default:
@@ -85,9 +85,9 @@ class WaypointDetailViewController: BaseWaypointDetailViewController {
         }
     }
     
-    private func localeAltToMeter(alt: Double) -> Double {
+    fileprivate func localeAltToMeter(_ alt: Double) -> Double {
         switch selectedUnitSystem() {
-        case .Imperial, .Aviation:
+        case .imperial, .aviation:
             // feet
             return alt / FEET_PER_METER
         default:

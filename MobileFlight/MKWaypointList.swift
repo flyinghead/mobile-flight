@@ -20,7 +20,7 @@
 
 import Foundation
 
-class MKWaypointList : SequenceType {
+class MKWaypointList : Sequence {
     var modifiedEvent = Event<Void>()
     var waypointCreatedEvent = Event<MKWaypoint>()      // Raised right after a waypoint is added
     var waypointDeletedEvent = Event<MKWaypoint>()      // Raised just before a waypoint is deleted
@@ -32,13 +32,13 @@ class MKWaypointList : SequenceType {
     }
     var indexChangedEvent = Event<Int>()
     
-    private var waypoints = [MKWaypoint]()
+    fileprivate var waypoints = [MKWaypoint]()
     
     var activeWaypoint: MKWaypoint?
 
     func getWaypoints() -> [Waypoint] {
         var wps = [Waypoint]()
-        for (i, wpAnnot) in waypoints.enumerate() {
+        for (i, wpAnnot) in waypoints.enumerated() {
             var wp = wpAnnot.waypoint
             wp.number = i + 1
             wp.last = i == waypoints.count - 1
@@ -48,14 +48,14 @@ class MKWaypointList : SequenceType {
         return wps
     }
     
-    private func createWaypointAnnotation(waypoint: Waypoint) -> MKWaypoint {
+    fileprivate func createWaypointAnnotation(_ waypoint: Waypoint) -> MKWaypoint {
         let wpAnnot = MKWaypoint(waypoint: waypoint)
-        wpAnnot.waypointModifiedEvent.addHandler(self, handler: MKWaypointList.waypointModifiedHandler)
+        _ = wpAnnot.waypointModifiedEvent.addHandler(self, handler: MKWaypointList.waypointModifiedHandler)
         
         return wpAnnot
     }
     
-    func setWaypoints(waypoints: [Waypoint]) {
+    func setWaypoints(_ waypoints: [Waypoint]) {
         for waypoint in self.waypoints {
             waypointDeletedEvent.raise(waypoint)
         }
@@ -71,46 +71,46 @@ class MKWaypointList : SequenceType {
         return waypoints.count
     }
     
-    func append(waypoint: Waypoint) {
+    func append(_ waypoint: Waypoint) {
         let wpAnnot = createWaypointAnnotation(waypoint)
-        if waypoint.action == INavWaypointAction.Known(.ReturnToHome) || waypoints.isEmpty || !waypoints.last!.returnToHome {
+        if waypoint.action == INavWaypointAction.known(.returnToHome) || waypoints.isEmpty || !waypoints.last!.returnToHome {
             wpAnnot.number = waypoints.count + 1
             waypoints.append(wpAnnot)
         } else {
             wpAnnot.number = waypoints.count
-            waypoints.insert(wpAnnot, atIndex: waypoints.count - 1)
+            waypoints.insert(wpAnnot, at: waypoints.count - 1)
             waypoints.last!.number = waypoints.count
         }
         waypointCreatedEvent.raise(wpAnnot)
         modifiedEvent.raise()
     }
     
-    func remove(index: Int) {
+    func remove(_ index: Int) {
         if index >= 0 && index < waypoints.count {
             waypointDeletedEvent.raise(waypoints[index])
-            waypoints.removeAtIndex(index)
-            for (i, waypoint) in waypoints.enumerate() {
+            waypoints.remove(at: index)
+            for (i, waypoint) in waypoints.enumerated() {
                 waypoint.number = i + 1
             }
             modifiedEvent.raise()
         }
     }
     
-    func waypointAt(index: Int) -> MKWaypoint {
+    func waypointAt(_ index: Int) -> MKWaypoint {
         return waypoints[index]
     }
     
-    func indexOf(waypoint: MKWaypoint) -> Int? {
-        return waypoints.indexOf(waypoint)
+    func indexOf(_ waypoint: MKWaypoint) -> Int? {
+        return waypoints.index(of: waypoint)
     }
     
     var last: MKWaypoint? {
         return waypoints.last
     }
     
-    func generate() -> AnyGenerator<MKWaypoint> {
+    func makeIterator() -> AnyIterator<MKWaypoint> {
         var index = 0
-        return AnyGenerator {
+        return AnyIterator {
             if index >= self.waypoints.count {
                 return nil
             }
@@ -119,10 +119,10 @@ class MKWaypointList : SequenceType {
         }
     }
     
-    func enumerate() -> AnyGenerator<(Int, MKWaypoint)> {
+    func enumerate() -> AnyIterator<(Int, MKWaypoint)> {
         var index = 0
-        let g = generate()
-        return AnyGenerator {
+        let g = makeIterator()
+        return AnyIterator {
             if let item = g.next() {
                 index += 1
                 return (index - 1, item)
@@ -131,7 +131,7 @@ class MKWaypointList : SequenceType {
         }
     }
     
-    private func waypointModifiedHandler(data: MKWaypoint) {
+    fileprivate func waypointModifiedHandler(_ data: MKWaypoint) {
         modifiedEvent.raise()
     }
 }

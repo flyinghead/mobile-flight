@@ -66,13 +66,13 @@ class ReceiverTuningViewController: StaticDataTableViewController {
             interpolationPicker = MyDownPicker(textField: interpolationTypeField, withData: ["Off", "Preset", "Auto", "Manual"])
         } else {
             cells(interpolationCells, setHidden: true)
-            reloadDataAnimated(false)
+            reloadData(animated: false)
         }
         
         refreshAction(self)
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         saveIfNeeded()
@@ -82,15 +82,15 @@ class ReceiverTuningViewController: StaticDataTableViewController {
         let reference = ["A", "E", "R", "T", "1", "2", "3", "4"]
         var string = ""
         for i in 0..<8 {
-            let refIdx = rcMap!.indexOf(i) ?? i
+            let refIdx = rcMap!.index(of: i) ?? i
             string += reference[refIdx]
         }
         
         return string
     }
     
-    @IBAction func refreshAction(sender: AnyObject) {
-        chainMspCalls(msp, calls: [.MSP_RX_MAP, .MSP_RX_CONFIG, .MSP_RC_TUNING, .MSP_RSSI_CONFIG, .MSP_RC_DEADBAND]) { success in
+    @IBAction func refreshAction(_ sender: Any) {
+        chainMspCalls(msp, calls: [.msp_RX_MAP, .msp_RX_CONFIG, .msp_RC_TUNING, .msp_RSSI_CONFIG, .msp_RC_DEADBAND]) { success in
             if success {
                 self.settings = Settings(copyOf: Settings.theSettings)
                 self.rcMap = Receiver.theReceiver.map
@@ -99,7 +99,7 @@ class ReceiverTuningViewController: StaticDataTableViewController {
                 for i in 0..<Receiver.theReceiver.activeChannels - 4 {
                     rssiChannels.append(String(format: "AUX %d", i + 1))
                 }
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     let rcMapString = self.getRcMapString()
                     switch rcMapString {
                     case self.DefaultRcMap:
@@ -133,7 +133,7 @@ class ReceiverTuningViewController: StaticDataTableViewController {
                         self.interpolationPicker?.selectedIndex = self.settings!.rcInterpolation
                         self.interpolationInterval.value = Double(self.settings!.rcInterpolationInterval)
                         self.cell(self.interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
-                        self.reloadDataAnimated(false)
+                        self.reloadData(animated: false)
                     }
                 })
             } else {
@@ -142,9 +142,9 @@ class ReceiverTuningViewController: StaticDataTableViewController {
         }
     }
 
-    private func fetchError() {
-        dispatch_async(dispatch_get_main_queue()) {
-            SVProgressHUD.showErrorWithStatus("Communication error")
+    fileprivate func fetchError() {
+        DispatchQueue.main.async {
+            SVProgressHUD.showError(withStatus: "Communication error")
         }
     }
 
@@ -237,7 +237,7 @@ class ReceiverTuningViewController: StaticDataTableViewController {
                                                 if !success {
                                                     self.showSaveFailedError()
                                                 } else {
-                                                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                                                    self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                                                         if !success {
                                                             self.showSaveFailedError()
                                                         } else {
@@ -258,18 +258,18 @@ class ReceiverTuningViewController: StaticDataTableViewController {
     }
     
     func showSaveFailedError() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             Analytics.logEvent("receiver_saved_failed", parameters: nil)
-            SVProgressHUD.showErrorWithStatus("Save failed")
+            SVProgressHUD.showError(withStatus: "Save failed")
         })
     }
-    func showSuccess(msg: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showSuccessWithStatus(msg)
+    func showSuccess(_ msg: String) {
+        DispatchQueue.main.async(execute: {
+            SVProgressHUD.showSuccess(withStatus: msg)
         })
     }
-    @IBAction func interpolationTypeChanged(sender: AnyObject) {
+    @IBAction func interpolationTypeChanged(_ sender: Any) {
         self.cell(interpolationValueCell, setHidden: self.interpolationPicker!.selectedIndex != 3)  // Manual
-        self.reloadDataAnimated(true)
+        self.reloadData(animated: true)
     }
 }

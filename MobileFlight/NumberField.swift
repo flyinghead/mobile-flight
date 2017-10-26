@@ -23,7 +23,7 @@ import UIKit
 @IBDesignable
 class NumberField: UITextField {
     
-    typealias ChangeCallback = (value: Double) -> Void
+    typealias ChangeCallback = (_ value: Double) -> Void
     
     @IBInspectable var decimalDigits: Int = 0 {
         didSet {
@@ -40,7 +40,7 @@ class NumberField: UITextField {
             stepper.value = value
             _value = stepper.value
             updateFieldText()
-            changeCallback?(value: self._value)
+            changeCallback?(self._value)
         }
     }
     @IBInspectable var minimumValue: Double = 0.0 {
@@ -92,15 +92,15 @@ class NumberField: UITextField {
     }
     
     func customInit() {
-        self.keyboardType = .DecimalPad
-        self.addTarget(self, action: #selector(NumberField.fieldChanged), forControlEvents: .AllEditingEvents)
-        self.addTarget(self, action: #selector(NumberField.fieldEditingEnded), forControlEvents: [.EditingDidEnd, .EditingDidEndOnExit])
+        self.keyboardType = .decimalPad
+        self.addTarget(self, action: #selector(NumberField.fieldChanged), for: .allEditingEvents)
+        self.addTarget(self, action: #selector(NumberField.fieldEditingEnded), for: [.editingDidEnd, .editingDidEndOnExit])
         
-        stepper.addTarget(self, action: #selector(NumberField.stepperChanged), forControlEvents: .ValueChanged)
+        stepper.addTarget(self, action: #selector(NumberField.stepperChanged), for: .valueChanged)
         toolbar.items = [
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: stepper),
-            UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(NumberField.doneWithNumberPad))
+            UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(NumberField.doneWithNumberPad))
         ]
         toolbar.sizeToFit()
         self.inputAccessoryView = toolbar
@@ -108,7 +108,7 @@ class NumberField: UITextField {
         savedTextColor = textColor
     }
     
-    private func updateFieldText() {
+    fileprivate func updateFieldText() {
         self.text = formatNumber(value, precision: decimalDigits)
     }
 
@@ -126,32 +126,32 @@ class NumberField: UITextField {
         if text != nil {
             // Remove the thousand separators as they confuse the NSNumberFormatter
             var tmpText = text!
-            if let thousandChar = NSLocale.currentLocale().objectForKey(NSLocaleGroupingSeparator) as! String? {
-                tmpText = tmpText.stringByReplacingOccurrencesOfString(thousandChar, withString: "")
+            if let thousandChar = (Locale.current as NSLocale).object(forKey: NSLocale.Key.groupingSeparator) as! String? {
+                tmpText = tmpText.replacingOccurrences(of: thousandChar, with: "")
             }
             
-            let nf = NSNumberFormatter()
-            nf.locale = NSLocale.currentLocale()
+            let nf = NumberFormatter()
+            nf.locale = Locale.current
             nf.maximumSignificantDigits = decimalDigits
             nf.minimumSignificantDigits = 0
-            let value = nf.numberFromString(tmpText)
+            let value = nf.number(from: tmpText)
             if value != nil {
                 stepper.value = value!.doubleValue
                 self._value = stepper.value
-                changeCallback?(value: self._value)
+                changeCallback?(self._value)
             }
         }
     }
     
     func stepperChanged() {
-        UIDevice.currentDevice().playInputClick()
+        UIDevice.current.playInputClick()
         value = stepper.value
         updateFieldText()
     }
     
-    override var enabled: Bool {
+    override var isEnabled: Bool {
         didSet {
-            textColor = enabled ? savedTextColor : UIColor.lightGrayColor()
+            textColor = isEnabled ? savedTextColor : UIColor.lightGray
         }
     }
 }
@@ -162,8 +162,8 @@ class ThrottleField : NumberField {
         super.customInit()
         
         // Current throttle
-        let current = UIBarButtonItem(title: "Current", style: .Plain, target: self, action: #selector(ThrottleField.currentThrottle))
-        toolbar.items?.insert(current, atIndex: 1)
+        let current = UIBarButtonItem(title: "Current", style: .plain, target: self, action: #selector(ThrottleField.currentThrottle))
+        toolbar.items?.insert(current, at: 1)
         toolbar.sizeToFit()
     }
     

@@ -20,7 +20,7 @@
 
 import Foundation
 
-struct PortFunction : OptionSetType, DictionaryCoding {
+struct PortFunction : OptionSet, DictionaryCoding {
     let rawValue: Int
     
     static let None = PortFunction(rawValue: 0)
@@ -63,151 +63,151 @@ struct PortFunction : OptionSetType, DictionaryCoding {
 
 enum PortIdentifier {
     enum Internal : Int {
-        case None = -1
-        case USART1 = 0
-        case USART2 = 1
-        case USART3 = 2
-        case USART4 = 3
-        case USB_VCP = 20
-        case SoftSerial1 = 30
-        case SoftSerial2 = 31
+        case none = -1
+        case usart1 = 0
+        case usart2 = 1
+        case usart3 = 2
+        case usart4 = 3
+        case usb_VCP = 20
+        case softSerial1 = 30
+        case softSerial2 = 31
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let intern = Internal(rawValue: value) {
-            self = .Known(intern)
+            self = .known(intern)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let intern):
+        case .known(let intern):
             return intern.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
     
     var name: String {
         switch self {
-        case .Known(let intern):
+        case .known(let intern):
             switch intern {
-            case .None:
+            case .none:
                 return "None"
-            case .USART1:
+            case .usart1:
                 return "UART1"
-            case .USART2:
+            case .usart2:
                 return "UART2"
-            case .USART3:
+            case .usart3:
                 return "UART3"
-            case .USART4:
+            case .usart4:
                 return "UART4"
-            case .USB_VCP:
+            case .usb_VCP:
                 return "USB"
-            case .SoftSerial1:
+            case .softSerial1:
                 return "SOFTSERIAL1"
-            case .SoftSerial2:
+            case .softSerial2:
                 return "SOFTSERIAL2"
             }
-        case .Unknown(let value):
+        case .unknown(let value):
             return String(format: "PORT %d", value)
         }
     }
 }
 
 enum BaudRate : Equatable {
-    case Auto
-    case Baud1200
-    case Baud2400
-    case Baud4800
-    case Baud9600
-    case Baud19200
-    case Baud38400
-    case Baud57600
-    case Baud115200
-    case Baud230400
-    case Baud250000
-    case Baud400000
-    case Baud460800
-    case Baud500000
-    case Baud921600
-    case Baud1000000
-    case Baud1500000
-    case Baud2000000
-    case Baud2470000
-    case Unknown(value: Int)
+    case auto
+    case baud1200
+    case baud2400
+    case baud4800
+    case baud9600
+    case baud19200
+    case baud38400
+    case baud57600
+    case baud115200
+    case baud230400
+    case baud250000
+    case baud400000
+    case baud460800
+    case baud500000
+    case baud921600
+    case baud1000000
+    case baud1500000
+    case baud2000000
+    case baud2470000
+    case unknown(value: Int)
     
     init(value: Int) {
         let values = BaudRate.values()
         if value >= 0 && value < values.count {
             self = values[value]
         } else {
-            self = .Unknown(value: value)
+            self = .unknown(value: value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         default:
             let values = BaudRate.values()
-            return values.indexOf(self) ?? 0
+            return values.index(of: self) ?? 0
         }
     }
     
     var description: String {
         switch self {
-        case Auto:
+        case .auto:
             return "Auto"
-        case Baud1200:
+        case .baud1200:
             return "1200"
-        case Baud2400:
+        case .baud2400:
             return "2400"
-        case Baud4800:
+        case .baud4800:
             return "4800"
-        case Baud9600:
+        case .baud9600:
             return "9600"
-        case Baud19200:
+        case .baud19200:
             return "19200"
-        case Baud38400:
+        case .baud38400:
             return "38400"
-        case Baud57600:
+        case .baud57600:
             return "57600"
-        case Baud115200:
+        case .baud115200:
             return "115200"
-        case Baud230400:
+        case .baud230400:
             return "230400"
-        case Baud250000:
+        case .baud250000:
             return "250000"
-        case Baud400000:
+        case .baud400000:
             return "400000"
-        case Baud460800:
+        case .baud460800:
             return "460800"
-        case Baud500000:
+        case .baud500000:
             return "500000"
-        case Baud921600:
+        case .baud921600:
             return "921600"
-        case Baud1000000:
+        case .baud1000000:
             return "1000000"
-        case Baud1500000:
+        case .baud1500000:
             return "1500000"
-        case Baud2000000:
+        case .baud2000000:
             return "2000000"
-        case Baud2470000:
+        case .baud2470000:
             return "2470000"
-        case Unknown(let value):
+        case .unknown(let value):
             return String(format: "Unknown (%d)", value)
         }
     }
     
-    static let inav17Values = [Auto, Baud1200, Baud2400, Baud4800, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000, Baud460800, Baud921600]
-    static let bfValues = [Auto, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000, Baud400000, Baud460800, Baud500000, Baud921600, Baud1000000, Baud1500000, Baud2000000, Baud2470000]
-    static let defaultValues =  [Auto, Baud9600, Baud19200, Baud38400, Baud57600, Baud115200, Baud230400, Baud250000]
+    static let inav17Values = [auto, baud1200, baud2400, baud4800, baud9600, baud19200, baud38400, baud57600, baud115200, baud230400, baud250000, baud460800, baud921600]
+    static let bfValues = [auto, baud9600, baud19200, baud38400, baud57600, baud115200, baud230400, baud250000, baud400000, baud460800, baud500000, baud921600, baud1000000, baud1500000, baud2000000, baud2470000]
+    static let defaultValues =  [auto, baud9600, baud19200, baud38400, baud57600, baud115200, baud230400, baud250000]
     
     static func values() -> [BaudRate] {
         let config = Configuration.theConfig
@@ -228,12 +228,12 @@ func ==(lhs: BaudRate, rhs: BaudRate) -> Bool {
 }
 
 struct PortConfig : DictionaryCoding {
-    var portIdentifier = PortIdentifier.Known(.None)
+    var portIdentifier = PortIdentifier.known(.none)
     var functions = PortFunction.None
-    var mspBaudRate = BaudRate.Auto
-    var gpsBaudRate = BaudRate.Auto
-    var telemetryBaudRate = BaudRate.Auto
-    var blackboxBaudRate = BaudRate.Auto
+    var mspBaudRate = BaudRate.auto
+    var gpsBaudRate = BaudRate.auto
+    var telemetryBaudRate = BaudRate.auto
+    var blackboxBaudRate = BaudRate.auto
     
     init(portIdentifier: PortIdentifier, functions: PortFunction, mspBaudRate: BaudRate, gpsBaudRate: BaudRate, telemetryBaudRate: BaudRate, blackboxBaudRate: BaudRate) {
         self.portIdentifier = portIdentifier

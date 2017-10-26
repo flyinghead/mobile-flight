@@ -27,7 +27,7 @@ class OSDElementView: UIView {
         didSet {
             if selected {
                 self.layer.borderWidth = 2
-                self.layer.borderColor = UIColor.redColor().CGColor
+                self.layer.borderColor = UIColor.red.cgColor
             } else {
                 self.layer.borderWidth = 0
             }
@@ -38,10 +38,10 @@ class OSDElementView: UIView {
         didSet {
             if dragged {
                 self.layer.borderWidth = 4
-                self.layer.borderColor = UIColor.redColor().CGColor
+                self.layer.borderColor = UIColor.red.cgColor
             } else if selected {
                 self.layer.borderWidth = 2
-                self.layer.borderColor = UIColor.redColor().CGColor
+                self.layer.borderColor = UIColor.red.cgColor
             } else {
                 self.layer.borderWidth = 0
             }
@@ -61,17 +61,17 @@ class OSDElementView: UIView {
         localInit()
     }
 
-    private func localInit() {
-        self.opaque = false
+    fileprivate func localInit() {
+        self.isOpaque = false
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
-        CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
-        CGContextSaveGState(ctx)
+        ctx.clip(to: bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
+        ctx.saveGState()
         switch position.element! {
-        case .HorizonSidebars:
+        case .horizonSidebars:
             let charWidth = superview!.bounds.width / CGFloat(CHARS_PER_LINE)
             let charHeight = superview!.bounds.height / CGFloat(OSD.theOSD.videoMode.lines)
             for (x, y, string) in position.element.multiplePreviews()! {
@@ -81,10 +81,10 @@ class OSDElementView: UIView {
             drawString(ctx, x: 0, y: 0, string: position.element.preview)
         }
         
-        CGContextRestoreGState(ctx)
+        ctx.restoreGState()
     }
     
-    private func drawString( ctx: CGContext, x: CGFloat, y: CGFloat, string: String) {
+    fileprivate func drawString( _ ctx: CGContext, x: CGFloat, y: CGFloat, string: String) {
         let viewSize = superview!.bounds.size
         let pixelSize = CGSize(width: viewSize.width / CGFloat(CHARS_PER_LINE) / CGFloat(CharDefinition.Width), height: viewSize.height / CGFloat(OSD.theOSD.videoMode.lines) / CGFloat(CharDefinition.Height))
 
@@ -97,14 +97,14 @@ class OSDElementView: UIView {
                 for col in 0 ..< CharDefinition.Width {
                     let pixel = charDef.pixels[line][col]
                     switch pixel {
-                    case .Black:
-                        CGContextSetFillColorWithColor(ctx, UIColor.blackColor().CGColor)
-                    case .White:
-                        CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-                    case .Transparent:
+                    case .black:
+                        ctx.setFillColor(UIColor.black.cgColor)
+                    case .white:
+                        ctx.setFillColor(UIColor.white.cgColor)
+                    case .transparent:
                         continue
                     }
-                    CGContextFillRect(ctx, CGRect(x: xCopy + CGFloat(col) * pixelSize.width, y: y + CGFloat(line) * pixelSize.height, width: pixelSize.width, height: pixelSize.height))
+                    ctx.fill(CGRect(x: xCopy + CGFloat(col) * pixelSize.width, y: y + CGFloat(line) * pixelSize.height, width: pixelSize.width, height: pixelSize.height))
                 }
             }
             xCopy += CGFloat(CharDefinition.Width) * pixelSize.width

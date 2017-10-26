@@ -37,23 +37,23 @@ class SensorPagesViewController: UIPageViewController, UIPageViewControllerDataS
         for subview in view.subviews {
             if (subview is UIPageControl) {
                 let pageControl = subview as! UIPageControl
-                pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
-                pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
-                pageControl.backgroundColor = UIColor.whiteColor()
+                pageControl.pageIndicatorTintColor = UIColor.lightGray
+                pageControl.currentPageIndicatorTintColor = UIColor.black
+                pageControl.backgroundColor = UIColor.white
             }
         }
 
-        accelerometerViewController = storyboard!.instantiateViewControllerWithIdentifier("AccelerometerViewController")
-        gyroscopeViewController = storyboard!.instantiateViewControllerWithIdentifier("GyroscopeViewController")
-        magnetometerViewController = storyboard!.instantiateViewControllerWithIdentifier("MagnetometerViewController")
-        barometerViewController = storyboard!.instantiateViewControllerWithIdentifier("BarometerViewController")
-        sonarViewController = storyboard!.instantiateViewControllerWithIdentifier("SonarViewController")
-        dataLinkViewController = storyboard!.instantiateViewControllerWithIdentifier("DataLinkViewController")
+        accelerometerViewController = storyboard!.instantiateViewController(withIdentifier: "AccelerometerViewController")
+        gyroscopeViewController = storyboard!.instantiateViewController(withIdentifier: "GyroscopeViewController")
+        magnetometerViewController = storyboard!.instantiateViewController(withIdentifier: "MagnetometerViewController")
+        barometerViewController = storyboard!.instantiateViewController(withIdentifier: "BarometerViewController")
+        sonarViewController = storyboard!.instantiateViewController(withIdentifier: "SonarViewController")
+        dataLinkViewController = storyboard!.instantiateViewController(withIdentifier: "DataLinkViewController")
 
         self.dataSource = self
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         activeViewControllers = [ accelerometerViewController, gyroscopeViewController ]
         
         let config = Configuration.theConfig
@@ -68,41 +68,41 @@ class SensorPagesViewController: UIPageViewController, UIPageViewControllerDataS
         }
         activeViewControllers.append(dataLinkViewController)
 
-        let currentIndex = presentationIndexForPageViewController(self)
+        let currentIndex = presentationIndex(for: self)
 
-        self.setViewControllers([ activeViewControllers[currentIndex] ], direction: .Forward, animated: false, completion: nil)
+        self.setViewControllers([ activeViewControllers[currentIndex] ], direction: .forward, animated: false, completion: nil)
     }
     
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        guard let index = activeViewControllers.indexOf(viewController) else {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        guard let index = activeViewControllers.index(of: viewController) else {
             return nil
         }
         if index == activeViewControllers.startIndex {
             return nil
         }
         
-        return activeViewControllers[index.predecessor()]
+        return activeViewControllers[(index - 1)]
     }
     
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        guard let index = activeViewControllers.indexOf(viewController) else {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        guard let index = activeViewControllers.index(of: viewController) else {
             return nil
         }
         if index == activeViewControllers.endIndex - 1 {
             return nil
         }
 
-        return activeViewControllers[index.successor()]
+        return activeViewControllers[(index + 1)]
     }
     
-    func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return activeViewControllers.count
     }
     
-    func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
-        guard let viewControllers = pageViewController.viewControllers where !viewControllers.isEmpty else {
+    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+        guard let viewControllers = pageViewController.viewControllers, !viewControllers.isEmpty else {
             return 0
         }
-        return activeViewControllers.indexOf(viewControllers[0]) ?? 0
+        return activeViewControllers.index(of: viewControllers[0]) ?? 0
     }
 }

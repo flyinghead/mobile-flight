@@ -20,33 +20,33 @@
 
 import Foundation
 
-class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
+class MetarManager : NSObject, URLSessionDelegate, URLSessionDataDelegate {
     static let instance = MetarManager()
     
-    private let updateFrequency = 60.0 * 15   // Every 15 min
+    fileprivate let updateFrequency = 60.0 * 15   // Every 15 min
     
-    private let latitudeRange = 0.9         // Approx. 100 km
-    private let longitudeRange = 1.4        // Approx. 100 km at 48° lat
+    fileprivate let latitudeRange = 0.9         // Approx. 100 km
+    fileprivate let longitudeRange = 1.4        // Approx. 100 km at 48° lat
 
-    private var urlSession : NSURLSession!
-    private var dataTask: NSURLSessionDataTask?
+    fileprivate var urlSession : Foundation.URLSession!
+    fileprivate var dataTask: URLSessionDataTask?
     
-    private var position: GPSLocation!
-    private var rangeMultiplier = 1.0
-    private var lastRetrieveDate: NSDate?
-    private var observers = [(object: AnyObject, selector: Selector)]()
+    fileprivate var position: GPSLocation!
+    fileprivate var rangeMultiplier = 1.0
+    fileprivate var lastRetrieveDate: Date?
+    fileprivate var observers = [(object: AnyObject, selector: Selector)]()
 
-    private(set) var reports: [MetarReport]!
+    fileprivate(set) var reports: [MetarReport]!
     
-    private var updateTimer: NSTimer?
+    fileprivate var updateTimer: Timer?
     
-    private override init() {
+    fileprivate override init() {
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(appDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         appDidBecomeActive()
-        urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: self, delegateQueue: nil)
+        urlSession = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
     }
     
     weak var locationProvider: UserLocationProvider! {
@@ -58,14 +58,14 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
         }
     }
     
-    private func updateCurrentLocationAndRetrieveReports() {
+    fileprivate func updateCurrentLocationAndRetrieveReports() {
         locationProvider?.currentLocation() { [weak self] in
             self?.position = $0
             self?.retrieveMetarReports()
         }
     }
     
-    private func retrieveMetarReports() {
+    fileprivate func retrieveMetarReports() {
         if dataTask != nil {
             return
         }
@@ -78,9 +78,9 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
         let urlString = String(format: "https://aviationweather.gov/gis/scripts/MetarJSON.php?bbox=%f,%f,%f,%f&density=all", minLon, minLat, maxLon, maxLat)
         NSLog("Retrieving METARs: %@", urlString)
         
-        let url = NSURL(string: urlString)!
+        let url = URL(string: urlString)!
         
-        dataTask = urlSession.dataTaskWithURL(url) { (data, response, error) in
+        dataTask = urlSession.dataTask(with: url, completionHandler: { (data, response, error) in
             self.dataTask = nil
             
             if error != nil || data == nil {
@@ -90,12 +90,12 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
             }
             
             do {
-                let result = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as! Dictionary<String, NSObject>
+                let result = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! Dictionary<String, NSObject>
                 let results = result["features"] as! Array<Dictionary<String, NSObject>>
                 
-                let isoDateFormatter = NSDateFormatter()
+                let isoDateFormatter = DateFormatter()
                 isoDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-                isoDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+                isoDateFormatter.locale = Locale(identifier: "en_US_POSIX")
                 
                 var reports = [MetarReport]()
                 for airport in results {
@@ -106,8 +106,8 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
                     metarReport.position = GPSLocation(latitude: coordinates[1].doubleValue, longitude: coordinates[0].doubleValue)
                     
                     let properties = airport["properties"] as! Dictionary<String, NSObject>
-                    metarReport.site = properties["site"] as? NSString as? String ?? "Unknown"
-                    metarReport.observationTime = isoDateFormatter.dateFromString(properties["obsTime"] as! NSString as String)
+                    metarReport.site = properties["site"] as? String ?? "Unknown"
+                    metarReport.observationTime = isoDateFormatter.date(from: properties["obsTime"] as! String)
                     if let temp = properties["temp"] as? NSNumber {
                         metarReport.temperature = temp.doubleValue
                     }
@@ -127,8 +127,8 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
                         // Ignore empty reports
                         continue
                     }
-                    metarReport.cover = properties["cover"] as? NSString as? String ?? nil
-                    metarReport.wx = properties["wx"] as? NSString as? String ?? nil
+                    metarReport.cover = properties["cover"] as? String? ?? nil
+                    metarReport.wx = properties["wx"] as? String? ?? nil
                     metarReport.distance = getDistance(metarReport.position, self.position)
                     metarReport.heading = getHeading(self.position, to: metarReport.position)
                     
@@ -140,7 +140,7 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
                     return
                 }
                 
-                reports.sortInPlace({
+                reports.sort(by: {
                     return $0.distance < $1.distance
                 })
                 
@@ -149,15 +149,15 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
                 NSLog("METAR: Cannot read METAR result: %@", error)
             }
             self.finishedRetrieval()
-        }
+        }) 
         dataTask!.resume()
     }
     
-    private func enlargeAreaAndRetryRetrieve() {
+    fileprivate func enlargeAreaAndRetryRetrieve() {
         rangeMultiplier += 1
         if rangeMultiplier <= 5 {
             NSLog("No METAR site found. Retrying with multiplier %f", rangeMultiplier)
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(100) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(100) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
                 self.retrieveMetarReports()
             })
         } else {
@@ -166,103 +166,103 @@ class MetarManager : NSObject, NSURLSessionDelegate, NSURLSessionDataDelegate {
         }
     }
     
-    private func finishedRetrieval() {
+    fileprivate func finishedRetrieval() {
         NSLog("Finished METARs retrieval")
         self.rangeMultiplier = 1
-        self.lastRetrieveDate = NSDate()
+        self.lastRetrieveDate = Date()
         notifyObservers()
         scheduleUpdateTimer(self.updateFrequency)
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Normally not called
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Normally not called
     }
     
-    func addObserver(object: AnyObject, selector: Selector) {
+    func addObserver(_ object: AnyObject, selector: Selector) {
         observers.append((object: object, selector: selector))
     }
     
-    func removeObserver(observer: AnyObject) {
+    func removeObserver(_ observer: AnyObject) {
         for i in 0..<observers.count {
             if (observers[i].object === observer) {
-                observers.removeAtIndex(i)
+                observers.remove(at: i)
                 break
             }
         }
     }
     
-    private func notifyObservers() {
-        dispatch_async(dispatch_get_main_queue()) {
+    fileprivate func notifyObservers() {
+        DispatchQueue.main.async {
             for (object, selector) in self.observers {
-                object.performSelector(selector)
+                _ = object.perform(selector)
             }
         }
     }
     
     @objc
-    private func appDidEnterBackground() {
+    fileprivate func appDidEnterBackground() {
         updateTimer?.invalidate();
         updateTimer = nil
     }
     
     @objc
-    private func appDidBecomeActive() {
+    fileprivate func appDidBecomeActive() {
         if updateTimer == nil {
             if self.lastRetrieveDate == nil {
                 updateTimerFired(nil)
             } else {
-                let timeToNextUpdate = self.lastRetrieveDate!.dateByAddingTimeInterval(updateFrequency).timeIntervalSinceNow
+                let timeToNextUpdate = self.lastRetrieveDate!.addingTimeInterval(updateFrequency).timeIntervalSinceNow
                 scheduleUpdateTimer(timeToNextUpdate)
             }
         }
     }
     
-    private func scheduleUpdateTimer(interval: NSTimeInterval) {
-        dispatch_async(dispatch_get_main_queue()) {
+    fileprivate func scheduleUpdateTimer(_ interval: TimeInterval) {
+        DispatchQueue.main.async {
             if interval  <= 0 {
                 self.updateTimerFired(nil)
             } else {
                 NSLog("METARs update in %.0f sec", interval)
                 self.updateTimer?.invalidate()
-                self.updateTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(self.updateTimerFired), userInfo: nil, repeats: false)
+                self.updateTimer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(self.updateTimerFired), userInfo: nil, repeats: false)
             }
         }
     }
     
     @objc
-    private func updateTimerFired(timer: NSTimer?) {
+    fileprivate func updateTimerFired(_ timer: Timer?) {
         updateCurrentLocationAndRetrieveReports()
     }
 }
 
 enum WeatherLevel : Int {
-    case Clear = 0
-    case PartlyCloudy
-    case Overcast
-    case Rain
-    case Snow
-    case Thunderstorm
+    case clear = 0
+    case partlyCloudy
+    case overcast
+    case rain
+    case snow
+    case thunderstorm
 }
 
 class MetarReport {
-    private static let wxWeatherLevels: [String : WeatherLevel] = [ "RA" : .Rain, "SN" : .Snow, "FG" : .Overcast, "TS" : .Thunderstorm, "IC" : .Snow, "GR" : .Snow, "UP" : .Rain,
-                                    "BR" : .Overcast, "DU" : .Overcast, "SA" : .Overcast, "DS" : .Overcast, "DZ" : .Rain,
-                                    "SG" : .Snow, "PL" : .Snow, "GS" : .Snow, "VA" : .Overcast, "HZ" : .Overcast, "FU" : .Overcast, "PY" : .Overcast,
-                                    "PO" : .Overcast, "SS" : .Overcast, "SH" : .Rain ]
-    private static let wxEvents = [ "RA" : "rain", "SN" : "snow", "FG" : "fog", "TS" : "thunderstorm", "IC" : "ice", "GR" : "hail", "UP" : "precipitations",
+    fileprivate static let wxWeatherLevels: [String : WeatherLevel] = [ "RA" : .rain, "SN" : .snow, "FG" : .overcast, "TS" : .thunderstorm, "IC" : .snow, "GR" : .snow, "UP" : .rain,
+                                    "BR" : .overcast, "DU" : .overcast, "SA" : .overcast, "DS" : .overcast, "DZ" : .rain,
+                                    "SG" : .snow, "PL" : .snow, "GS" : .snow, "VA" : .overcast, "HZ" : .overcast, "FU" : .overcast, "PY" : .overcast,
+                                    "PO" : .overcast, "SS" : .overcast, "SH" : .rain ]
+    fileprivate static let wxEvents = [ "RA" : "rain", "SN" : "snow", "FG" : "fog", "TS" : "thunderstorm", "IC" : "ice", "GR" : "hail", "UP" : "precipitations",
                                     "BR" : "mist", "DU" : "dust", "SA" : "sand", "SQ" : "squall", "DS" : "duststorm", "FC" : "funnel cloud", "DZ" : "drizzle",
                                     "SG" : "snow grains", "PL" : "ice pellets", "GS" : "snow pellets", "VA" : "ash", "HZ" : "haze", "FU" : "smoke", "PY" : "spray",
                                     "PO" : "dust", "SS" : "sandstorm", "SH" : "showers" ]
-    private static let wxQualifiers = [ "-" : "light %@", "+" : "heavy %@", "MI" : "shallow %@", "BC" : "%@ patches", "BL" : "blowing %@", "TS" : "%@ thunderstorm",
+    fileprivate static let wxQualifiers = [ "-" : "light %@", "+" : "heavy %@", "MI" : "shallow %@", "BC" : "%@ patches", "BL" : "blowing %@", "TS" : "%@ thunderstorm",
                                         "VC" : "%@", "PR" : "partial %@", "DR" : "blowing %@", "SH" : "%@ showers", "FZ" : "freezing %@" ]
     
     var site = "Unknown"
     var position: GPSLocation!
-    var observationTime: NSDate!
+    var observationTime: Date!
     var temperature: Double?        // ° Celsius
     var windSpeed: Double?          // knots
     var windGust: Double?           // knots
@@ -300,44 +300,44 @@ class MetarReport {
         return _weatherLevel
     }
     
-    private func parseWxAndCover() {
+    fileprivate func parseWxAndCover() {
         _description = ""
-        _weatherLevel = .Clear
+        _weatherLevel = .clear
         if wx != nil {
-            let events = wx!.characters.split(" ")
+            let events = wx!.characters.split(separator: " ")
             for event in events {
                 var eventDescription = describeEvent(String(event))
                 if eventDescription.isEmpty {
                     continue
                 }
                 // Capitalize first char
-                eventDescription.replaceRange(eventDescription.startIndex...eventDescription.startIndex, with: String(eventDescription[eventDescription.startIndex]).uppercaseString)
+                eventDescription.replaceSubrange(eventDescription.startIndex...eventDescription.startIndex, with: String(eventDescription[eventDescription.startIndex]).uppercased())
                 
                 if !description.isEmpty {
-                    _description = _description.stringByAppendingString(", ")
+                    _description = _description + ", "
                 }
-                _description = _description.stringByAppendingString(eventDescription)
+                _description = _description + eventDescription
             }
         }
-        if _weatherLevel == .Clear && cover != nil {
+        if _weatherLevel == .clear && cover != nil {
             switch cover! {
             case "OVC":
-                _weatherLevel = .Overcast
+                _weatherLevel = .overcast
                 if _description.isEmpty {
                     _description = "Cloudy"
                 }
             case "BKN":
-                _weatherLevel = .Overcast
+                _weatherLevel = .overcast
                 if _description.isEmpty {
                     _description = "Mostly cloudy"
                 }
             case "SCT":
-                _weatherLevel = .PartlyCloudy
+                _weatherLevel = .partlyCloudy
                 if _description.isEmpty {
                     _description = "Partly cloudy"
                 }
             case "FEW":
-                _weatherLevel = .PartlyCloudy
+                _weatherLevel = .partlyCloudy
                 if _description.isEmpty {
                     _description = "Mostly clear"
                 }
@@ -351,25 +351,25 @@ class MetarReport {
         }
     }
     
-    private func describeEvent(code: String) -> String {
+    fileprivate func describeEvent(_ code: String) -> String {
         if code.hasPrefix("+") || code.hasPrefix("-") {
-            let event = describeEvent(code.substringFromIndex(code.startIndex.successor()))
+            let event = describeEvent(code.substring(from: code.characters.index(after: code.startIndex)))
             if event == "" {
                 return ""
             }
-            return String(format: MetarReport.wxQualifiers[code.substringToIndex(code.startIndex.successor())]!, event)
+            return String(format: MetarReport.wxQualifiers[code.substring(to: code.characters.index(after: code.startIndex))]!, event)
         }
         var events = [String]()
         var moreEvents = [String]()
         var qualifiers = [String]()
         var lessQualifiers = [String]()
         var index = code.startIndex
-        while index < code.endIndex.predecessor() {
-            let nextIndex = index.advancedBy(2)
-            let token = code.substringWithRange(index..<nextIndex)
+        while index < code.characters.index(before: code.endIndex) {
+            let nextIndex = code.characters.index(index, offsetBy: 2)
+            let token = code.substring(with: index..<nextIndex)
             index = nextIndex
             
-            if let level = MetarReport.wxWeatherLevels[token] where level.rawValue > _weatherLevel.rawValue {
+            if let level = MetarReport.wxWeatherLevels[token], level.rawValue > _weatherLevel.rawValue {
                 _weatherLevel = level
             }
 

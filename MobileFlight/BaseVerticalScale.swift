@@ -70,8 +70,8 @@ class BaseVerticalScale: UIView {
         }
     }
     
-    func drawVerticalScale(context: CGContext, top: Double) {
-        CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
+    func drawVerticalScale(_ context: CGContext, top: Double) {
+        context.setFillColor(UIColor.white.cgColor)
         var value = top
         
         if subSubTicksInterval != 0 {
@@ -83,11 +83,11 @@ class BaseVerticalScale: UIView {
         }
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = rightAligned ? .Right : .Left
+        paragraphStyle.alignment = rightAligned ? .right : .left
         
         let font = UIFont(name: "Verdana", size: self.fontSize)!
-        let textAttributes: [String : AnyObject]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
+        let textAttributes: [String : Any]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.white, NSParagraphStyleAttributeName : paragraphStyle]
+        let fontSize = ("0" as NSString).size(attributes: textAttributes)
         
         while true {
             let y = CGFloat((top - value) * scale) + bounds.minY
@@ -103,7 +103,7 @@ class BaseVerticalScale: UIView {
                     length = fontSize.width
                     
                     let string = String(format:"%.0f", value)             // FIXME how many decimals??
-                    string.drawInRect(CGRect(x: rightAligned ? bounds.minX : bounds.minX + fontSize.width * 1.5, y: graduationTextTop, width: bounds.width - fontSize.width * 1.5, height: fontSize.height), withAttributes: textAttributes)
+                    string.draw(in: CGRect(x: rightAligned ? bounds.minX : bounds.minX + fontSize.width * 1.5, y: graduationTextTop, width: bounds.width - fontSize.width * 1.5, height: fontSize.height), withAttributes: textAttributes)
                 } else if subTicksInterval != 0 && value == round(value / subTicksInterval) * subTicksInterval {
                     width = 2
                     length = fontSize.width * 0.75
@@ -112,7 +112,7 @@ class BaseVerticalScale: UIView {
                     length = fontSize.width * 0.5
                 }
                 
-                CGContextFillRect(context, CGRect(x: rightAligned ? bounds.maxX - length : bounds.minX, y: y - width / 2, width: length, height: width))
+                context.fill(CGRect(x: rightAligned ? bounds.maxX - length : bounds.minX, y: y - width / 2, width: length, height: width))
             }
             
             if subSubTicksInterval != 0 {

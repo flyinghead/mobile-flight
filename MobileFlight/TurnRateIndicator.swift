@@ -35,23 +35,23 @@ class TurnRateIndicator: UIView {
         }
     }
     
-    @IBInspectable var color: UIColor =  UIColor.magentaColor() {
+    @IBInspectable var color: UIColor =  UIColor.magenta {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    override func drawRect(rectxxx: CGRect) {
+    override func draw(_ rectxxx: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
-        CGContextSetFillColorWithColor(ctx, color.CGColor)
+        ctx.setFillColor(color.cgColor)
         if value < 0 {
-            CGContextFillRect(ctx, CGRect(x: bounds.midX + CGFloat(value * scale), y: bounds.minY, width: -CGFloat(value * scale), height: bounds.height))
+            ctx.fill(CGRect(x: bounds.midX + CGFloat(value * scale), y: bounds.minY, width: -CGFloat(value * scale), height: bounds.height))
         } else {
-            CGContextFillRect(ctx, CGRect(x: bounds.midX, y: bounds.minY, width: CGFloat(value * scale), height: bounds.height))
+            ctx.fill(CGRect(x: bounds.midX, y: bounds.minY, width: CGFloat(value * scale), height: bounds.height))
         }
-        CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextFillRect(ctx, CGRect(x: bounds.midX - 0.5, y: bounds.minY + 1, width: 1, height: bounds.height - 2))
+        ctx.setFillColor(UIColor.white.cgColor)
+        ctx.fill(CGRect(x: bounds.midX - 0.5, y: bounds.minY + 1, width: 1, height: bounds.height - 2))
     }
 
 }

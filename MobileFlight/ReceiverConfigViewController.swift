@@ -23,8 +23,8 @@ import UIKit
 class ReceiverConfigViewController: ConfigChildViewController {
     @IBOutlet var serialReceiverCells: [UITableViewCell]!
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         var selected = false
         if indexPath.section == 0 {
             // Receiver type
@@ -44,12 +44,12 @@ class ReceiverConfigViewController: ConfigChildViewController {
             // Serial receiver type
             selected = settings!.serialRxType == indexPath.row
         }
-        cell.accessoryType = selected ? .Checkmark : .None
+        cell.accessoryType = selected ? .checkmark : .none
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             // Receiver type
             settings?.features.remove(.RxPpm)
@@ -73,23 +73,23 @@ class ReceiverConfigViewController: ConfigChildViewController {
             // Serial receiver type
             settings!.serialRxType = indexPath.row
         }
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         configViewController?.refreshUI()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         cells(serialReceiverCells, setHidden: !settings!.features.contains(.RxSerial))
-        reloadDataAnimated(false)
+        reloadData(animated: false)
     }
     
-    class func receiverConfigLabel(settings: Settings) -> String {
+    class func receiverConfigLabel(_ settings: Settings) -> String {
         if settings.features.contains(.RxParallel) {
             return "PWM"
         } else if settings.features.contains(.RxPpm) {
@@ -97,7 +97,7 @@ class ReceiverConfigViewController: ConfigChildViewController {
         } else if settings.features.contains(.RxMsp) {
             return "MSP"
         } else if settings.features.contains(.RxSerial) {
-            switch settings.serialRxType ?? 0 {
+            switch settings.serialRxType {
             case 0:
                 return "Spektrum 1024"
             case 1:

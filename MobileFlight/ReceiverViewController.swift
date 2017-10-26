@@ -32,23 +32,23 @@ class ReceiverViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: ReceiverViewController.receivedReceiverData)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         receiverEventHandler?.dispose()
     }
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return Receiver.theReceiver.activeChannels
         } else {
@@ -56,7 +56,7 @@ class ReceiverViewController: UITableViewController {
         }
     }
     
-    class func channelLabel(i: Int) -> String {
+    class func channelLabel(_ i: Int) -> String {
         switch i {
         case 0:
             return "Roll"
@@ -72,12 +72,12 @@ class ReceiverViewController: UITableViewController {
         
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 1 {
-            return tableView.dequeueReusableCellWithIdentifier("ConfigCell", forIndexPath: indexPath)
+            return tableView.dequeueReusableCell(withIdentifier: "ConfigCell", for: indexPath)
         }
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("ChannelCell", forIndexPath: indexPath) as! ChannelCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelCell
         let channelNum = indexPath.row
         cell.channelView.label = ReceiverViewController.channelLabel(channelNum)
         cell.channelView.color = channelNum >= colors.count ? colors[colors.count - 1] : colors[channelNum]
@@ -85,7 +85,7 @@ class ReceiverViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return 1
         } else {

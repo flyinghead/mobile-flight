@@ -83,17 +83,17 @@ class StepperWithLabel : UIView {
         label.text = labelFormatter(stepper.value)
         view.frame = bounds
         addSubview(view)
-        addConstraint(NSLayoutConstraint(item: view, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: view, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: view, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0.0))
         contentView = view
     }
     
     func loadViewFromNib() -> UIView? {
-        let bundle = NSBundle.mainBundle()
+        let bundle = Bundle.main
         let nib = UINib(nibName: "StepperWithLabel", bundle: bundle)
-        return nib.instantiateWithOwner(self, options: nil).first as? UIView
+        return nib.instantiate(withOwner: self, options: nil).first as? UIView
     }
 
     override func prepareForInterfaceBuilder() {
@@ -102,7 +102,7 @@ class StepperWithLabel : UIView {
         contentView?.prepareForInterfaceBuilder()
     }
 
-    @IBAction func stepperChanged(sender: AnyObject) {
+    @IBAction func stepperChanged(_ sender: Any) {
         label.text = labelFormatter(stepper.value)
     }
 }

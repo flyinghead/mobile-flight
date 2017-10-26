@@ -21,10 +21,10 @@
 import Foundation
 
 enum UnitSystem {
-    case Default
-    case Metric
-    case Imperial
-    case Aviation
+    case `default`
+    case metric
+    case imperial
+    case aviation
 }
 
 enum UserDefault : String {
@@ -44,32 +44,32 @@ enum UserDefault : String {
     
     var stringValue: String? {
         get {
-            return NSUserDefaults.standardUserDefaults().stringForKey(self.rawValue)
+            return UserDefaults.standard.string(forKey: self.rawValue)
         }
     }
     
-    func setValue(string: String) {
+    func setValue(_ string: String) {
         setUserDefault(self, string: string)
     }
 }
 
-func registerInitialUserDefaults(plistFile: String)  -> [String:AnyObject] {
-    let baseUrl = NSBundle.mainBundle().bundleURL
-    let settingsBundleUrl = baseUrl.URLByAppendingPathComponent("Settings.bundle")
-    let plistUrl = settingsBundleUrl!.URLByAppendingPathComponent(plistFile)
-    let settingsDict = NSDictionary(contentsOfFile: plistUrl!.path!)
-    let prefSpecifierArray = settingsDict!.objectForKey("PreferenceSpecifiers") as! NSArray
+func registerInitialUserDefaults(_ plistFile: String)  -> [String:Any] {
+    let baseUrl = Bundle.main.bundleURL
+    let settingsBundleUrl = baseUrl.appendingPathComponent("Settings.bundle")
+    let plistUrl = settingsBundleUrl.appendingPathComponent(plistFile)
+    let settingsDict = NSDictionary(contentsOfFile: plistUrl.path)
+    let prefSpecifierArray = settingsDict!.object(forKey: "PreferenceSpecifiers") as! NSArray
     
-    var defaults:[String:AnyObject] = [:]
+    var defaults = [String : Any]()
     
     for prefItem in prefSpecifierArray {
-        if prefItem.objectForKey("Type") as? String == "PSChildPaneSpecifier" {
-            for (k,v) in registerInitialUserDefaults((prefItem.objectForKey("File") as! String) + ".plist") {
+        if (prefItem as AnyObject).object(forKey: "Type") as? String == "PSChildPaneSpecifier" {
+            for (k,v) in registerInitialUserDefaults(((prefItem as AnyObject).object(forKey: "File") as! String) + ".plist") {
                 defaults[k] = v
             }
         }
-        else if let key = prefItem.objectForKey("Key") as? String {
-            defaults[key] = prefItem.objectForKey("DefaultValue")
+        else if let key = (prefItem as AnyObject).object(forKey: "Key") as? String {
+            defaults[key] = (prefItem as AnyObject).object(forKey: "DefaultValue")
         }
     }
     
@@ -79,35 +79,35 @@ func registerInitialUserDefaults(plistFile: String)  -> [String:AnyObject] {
 func registerInitialUserDefaults() {
     let defaults = registerInitialUserDefaults("Root.plist")
     
-    NSUserDefaults.standardUserDefaults().registerDefaults(defaults)
+    UserDefaults.standard.register(defaults: defaults)
 }
 
-func userDefaultEnabled(userDefault: UserDefault) -> Bool {
-    return NSUserDefaults.standardUserDefaults().boolForKey(userDefault.rawValue)
+func userDefaultEnabled(_ userDefault: UserDefault) -> Bool {
+    return UserDefaults.standard.bool(forKey: userDefault.rawValue)
 }
 
-func userDefaultAsString(userDefault: UserDefault) -> String {
-    return NSUserDefaults.standardUserDefaults().stringForKey(userDefault.rawValue)!
+func userDefaultAsString(_ userDefault: UserDefault) -> String {
+    return UserDefaults.standard.string(forKey: userDefault.rawValue)!
 }
 
-func userDefaultAsInt(userDefault: UserDefault) -> Int {
-    return NSUserDefaults.standardUserDefaults().integerForKey(userDefault.rawValue)
+func userDefaultAsInt(_ userDefault: UserDefault) -> Int {
+    return UserDefaults.standard.integer(forKey: userDefault.rawValue)
 }
 
-func setUserDefault(userDefault: UserDefault, string: String?) {
-    return NSUserDefaults.standardUserDefaults().setValue(string, forKey: userDefault.rawValue)
+func setUserDefault(_ userDefault: UserDefault, string: String?) {
+    return UserDefaults.standard.setValue(string, forKey: userDefault.rawValue)
 }
 
 func selectedUnitSystem() -> UnitSystem {
     switch userDefaultAsString(.UnitSystem) {
     case "imperial":
-        return .Imperial
+        return .imperial
     case "metric":
-        return .Metric
+        return .metric
     case "aviation":
-        return .Aviation
+        return .aviation
     default:
-        return (NSLocale.currentLocale().objectForKey(NSLocaleUsesMetricSystem) as? Bool ?? true) ? .Metric : .Imperial
+        return ((Locale.current as NSLocale).object(forKey: NSLocale.Key.usesMetricSystem) as? Bool ?? true) ? .metric : .imperial
     }
     
 }

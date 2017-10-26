@@ -29,7 +29,7 @@ class DataLinkChartViewController: UIViewController {
     var dataRates = [Double]()
     
     var timerInterval = 0.25
-    var timer: NSTimer?
+    var timer: Timer?
     
     @IBOutlet weak var chartView: LineChartView!
     
@@ -40,42 +40,42 @@ class DataLinkChartViewController: UIViewController {
         
         chartView.xAxis.enabled = false
         
-        chartView.descriptionText = ""
+        chartView.chartDescription?.text = ""
         
         let leftAxis = chartView.leftAxis
         
-        leftAxis.axisMaxValue = 500
-        leftAxis.axisMinValue = 0
+        leftAxis.axisMaximum = 500
+        leftAxis.axisMinimum = 0
         
-        let nf = NSNumberFormatter()
-        nf.locale = NSLocale.currentLocale()
+        let nf = NumberFormatter()
+        nf.locale = Locale.current
         nf.maximumFractionDigits = 0
-        chartView.leftAxis.valueFormatter = nf
+        chartView.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: nf)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if (timer == nil) {
-            timer = NSTimer(timeInterval: timerInterval, target: self, selector: #selector(DataLinkChartViewController.timerDidFire(_:)), userInfo: nil, repeats: true)
-            NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+            timer = Timer(timeInterval: timerInterval, target: self, selector: #selector(DataLinkChartViewController.timerDidFire(_:)), userInfo: nil, repeats: true)
+            RunLoop.main.add(timer!, forMode: RunLoopMode.commonModes)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         timer?.invalidate()
         timer = nil
     }
     
-    func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
-        let dataSet = LineChartDataSet(yVals: data, label: label)
+    func makeDataSet(_ data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
+        let dataSet = LineChartDataSet(values: data, label: label)
         if (color != nil) {
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.mode = .CubicBezier
+        dataSet.mode = .cubicBezier
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)
@@ -90,20 +90,20 @@ class DataLinkChartViewController: UIViewController {
         let initialOffset = latencies.count - MaxSampleCount
         
         for i in 0 ..< latencies.count {
-            yVals1.append(ChartDataEntry(value: latencies[i], xIndex: i - initialOffset))
-            yVals2.append(ChartDataEntry(value: dataRates[i], xIndex: i - initialOffset))
+            yVals1.append(ChartDataEntry(x: latencies[i], y: Double(i - initialOffset)))
+            yVals2.append(ChartDataEntry(x: dataRates[i], y: Double(i - initialOffset)))
         }
         
-        let dataSet1 = makeDataSet(yVals1, label: "Latency (ms)", color: UIColor.blueColor())
-        let dataSet2 = makeDataSet(yVals2, label: "Data rate (byte/s)", color: UIColor.redColor())
+        let dataSet1 = makeDataSet(yVals1, label: "Latency (ms)", color: UIColor.blue)
+        let dataSet2 = makeDataSet(yVals2, label: "Data rate (byte/s)", color: UIColor.red)
         
-        let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSets: [ dataSet1, dataSet2 ])
+        let data = LineChartData(dataSets: [ dataSet1, dataSet2 ])
         
         chartView.data = data
         view.setNeedsDisplay()
     }
     
-    func timerDidFire(sender: AnyObject) {
+    func timerDidFire(_ sender: Any) {
         updateSensorData()
         while latencies.count > MaxSampleCount {
             latencies.removeFirst()
@@ -120,7 +120,7 @@ class DataLinkChartViewController: UIViewController {
         
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.axisMaxValue || dataRate > leftAxis.axisMaxValue {
+        if value > leftAxis.axisMaximum || dataRate > leftAxis.axisMaximum {
             leftAxis.resetCustomAxisMax()
         }
     }

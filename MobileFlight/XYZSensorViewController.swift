@@ -32,23 +32,23 @@ class XYZSensorViewController: BaseSensorViewController {
         leftAxis.setLabelCount(5, force: false)
     }
     
-    private func updateChartData() {
+    fileprivate func updateChartData() {
         var yValsX = [ChartDataEntry]()
         var yValsY = [ChartDataEntry]()
         var yValsZ = [ChartDataEntry]()
         let initialOffset = xSensor.count - MaxSampleCount
         
         for i in 0..<xSensor.count {
-            yValsX.append(ChartDataEntry(value: xSensor[i], xIndex: i - initialOffset))
-            yValsY.append(ChartDataEntry(value: ySensor[i], xIndex: i - initialOffset))
-            yValsZ.append(ChartDataEntry(value: zSensor[i], xIndex: i - initialOffset))
+            yValsX.append(ChartDataEntry(x: xSensor[i], y: Double(i - initialOffset)))
+            yValsY.append(ChartDataEntry(x: ySensor[i], y: Double(i - initialOffset)))
+            yValsZ.append(ChartDataEntry(x: zSensor[i], y: Double(i - initialOffset)))
         }
         
-        let dataSetX = makeDataSet(yValsX, label: "X", color: UIColor.blueColor());
-        let dataSetY = makeDataSet(yValsY, label: "Y", color: UIColor.greenColor());
-        let dataSetZ = makeDataSet(yValsZ, label: "Z", color: UIColor.redColor());
+        let dataSetX = makeDataSet(yValsX, label: "X", color: UIColor.blue);
+        let dataSetY = makeDataSet(yValsY, label: "Y", color: UIColor.green);
+        let dataSetZ = makeDataSet(yValsZ, label: "Z", color: UIColor.red);
         
-        let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSets: [dataSetX, dataSetY, dataSetZ])
+        let data = LineChartData(dataSets: [dataSetX, dataSetY, dataSetZ])
         
         chartView.data = data
         view.setNeedsDisplay()
@@ -65,16 +65,16 @@ class XYZSensorViewController: BaseSensorViewController {
     }
 
     override func sendMSPCommands() {
-        msp.sendMessage(.MSP_RAW_IMU, data: nil)
+        msp.sendMessage(.msp_RAW_IMU, data: nil)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         eventHandler = msp.rawIMUDataEvent.addHandler(self, handler: XYZSensorViewController.receivedRawIMUData)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         xSensor.removeAll()

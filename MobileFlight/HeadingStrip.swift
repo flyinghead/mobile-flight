@@ -59,12 +59,12 @@ class HeadingStrip: UIView {
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()!
         
         let font = UIFont(name: "Verdana", size: self.fontSize)!
         
-        CGContextClipToRect(context, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
+        context.clip(to: bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
         
         var left = heading - Double(rect.width) / 2.0 / scale
         
@@ -75,12 +75,12 @@ class HeadingStrip: UIView {
         }
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Center
+        paragraphStyle.alignment = .center
         
-        let textAttributes: [String : AnyObject]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
+        let textAttributes: [String : Any]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.white, NSParagraphStyleAttributeName : paragraphStyle]
+        let fontSize = ("0" as NSString).size(attributes: textAttributes)
         
-        CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
+        context.setFillColor(UIColor.white.cgColor)
         
         while true {
             let x = CGFloat(Double(rect.width) / 2.0 - (heading - left) * scale) + rect.minX
@@ -91,7 +91,7 @@ class HeadingStrip: UIView {
                 width = 2
                 length = fontSize.width
                 
-                var degrees = round(left) % 360
+                var degrees = round(left).truncatingRemainder(dividingBy: 360)
                 if degrees < 0 {
                     degrees += 360
                 }
@@ -108,11 +108,11 @@ class HeadingStrip: UIView {
                 default:
                     string = String(format:"%.0f", degrees)
                 }
-                let textSize = (string as NSString).sizeWithAttributes(textAttributes)
+                let textSize = (string as NSString).size(attributes: textAttributes)
                 if x - textSize.width/2 > rect.maxX {
                     break
                 }
-                string.drawInRect(CGRect(x: x - textSize.width/2, y: rect.maxY - fontSize.width  - fontSize.height, width: textSize.width, height: textSize.height), withAttributes: textAttributes)
+                string.draw(in: CGRect(x: x - textSize.width/2, y: rect.maxY - fontSize.width  - fontSize.height, width: textSize.width, height: textSize.height), withAttributes: textAttributes)
             } else {
                 width = 2
                 length = fontSize.width * 0.75
@@ -121,7 +121,7 @@ class HeadingStrip: UIView {
             if x > rect.maxX {
                 break
             }
-            CGContextFillRect(context, CGRect(x: x, y: rect.maxY - length, width: width, height: length))
+            context.fill(CGRect(x: x, y: rect.maxY - length, width: width, height: length))
             
             if subTicksInterval != 0 {
                 left = round((left + subTicksInterval) / subTicksInterval) * subTicksInterval
@@ -134,16 +134,16 @@ class HeadingStrip: UIView {
             drawBug(context, value: value, color: color, fontSize: fontSize)
         }
         
-        CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
-        CGContextMoveToPoint(context, rect.midX, rect.maxY - fontSize.width)
-        CGContextAddLineToPoint(context, rect.midX - fontSize.width / 2 / CGFloat(sin(M_PI / 3)), rect.maxY)
-        CGContextAddLineToPoint(context, rect.midX + fontSize.width / 2 / CGFloat(sin(M_PI / 3)), rect.maxY)
-        CGContextClosePath(context)
-        CGContextFillPath(context)
+        context.setFillColor(UIColor.white.cgColor)
+        context.move(to: CGPoint(x: rect.midX, y: rect.maxY - fontSize.width))
+        context.addLine(to: CGPoint(x: rect.midX - fontSize.width / 2 / CGFloat(sin(Float.pi / 3)), y: rect.maxY))
+        context.addLine(to: CGPoint(x: rect.midX + fontSize.width / 2 / CGFloat(sin(Float.pi / 3)), y: rect.maxY))
+        context.closePath()
+        context.fillPath()
         
     }
 
-    func drawBug(ctx: CGContext, value: Double, color: UIColor, fontSize: CGSize) {
+    func drawBug(_ ctx: CGContext, value: Double, color: UIColor, fontSize: CGSize) {
         let markerWidth = fontSize.height * 2
         
         var diff = value - heading
@@ -164,17 +164,17 @@ class HeadingStrip: UIView {
         let bottom = bounds.maxY
         let top = bottom - markerHeight
         
-        CGContextMoveToPoint(ctx, left, bottom)
-        CGContextAddLineToPoint(ctx, left, top)
-        CGContextAddLineToPoint(ctx, right, top)
-        CGContextAddLineToPoint(ctx, right, bottom)
-        CGContextAddLineToPoint(ctx, left + markerWidth / 2 + fontSize.height / 4, bottom)
-        CGContextAddLineToPoint(ctx, left + markerWidth / 2, bottom - markerHeight + 4)
-        CGContextAddLineToPoint(ctx, left + markerWidth / 2 - fontSize.height / 4, bottom)
-        CGContextClosePath(ctx)
+        ctx.move(to: CGPoint(x: left, y: bottom))
+        ctx.addLine(to: CGPoint(x: left, y: top))
+        ctx.addLine(to: CGPoint(x: right, y: top))
+        ctx.addLine(to: CGPoint(x: right, y: bottom))
+        ctx.addLine(to: CGPoint(x: left + markerWidth / 2 + fontSize.height / 4, y: bottom))
+        ctx.addLine(to: CGPoint(x: left + markerWidth / 2, y: bottom - markerHeight + 4))
+        ctx.addLine(to: CGPoint(x: left + markerWidth / 2 - fontSize.height / 4, y: bottom))
+        ctx.closePath()
         
-        CGContextSetFillColorWithColor(ctx, color.CGColor)
-        CGContextSetStrokeColorWithColor(ctx, UIColor.darkGrayColor().CGColor)
-        CGContextDrawPath(ctx, .FillStroke)
+        ctx.setFillColor(color.cgColor)
+        ctx.setStrokeColor(UIColor.darkGray.cgColor)
+        ctx.drawPath(using: .fillStroke)
     }
 }

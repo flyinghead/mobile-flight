@@ -45,7 +45,7 @@ class RoundGauge: UIView {
 
     var ranges = [(min: Double, max: Double, color: UIColor)]()
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
 
         let squareBounds: CGRect
@@ -55,42 +55,42 @@ class RoundGauge: UIView {
             squareBounds = bounds.insetBy(dx: 0, dy: (bounds.height - bounds.width) / 2)
         }
         
-        let minAngle = 2 * M_PI / 3
-        let maxAngle = 2 * M_PI
-        CGContextAddArc(ctx, squareBounds.midX, squareBounds.midY, squareBounds.height / 2 - 1, CGFloat(minAngle), CGFloat(maxAngle), 0)
-        CGContextSetStrokeColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextSetLineWidth(ctx, 2)
-        CGContextStrokePath(ctx)
+        let minAngle = 2 * Double.pi / 3
+        let maxAngle = 2 * Double.pi
+        ctx.addArc(center: CGPoint(x: squareBounds.midX, y: squareBounds.midY), radius: squareBounds.height / 2 - 1, startAngle: CGFloat(minAngle), endAngle: CGFloat(maxAngle), clockwise: false)
+        ctx.setStrokeColor(UIColor.white.cgColor)
+        ctx.setLineWidth(2)
+        ctx.strokePath()
         
         for (rangeMin, rangeMax, color) in ranges {
-            CGContextAddArc(ctx, squareBounds.midX, squareBounds.midY, squareBounds.height / 2 - 2.5, CGFloat(minAngle + (rangeMin - minimum) * (maxAngle - minAngle) / (maximum - minimum)), CGFloat(minAngle + (rangeMax - minimum) * (maxAngle - minAngle) / (maximum - minimum)), 0)
-            CGContextSetStrokeColorWithColor(ctx, color.CGColor)
-            CGContextSetLineWidth(ctx, 5)
-            CGContextStrokePath(ctx)
+            ctx.addArc(center: CGPoint(x: squareBounds.midX, y: squareBounds.midY), radius: squareBounds.height / 2 - 2.5, startAngle: CGFloat(minAngle + (rangeMin - minimum) * (maxAngle - minAngle) / (maximum - minimum)), endAngle: CGFloat(minAngle + (rangeMax - minimum) * (maxAngle - minAngle) / (maximum - minimum)), clockwise: false)
+            ctx.setStrokeColor(color.cgColor)
+            ctx.setLineWidth(5)
+            ctx.strokePath()
         }
         
-        CGContextTranslateCTM(ctx, squareBounds.midX, squareBounds.midY)
-        CGContextRotateCTM(ctx, CGFloat(minAngle + (constrain(value, min: minimum, max: maximum) - minimum) * (maxAngle - minAngle) / (maximum - minimum) + M_PI / 2))
+        ctx.translateBy(x: squareBounds.midX, y: squareBounds.midY)
+        ctx.rotate(by: CGFloat(minAngle + (constrain(value, min: minimum, max: maximum) - minimum) * (maxAngle - minAngle) / (maximum - minimum) + .pi / 2))
         let radius: CGFloat = squareBounds.height / 20
-        CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextFillEllipseInRect(ctx, CGRect(x: 0, y: 0, width: radius * 2, height: radius * 2).offsetBy(dx: -radius, dy: -radius))
+        ctx.setFillColor(UIColor.white.cgColor)
+        ctx.fillEllipse(in: CGRect(x: 0, y: 0, width: radius * 2, height: radius * 2).offsetBy(dx: -radius, dy: -radius))
         
         let dy = radius * radius / 2 / squareBounds.height / 2
         let dx = sqrt(radius * radius - dy * dy)
         
-        CGContextMoveToPoint(ctx, 0, -squareBounds.height / 2)
-        CGContextAddLineToPoint(ctx, -dx, -dy)
-        CGContextAddLineToPoint(ctx, dx, -dy)
-        CGContextClosePath(ctx)
-        CGContextFillPath(ctx)
+        ctx.move(to: CGPoint(x: 0, y: -squareBounds.height / 2))
+        ctx.addLine(to: CGPoint(x: -dx, y: -dy))
+        ctx.addLine(to: CGPoint(x: dx, y: -dy))
+        ctx.closePath()
+        ctx.fillPath()
     }
     
     override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         value = minimum + (maximum - minimum) * 0.5
         ranges.removeAll()
-        ranges.append((min: minimum, max: minimum + (maximum - minimum) * 0.6, color: UIColor.greenColor()))
-        ranges.append((min: minimum + (maximum - minimum) * 0.6, max: minimum + (maximum - minimum) * 0.8, color: UIColor.yellowColor()))
-        ranges.append((min: minimum + (maximum - minimum) * 0.8, max: maximum, color: UIColor.redColor()))
+        ranges.append((min: minimum, max: minimum + (maximum - minimum) * 0.6, color: UIColor.green))
+        ranges.append((min: minimum + (maximum - minimum) * 0.6, max: minimum + (maximum - minimum) * 0.8, color: UIColor.yellow))
+        ranges.append((min: minimum + (maximum - minimum) * 0.8, max: maximum, color: UIColor.red))
     }
 }

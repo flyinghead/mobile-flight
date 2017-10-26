@@ -41,7 +41,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
     @IBOutlet var channelsSettings: [UISegmentedControl]!
     @IBOutlet var auxChannelsValueFields: [NumberField]!
 
-    class func isFailsafeEnabled(settings: Settings) -> Bool {
+    class func isFailsafeEnabled(_ settings: Settings) -> Bool {
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.36") || (config.isINav && config.isApiVersionAtLeast("1.24")) {
             return true
@@ -69,37 +69,37 @@ class FailsafeConfigViewController: ConfigChildViewController {
             cells(channelCells, setHidden: true)
             if config.isApiVersionAtLeast("1.25") {
                 cell(killSwitchCell, setHidden: true)
-                stage2ActiveCells.removeAtIndex(stage2ActiveCells.indexOf(killSwitchCell)!)
+                stage2ActiveCells.remove(at: stage2ActiveCells.index(of: killSwitchCell)!)
             }
         } else {
             cells(Array(channelCells.suffix(channelCells.count - Receiver.theReceiver.activeChannels)), setHidden: true)
             cell(rthCell, setHidden: true)
-            stage2ActiveCells.removeAtIndex(stage2ActiveCells.indexOf(rthCell)!)
+            stage2ActiveCells.remove(at: stage2ActiveCells.index(of: rthCell)!)
         }
         if config.isApiVersionAtLeast("1.36") || (config.isINav && config.isApiVersionAtLeast("1.24")) {
-            failsafeSwitch.on = true
-            failsafeSwitch.enabled = false
+            failsafeSwitch.isOn = true
+            failsafeSwitch.isEnabled = false
         }
     }
     
-    @IBAction func failsafeSwitchChanged(sender: AnyObject) {
-        if failsafeSwitch.on {
-            if landCell.accessoryType != .Checkmark {
-                cells(Array(Set(stage2ActiveCells).subtract(Set(landCells))), setHidden: false)
+    @IBAction func failsafeSwitchChanged(_ sender: Any) {
+        if failsafeSwitch.isOn {
+            if landCell.accessoryType != .checkmark {
+                cells(Array(Set(stage2ActiveCells).subtracting(Set(landCells))), setHidden: false)
             } else {
                 cells(stage2ActiveCells, setHidden: false)
             }
         } else {
             cells(stage2ActiveCells, setHidden: true)
         }
-        reloadDataAnimated(sender as? FailsafeConfigViewController != self)
+        reloadData(animated: sender as? FailsafeConfigViewController != self)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if failsafeSwitch.enabled {
-            if failsafeSwitch.on {
+        if failsafeSwitch.isEnabled {
+            if failsafeSwitch.isOn {
                 settings!.features.insert(.Failsafe)
             } else {
                 settings!.features.remove(.Failsafe)
@@ -108,14 +108,14 @@ class FailsafeConfigViewController: ConfigChildViewController {
         settings.failsafeThrottle = Int(throttleField.value)
         settings.rxMinUsec = Int(minimumPulseField.value)
         settings.rxMaxUsec = Int(maximumPulseField.value)
-        settings.failsafeKillSwitch = killSwitch.on
+        settings.failsafeKillSwitch = killSwitch.isOn
         settings.failsafeDelay = guardTimeField.value
         settings.failsafeThrottleLowDelay = throttleLowDelayField.value
-        if landCell.accessoryType == .Checkmark {
+        if landCell.accessoryType == .checkmark {
             settings.failsafeProcedure =  0
-        } else if dropCell.accessoryType == .Checkmark {
+        } else if dropCell.accessoryType == .checkmark {
             settings.failsafeProcedure = 1
-        } else if rthCell.accessoryType == .Checkmark{
+        } else if rthCell.accessoryType == .checkmark{
             settings.failsafeProcedure = 2
         }
         settings.failsafeOffDelay = motorsOffDelayField.value
@@ -139,37 +139,37 @@ class FailsafeConfigViewController: ConfigChildViewController {
         configViewController?.refreshUI()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if failsafeSwitch.enabled {
-            failsafeSwitch.on = settings!.features.contains(.Failsafe)
+        if failsafeSwitch.isEnabled {
+            failsafeSwitch.isOn = settings!.features.contains(.Failsafe)
         }
         throttleField.value = Double(settings!.failsafeThrottle)
         
         minimumPulseField.value = Double(settings.rxMinUsec)
         maximumPulseField.value = Double(settings.rxMaxUsec)
-        killSwitch.on = settings.failsafeKillSwitch
+        killSwitch.isOn = settings.failsafeKillSwitch
         guardTimeField.value = settings.failsafeDelay
         throttleLowDelayField.value = settings.failsafeThrottleLowDelay
         motorsOffDelayField.value = settings.failsafeOffDelay
         
         switch settings.failsafeProcedure {
         case 0:                             // Land
-            landCell.accessoryType = .Checkmark
-            dropCell.accessoryType = .None
-            rthCell.accessoryType = .None
+            landCell.accessoryType = .checkmark
+            dropCell.accessoryType = .none
+            rthCell.accessoryType = .none
             cells(landCells, setHidden: false)
         case 1:                             // Drop
-            landCell.accessoryType = .None
-            dropCell.accessoryType = .Checkmark
+            landCell.accessoryType = .none
+            dropCell.accessoryType = .checkmark
             cells(landCells, setHidden: true)
-            rthCell.accessoryType = .None
+            rthCell.accessoryType = .none
         default:                            // RTH
-            landCell.accessoryType = .None
-            dropCell.accessoryType = .None
+            landCell.accessoryType = .none
+            dropCell.accessoryType = .none
             cells(landCells, setHidden: true)
-            rthCell.accessoryType = .Checkmark
+            rthCell.accessoryType = .checkmark
         }
         if settings.rxFailMode != nil {
             for i in 0 ..< settings.rxFailMode!.count {
@@ -177,7 +177,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
                 if i >= 4 {
                     auxChannelsValueFields[i - 4].value = Double(settings.rxFailValue![i])
                     if channelsSettings[i].selectedSegmentIndex != 0 {
-                        auxChannelsValueFields[i - 4].enabled = false
+                        auxChannelsValueFields[i - 4].isEnabled = false
                     }
                 }
             }
@@ -185,29 +185,29 @@ class FailsafeConfigViewController: ConfigChildViewController {
         failsafeSwitchChanged(self)
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let selectedCell = tableView.cellForRowAtIndexPath(indexPath)!
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCell = tableView.cellForRow(at: indexPath)!
         if selectedCell == dropCell {
-            selectedCell.accessoryType = .Checkmark
-            landCell.accessoryType = .None
-            rthCell.accessoryType = .None
+            selectedCell.accessoryType = .checkmark
+            landCell.accessoryType = .none
+            rthCell.accessoryType = .none
             cells(landCells, setHidden: true)
         } else if selectedCell == landCell {
-            selectedCell.accessoryType = .Checkmark
-            dropCell.accessoryType = .None
-            rthCell.accessoryType = .None
+            selectedCell.accessoryType = .checkmark
+            dropCell.accessoryType = .none
+            rthCell.accessoryType = .none
             cells(landCells, setHidden: false)
         } else if selectedCell == rthCell {
-            selectedCell.accessoryType = .Checkmark
-            dropCell.accessoryType = .None
-            landCell.accessoryType = .None
+            selectedCell.accessoryType = .checkmark
+            dropCell.accessoryType = .none
+            landCell.accessoryType = .none
             cells(landCells, setHidden: true)
         }
-        selectedCell.selected = false
-        reloadDataAnimated(true)
+        selectedCell.isSelected = false
+        reloadData(animated: true)
     }
 
-    @IBAction func auxChannelSetHoldChanged(sender: AnyObject) {
+    @IBAction func auxChannelSetHoldChanged(_ sender: Any) {
         if let control = sender as? UISegmentedControl {
             var field: UITextField? = nil
             for view in control.superview!.subviews {
@@ -216,7 +216,7 @@ class FailsafeConfigViewController: ConfigChildViewController {
                     break
                 }
             }
-            field?.enabled = control.selectedSegmentIndex == 0
+            field?.isEnabled = control.selectedSegmentIndex == 0
         }
     }
 }

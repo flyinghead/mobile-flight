@@ -57,16 +57,16 @@ class MKWaypoint : NSObject, MKAnnotation {
         }
         set {
             if waypoint.altitude != newValue {
-                willChangeValueForKey("title")      // To update the title in the callout
+                willChangeValue(forKey: "title")      // To update the title in the callout
                 waypoint.altitude = newValue
-                didChangeValueForKey("title")
+                didChangeValue(forKey: "title")
                 waypointModifiedEvent.raise(self)
             }
         }
     }
     
     var returnToHome: Bool {
-        return waypoint.action == .Known(.ReturnToHome)
+        return waypoint.action == .known(.returnToHome)
     }
     
     var number: Int {
@@ -74,9 +74,9 @@ class MKWaypoint : NSObject, MKAnnotation {
             return waypoint.number
         }
         set {
-            willChangeValueForKey("title")      // To update the title in the callout
+            willChangeValue(forKey: "title")      // To update the title in the callout
             waypoint.number = newValue
-            didChangeValueForKey("title")
+            didChangeValue(forKey: "title")
         }
     }
     

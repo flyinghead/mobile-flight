@@ -1,7 +1,7 @@
 PODS:
-  - Charts (2.3.1):
-    - Charts/Core (= 2.3.1)
-  - Charts/Core (2.3.1)
+  - Charts (3.0.3):
+    - Charts/Core (= 3.0.3)
+  - Charts/Core (3.0.3)
   - CocoaAsyncSocket (7.6.1)
   - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
@@ -21,16 +21,16 @@ PODS:
   - GoogleToolboxForMac/Defines (2.1.1)
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
-  - KIF (3.4.1):
-    - KIF/Core (= 3.4.1)
-  - KIF/Core (3.4.1)
-  - KIF/IdentifierTests (3.4.1):
+  - KIF (3.6.0):
+    - KIF/Core (= 3.6.0)
+  - KIF/Core (3.6.0)
+  - KIF/IdentifierTests (3.6.0):
     - KIF/Core
   - SVProgressHUD (1.1.3)
-  - SwiftSVG (1.1.5)
+  - SwiftSVG (2.0.0)
 
 DEPENDENCIES:
-  - Charts (~> 2.0)
+  - Charts (~> 3.0.3)
   - CocoaAsyncSocket
   - Crashlytics
   - DownPicker
@@ -39,10 +39,10 @@ DEPENDENCIES:
   - KIF (~> 3.0)
   - KIF/IdentifierTests
   - SVProgressHUD
-  - SwiftSVG
+  - SwiftSVG (~> 2.0)
 
 SPEC CHECKSUMS:
-  Charts: f04119c743c6996ba67fb8016d3a4878a38ca13f
+  Charts: bcde37724c161958c1438dd4883971fcb2d50c06
   CocoaAsyncSocket: 7eadd3f59e1a6c84e2aefc93e9ff7b55156fe174
   Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
@@ -52,10 +52,10 @@ SPEC CHECKSUMS:
   FirebaseCore: 85ad466044c2f013cdb167f85d426d15b128114a
   FirebaseInstanceID: 9fbf536668f4d3f0880e7438456dabd1376e294b
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
-  KIF: 2275c6d59c77e5e56f660f006b99d73780130540
+  KIF: bd770edd8ce49bc7308501e4871e58a02d137be3
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
-  SwiftSVG: 79d3c15af0899d05bffc927e902e0d0738326511
+  SwiftSVG: f18fadea312b9d2b1d02874e6e083105e5572fdb
 
-PODFILE CHECKSUM: 7bfc0e89b24748b0be2d692816c1a274b5e7ddbe
+PODFILE CHECKSUM: d70b06e9ec055aa518e2901314ac98e0e2210bfc
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.1

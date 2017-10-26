@@ -23,19 +23,19 @@ import UIKit
 class BeeperConfigViewController: ConfigChildViewController {
     @IBOutlet var switches: [UISwitch]!
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         for uiswitch in switches {
-            uiswitch.on = (settings.beeperMask & (1 << (uiswitch.tag - 1)) == 0)
+            uiswitch.isOn = (settings.beeperMask & (1 << (uiswitch.tag - 1)) == 0)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         for uiswitch in switches {
-            if uiswitch.on {
+            if uiswitch.isOn {
                 settings.beeperMask &= ~(1 << (uiswitch.tag - 1))
             } else {
                 settings.beeperMask |= 1 << (uiswitch.tag - 1)

@@ -19,6 +19,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import Foundation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class Configuration : AutoCoded {
     var autoEncoding = [ "version", "mspVersion", "capability", "msgProtocolVersion", "apiVersion", "buildInfo", "fcIdentifier", "fcVersion", "boardInfo", "boardVersion", "uid", "cycleTime", "i2cError", "activeSensors", "mode", "profile", "systemLoad", "rateProfile", "voltage", "mAhDrawn", "rssi", "amperage", "batteryCells", "maxAmperage", "btRssi" ]
@@ -63,7 +87,7 @@ class Configuration : AutoCoded {
                 var activatedModes = [Mode]()
                 var deactivatedModes = [Mode]()
                 var alreadySpoken = false
-                for (i, m) in boxNames.enumerate() {
+                for (i, m) in boxNames.enumerated() {
                     let modeBit = 1 << i
                     // If mode has been activated
                     if modeChanges & modeBit != 0 {
@@ -157,12 +181,12 @@ class Configuration : AutoCoded {
     var maxAmperage = 0.0
     var btRssi = 0          // %
     
-    private var _localSNR = 0.0
-    private var _remoteSNR = 0.0
-    private var lastLocalSNRTime: NSDate?
-    private var lastRemoteSNRTime: NSDate?
+    fileprivate var _localSNR = 0.0
+    fileprivate var _remoteSNR = 0.0
+    fileprivate var lastLocalSNRTime: Date?
+    fileprivate var lastRemoteSNRTime: Date?
     
-    private var _loading = true
+    fileprivate var _loading = true
     
     override init() {
         super.init()
@@ -215,12 +239,12 @@ class Configuration : AutoCoded {
         return activeSensors & (1 << 15) != 0;
     }
     
-    func isApiVersionAtLeast(version: String) -> Bool {
+    func isApiVersionAtLeast(_ version: String) -> Bool {
         if apiVersion == nil {
             return false
         }
-        let currentVersion = apiVersion!.componentsSeparatedByString(".")
-        let refVersion = version.componentsSeparatedByString(".")
+        let currentVersion = apiVersion!.components(separatedBy: ".")
+        let refVersion = version.components(separatedBy: ".")
         var i = 0
         while true {
             if i >= currentVersion.count {
@@ -246,7 +270,7 @@ class Configuration : AutoCoded {
         }
     }
     
-    override func setValue(value: AnyObject?, forUndefinedKey key: String) {
+    override func setValue(_ value: Any?, forUndefinedKey key: String) {
         if key == "accelerometerTrimPitch" || key == "accelerometerTrimRoll" {
             // These were moved to Misc. Ignore them.
             return
@@ -256,7 +280,7 @@ class Configuration : AutoCoded {
     
     var localSNR: Double {
         if lastLocalSNRTime == nil || -lastLocalSNRTime!.timeIntervalSinceNow >= 1 {
-            lastLocalSNRTime = NSDate()
+            lastLocalSNRTime = Date()
             _localSNR = (-120 + Double(sikRssi - noise) * 120 / 207) / 2 + _localSNR / 2
         }
         return _localSNR
@@ -264,7 +288,7 @@ class Configuration : AutoCoded {
     
     var remoteSNR: Double {
         if lastRemoteSNRTime == nil || -lastRemoteSNRTime!.timeIntervalSinceNow >= 1 {
-            lastRemoteSNRTime = NSDate()
+            lastRemoteSNRTime = Date()
             _remoteSNR = (-120 + Double(sikRemoteRssi - remoteNoise) * 120 / 207) / 2 + _remoteSNR / 2
         }
         return _remoteSNR

@@ -24,7 +24,7 @@ import SVProgressHUD
 class FlightLogStats : AutoCoded {
     var autoEncoding = [ "flightTime", "totalDistance", "maxDistanceToHome", "maxSpeed", "maxAltitude", "maxAmps", "mAmpsUsed" ]
 
-    var armedDate = NSDate()
+    var armedDate = Date()
     var flightTime = 0.0
     var totalDistance = 0.0         // MWOSD computes this using the GPS speed and the cycle loop time. Not sure we can do the same given the update frequency
     var maxDistanceToHome = 0.0
@@ -40,48 +40,47 @@ class FlightLogFile {
     static let Header1: [UInt8] = [ 77, 70, 76, 0 ]     // V1: flight stats use NSKeyedArchiver. Until 1.0.2
     static let Header2: [UInt8] = [ 77, 70, 76, 1 ]     // V2: flight stats loaded/saved "manually". Introduced in 1.1
     
-    class func openForWriting(fileURL: NSURL, msp: MSPParser) {
+    class func openForWriting(_ fileURL: URL, msp: MSPParser) {
         do {
-            if NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: nil, attributes: nil) {
-                let file = try NSFileHandle(forUpdatingURL: fileURL)
-                file.writeData(NSData(bytes: UnsafePointer(Header2), length: Header2.count))
+            if FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil) {
+                let file = try FileHandle(forUpdating: fileURL)
+                file.write(Data(bytes: UnsafePointer<UInt8>(UnsafePointer(Header2)), count: Header2.count))
                 
                 writeFlightStats2(FlightLogStats(), toFile: file)
                 
-                let aircraftData = NSKeyedArchiver.archivedDataWithRootObject(AllAircraftData.allAircraftData)
+                let aircraftData = NSKeyedArchiver.archivedData(withRootObject: AllAircraftData.allAircraftData)
                 
                 // Write size of state
-                var stateSize = Int32(aircraftData.length)
-                file.writeData(NSData(bytes: &stateSize, length: sizeof(Int32)))
+                file.write(Data(bytes: UnsafePointer<UInt8>(UnsafePointer(writeInt32(aircraftData.count))), count: 4))
                 // Write state
-                file.writeData(aircraftData)
+                file.write(aircraftData)
                 
                 objc_sync_enter(msp)
                 msp.datalog = file
-                msp.datalogStart = NSDate()
+                msp.datalogStart = Date()
                 objc_sync_exit(msp)
             }
         } catch let error as NSError {
-            NSLog("Cannot open %@: %@", fileURL, error)
+            NSLog("Cannot open %@: %@", fileURL.absoluteString, error.localizedDescription)
         }
 
     }
     
-    class private func writeFlightStats2(stats: FlightLogStats, toFile file: NSFileHandle) {
+    class fileprivate func writeFlightStats2(_ stats: FlightLogStats, toFile file: FileHandle) {
         var interval = stats.armedDate.timeIntervalSinceReferenceDate as Double
-        file.writeData(NSData(bytes: &interval, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.flightTime, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.totalDistance, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.maxDistanceToHome, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.maxSpeed, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.maxAltitude, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.maxAmps, length: sizeof(Double)))
-        file.writeData(NSData(bytes: &stats.mAmpsUsed, length: sizeof(Double)))
+        file.write(Data(bytes: &interval, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.flightTime, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.totalDistance, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.maxDistanceToHome, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.maxSpeed, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.maxAltitude, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.maxAmps, count: MemoryLayout<Double>.size))
+        file.write(Data(bytes: &stats.mAmpsUsed, count: MemoryLayout<Double>.size))
     }
     
-    class private func readFlightStats2(file: NSFileHandle) -> FlightLogStats {
+    class fileprivate func readFlightStats2(_ file: FileHandle) -> FlightLogStats {
         let stats = FlightLogStats()
-        stats.armedDate = NSDate(timeIntervalSinceReferenceDate: readDoubleFromFile(file))
+        stats.armedDate = Date(timeIntervalSinceReferenceDate: readDoubleFromFile(file))
         stats.flightTime = readDoubleFromFile(file)
         stats.totalDistance = readDoubleFromFile(file)
         stats.maxDistanceToHome = readDoubleFromFile(file)
@@ -93,61 +92,61 @@ class FlightLogFile {
         return stats
     }
     
-    class private func readDoubleFromFile(file: NSFileHandle) -> Double {
+    class fileprivate func readDoubleFromFile(_ file: FileHandle) -> Double {
         var double = 0.0
-        let data = file.readDataOfLength(sizeof(Double))
-        data.getBytes(&double, length: data.length)
+        let data = file.readData(ofLength: MemoryLayout<Double>.size)
+        (data as NSData).getBytes(&double, length: data.count)
         
         return double
     }
     
-    class func openForReading(fileURL: NSURL) throws -> (NSFileHandle, FlightLogStats?) {
-        let file = try NSFileHandle(forReadingFromURL: fileURL)
-        var data = file.readDataOfLength(Header1.count)
-        var readHeader = [UInt8](count: 4, repeatedValue: 0)
-        data.getBytes(&readHeader, length:readHeader.count)
+    class func openForReading(_ fileURL: URL) throws -> (FileHandle, FlightLogStats?) {
+        let file = try FileHandle(forReadingFrom: fileURL)
+        var data = file.readData(ofLength: Header1.count)
+        var readHeader = [UInt8](repeating: 0, count: 4)
+        (data as NSData).getBytes(&readHeader, length:readHeader.count)
         var flightStats: FlightLogStats?
         if readHeader == Header1 || readHeader == Header2 {
             if readHeader == Header1 {
-                data = file.readDataOfLength(4)
-                var dataLengthArray = [UInt8](count: 4, repeatedValue: 0)
-                data.getBytes(&dataLengthArray, length: dataLengthArray.count)
+                data = file.readData(ofLength: 4)
+                var dataLengthArray = [UInt8](repeating: 0, count: 4)
+                (data as NSData).getBytes(&dataLengthArray, length: dataLengthArray.count)
                 let flightStatsDataSize = readInt32(dataLengthArray, index: 0)
                 
-                flightStats = NSKeyedUnarchiver.unarchiveObjectWithData(file.readDataOfLength(flightStatsDataSize)) as? FlightLogStats
-                flightStats?.armedDate = NSDate(timeIntervalSinceReferenceDate: 0)
+                flightStats = NSKeyedUnarchiver.unarchiveObject(with: file.readData(ofLength: flightStatsDataSize)) as? FlightLogStats
+                flightStats?.armedDate = Date(timeIntervalSinceReferenceDate: 0)
             } else if readHeader == Header2 {
                 flightStats = readFlightStats2(file)
             }
             var aircraftDataSize: Int32 = 0
-            var data = file.readDataOfLength(sizeof(Int32))
-            data.getBytes(&aircraftDataSize, length: data.length)
-            data = file.readDataOfLength(Int(aircraftDataSize))
-            if let aircraftData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? AllAircraftData {
+            var data = file.readData(ofLength: MemoryLayout<Int32>.size)
+            (data as NSData).getBytes(&aircraftDataSize, length: data.count)
+            data = file.readData(ofLength: Int(aircraftDataSize))
+            if let aircraftData = NSKeyedUnarchiver.unarchiveObject(with: data) as? AllAircraftData {
                 AllAircraftData.allAircraftData = aircraftData
             } else {
                 throw NSError(domain: "com.flyinghead", code: 0, userInfo: nil)
             }
         } else {
-            file.seekToFileOffset(0)
+            file.seek(toFileOffset: 0)
         }
         
         return (file, flightStats)
     }
     
-    class func close(msp: MSPParser) {
+    class func close(_ msp: MSPParser) {
         objc_sync_enter(msp)
         if let datalog = msp.datalog {
             msp.datalog = nil
             msp.datalogStart = nil
             objc_sync_exit(msp)
 
-            datalog.seekToFileOffset(UInt64(Header2.count));    // Right after header
+            datalog.seek(toFileOffset: UInt64(Header2.count));    // Right after header
             
             let stats = readFlightStats2(datalog)
-            datalog.seekToFileOffset(UInt64(Header2.count));
+            datalog.seek(toFileOffset: UInt64(Header2.count));
             
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
             stats.flightTime = appDelegate.lastArmedTime
             
             let gpsData = GPSData.theGPSData

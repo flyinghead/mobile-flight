@@ -27,7 +27,7 @@ class BarometerViewController: BaseSensorViewController {
     var samples = [Double]()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -36,39 +36,39 @@ class BarometerViewController: BaseSensorViewController {
         let leftAxis = chartView.leftAxis
         leftAxis.setLabelCount(5, force: false)
 
-        if selectedUnitSystem() != .Metric {
-            leftAxis.axisMaxValue = 10.0
-            leftAxis.axisMinValue = 0.0
+        if selectedUnitSystem() != .metric {
+            leftAxis.axisMaximum = 10.0
+            leftAxis.axisMinimum = 0.0
         } else {
-            leftAxis.axisMaxValue = 2.0
-            leftAxis.axisMinValue = 0.0
+            leftAxis.axisMaximum = 2.0
+            leftAxis.axisMinimum = 0.0
         }
         
-        let nf = NSNumberFormatter()
-        nf.locale = NSLocale.currentLocale()
+        let nf = NumberFormatter()
+        nf.locale = Locale.current
         nf.maximumFractionDigits = 1
-        chartView.leftAxis.valueFormatter = nf
+        chartView.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: nf)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BarometerViewController.userDefaultsDidChange(_:)), name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
         userDefaultsDidChange(self)
     }
 
-    func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {
-        return makeDataSet(yVals, label: "Altitude", color: UIColor.blueColor())
+    func makeDataSet(_ yVals: [ChartDataEntry]) -> ChartDataSet {
+        return makeDataSet(yVals, label: "Altitude", color: UIColor.blue)
     }
     
     func updateChartData() {
         var yVals = [ChartDataEntry]()
         let initialOffset = samples.count - MaxSampleCount
         
-        for i in 0..<samples.count {
-            yVals.append(ChartDataEntry(value: samples[i], xIndex: i - initialOffset))
+        for i in 0 ..< samples.count {
+            yVals.append(ChartDataEntry(x: samples[i], y: Double(i - initialOffset)))
         }
         
         let dataSet = makeDataSet(yVals)
 
-        let data = LineChartData(xVals: [String?](count: MaxSampleCount, repeatedValue: nil), dataSet: dataSet)
+        let data = LineChartData(dataSet: dataSet)
         
         chartView.data = data
         view.setNeedsDisplay()
@@ -82,14 +82,14 @@ class BarometerViewController: BaseSensorViewController {
         updateChartData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         if eventHandler == nil {
             eventHandler = msp.altitudeEvent.addHandler(self, handler: BarometerViewController.receivedAltitudeData)
         }
         super.viewWillAppear(animated)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         samples.removeAll()
@@ -98,19 +98,19 @@ class BarometerViewController: BaseSensorViewController {
     func updateSensorData() {
         let sensorData = SensorData.theSensorData
         
-        let value = selectedUnitSystem() != .Metric ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
+        let value = selectedUnitSystem() != .metric ? sensorData.altitude * 100 / 2.54 / 12 : sensorData.altitude
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.axisMaxValue {
+        if value > leftAxis.axisMaximum {
             leftAxis.resetCustomAxisMax()
         }
-        if value < leftAxis.axisMinValue {
+        if value < leftAxis.axisMinimum {
             leftAxis.resetCustomAxisMin()
         }
     }
     
-    func userDefaultsDidChange(sender: AnyObject) {
-        titleLabel.text = selectedUnitSystem() != .Metric ? "Barometer - feet" : "Barometer - meters"
+    func userDefaultsDidChange(_ sender: Any) {
+        titleLabel.text = selectedUnitSystem() != .metric ? "Barometer - feet" : "Barometer - meters"
     }
 }

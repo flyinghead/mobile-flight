@@ -25,14 +25,14 @@ import MapKit
 class MessageRetryHandler {
     let code: MSP_code
     let data: [UInt8]?
-    let callback: ((success: Bool) -> Void)?
+    let callback: ((_ success: Bool) -> Void)?
     let maxTries: Int
-    var timer: NSTimer?
+    var timer: Timer?
     var cancelled = false
     
     var tries = 0
     
-    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: ((success: Bool) -> Void)?) {
+    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: ((_ success: Bool) -> Void)?) {
         self.code = code
         self.data = data
         self.maxTries = maxTries
@@ -41,9 +41,9 @@ class MessageRetryHandler {
 }
 
 class DataMessageRetryHandler : MessageRetryHandler {
-    let dataCallback: (data: [UInt8]?) -> Void
+    let dataCallback: (_ data: [UInt8]?) -> Void
     
-    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: (data: [UInt8]?) -> Void) {
+    init(code: MSP_code, data: [UInt8]?, maxTries: Int, callback: @escaping (_ data: [UInt8]?) -> Void) {
         self.dataCallback = callback
         super.init(code: code, data: data, maxTries: maxTries, callback: nil)
     }
@@ -68,23 +68,23 @@ class MSPParser {
     
     let CHANNEL_FORWARDING_DISABLED = 0xFF
     let codec = MSPCodec()
-    let latencyMsgs = Set<MSP_code>(arrayLiteral: .MSP_STATUS, .MSP_RAW_GPS, .MSP_COMP_GPS, .MSP_ALTITUDE, .MSP_ATTITUDE, .MSP_ANALOG, .MSP_WP)
+    let latencyMsgs = Set<MSP_code>(arrayLiteral: .msp_STATUS, .msp_RAW_GPS, .msp_COMP_GPS, .msp_ALTITUDE, .msp_ATTITUDE, .msp_ANALOG, .msp_WP)
     
-    var datalog: NSFileHandle?
-    var datalogStart: NSDate?
+    var datalog: FileHandle?
+    var datalogStart: Date?
     
-    private var outputQueue = [[UInt8]]()
+    fileprivate var outputQueue = [[UInt8]]()
     
-    private var commChannel: CommChannel?
+    fileprivate var commChannel: CommChannel?
     
     var retriedMessages = Dictionary<MSP_code, MessageRetryHandler>()
     let retriedMessageLock = NSObject()
     
     var cliViewController: CLIViewController?
     
-    private var receiveStats = [(date: NSDate, size: Int)]()
-    private var sentDates = [MSP_code : NSDate]()
-    private var msgLatencies = [MSP_code : Double]()
+    fileprivate var receiveStats = [(date: Date, size: Int)]()
+    fileprivate var sentDates = [MSP_code : Date]()
+    fileprivate var msgLatencies = [MSP_code : Double]()
     
     var incomingBytesPerSecond: Int {
         var byteCount = 0
@@ -108,14 +108,14 @@ class MSPParser {
         var latencies = [Double]()
         for mspCode in msgLatencies.keys {
             var latency = msgLatencies[mspCode]!
-            if let sentDate = sentDates[mspCode] where -sentDate.timeIntervalSinceNow > latency {
+            if let sentDate = sentDates[mspCode], -sentDate.timeIntervalSinceNow > latency {
                 latency = -sentDate.timeIntervalSinceNow
             }
             latencies.append(min(latency, 1.0))
         }
         objc_sync_exit(self)
 
-        latencies.sortInPlace()
+        latencies.sort()
         if latencies.count % 2 == 1 {
             return latencies[latencies.count / 2]
         } else {
@@ -123,7 +123,7 @@ class MSPParser {
         }
     }
     
-    func read(data: [UInt8]) {
+    func read(_ data: [UInt8]) {
         if cliViewController != nil {
             cliViewController!.receive(data)
             return
@@ -133,14 +133,14 @@ class MSPParser {
         if datalog != nil {
             var logData = [UInt8]()
             // Timestamp in milliseconds since start of logging
-            logData.appendContentsOf(writeUInt32(Int(round(-datalogStart!.timeIntervalSinceNow * 1000))))
-            logData.appendContentsOf(writeUInt16(min(data.count, Int(UINT16_MAX))))
-            datalog!.writeData(NSData(bytes: logData, length: logData.count))
-            datalog!.writeData(NSData(bytes: data, length: data.count))
+            logData.append(contentsOf: writeUInt32(Int(round(-datalogStart!.timeIntervalSinceNow * 1000))))
+            logData.append(contentsOf: writeUInt16(min(data.count, Int(UINT16_MAX))))
+            datalog!.write(Data(bytes: UnsafePointer<UInt8>(logData), count: logData.count))
+            datalog!.write(Data(bytes: UnsafePointer<UInt8>(data), count: data.count))
         }
         //NSLog("Received %d bytes", data.count)
         
-        receiveStats.insert((NSDate(), data.count), atIndex: 0)
+        receiveStats.insert((Date(), data.count), at: 0)
         while receiveStats.count > 500 {
             receiveStats.removeLast()
         }
@@ -151,7 +151,7 @@ class MSPParser {
                 objc_sync_enter(self)
                 if let date = self.sentDates[mspCode] {
                     msgLatencies[mspCode] = -date.timeIntervalSinceNow
-                    self.sentDates.removeValueForKey(mspCode)
+                    self.sentDates.removeValue(forKey: mspCode)
                 }
                 objc_sync_exit(self)
                 if success {
@@ -169,7 +169,7 @@ class MSPParser {
         }
     }
 
-    func processMessage(code: MSP_code, message: [UInt8]) -> Bool {
+    func processMessage(_ code: MSP_code, message: [UInt8]) -> Bool {
         let settings = Settings.theSettings
         let config = Configuration.theConfig
         let gpsData = GPSData.theGPSData
@@ -181,7 +181,7 @@ class MSPParser {
         let inavState = INavState.theINavState
         
         switch code {
-        case .MSP_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.2
+        case .msp_IDENT:    // Deprecated, removed in CF 2.0 / BF 3.2
             if message.count < 7 {
                 return false
             }
@@ -190,7 +190,7 @@ class MSPParser {
             config.mspVersion = Int(message[2])
             config.capability = readUInt32(message, index: 3)
             
-        case .MSP_STATUS, .MSP_STATUS_EX:
+        case .msp_STATUS, .msp_STATUS_EX:
             if message.count < 11 {
                 return false
             }
@@ -224,7 +224,7 @@ class MSPParser {
                 sensorStatusEvent.raiseDispatch()
             }
             
-        case .MSP_RAW_IMU:
+        case .msp_RAW_IMU:
             if message.count < 18 {
                 return false
             }
@@ -244,7 +244,7 @@ class MSPParser {
             
             rawIMUDataEvent.raiseDispatch()
         
-        case .MSP_SERVO:
+        case .msp_SERVO:
             if message.count < 16 {
                 return false
             }
@@ -253,7 +253,7 @@ class MSPParser {
             }
             motorEvent.raiseDispatch()
         
-        case .MSP_SERVO_CONFIGURATIONS:
+        case .msp_SERVO_CONFIGURATIONS:
             let servoConfSize = 14
             var servoConfigs = [ServoConfig]()
             for i in 0 ..< message.count / servoConfSize {
@@ -278,7 +278,7 @@ class MSPParser {
             }
             settings.servoConfigs = servoConfigs
         
-        case .MSP_MOTOR:
+        case .msp_MOTOR:
             if message.count < 16 {
                 return false
             }
@@ -292,20 +292,20 @@ class MSPParser {
             motorData.nMotors = nMotors
             motorEvent.raiseDispatch()
         
-        case .MSP_UID:
+        case .msp_UID:
             if message.count < 12 {
                 return false
             }
             config.uid = String(format: "%04x%04x%04x", readUInt32(message, index: 0), readUInt32(message, index: 4), readUInt32(message, index: 8))
             
-        case .MSP_ACC_TRIM:
+        case .msp_ACC_TRIM:
             if message.count < 4 {
                 return false
             }
             misc.accelerometerTrimPitch = readInt16(message, index: 0)
             misc.accelerometerTrimRoll = readInt16(message, index: 2)
             
-        case .MSP_RC:
+        case .msp_RC:
             var channelCount = message.count / 2
             if (channelCount > receiver.channels.count) {
                 NSLog("MSP_RC Received %d channels instead of %d max", channelCount, receiver.channels.count)
@@ -317,7 +317,7 @@ class MSPParser {
             }
             receiverEvent.raiseDispatch()
             
-        case .MSP_RAW_GPS:
+        case .msp_RAW_GPS:
             if message.count < 16 {
                 return false
             }
@@ -330,7 +330,7 @@ class MSPParser {
             gpsData.headingOverGround = Double(readUInt16(message, index: 14)) / 10  // 1/10 degree to degree
             gpsEvent.raiseDispatch()
             
-        case .MSP_COMP_GPS:
+        case .msp_COMP_GPS:
             if message.count < 5 {
                 return false
             }
@@ -339,7 +339,7 @@ class MSPParser {
             gpsData.update = Int(message[4])
             gpsEvent.raiseDispatch()
             
-        case .MSP_ATTITUDE:
+        case .msp_ATTITUDE:
             if message.count < 6 {
                 return false
             }
@@ -348,7 +348,7 @@ class MSPParser {
             sensorData.heading = Double(readInt16(message, index: 4))          // z
             attitudeEvent.raiseDispatch()
             
-        case .MSP_ALTITUDE:
+        case .msp_ALTITUDE:
             if message.count < 6 {
                 return false
             }
@@ -357,14 +357,14 @@ class MSPParser {
             // iNAV baro latest alt (4)
             altitudeEvent.raiseDispatch()
             
-        case .MSP_SONAR:
+        case .msp_SONAR:
             if message.count < 4 {
                 return false
             }
             sensorData.sonar = readInt32(message,  index: 0);
             sonarEvent.raiseDispatch()
 
-        case .MSP_ANALOG:
+        case .msp_ANALOG:
             if message.count < 7 {
                 return false
             }
@@ -375,7 +375,7 @@ class MSPParser {
             rssiEvent.raiseDispatch()
             batteryEvent.raiseDispatch()
             
-        case .MSP_RC_TUNING:
+        case .msp_RC_TUNING:
             if message.count < 11 {
                 return false
             }
@@ -393,7 +393,7 @@ class MSPParser {
                 settings.yawRate = Double(message[11]) / 100
             }
             
-        case .MSP_PID:
+        case .msp_PID:
             settings.pidValues = [[Double]]()
             for i in 0..<message.count / 3 {
                 settings.pidValues!.append([Double]())
@@ -403,14 +403,14 @@ class MSPParser {
                 settings.pidValues![i].append(Double(message[i*3 + 2]))
             }
             
-        case .MSP_ARMING_CONFIG:
+        case .msp_ARMING_CONFIG:
             if message.count < 2 {
                 return false
             }
             settings.autoDisarmDelay = Int(message[0])
             settings.disarmKillSwitch = message[1] != 0
             
-        case .MSP_MISC: // 22 bytes
+        case .msp_MISC: // 22 bytes
             if message.count < 18 {
                 return false
             }
@@ -444,31 +444,31 @@ class MSPParser {
                 batteryEvent.raiseDispatch()
             }
             
-        case .MSP_BOXNAMES:
+        case .msp_BOXNAMES:
             settings.boxNames = [String]()
             var buf = [UInt8]()
             for i in 0 ..< message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
-                    settings.boxNames!.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
+                    settings.boxNames!.append(NSString(bytes: buf, length: buf.count, encoding: String.Encoding.ascii.rawValue)! as String)
                     buf.removeAll()
                 } else {
                     buf.append(message[i])
                 }
             }
             
-        case .MSP_PIDNAMES:
+        case .msp_PIDNAMES:
             settings.pidNames = [String]()
             var buf = [UInt8]()
             for i in 0 ..< message.count {
                 if message[i] == 0x3B {     // ; (delimiter char)
-                    settings.pidNames?.append(NSString(bytes: buf, length: buf.count, encoding: NSASCIIStringEncoding) as! String)
+                    settings.pidNames?.append(NSString(bytes: buf, length: buf.count, encoding: String.Encoding.ascii.rawValue)! as String)
                     buf.removeAll()
                 } else {
                     buf.append(message[i])
                 }
             }
             
-        case .MSP_WP:
+        case .msp_WP:
             if config.isINav {
                 if message.count < 21 {
                     return false
@@ -525,13 +525,13 @@ class MSPParser {
                 inavState.setWaypoint(waypoint)
             }
             
-        case .MSP_BOXIDS:
+        case .msp_BOXIDS:
             settings.boxIds = [Int]()
             for i in 0 ..< message.count {
                 settings.boxIds!.append(Int(message[i]))
             }
             
-        case .MSP_GPSSVINFO:
+        case .msp_GPSSVINFO:
             if message.count < 1 {
                 return false
             }
@@ -547,7 +547,7 @@ class MSPParser {
             
             gpsEvent.raiseDispatch()
             
-        case .MSP_RX_CONFIG:
+        case .msp_RX_CONFIG:
             if message.count < 8 {
                 return false
             }
@@ -576,7 +576,7 @@ class MSPParser {
                 }
             }
             
-        case .MSP_FAILSAFE_CONFIG:
+        case .msp_FAILSAFE_CONFIG:
             if message.count < 8 {
                 return false
             }
@@ -588,7 +588,7 @@ class MSPParser {
             settings.failsafeProcedure = Int(message[7])
             // INAV failsafe_recovery_delay (1)
             
-        case .MSP_RXFAIL_CONFIG:
+        case .msp_RXFAIL_CONFIG:
             if message.count % 3 != 0 {
                 return false
             }
@@ -599,8 +599,8 @@ class MSPParser {
                 settings.rxFailValue!.append(readUInt16(message, index: i * 3 + 1))
             }
             
-        case .MSP_RX_MAP:
-            for (i, b) in message.enumerate() {
+        case .msp_RX_MAP:
+            for (i, b) in message.enumerated() {
                 if (i >= receiver.map.count) {
                     NSLog("MSP_RX_MAP received %d channels instead of %d", message.count, receiver.map.count)
                     break
@@ -625,31 +625,31 @@ class MSPParser {
         */
 
         // Cleanflight-specific
-        case .MSP_API_VERSION:
+        case .msp_API_VERSION:
             if message.count < 3 {
                 return false
             }
             config.msgProtocolVersion = Int(message[0])
             config.apiVersion = String(format: "%d.%d", message[1], message[2])
             
-        case .MSP_FC_VARIANT:
+        case .msp_FC_VARIANT:
             if message.count < 4 {
                 return false
             }
             config.fcIdentifier = String(format: "%c%c%c%c", message[0], message[1], message[2], message[3])
             
-        case .MSP_FC_VERSION:
+        case .msp_FC_VERSION:
             if message.count < 3 {
                 return false
             }
             config.fcVersion = String(format: "%d.%d.%d", message[0], message[1], message[2])
             
-        case .MSP_BUILD_INFO:
+        case .msp_BUILD_INFO:
             if message.count < 19 {
                 return false
             }
-            let date = NSString(bytes: message, length: 11, encoding: NSUTF8StringEncoding)
-            let time = NSString(bytes: Array<UInt8>(message[11..<19]), length: 8, encoding: NSUTF8StringEncoding)
+            let date = NSString(bytes: message, length: 11, encoding: String.Encoding.utf8.rawValue)
+            let time = NSString(bytes: Array<UInt8>(message[11..<19]), length: 8, encoding: String.Encoding.utf8.rawValue)
             /*
             if message.count >= 26 {
                 let revision  = NSString(bytes: Array<UInt8>(message[19..<26]), length: 7, encoding: NSUTF8StringEncoding)
@@ -658,14 +658,14 @@ class MSPParser {
             */
             config.buildInfo = String(format: "%@ %@", date!, time!)
             
-        case .MSP_BOARD_INFO:
+        case .msp_BOARD_INFO:
             if message.count < 6 {
                 return false
             }
             config.boardInfo = String(format: "%c%c%c%c", message[0], message[1], message[2], message[3])
             config.boardVersion = readUInt16(message, index: 4)
             
-        case .MSP_MODE_RANGES:
+        case .msp_MODE_RANGES:
             let nRanges = message.count / 4
             var modeRanges = [ModeRange]()
             for i in 0 ..< nRanges {
@@ -683,7 +683,7 @@ class MSPParser {
             settings.modeRanges = modeRanges
             settings.modeRangeSlots = nRanges
             
-        case .MSP_CF_SERIAL_CONFIG:
+        case .msp_CF_SERIAL_CONFIG:
             let nPorts = message.count / 7
             if nPorts < 1 {
                 return false
@@ -694,19 +694,19 @@ class MSPParser {
                 settings.portConfigs!.append(PortConfig(portIdentifier: PortIdentifier(value: Int(message[offset])), functions: PortFunction(rawValue: readUInt16(message, index: offset+1)), mspBaudRate: BaudRate(value: Int(message[offset+3])), gpsBaudRate: BaudRate(value: Int(message[offset+4])), telemetryBaudRate: BaudRate(value: Int(message[offset+5])), blackboxBaudRate: BaudRate(value: Int(message[offset+6]))))
             }
             
-        case .MSP_PID_CONTROLLER:
+        case .msp_PID_CONTROLLER:
             if message.count < 1 {
                 return false
             }
             settings.pidController = Int(message[0])
 
-        case .MSP_LOOP_TIME:
+        case .msp_LOOP_TIME:
             if message.count < 2 {
                 return false
             }
             settings.loopTime = readUInt16(message, index: 0)
             
-        case .MSP_BLACKBOX_CONFIG:
+        case .msp_BLACKBOX_CONFIG:
             if message.count < 4 {
                 return false
             }
@@ -716,7 +716,7 @@ class MSPParser {
             dataflash.blackboxRateNum = Int(message[2])
             dataflash.blackboxRateDenom = Int(message[3])
             
-        case .MSP_DATAFLASH_SUMMARY:
+        case .msp_DATAFLASH_SUMMARY:
             if message.count < 13 {
                 return false
             }
@@ -726,11 +726,11 @@ class MSPParser {
             dataflash.totalSize = readUInt32(message, index: 5)
             dataflash.usedSize = readUInt32(message, index: 9)
             
-        case .MSP_DATAFLASH_READ:
+        case .msp_DATAFLASH_READ:
             // Nothing to do. Handled by the callback
             break
             
-        case .MSP_SDCARD_SUMMARY:
+        case .msp_SDCARD_SUMMARY:
             if message.count < 11 {
                 return false
             }
@@ -741,7 +741,7 @@ class MSPParser {
             dataflash.sdcardFreeSpace = Int64(readUInt32(message, index: 3)) * 1024
             dataflash.sdcardTotalSpace = Int64(readUInt32(message, index: 7)) * 1024
             
-        case .MSP_SIKRADIO:
+        case .msp_SIKRADIO:
             if message.count < 9 {
                 return false
             }
@@ -755,7 +755,7 @@ class MSPParser {
             rssiEvent.raiseDispatch()
         
         // Betaflight
-        case .MSP_ADVANCED_CONFIG:
+        case .msp_ADVANCED_CONFIG:
             if message.count < 6 {
                 return false
             }
@@ -779,7 +779,7 @@ class MSPParser {
                 }
             }
             
-        case .MSP_FILTER_CONFIG:
+        case .msp_FILTER_CONFIG:
             if message.count < 13 {
                 return false
             }
@@ -800,7 +800,7 @@ class MSPParser {
                 }
             }
 
-        case .MSP_ADVANCED_TUNING:      // aka MSP_PID_ADVANCED subject to change A LOT
+        case .msp_ADVANCED_TUNING:      // aka MSP_PID_ADVANCED subject to change A LOT
             if message.count < 17 {
                 return false
             }
@@ -817,10 +817,10 @@ class MSPParser {
             settings.yawRateAccelLimit = readUInt16(message, index: 15)
             if message.count >= 19 {
                 settings.levelAngleLimit = Int(message[17])
-                settings.levelSensitivity = Int(message[18])
+                settings.levelSensitivity = Int(message[18])    // gone in BF 3.2
             }
             
-        case .MSP_SENSOR_CONFIG:
+        case .msp_SENSOR_CONFIG:
             if message.count < 3 {
                 return false
             }
@@ -834,13 +834,13 @@ class MSPParser {
                 }
                 // INav optical flow (1) (future)
             }
-        case .MSP_RSSI_CONFIG:
+        case .msp_RSSI_CONFIG:
             if message.count < 1 {
                 return false
             }
             settings.rssiChannel = Int(message[0])
             
-        case .MSP_VOLTAGE_METER_CONFIG:
+        case .msp_VOLTAGE_METER_CONFIG:
             if message.count < 3 {
                 return false
             }
@@ -866,7 +866,7 @@ class MSPParser {
                 batteryEvent.raiseDispatch()
             }
         
-        case .MSP_MIXER_CONFIG:
+        case .msp_MIXER_CONFIG:
             if message.count < 1 {
                 return false
             }
@@ -875,13 +875,13 @@ class MSPParser {
                 settings.yawMotorsReversed = message[1] != 0
             }
             
-        case .MSP_FEATURE:
+        case .msp_FEATURE:
             if message.count < 4 {
                 return false
             }
             settings.features = BaseFlightFeature(rawValue: readUInt32(message, index: 0))
             
-        case .MSP_BATTERY_CONFIG:
+        case .msp_BATTERY_CONFIG:
             if message.count < 7 {
                 return false
             }
@@ -893,7 +893,7 @@ class MSPParser {
             settings.currentMeterSource = Int(message[6])
             batteryEvent.raiseDispatch()
             
-        case .MSP_BOARD_ALIGNMENT:
+        case .msp_BOARD_ALIGNMENT:
             if message.count < 6 {
                 return false
             }
@@ -901,7 +901,7 @@ class MSPParser {
             settings.boardAlignPitch = Int(readInt16(message, index: 2))
             settings.boardAlignYaw = Int(readInt16(message, index: 4))
         
-        case .MSP_CURRENT_METER_CONFIG:
+        case .msp_CURRENT_METER_CONFIG:
             if message.count < 7 {
                 return false
             }
@@ -920,7 +920,7 @@ class MSPParser {
                 settings.currentOffset = Int(readInt16(message, index: 6))
             }
         
-        case .MSP_MOTOR_CONFIG:     // CF 2.0
+        case .msp_MOTOR_CONFIG:     // CF 2.0
             if message.count < 6 {
                 return false
             }
@@ -928,13 +928,13 @@ class MSPParser {
             settings.maxThrottle = readInt16(message, index: 2) // 0-2000
             settings.minCommand = readInt16(message, index: 4) // 0-2000
             
-        case .MSP_COMPASS_CONFIG:   // CF 2.0
+        case .msp_COMPASS_CONFIG:   // CF 2.0
             if message.count < 2 {
                 return false
             }
             settings.magDeclination = Double(readInt16(message, index:0)) / 10  // -18000-18000
             
-        case .MSP_GPS_CONFIG:       // CF 2.0
+        case .msp_GPS_CONFIG:       // CF 2.0
             if message.count < 4 {
                 return false
             }
@@ -943,7 +943,7 @@ class MSPParser {
             settings.gpsAutoConfig = message[2] != 0
             settings.gpsAutoBaud = message[3] != 0
             
-        case .MSP_RC_DEADBAND:
+        case .msp_RC_DEADBAND:
             if message.count < 3 {
                 return false
             }
@@ -954,10 +954,10 @@ class MSPParser {
                 settings.throttle3dDeadband = Int(readInt16(message, index: 3))
             }
             
-        case .MSP_NAME:
-            settings.craftName = NSString(bytes: message, length: message.count, encoding: NSASCIIStringEncoding) as! String
+        case .msp_NAME:
+            settings.craftName = NSString(bytes: message, length: message.count, encoding: String.Encoding.ascii.rawValue)! as String
             
-        case .MSP_OSD_CONFIG:
+        case .msp_OSD_CONFIG:
             if message.count < 1 {
                 return false
             }
@@ -1008,7 +1008,7 @@ class MSPParser {
                 }
             }
         
-        case .MSP_VTX_CONFIG:
+        case .msp_VTX_CONFIG:
             if message.count < 3 {
                 return false
             }
@@ -1021,14 +1021,14 @@ class MSPParser {
                 vtxConfig.pitMode = message[4] != 0
             }
             
-        case .MSP_BEEPER_CONFIG:
+        case .msp_BEEPER_CONFIG:
             if message.count < 4 {
                 return false
             }
             settings.beeperMask = readUInt32(message, index: 0)
             
         // INav
-        case .MSP_NAV_STATUS:
+        case .msp_NAV_STATUS:
             if message.count < 7 {
                 return false
             }
@@ -1043,7 +1043,7 @@ class MSPParser {
             }
             navigationEvent.raiseDispatch()
 
-        case .MSP_SENSOR_STATUS:
+        case .msp_SENSOR_STATUS:
             if message.count < 9 {
                 return false
             }
@@ -1059,7 +1059,7 @@ class MSPParser {
             sensorStatusEvent.raiseDispatch()
             
         // INav 1.6+
-        case .MSP_NAV_POSHOLD:
+        case .msp_NAV_POSHOLD:
             if message.count < 13 {
                 return false
             }
@@ -1072,7 +1072,7 @@ class MSPParser {
             inavConfig.useThrottleMidForAltHold = message[10] != 0
             inavConfig.hoverThrottle = readUInt16(message, index: 11)
         
-        case .MSP_RTH_AND_LAND_CONFIG:
+        case .msp_RTH_AND_LAND_CONFIG:
             if message.count < 19 {
                 return false
             }
@@ -1089,7 +1089,7 @@ class MSPParser {
             inavConfig.landSlowdownMaxAlt = Double(readUInt16(message, index: 15)) / 100
             inavConfig.emergencyDescendRate = Double(readUInt16(message, index: 17)) / 100
             
-        case .MSP_FW_CONFIG:
+        case .msp_FW_CONFIG:
             if message.count < 12 {
                 return false
             }
@@ -1102,7 +1102,7 @@ class MSPParser {
             inavConfig.fwPitchToThrottle = Int(message[9])
             inavConfig.fwLoiterRadius = Double(readUInt16(message, index: 10)) / 100
             
-        case .MSP_WP_GETINFO:
+        case .msp_WP_GETINFO:
             if message.count < 4 {
                 return false
             }
@@ -1111,55 +1111,55 @@ class MSPParser {
             inavConfig.waypointCount = Int(message[3])
             
         // ACKs for sent commands
-        case .MSP_SET_MISC,
-            .MSP_SET_BF_CONFIG,
-            .MSP_EEPROM_WRITE,
-            .MSP_SET_REBOOT,
-            .MSP_ACC_CALIBRATION,
-            .MSP_MAG_CALIBRATION,
-            .MSP_SET_ACC_TRIM,
-            .MSP_SET_MODE_RANGE,
-            .MSP_SET_ARMING_CONFIG,
-            .MSP_SET_RC_TUNING,
-            .MSP_SET_RX_MAP,
-            .MSP_SET_PID_CONTROLLER,
-            .MSP_SET_PID,
-            .MSP_SELECT_SETTING,
-            .MSP_SET_MOTOR,
-            .MSP_DATAFLASH_ERASE,
-            .MSP_SET_WP,
-            .MSP_SET_SERVO_CONFIGURATION,
-            .MSP_SET_CF_SERIAL_CONFIG,
-            .MSP_SET_RAW_RC,
-            .MSP_SET_RX_CONFIG,
-            .MSP_SET_FAILSAFE_CONFIG,
-            .MSP_SET_RXFAIL_CONFIG,
-            .MSP_SET_LOOP_TIME,
-            .MSP_SET_ADVANCED_CONFIG,
-            .MSP_SET_SENSOR_CONFIG,
-            .MSP_SET_RSSI_CONFIG,
-            .MSP_SET_VOLTAGE_METER_CONFIG,
-            .MSP_SET_MIXER_CONFIG,
-            .MSP_SET_FEATURE,
-            .MSP_SET_BATTERY_CONFIG,
-            .MSP_SET_BOARD_ALIGNMENT,
-            .MSP_SET_CURRENT_METER_CONFIG,
-            .MSP_SET_MOTOR_CONFIG,
-            .MSP_SET_COMPASS_CONFIG,
-            .MSP_SET_GPS_CONFIG,
-            .MSP_SET_RC_DEADBAND,
-            .MSP_SET_NAV_POSHOLD,
-            .MSP_WP_MISSION_LOAD,
-            .MSP_WP_MISSION_SAVE,
-            .MSP_SET_OSD_CONFIG,
-            .MSP_SET_VTX_CONFIG,
-            .MSP_SET_FILTER_CONFIG,
-            .MSP_OSD_CHAR_WRITE,
-            .MSP_SET_NAME,
-            .MSP_SET_RTH_AND_LAND_CONFIG,
-            .MSP_SET_FW_CONFIG,
-            .MSP_SET_BLACKBOX_CONFIG,
-            .MSP_SET_BEEPER_CONFIG:
+        case .msp_SET_MISC,
+            .msp_SET_BF_CONFIG,
+            .msp_EEPROM_WRITE,
+            .msp_SET_REBOOT,
+            .msp_ACC_CALIBRATION,
+            .msp_MAG_CALIBRATION,
+            .msp_SET_ACC_TRIM,
+            .msp_SET_MODE_RANGE,
+            .msp_SET_ARMING_CONFIG,
+            .msp_SET_RC_TUNING,
+            .msp_SET_RX_MAP,
+            .msp_SET_PID_CONTROLLER,
+            .msp_SET_PID,
+            .msp_SELECT_SETTING,
+            .msp_SET_MOTOR,
+            .msp_DATAFLASH_ERASE,
+            .msp_SET_WP,
+            .msp_SET_SERVO_CONFIGURATION,
+            .msp_SET_CF_SERIAL_CONFIG,
+            .msp_SET_RAW_RC,
+            .msp_SET_RX_CONFIG,
+            .msp_SET_FAILSAFE_CONFIG,
+            .msp_SET_RXFAIL_CONFIG,
+            .msp_SET_LOOP_TIME,
+            .msp_SET_ADVANCED_CONFIG,
+            .msp_SET_SENSOR_CONFIG,
+            .msp_SET_RSSI_CONFIG,
+            .msp_SET_VOLTAGE_METER_CONFIG,
+            .msp_SET_MIXER_CONFIG,
+            .msp_SET_FEATURE,
+            .msp_SET_BATTERY_CONFIG,
+            .msp_SET_BOARD_ALIGNMENT,
+            .msp_SET_CURRENT_METER_CONFIG,
+            .msp_SET_MOTOR_CONFIG,
+            .msp_SET_COMPASS_CONFIG,
+            .msp_SET_GPS_CONFIG,
+            .msp_SET_RC_DEADBAND,
+            .msp_SET_NAV_POSHOLD,
+            .msp_WP_MISSION_LOAD,
+            .msp_WP_MISSION_SAVE,
+            .msp_SET_OSD_CONFIG,
+            .msp_SET_VTX_CONFIG,
+            .msp_SET_FILTER_CONFIG,
+            .msp_OSD_CHAR_WRITE,
+            .msp_SET_NAME,
+            .msp_SET_RTH_AND_LAND_CONFIG,
+            .msp_SET_FW_CONFIG,
+            .msp_SET_BLACKBOX_CONFIG,
+            .msp_SET_BEEPER_CONFIG:
             break
             
         default:
@@ -1170,12 +1170,12 @@ class MSPParser {
         return true
     }
     
-    func callSuccessCallback(code: MSP_code, data: [UInt8]) {
-        var callback: ((success: Bool) -> Void)? = nil
-        var dataCallback: ((data: [UInt8]) -> Void)? = nil
+    func callSuccessCallback(_ code: MSP_code, data: [UInt8]) {
+        var callback: ((_ success: Bool) -> Void)? = nil
+        var dataCallback: ((_ data: [UInt8]) -> Void)? = nil
         
         objc_sync_enter(retriedMessageLock)
-        if let retriedMessage = retriedMessages.removeValueForKey(code) {
+        if let retriedMessage = retriedMessages.removeValue(forKey: code) {
             retriedMessage.cancelled = true
             retriedMessage.timer?.invalidate()
             if retriedMessage is DataMessageRetryHandler {
@@ -1185,20 +1185,20 @@ class MSPParser {
             }
         }
         objc_sync_exit(retriedMessageLock)
-        callback?(success: true)
-        dataCallback?(data: data)
+        callback?(true)
+        dataCallback?(data)
     }
     
-    func makeSendMessageTimer(handler: MessageRetryHandler) {
-        dispatch_async(dispatch_get_main_queue(), {
+    func makeSendMessageTimer(_ handler: MessageRetryHandler) {
+        DispatchQueue.main.async(execute: {
             if !handler.cancelled {
-                handler.timer = NSTimer(timeInterval: 0.3, target: self, selector: #selector(MSPParser.sendMessageTimedOut(_:)), userInfo: handler, repeats: false)
-                NSRunLoop.mainRunLoop().addTimer(handler.timer!, forMode: NSRunLoopCommonModes)
+                handler.timer = Timer(timeInterval: 0.3, target: self, selector: #selector(MSPParser.sendMessageTimedOut(_:)), userInfo: handler, repeats: false)
+                RunLoop.main.add(handler.timer!, forMode: RunLoopMode.commonModes)
             }
         })
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?, retry: Int, flush: Bool = true, callback: ((success: Bool) -> Void)?) {
+    func sendMessage(_ code: MSP_code, data: [UInt8]?, retry: Int, flush: Bool = true, callback: ((_ success: Bool) -> Void)?) {
         //NSLog("sendMessage %d", code.rawValue)
         if retry > 0 || callback != nil {
             let messageRetry = MessageRetryHandler(code: code, data: data, maxTries: retry, callback: callback)
@@ -1211,12 +1211,12 @@ class MSPParser {
         addOutputMessage(codec.encode(code, message: data), flush: flush)
     }
     
-    func sendMessage(code: MSP_code, data: [UInt8]?, flush: Bool = true) {
+    func sendMessage(_ code: MSP_code, data: [UInt8]?, flush: Bool = true) {
         sendMessage(code, data: data, retry: 0, flush: flush, callback: nil)
     }
     
     @objc
-    func sendMessageTimedOut(timer: NSTimer) {
+    func sendMessageTimedOut(_ timer: Timer) {
         let handler = timer.userInfo as! MessageRetryHandler
         handler.tries += 1
         if handler.tries > handler.maxTries {
@@ -1231,14 +1231,14 @@ class MSPParser {
         sendMessage(handler.code, data: handler.data, retry: 0, callback: nil)
     }
     
-    private func callErrorCallback(code: MSP_code) {
+    fileprivate func callErrorCallback(_ code: MSP_code) {
         objc_sync_enter(retriedMessageLock)
-        let handler = retriedMessages.removeValueForKey(code)
+        let handler = retriedMessages.removeValue(forKey: code)
         objc_sync_exit(retriedMessageLock)
         if handler is DataMessageRetryHandler {
-            (handler as! DataMessageRetryHandler).dataCallback(data: nil)
+            (handler as! DataMessageRetryHandler).dataCallback(nil)
         } else if handler != nil {
-            handler!.callback?(success: false)
+            handler!.callback?(false)
         }
         return
     }
@@ -1252,26 +1252,26 @@ class MSPParser {
         objc_sync_exit(retriedMessageLock)
     }
     
-    func sendSetMisc(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendSetMisc(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeInt16(settings.midRC))
-        data.appendContentsOf(writeInt16(settings.minThrottle))
-        data.appendContentsOf(writeInt16(settings.maxThrottle))
-        data.appendContentsOf(writeInt16(settings.minCommand))
-        data.appendContentsOf(writeInt16(settings.failsafeThrottle))
+        data.append(contentsOf: writeInt16(settings.midRC))
+        data.append(contentsOf: writeInt16(settings.minThrottle))
+        data.append(contentsOf: writeInt16(settings.maxThrottle))
+        data.append(contentsOf: writeInt16(settings.minCommand))
+        data.append(contentsOf: writeInt16(settings.failsafeThrottle))
         data.append(UInt8(settings.gpsType))
         data.append(UInt8(0))
         data.append(UInt8(settings.gpsUbxSbas))
         data.append(UInt8(0))    // multiwiiCurrentOuput
         data.append(UInt8(settings.rssiChannel))
         data.append(UInt8(0))
-        data.appendContentsOf(writeInt16(Int(round(settings.magDeclination * 10))))
+        data.append(contentsOf: writeInt16(Int(round(settings.magDeclination * 10))))
         data.append(UInt8(settings.vbatScale))
         data.append(UInt8(round(settings.vbatMinCellVoltage * 10)))
         data.append(UInt8(round(settings.vbatMaxCellVoltage * 10)))
         data.append(UInt8(round(settings.vbatWarningCellVoltage * 10)))
         
-        sendMessage(.MSP_SET_MISC, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_MISC, data: data, retry: 2, callback: callback)
     }
     
     /*
@@ -1290,15 +1290,15 @@ class MSPParser {
     }
     */
     
-    func sendSetAccTrim(misc: Misc, callback:((success:Bool) -> Void)?) {
+    func sendSetAccTrim(_ misc: Misc, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeInt16(misc.accelerometerTrimPitch))
-        data.appendContentsOf(writeInt16(misc.accelerometerTrimRoll))
+        data.append(contentsOf: writeInt16(misc.accelerometerTrimPitch))
+        data.append(contentsOf: writeInt16(misc.accelerometerTrimRoll))
         
-        sendMessage(.MSP_SET_ACC_TRIM, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_ACC_TRIM, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetModeRange(index: Int, range: ModeRange, callback:((success:Bool) -> Void)?) {
+    func sendSetModeRange(_ index: Int, range: ModeRange, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(index))
         data.append(UInt8(range.id))
@@ -1306,18 +1306,18 @@ class MSPParser {
         data.append(UInt8((range.start - 900) / 25))
         data.append(UInt8((range.end - 900) / 25))
         
-        sendMessage(.MSP_SET_MODE_RANGE, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_MODE_RANGE, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetArmingConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendSetArmingConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.autoDisarmDelay))
         data.append(UInt8(settings.disarmKillSwitch ? 1 : 0))
         
-        sendMessage(.MSP_SET_ARMING_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_ARMING_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetRcTuning(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendSetRcTuning(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(round(settings.rcRate * 100)))
         data.append(UInt8(round(settings.rcExpo * 100)))
@@ -1327,22 +1327,22 @@ class MSPParser {
         data.append(UInt8(round(settings.tpaRate * 100)))
         data.append(UInt8(round(settings.throttleMid * 100)))
         data.append(UInt8(round(settings.throttleExpo * 100)))
-        data.appendContentsOf(writeInt16(settings.tpaBreakpoint))
+        data.append(contentsOf: writeInt16(settings.tpaBreakpoint))
         data.append(UInt8(round(settings.yawExpo * 100)))
         data.append(UInt8(round(settings.yawRate * 100)))       // BF and CF 2.0 only
     
-        sendMessage(.MSP_SET_RC_TUNING, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_RC_TUNING, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetRxMap(map: [UInt8], callback:((success:Bool) -> Void)?) {
-        sendMessage(.MSP_SET_RX_MAP, data: map, retry: 2, callback: callback)
+    func sendSetRxMap(_ map: [UInt8], callback:((_ success:Bool) -> Void)?) {
+        sendMessage(.msp_SET_RX_MAP, data: map, retry: 2, callback: callback)
     }
     
-    func sendPidController(pidController: Int, callback:((success:Bool) -> Void)?) {
-        sendMessage(.MSP_SET_PID_CONTROLLER, data: [ UInt8(pidController) ], retry: 2, callback: callback)
+    func sendPidController(_ pidController: Int, callback:((_ success:Bool) -> Void)?) {
+        sendMessage(.msp_SET_PID_CONTROLLER, data: [ UInt8(pidController) ], retry: 2, callback: callback)
     }
     
-    func sendPid(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendPid(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         for pid in settings.pidValues! {
             let p = pid[0]
@@ -1352,60 +1352,60 @@ class MSPParser {
             data.append(UInt8(round(i)))
             data.append(UInt8(round(d)))
         }
-        sendMessage(.MSP_SET_PID, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_PID, data: data, retry: 2, callback: callback)
     }
     
-    func sendSelectProfile(profile: Int, callback:((success:Bool) -> Void)?) {
+    func sendSelectProfile(_ profile: Int, callback:((_ success:Bool) -> Void)?) {
         // Note: this call includes a write eeprom (in CF 1.12. Not sure about other versions)
-        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
+        sendMessage(.msp_SELECT_SETTING, data: [ UInt8(profile) ], retry: 2, callback: callback)
     }
     
-    func sendDataflashRead(address: Int, callback:(data: [UInt8]?) -> Void) {
+    func sendDataflashRead(_ address: Int, callback: @escaping (_ data: [UInt8]?) -> Void) {
         let data = writeUInt32(address)
-        let messageRetry = DataMessageRetryHandler(code: .MSP_DATAFLASH_READ, data: data, maxTries: 3, callback: callback)
+        let messageRetry = DataMessageRetryHandler(code: .msp_DATAFLASH_READ, data: data, maxTries: 3, callback: callback)
         makeSendMessageTimer(messageRetry)
         
         objc_sync_enter(retriedMessageLock)
-        retriedMessages[.MSP_DATAFLASH_READ] = messageRetry
+        retriedMessages[.msp_DATAFLASH_READ] = messageRetry
         objc_sync_exit(retriedMessageLock)
-        sendMessage(.MSP_DATAFLASH_READ, data: data, retry: 0, callback: nil)
+        sendMessage(.msp_DATAFLASH_READ, data: data, retry: 0, callback: nil)
     }
     
     // Waypoint number 0 is GPS Home location, waypoint number 16 is GPS Hold location, other values are ignored in CF
     // Pass altitude=0 to keep current AltHold value
-    func sendWaypoint(number: Int, latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
+    func sendWaypoint(_ number: Int, latitude: Double, longitude: Double, altitude: Double, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(number))
-        data.appendContentsOf(writeInt32(Int(latitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(longitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(altitude * 100)))
-        data.appendContentsOf([0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
+        data.append(contentsOf: writeInt32(Int(latitude * 10000000.0)))
+        data.append(contentsOf: writeInt32(Int(longitude * 10000000.0)))
+        data.append(contentsOf: writeInt32(Int(altitude * 100)))
+        data.append(contentsOf: [0, 0, 0, 0, 0])  // Future: heading (16), time to stay (16), nav flags
         
-        sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_WP, data: data, retry: 2, callback: callback)
     }
 
     // INav: wp#0 is home, wp#255 is GPS Hold location and wp#1 to wp#15 are regular waypoints (must be set in sequence)
-    func sendINavWaypoint(waypoint: Waypoint, callback:((success:Bool) -> Void)?) {
+    func sendINavWaypoint(_ waypoint: Waypoint, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(waypoint.number))
         data.append(UInt8(waypoint.action.intValue))
-        data.appendContentsOf(writeInt32(Int(waypoint.position.latitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(waypoint.position.longitude * 10000000.0)))
-        data.appendContentsOf(writeInt32(Int(waypoint.altitude * 100)))
-        data.appendContentsOf(writeInt16(waypoint.param1))
-        data.appendContentsOf(writeInt16(waypoint.param2))
-        data.appendContentsOf(writeInt16(waypoint.param3))
+        data.append(contentsOf: writeInt32(Int(waypoint.position.latitude * 10000000.0)))
+        data.append(contentsOf: writeInt32(Int(waypoint.position.longitude * 10000000.0)))
+        data.append(contentsOf: writeInt32(Int(waypoint.altitude * 100)))
+        data.append(contentsOf: writeInt16(waypoint.param1))
+        data.append(contentsOf: writeInt16(waypoint.param2))
+        data.append(contentsOf: writeInt16(waypoint.param3))
         data.append(UInt8(waypoint.last ? 0xA5 : 0))
         
-        sendMessage(.MSP_SET_WP, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_WP, data: data, retry: 2, callback: callback)
     }
     
-    func sendINavWaypoints(inavState: INavState, callback:((success:Bool) -> Void)?) {
+    func sendINavWaypoints(_ inavState: INavState, callback:((_ success:Bool) -> Void)?) {
         sendINavWaypointsRecursive(inavState, wpNumber: 0, callback: callback)
     }
-    private func sendINavWaypointsRecursive(inavState: INavState, wpNumber: Int, callback:((success:Bool) -> Void)?) {
+    fileprivate func sendINavWaypointsRecursive(_ inavState: INavState, wpNumber: Int, callback:((_ success:Bool) -> Void)?) {
         if wpNumber >= inavState.waypoints.count {
-            callback?(success: true)
+            callback?(true)
         } else {
             var waypoint = inavState.waypoints[wpNumber]
             waypoint.last = wpNumber == inavState.waypoints.count - 1
@@ -1413,15 +1413,15 @@ class MSPParser {
                 if success {
                     self.sendINavWaypointsRecursive(inavState, wpNumber: wpNumber + 1, callback: callback)
                 } else {
-                    callback?(success: false)
+                    callback?(false)
                 }
             }
         }
     }
     
-    func setGPSHoldPosition(latitude latitude: Double, longitude: Double, altitude: Double, callback:((success:Bool) -> Void)?) {
+    func setGPSHoldPosition(latitude: Double, longitude: Double, altitude: Double, callback:((_ success:Bool) -> Void)?) {
         if Configuration.theConfig.isINav {
-            let waypoint = Waypoint(number: 255, action: .Known(.Waypoint), position: GPSLocation(latitude: latitude, longitude: longitude), altitude: altitude, param1: 0, param2: 0, param3: 0, last: false)
+            let waypoint = Waypoint(number: 255, action: .known(.waypoint), position: GPSLocation(latitude: latitude, longitude: longitude), altitude: altitude, param1: 0, param2: 0, param3: 0, last: false)
             sendINavWaypoint(waypoint, callback: callback)
         } else {
             sendWaypoint(16, latitude: latitude, longitude: longitude, altitude: altitude, callback: callback)
@@ -1429,126 +1429,135 @@ class MSPParser {
     }
     
     // Clear inavState before calling this function
-    func fetchINavWaypoints(inavState: INavState,  callback:((success:Bool) -> Void)?) {
-        if let waypoint = inavState.waypoints.last where waypoint.last {
-            callback?(success: true)
+    func fetchINavWaypoints(_ inavState: INavState,  callback:((_ success:Bool) -> Void)?) {
+        if let waypoint = inavState.waypoints.last, waypoint.last {
+            callback?(true)
         } else if self.replaying {
             // Avoid infinite recursion
-            callback?(success: true)
+            callback?(true)
         } else {
-            sendMessage(.MSP_WP, data: [ UInt8(inavState.waypoints.count + 1) ], retry: 2) { success in
+            sendMessage(.msp_WP, data: [ UInt8(inavState.waypoints.count + 1) ], retry: 2) { success in
                 if success {
                     self.fetchINavWaypoints(inavState, callback: callback)
                 } else {
-                    callback?(success: false)
+                    callback?(false)
                 }
             }
         }
     }
     
-    func setServoConfig(servoIdx: Int, servoConfig: ServoConfig, callback:((success:Bool) -> Void)?) {
+    func setServoConfig(_ servoIdx: Int, servoConfig: ServoConfig, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(servoIdx))
-        data.appendContentsOf(writeInt16(servoConfig.minimumRC))
-        data.appendContentsOf(writeInt16(servoConfig.maximumRC))
-        data.appendContentsOf(writeInt16(servoConfig.middleRC))
+        data.append(contentsOf: writeInt16(servoConfig.minimumRC))
+        data.append(contentsOf: writeInt16(servoConfig.maximumRC))
+        data.append(contentsOf: writeInt16(servoConfig.middleRC))
         data.append(writeInt8(servoConfig.rate))
         data.append(UInt8(servoConfig.minimumAngle))
         data.append(UInt8(servoConfig.maximumAngle))
         data.append(UInt8(servoConfig.rcChannel == nil ? CHANNEL_FORWARDING_DISABLED : servoConfig.rcChannel!))
-        data.appendContentsOf(writeUInt32(servoConfig.reversedSources))
+        data.append(contentsOf: writeUInt32(servoConfig.reversedSources))
         
-        sendMessage(.MSP_SET_SERVO_CONFIGURATION, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_SERVO_CONFIGURATION, data: data, retry: 2, callback: callback)
     }
     
-    func sendSerialConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendSerialConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         for portConfig in settings.portConfigs! {
             data.append(UInt8(portConfig.portIdentifier.intValue))
-            data.appendContentsOf(writeUInt16(portConfig.functions.rawValue))
+            data.append(contentsOf: writeUInt16(portConfig.functions.rawValue))
             data.append(UInt8(portConfig.mspBaudRate.intValue))
             data.append(UInt8(portConfig.gpsBaudRate.intValue))
             data.append(UInt8(portConfig.telemetryBaudRate.intValue))
             data.append(UInt8(portConfig.blackboxBaudRate.intValue))
         }
         
-        sendMessage(.MSP_SET_CF_SERIAL_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_CF_SERIAL_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendRawRc(values: [Int]) {
+    func sendRawRc(_ values: [Int]) {
         var data = [UInt8]()
         for v in values {
-            data.appendContentsOf(writeUInt16(v))
+            data.append(contentsOf: writeUInt16(v))
         }
-        sendMessage(.MSP_SET_RAW_RC, data: data)
+        sendMessage(.msp_SET_RAW_RC, data: data)
     }
     
-    func sendRxConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendRxConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.serialRxType))
-        data.appendContentsOf(writeUInt16(settings.maxCheck))
-        data.appendContentsOf(writeUInt16(settings.midRC))
-        data.appendContentsOf(writeUInt16(settings.minCheck))
+        data.append(contentsOf: writeUInt16(settings.maxCheck))
+        data.append(contentsOf: writeUInt16(settings.midRC))
+        data.append(contentsOf: writeUInt16(settings.minCheck))
         data.append(UInt8(settings.spektrumSatBind))
-        data.appendContentsOf(writeUInt16(settings.rxMinUsec))
-        data.appendContentsOf(writeUInt16(settings.rxMaxUsec))
+        data.append(contentsOf: writeUInt16(settings.rxMinUsec))
+        data.append(contentsOf: writeUInt16(settings.rxMaxUsec))
         data.append(UInt8(settings.rcInterpolation))
         data.append(UInt8(settings.rcInterpolationInterval))
-        data.appendContentsOf(writeUInt16(settings.airmodeActivateThreshold))
+        data.append(contentsOf: writeUInt16(settings.airmodeActivateThreshold))
         data.append(UInt8(settings.rxSpiProtocol))
-        data.appendContentsOf(writeUInt32(settings.rxSpiId))
+        data.append(contentsOf: writeUInt32(settings.rxSpiId))
         data.append(UInt8(settings.rxSpiChannelCount))
         data.append(UInt8(settings.fpvCamAngleDegrees))
 
-        sendMessage(.MSP_SET_RX_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_RX_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendFailsafeConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendFailsafeConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(Int(settings.failsafeDelay * 10)))
         data.append(UInt8(Int(settings.failsafeOffDelay * 10)))
-        data.appendContentsOf(writeUInt16(settings.failsafeThrottle))
+        data.append(contentsOf: writeUInt16(settings.failsafeThrottle))
         data.append(UInt8(settings.failsafeKillSwitch ? 1 : 0))
-        data.appendContentsOf(writeUInt16(Int(settings.failsafeThrottleLowDelay * 10)))
+        data.append(contentsOf: writeUInt16(Int(settings.failsafeThrottleLowDelay * 10)))
         data.append(UInt8(settings.failsafeProcedure))
-        sendMessage(.MSP_SET_FAILSAFE_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_FAILSAFE_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendRxFailConfig(settings: Settings, index: Int = 0, callback:((success:Bool) -> Void)?) {
+    func sendRxFailConfig(_ settings: Settings, index: Int = 0, callback:((_ success:Bool) -> Void)?) {
         if settings.rxFailMode == nil || settings.rxFailMode!.count == 0 {
             // Happens when RX config is invalid
-            callback?(success: true)
+            callback?(true)
             return
         }
         var data = [UInt8]()
         data.append(UInt8(index))
         data.append(UInt8(settings.rxFailMode![index]))
-        data.appendContentsOf(writeUInt16(settings.rxFailValue![index]))
-        sendMessage(.MSP_SET_RXFAIL_CONFIG, data: data, retry: 2, callback: { success in
+        data.append(contentsOf: writeUInt16(settings.rxFailValue![index]))
+        sendMessage(.msp_SET_RXFAIL_CONFIG, data: data, retry: 2, callback: { success in
             if success {
                 if index < settings.rxFailMode!.count - 1 {
                     self.sendRxFailConfig(settings, index: index + 1, callback: callback)
                 } else {
-                    callback?(success: true)
+                    callback?(true)
                 }
             } else {
-                callback?(success: false)
+                callback?(false)
             }
         })
     }
     
-    func sendLoopTime(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendLoopTime(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt16(settings.loopTime))
-        sendMessage(.MSP_SET_LOOP_TIME, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt16(settings.loopTime))
+        sendMessage(.msp_SET_LOOP_TIME, data: data, retry: 2, callback: callback)
     }
     
-    func sendRssiConfig(rssiChannel: Int, callback:((success: Bool) -> Void)?) {
+    func sendRssiConfig(_ rssiChannel: Int, callback:((_ success: Bool) -> Void)?) {
         let data = [UInt8(rssiChannel)]
-        sendMessage(.MSP_SET_RSSI_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_RSSI_CONFIG, data: data, retry: 2, callback: callback)
     }
 
-    func sendVoltageMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func isBuggyCFAlwaysError() -> Bool {
+        // CF 2.0 and 2.1 (as well as BF 3.2 beta) always returns an error (bug)
+        let config = Configuration.theConfig
+        if config.isINav || config.isBetaflight {
+            return false
+        }
+        return config.apiVersion == "1.35" || config.apiVersion == "1.36"
+    }
+    
+    func sendVoltageMeterConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.35") && !config.isINav {
@@ -1564,57 +1573,55 @@ class MSPParser {
             data.append(UInt8(settings.vbatWarningCellVoltage * 10))
             data.append(UInt8(settings.vbatMeterType))
         }
-        sendMessage(.MSP_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2) { success in
-            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if config.isApiVersionAtLeast("1.35") && !config.isINav {
-                callback?(success: true)
+        sendMessage(.msp_SET_VOLTAGE_METER_CONFIG, data: data, retry: 2) { success in
+            if self.isBuggyCFAlwaysError() {
+                callback?(true)
             } else {
-                callback?(success: success)
+                callback?(success)
             }
         }
     }
     
-    func sendMixerConfiguration(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendMixerConfiguration(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         let data = [UInt8(settings.mixerConfiguration), UInt8(settings.yawMotorsReversed ? 1 : 0)]
-        sendMessage(.MSP_SET_MIXER_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_MIXER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendSetFeature(features: BaseFlightFeature, callback:((success:Bool) -> Void)?) {
+    func sendSetFeature(_ features: BaseFlightFeature, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt32(features.rawValue))
+        data.append(contentsOf: writeUInt32(features.rawValue))
         
-        sendMessage(.MSP_SET_FEATURE, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_FEATURE, data: data, retry: 2, callback: callback)
     }
     
-    func sendBatteryConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendBatteryConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.vbatMinCellVoltage * 10))
         data.append(UInt8(settings.vbatMaxCellVoltage * 10))
         data.append(UInt8(settings.vbatWarningCellVoltage * 10))
-        data.appendContentsOf(writeUInt16(settings.batteryCapacity))
+        data.append(contentsOf: writeUInt16(settings.batteryCapacity))
         data.append(UInt8(settings.voltageMeterSource))
         data.append(UInt8(settings.currentMeterSource))
 
-        sendMessage(.MSP_SET_BATTERY_CONFIG, data: data, retry: 2) { success in
-            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if Configuration.theConfig.isApiVersionAtLeast("1.35") {
-                callback?(success: true)
+        sendMessage(.msp_SET_BATTERY_CONFIG, data: data, retry: 2) { success in
+            if self.isBuggyCFAlwaysError() {
+                callback?(true)
             } else {
-                callback?(success: success)
+                callback?(success)
             }
         }
     }
     
-    func sendBoardAlignment(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendBoardAlignment(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt16(settings.boardAlignRoll))
-        data.appendContentsOf(writeUInt16(settings.boardAlignPitch))
-        data.appendContentsOf(writeUInt16(settings.boardAlignYaw))
+        data.append(contentsOf: writeUInt16(settings.boardAlignRoll))
+        data.append(contentsOf: writeUInt16(settings.boardAlignPitch))
+        data.append(contentsOf: writeUInt16(settings.boardAlignYaw))
         
-        sendMessage(.MSP_SET_BOARD_ALIGNMENT, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_BOARD_ALIGNMENT, data: data, retry: 2, callback: callback)
     }
     
-    func sendCurrentMeterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendCurrentMeterConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.35") && !config.isINav {
@@ -1625,87 +1632,86 @@ class MSPParser {
             } else {
                 data.append(UInt8(80))  // CURRENT_METER_ID_VIRTUAL_1
             }
-            data.appendContentsOf(writeUInt16(settings.currentScale))
-            data.appendContentsOf(writeUInt16(settings.currentOffset))
+            data.append(contentsOf: writeUInt16(settings.currentScale))
+            data.append(contentsOf: writeUInt16(settings.currentOffset))
         } else {
-            data.appendContentsOf(writeUInt16(settings.currentScale))
-            data.appendContentsOf(writeUInt16(settings.currentOffset))
+            data.append(contentsOf: writeUInt16(settings.currentScale))
+            data.append(contentsOf: writeUInt16(settings.currentOffset))
             data.append(UInt8(settings.currentMeterType))
-            data.appendContentsOf(writeUInt16(settings.batteryCapacity))
+            data.append(contentsOf: writeUInt16(settings.batteryCapacity))
         }
     
-        sendMessage(.MSP_SET_CURRENT_METER_CONFIG, data: data, retry: 2) { success in
-            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            if config.isApiVersionAtLeast("1.35") && !config.isINav {
-                callback?(success: true)
+        sendMessage(.msp_SET_CURRENT_METER_CONFIG, data: data, retry: 2) { success in
+            if self.isBuggyCFAlwaysError() {
+                callback?(true)
             } else {
-                callback?(success: success)
+                callback?(success)
             }
         }
     }
     
-    func sendBlackboxConfig(dataflash: Dataflash, callback:((success:Bool) -> Void)?) {
+    func sendBlackboxConfig(_ dataflash: Dataflash, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(dataflash.blackboxDevice))
         data.append(UInt8(dataflash.blackboxRateNum))
         data.append(UInt8(dataflash.blackboxRateDenom))
-        sendMessage(.MSP_SET_BLACKBOX_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_BLACKBOX_CONFIG, data: data, retry: 2, callback: callback)
     }
 
     // Cleanflight 2.0
     
-    func sendMotorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendMotorConfig(_ settings: Settings, callback:((_ success: Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt16(settings.minThrottle))
-        data.appendContentsOf(writeUInt16(settings.maxThrottle))
-        data.appendContentsOf(writeUInt16(settings.minCommand))
-        sendMessage(.MSP_SET_MOTOR_CONFIG, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt16(settings.minThrottle))
+        data.append(contentsOf: writeUInt16(settings.maxThrottle))
+        data.append(contentsOf: writeUInt16(settings.minCommand))
+        sendMessage(.msp_SET_MOTOR_CONFIG, data: data, retry: 2, callback: callback)
     }
 
-    func sendCompassConfig(magDeclination: Double, callback:((success: Bool) -> Void)?) {
+    func sendCompassConfig(_ magDeclination: Double, callback:((_ success: Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeInt16(Int(round(magDeclination * 10))))
-        sendMessage(.MSP_SET_COMPASS_CONFIG, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeInt16(Int(round(magDeclination * 10))))
+        sendMessage(.msp_SET_COMPASS_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendGpsConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendGpsConfig(_ settings: Settings, callback:((_ success: Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.gpsType))
         data.append(UInt8(settings.gpsUbxSbas))
         data.append(UInt8(settings.gpsAutoConfig ? 1 : 0))
         data.append(UInt8(settings.gpsAutoBaud ? 1 : 0))
-        sendMessage(.MSP_SET_GPS_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_GPS_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendRcDeadband(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendRcDeadband(_ settings: Settings, callback:((_ success: Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.rcDeadband))
         data.append(UInt8(settings.yawDeadband))
         data.append(UInt8(settings.altHoldDeadband))
-        data.appendContentsOf(writeUInt16(settings.throttle3dDeadband))
-        sendMessage(.MSP_SET_RC_DEADBAND, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt16(settings.throttle3dDeadband))
+        sendMessage(.msp_SET_RC_DEADBAND, data: data, retry: 2, callback: callback)
     }
 
     // Betaflight
     
-    func sendAdvancedConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendAdvancedConfig(_ settings: Settings, callback:((_ success: Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.gyroSyncDenom))
         data.append(UInt8(settings.pidProcessDenom))
         data.append(UInt8(settings.useUnsyncedPwm ? 1 : 0))
         data.append(UInt8(settings.motorPwmProtocol))
-        data.appendContentsOf(writeUInt16(settings.motorPwmRate))
+        data.append(contentsOf: writeUInt16(settings.motorPwmRate))
         if Configuration.theConfig.isINav {
-            data.appendContentsOf(writeUInt16(settings.servoPwmRate))
+            data.append(contentsOf: writeUInt16(settings.servoPwmRate))
             data.append(UInt8(settings.syncLoopWithGyro ? 1 : 0))
         } else {
-            data.appendContentsOf(writeUInt16(Int(round(settings.digitalIdleOffsetPercent * 100))))
+            data.append(contentsOf: writeUInt16(Int(round(settings.digitalIdleOffsetPercent * 100))))
             data.append(UInt8(settings.gyroUses32KHz ? 1 : 0))
         }
-        sendMessage(.MSP_SET_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_ADVANCED_CONFIG, data: data, retry: 2, callback: callback)
     }
 
-    func sendSensorConfig(settings: Settings, callback:((success: Bool) -> Void)?) {
+    func sendSensorConfig(_ settings: Settings, callback:((_ success: Bool) -> Void)?) {
         let config = Configuration.theConfig
         var data = [UInt8]()
         data.append(UInt8(settings.accelerometerDisabled != config.isINav ? 1 : 0))
@@ -1713,39 +1719,39 @@ class MSPParser {
         data.append(UInt8(settings.magnetometerDisabled != config.isINav ? 1 : 0))
         data.append(UInt8(settings.pitotDisabled != config.isINav ? 1 : 0))
         data.append(UInt8(settings.sonarDisabled != config.isINav ? 1 : 0))
-        sendMessage(.MSP_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_SENSOR_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendSelectRateProfile(rateProfile: Int, callback:((success: Bool) -> Void)?) {
-        sendMessage(.MSP_SELECT_SETTING, data: [ UInt8(rateProfile | 0x80) ], retry: 2, callback: callback)
+    func sendSelectRateProfile(_ rateProfile: Int, callback:((_ success: Bool) -> Void)?) {
+        sendMessage(.msp_SELECT_SETTING, data: [ UInt8(rateProfile | 0x80) ], retry: 2, callback: callback)
     }
     
-    func sendFilterConfig(settings: Settings, callback:((success:Bool) -> Void)?) {
+    func sendFilterConfig(_ settings: Settings, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(settings.gyroLowpassFrequency))
-        data.appendContentsOf(writeUInt16(settings.dTermLowpassFrequency))
-        data.appendContentsOf(writeUInt16(settings.yawLowpassFrequency))
-        data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency))
-        data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff))
-        data.appendContentsOf(writeUInt16(settings.dTermNotchFrequency))
-        data.appendContentsOf(writeUInt16(settings.dTermNotchCutoff))
-        data.appendContentsOf(writeUInt16(settings.gyroNotchFrequency2))
-        data.appendContentsOf(writeUInt16(settings.gyroNotchCutoff2))
+        data.append(contentsOf: writeUInt16(settings.dTermLowpassFrequency))
+        data.append(contentsOf: writeUInt16(settings.yawLowpassFrequency))
+        data.append(contentsOf: writeUInt16(settings.gyroNotchFrequency))
+        data.append(contentsOf: writeUInt16(settings.gyroNotchCutoff))
+        data.append(contentsOf: writeUInt16(settings.dTermNotchFrequency))
+        data.append(contentsOf: writeUInt16(settings.dTermNotchCutoff))
+        data.append(contentsOf: writeUInt16(settings.gyroNotchFrequency2))
+        data.append(contentsOf: writeUInt16(settings.gyroNotchCutoff2))
         if Configuration.theConfig.isApiVersionAtLeast("1.36") {    // Not supported by INav 1.7.3 but it doesn't hurt
             data.append(UInt8(settings.dtermFilterType))
         }
-        sendMessage(.MSP_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_FILTER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendCraftName(name: String, callback:((success:Bool) -> Void)?) {
-        sendMessage(.MSP_SET_NAME, data: Array(name.utf8), retry: 2, callback: callback)
+    func sendCraftName(_ name: String, callback:((_ success:Bool) -> Void)?) {
+        sendMessage(.msp_SET_NAME, data: Array(name.utf8), retry: 2, callback: callback)
     }
     
-    func sendOsdConfig(osd: OSD, callback:((success: Bool) -> Void)?) {
+    func sendOsdConfig(_ osd: OSD, callback:((_ success: Bool) -> Void)?) {
         sendOsdConfigRecursive(osd, index: osd.timers != nil ? -2 : -1, index2: 0, callback: callback)
     }
     
-    private func sendOsdConfigRecursive(osd: OSD, index: Int, index2: Int, callback:((success:Bool) -> Void)?) {
+    fileprivate func sendOsdConfigRecursive(_ osd: OSD, index: Int, index2: Int, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         if index == -2 {
             if index2 >= osd.timers!.count {
@@ -1754,41 +1760,39 @@ class MSPParser {
             }
             data.append(UInt8(0xFE))    // -2
             data.append(UInt8(index2))
-            data.appendContentsOf(writeUInt16(osd.timers![index2].rawValue))
+            data.append(contentsOf: writeUInt16(osd.timers![index2].rawValue))
         } else if index == -1 {
             data.append(UInt8(0xFF))    // -1
             data.append(UInt8(osd.videoMode.rawValue))
             data.append(UInt8(osd.unitMode.rawValue))
             data.append(UInt8(osd.rssiAlarm))
-            data.appendContentsOf(writeUInt16(osd.capacityAlarm))
-            data.appendContentsOf(writeUInt16(osd.minutesAlarm))
-            data.appendContentsOf(writeUInt16(osd.altitudeAlarm))
+            data.append(contentsOf: writeUInt16(osd.capacityAlarm))
+            data.append(contentsOf: writeUInt16(osd.minutesAlarm))
+            data.append(contentsOf: writeUInt16(osd.altitudeAlarm))
         } else {
             if index2 == 0 {
                 // Element
                 if index >= osd.elements.count {
-                    callback?(success: true)
+                    callback?(true)
                     return
                 }
                 data.append(UInt8(index))
                 let position = osd.elements[index]
-                data.appendContentsOf(writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
+                data.append(contentsOf: writeUInt16(encodePos(position.x, y: position.y, visible: position.visible)))
             } else {
                 // Flight Stat
                 if index >= osd.displayedStats!.count {
-                    callback?(success: true)
+                    callback?(true)
                     return
                 }
                 data.append(UInt8(index))
-                data.appendContentsOf(writeUInt16(osd.displayedStats![index] ? 1 : 0))
+                data.append(contentsOf: writeUInt16(osd.displayedStats![index] ? 1 : 0))
                 data.append(UInt8(0))       // Screen 0 -> selects flight stat screen
             }
         }
 
-        sendMessage(.MSP_SET_OSD_CONFIG, data: data, retry: 2) { success in
-            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            let config = Configuration.theConfig
-            let fakedSuccess = (config.isApiVersionAtLeast("1.35") && !config.isINav) ? true : success
+        sendMessage(.msp_SET_OSD_CONFIG, data: data, retry: 2) { success in
+            let fakedSuccess = self.isBuggyCFAlwaysError() ? true : success
 
             if fakedSuccess {
                 var newIndex = index + 1
@@ -1808,98 +1812,96 @@ class MSPParser {
                 }
                 self.sendOsdConfigRecursive(osd, index: newIndex, index2: newIndex2, callback: callback)
             } else {
-                callback?(success: false)
+                callback?(false)
             }
         }
     }
     
-    func sendOsdChar(char: Int, data: [UInt8], callback:((success:Bool) -> Void)?) {
+    func sendOsdChar(_ char: Int, data: [UInt8], callback:((_ success:Bool) -> Void)?) {
         var msgData = [ UInt8(char) ]
-        msgData.appendContentsOf(data)
+        msgData.append(contentsOf: data)
 
-        sendMessage(.MSP_OSD_CHAR_WRITE, data: msgData,  retry: 2) { success in
-            // FIXME: CF 2.0 / BF 3.2 always returns an error (bug)
-            let config = Configuration.theConfig
-            if config.isApiVersionAtLeast("1.35") && !config.isINav {
-                callback?(success: true)
+        sendMessage(.msp_OSD_CHAR_WRITE, data: msgData,  retry: 2) { success in
+            if self.isBuggyCFAlwaysError() {
+                callback?(true)
             } else {
-                callback?(success: success)
+                callback?(success)
             }
         }
     }
     
-    func sendVtxConfig(vtxConfig: VTXConfig, callback:((success:Bool) -> Void)?) {
+    func sendVtxConfig(_ vtxConfig: VTXConfig, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(vtxConfig.band))
         data.append(UInt8(vtxConfig.channel))
         data.append(UInt8(vtxConfig.powerIdx))
         data.append(UInt8(vtxConfig.pitMode ? 1 : 0))
-        sendMessage(.MSP_SET_VTX_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_VTX_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendBeeperConfig(beeperMask: Int, callback:((success:Bool) -> Void)?) {
+    func sendBeeperConfig(_ beeperMask: Int, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt32(beeperMask))
-        sendMessage(.MSP_SET_BEEPER_CONFIG, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt32(beeperMask))
+        sendMessage(.msp_SET_BEEPER_CONFIG, data: data, retry: 2, callback: callback)
     }
     
     // INav
     
-    func sendNavPosHold(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+    func sendNavPosHold(_ inavConfig: INavConfig, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
         data.append(UInt8(inavConfig.userControlMode.intValue))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxSpeed * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxClimbRate * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxManualSpeed * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.maxManualClimbRate * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.maxSpeed * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.maxClimbRate * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.maxManualSpeed * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.maxManualClimbRate * 100))))
         data.append(UInt8(inavConfig.maxBankAngle))
         data.append(UInt8(inavConfig.useThrottleMidForAltHold ? 1 : 0))
-        data.appendContentsOf(writeUInt16(inavConfig.hoverThrottle))
-        sendMessage(.MSP_SET_NAV_POSHOLD, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt16(inavConfig.hoverThrottle))
+        sendMessage(.msp_SET_NAV_POSHOLD, data: data, retry: 2, callback: callback)
     }
     
-    func loadMission(callback:((success:Bool) -> Void)?) {
+    func loadMission(_ callback:((_ success:Bool) -> Void)?) {
         let data = [UInt8(0)]
-        sendMessage(.MSP_WP_MISSION_LOAD, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_WP_MISSION_LOAD, data: data, retry: 2, callback: callback)
     }
     
-    func saveMission(callback:((success:Bool) -> Void)?) {
+    func saveMission(_ callback:((_ success:Bool) -> Void)?) {
         let data = [UInt8(0)]
-        sendMessage(.MSP_WP_MISSION_SAVE, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_WP_MISSION_SAVE, data: data, retry: 2, callback: callback)
     }
     
-    func sendRthAndLandConfig(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+    func sendRthAndLandConfig(_ inavConfig: INavConfig, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.minRthDistance * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.minRthDistance * 100))))
         data.append(UInt8(inavConfig.rthClimbFirst ? 1 : 0))
         data.append(UInt8(inavConfig.rthClimbIgnoreEmergency ? 1 : 0))
         data.append(UInt8(inavConfig.rthTailFirst ? 1 : 0))
         data.append(UInt8(inavConfig.rthAllowLanding ? 1 : 0))
         data.append(UInt8(inavConfig.rthAltControlMode))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.rthAbortThreshold * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.rthAltitude * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landDescendRate * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landSlowdownMinAlt * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.landSlowdownMaxAlt * 100))))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.emergencyDescendRate * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.rthAbortThreshold * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.rthAltitude * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.landDescendRate * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.landSlowdownMinAlt * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.landSlowdownMaxAlt * 100))))
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.emergencyDescendRate * 100))))
 
-        sendMessage(.MSP_SET_RTH_AND_LAND_CONFIG, data: data, retry: 2, callback: callback)
+        sendMessage(.msp_SET_RTH_AND_LAND_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func sendFwConfig(inavConfig: INavConfig, callback:((success:Bool) -> Void)?) {
+    func sendFwConfig(_ inavConfig: INavConfig, callback:((_ success:Bool) -> Void)?) {
         var data = [UInt8]()
-        data.appendContentsOf(writeUInt16(inavConfig.fwCruiseThrottle))
-        data.appendContentsOf(writeUInt16(inavConfig.fwMinThrottle))
-        data.appendContentsOf(writeUInt16(inavConfig.fwMaxThrottle))
+        data.append(contentsOf: writeUInt16(inavConfig.fwCruiseThrottle))
+        data.append(contentsOf: writeUInt16(inavConfig.fwMinThrottle))
+        data.append(contentsOf: writeUInt16(inavConfig.fwMaxThrottle))
         data.append(UInt8(inavConfig.fwMaxBankAngle))
         data.append(UInt8(inavConfig.fwMaxClimbAngle))
         data.append(UInt8(inavConfig.fwMaxDiveAngle))
         data.append(UInt8(inavConfig.fwPitchToThrottle))
-        data.appendContentsOf(writeUInt16(Int(round(inavConfig.fwLoiterRadius * 100))))
-        sendMessage(.MSP_SET_FW_CONFIG, data: data, retry: 2, callback: callback)
+        data.append(contentsOf: writeUInt16(Int(round(inavConfig.fwLoiterRadius * 100))))
+        sendMessage(.msp_SET_FW_CONFIG, data: data, retry: 2, callback: callback)
     }
     
-    func openCommChannel(commChannel: CommChannel) {
+    func openCommChannel(_ commChannel: CommChannel) {
         self.commChannel = commChannel
         communicationEvent.raiseDispatch(true)
     }
@@ -1945,10 +1947,10 @@ class MSPParser {
         let msg = outputQueue.removeFirst()
         
         if msg[0] == 36 {   // $
-            if let mspCode = MSP_code(rawValue: Int(msg[4])) where latencyMsgs.contains(mspCode) {
+            if let mspCode = MSP_code(rawValue: Int(msg[4])), latencyMsgs.contains(mspCode) {
                 let sentDate = sentDates[mspCode]
                 if sentDate == nil {
-                    sentDates[mspCode] = NSDate()
+                    sentDates[mspCode] = Date()
                 }
             }
         }
@@ -1957,7 +1959,7 @@ class MSPParser {
         return msg
     }
     
-    func addOutputMessage(msg: [UInt8], flush: Bool = true) {
+    func addOutputMessage(_ msg: [UInt8], flush: Bool = true) {
         objc_sync_enter(self)
         if msg[0] == 36 {   // $
             let msgCode = msg[4]
@@ -1989,7 +1991,7 @@ class MSPParser {
         btComm.readRssi()
     }
     
-    func setRssi(rssi: Double) {
+    func setRssi(_ rssi: Double) {
         Configuration.theConfig.btRssi = Int(round(constrain((104 + rssi) / 78 * 100, min: 0, max: 100)))
         
         rssiEvent.raiseDispatch()

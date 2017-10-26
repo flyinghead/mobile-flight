@@ -47,20 +47,20 @@ class MotorsViewController: UIViewController, MSPCommandSender {
     @IBOutlet weak var value7: UILabel!
     @IBOutlet weak var value8: UILabel!
     
-    @IBAction func enableMotorChanged(sender: AnyObject) {
-        let enable = (sender as? UISwitch)!.on
+    @IBAction func enableMotorChanged(_ sender: Any) {
+        let enable = (sender as? UISwitch)!.isOn
         
         if enable {
-            let alertController = UIAlertController(title: "WARNING", message: "To avoid injury, be sure to remove the propellers from the motors before proceeding", preferredStyle: UIAlertControllerStyle.Alert)
-            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { alertController in
-                self.enableMotorSwitch.on = false
+            let alertController = UIAlertController(title: "WARNING", message: "To avoid injury, be sure to remove the propellers from the motors before proceeding", preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: { alertController in
+                self.enableMotorSwitch.isOn = false
             }))
-            alertController.addAction(UIAlertAction(title: "Arm Motors", style: UIAlertActionStyle.Destructive, handler: { alertController in
+            alertController.addAction(UIAlertAction(title: "Arm Motors", style: UIAlertActionStyle.destructive, handler: { alertController in
                 Analytics.logEvent("motors_armed", parameters: nil)
                 self.enableSliders(true)
             }))
             alertController.popoverPresentationController?.sourceView = sender as? UIView
-            presentViewController(alertController, animated: true, completion: nil)
+            present(alertController, animated: true, completion: nil)
         } else  {
             let settings = Settings.theSettings
             masterSlider.value = Float(settings.minCommand)
@@ -78,37 +78,37 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         }
     }
     
-    private func enableSliders(enable: Bool) {
-        masterSlider.enabled = enable
+    fileprivate func enableSliders(_ enable: Bool) {
+        masterSlider.isEnabled = enable
         
         let motorData = MotorData.theMotorData
         if (motorData.nMotors >= 1) {
-            slider1.enabled = enable
+            slider1.isEnabled = enable
         }
         if (motorData.nMotors >= 2) {
-            slider2.enabled = enable
+            slider2.isEnabled = enable
         }
         if (motorData.nMotors >= 3) {
-            slider3.enabled = enable
+            slider3.isEnabled = enable
         }
         if (motorData.nMotors >= 4) {
-            slider4.enabled = enable
+            slider4.isEnabled = enable
         }
         if (motorData.nMotors >= 5) {
-            slider5.enabled = enable
+            slider5.isEnabled = enable
         }
         if (motorData.nMotors >= 6) {
-            slider6.enabled = enable
+            slider6.isEnabled = enable
         }
         if (motorData.nMotors >= 7) {
-            slider7.enabled = enable
+            slider7.isEnabled = enable
         }
         if (motorData.nMotors >= 8) {
-            slider8.enabled = enable
+            slider8.isEnabled = enable
         }
     }
     
-    @IBAction func masterSliderChanged(sender: AnyObject) {
+    @IBAction func masterSliderChanged(_ sender: Any) {
         let motorData = MotorData.theMotorData
         if (motorData.nMotors >= 1) {
             slider1.value = masterSlider.value
@@ -140,28 +140,28 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         super.viewDidLoad()
 
         if #available(iOS 9.0, *) {
-            value1.font = UIFont.monospacedDigitSystemFontOfSize(value1.font.pointSize, weight: UIFontWeightRegular)
-            value2.font = UIFont.monospacedDigitSystemFontOfSize(value2.font.pointSize, weight: UIFontWeightRegular)
-            value3.font = UIFont.monospacedDigitSystemFontOfSize(value3.font.pointSize, weight: UIFontWeightRegular)
-            value4.font = UIFont.monospacedDigitSystemFontOfSize(value4.font.pointSize, weight: UIFontWeightRegular)
-            value5.font = UIFont.monospacedDigitSystemFontOfSize(value5.font.pointSize, weight: UIFontWeightRegular)
-            value6.font = UIFont.monospacedDigitSystemFontOfSize(value6.font.pointSize, weight: UIFontWeightRegular)
-            value7.font = UIFont.monospacedDigitSystemFontOfSize(value7.font.pointSize, weight: UIFontWeightRegular)
-            value8.font = UIFont.monospacedDigitSystemFontOfSize(value8.font.pointSize, weight: UIFontWeightRegular)
+            value1.font = UIFont.monospacedDigitSystemFont(ofSize: value1.font.pointSize, weight: UIFontWeightRegular)
+            value2.font = UIFont.monospacedDigitSystemFont(ofSize: value2.font.pointSize, weight: UIFontWeightRegular)
+            value3.font = UIFont.monospacedDigitSystemFont(ofSize: value3.font.pointSize, weight: UIFontWeightRegular)
+            value4.font = UIFont.monospacedDigitSystemFont(ofSize: value4.font.pointSize, weight: UIFontWeightRegular)
+            value5.font = UIFont.monospacedDigitSystemFont(ofSize: value5.font.pointSize, weight: UIFontWeightRegular)
+            value6.font = UIFont.monospacedDigitSystemFont(ofSize: value6.font.pointSize, weight: UIFontWeightRegular)
+            value7.font = UIFont.monospacedDigitSystemFont(ofSize: value7.font.pointSize, weight: UIFontWeightRegular)
+            value8.font = UIFont.monospacedDigitSystemFont(ofSize: value8.font.pointSize, weight: UIFontWeightRegular)
         }
         
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         motorEventHandler = msp.motorEvent.addHandler(self, handler: MotorsViewController.receivedMotorData)
         
         appDelegate.addMSPCommandSender(self)
         
-        self.msp.sendMessage(.MSP_MIXER_CONFIG, data: nil, retry: 2, callback: { success in
+        self.msp.sendMessage(.msp_MIXER_CONFIG, data: nil, retry: 2, callback: { success in
             if success {
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.modelView.image = MultiTypes.getImage(Settings.theSettings.mixerConfiguration)
                 })
                 // For minCommand and maxThrottle
@@ -188,15 +188,15 @@ class MotorsViewController: UIViewController, MSPCommandSender {
                 }
                 let config = Configuration.theConfig
                 if config.isApiVersionAtLeast("1.35") && !config.isINav {
-                    self.msp.sendMessage(.MSP_MOTOR_CONFIG, data: nil, retry: 2, callback: callback)
+                    self.msp.sendMessage(.msp_MOTOR_CONFIG, data: nil, retry: 2, callback: callback)
                 } else {
-                    self.msp.sendMessage(.MSP_MISC, data: nil, retry: 2, callback: callback)
+                    self.msp.sendMessage(.msp_MISC, data: nil, retry: 2, callback: callback)
                 }
             }
         })
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         motorEventHandler?.dispose()
@@ -205,8 +205,8 @@ class MotorsViewController: UIViewController, MSPCommandSender {
     }
     
     func sendMSPCommands() {
-        msp.sendMessage(.MSP_MOTOR, data: nil)
-        if enableMotorSwitch.on {
+        msp.sendMessage(.msp_MOTOR, data: nil)
+        if enableMotorSwitch.isOn {
             sendMotorData()
         }
     }
@@ -243,6 +243,6 @@ class MotorsViewController: UIViewController, MSPCommandSender {
         buffer.append(UInt8(Int(slider8.value) % 256))
         buffer.append(UInt8(Int(slider8.value) / 256))
         
-        msp.sendMessage(.MSP_SET_MOTOR, data: buffer)
+        msp.sendMessage(.msp_SET_MOTOR, data: buffer)
     }
 }

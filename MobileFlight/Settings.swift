@@ -21,7 +21,7 @@
 import Foundation
 import Firebase
 
-struct BaseFlightFeature : OptionSetType, DictionaryCoding {
+struct BaseFlightFeature : OptionSet, DictionaryCoding {
     let rawValue: Int
     
     static let None         = BaseFlightFeature(rawValue: 0)
@@ -217,7 +217,7 @@ enum Mode : String {
         }
     }
     
-    func impliedBy(other: Mode) -> Bool {
+    func impliedBy(_ other: Mode) -> Bool {
         if other == .FAILSAFE {
             return true
         }
@@ -345,7 +345,7 @@ struct ServoConfig : DictionaryCoding {
             dict["rcChannel"] = rcChannel!
         }
         
-        return dict
+        return dict as NSDictionary
     }
 }
 
@@ -714,11 +714,11 @@ class Settings : AutoCoded {
         super.init()
     }
     
-    func isModeOn(mode: Mode, forStatus status: Int) -> Bool {
+    func isModeOn(_ mode: Mode, forStatus status: Int) -> Bool {
         if boxNames == nil {
             return false
         }
-        for (i, m) in boxNames!.enumerate() {
+        for (i, m) in boxNames!.enumerated() {
             if (mode.rawValue == m) {
                 return status & (1 << i) != 0
             }
@@ -746,14 +746,14 @@ class Settings : AutoCoded {
         return hasModeWithCondition({ $0.returnToHome })
     }
     
-    private func hasModeWithCondition(condition: (mode: Mode) -> Bool) -> Bool {
+    fileprivate func hasModeWithCondition(_ condition: (_ mode: Mode) -> Bool) -> Bool {
         if boxNames == nil {
             return false
         }
         let status = Configuration.theConfig.mode
-        for (i, m) in boxNames!.enumerate() {
+        for (i, m) in boxNames!.enumerated() {
             if status & (1 << i) != 0 {
-                if let mode = Mode(rawValue: m) where condition(mode: mode) {
+                if let mode = Mode(rawValue: m), condition(mode) {
                     return true
                 }
             }
@@ -761,8 +761,8 @@ class Settings : AutoCoded {
         return false
     }
     
-    func getPID(name: PIDName) -> [Double]? {
-        if let index = pidNames?.indexOf(name.rawValue) {
+    func getPID(_ name: PIDName) -> [Double]? {
+        if let index = pidNames?.index(of: name.rawValue) {
             return pidValues?[index]
         } else {
             return nil
@@ -773,23 +773,23 @@ class Settings : AutoCoded {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        features = BaseFlightFeature(fromDict: aDecoder.decodeObjectForKey("features") as? NSDictionary)!
+        features = BaseFlightFeature(fromDict: aDecoder.decodeObject(forKey: "features") as? NSDictionary)!
         
-        if let modeRangesDicts = aDecoder.decodeObjectForKey("modeRanges") as? [NSDictionary] {
+        if let modeRangesDicts = aDecoder.decodeObject(forKey: "modeRanges") as? [NSDictionary] {
             modeRanges = [ModeRange]()
             for dict in modeRangesDicts {
                 modeRanges!.append(ModeRange(fromDict: dict)!)
             }
         }
         
-        if let servoConfigsDicts = aDecoder.decodeObjectForKey("servoConfigs") as? [NSDictionary] {
+        if let servoConfigsDicts = aDecoder.decodeObject(forKey: "servoConfigs") as? [NSDictionary] {
             servoConfigs = [ServoConfig]()
             for dict in servoConfigsDicts {
                 servoConfigs!.append(ServoConfig(fromDict: dict)!)
             }
         }
         
-        if let portConfigsDicts = aDecoder.decodeObjectForKey("portConfigs") as? [NSDictionary] {
+        if let portConfigsDicts = aDecoder.decodeObject(forKey: "portConfigs") as? [NSDictionary] {
             portConfigs = [PortConfig]()
             for dict in portConfigsDicts {
                 portConfigs!.append(PortConfig(fromDict: dict)!)
@@ -797,10 +797,10 @@ class Settings : AutoCoded {
         }
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
         
-        aCoder.encodeObject(features.toDict(), forKey: "features")
+        aCoder.encode(features.toDict(), forKey: "features")
         
         var modeRangesDicts: [NSDictionary]?
         if modeRanges != nil {
@@ -809,7 +809,7 @@ class Settings : AutoCoded {
                 modeRangesDicts?.append(modeRange.toDict())
             }
         }
-        aCoder.encodeObject(modeRangesDicts, forKey: "modeRanges")
+        aCoder.encode(modeRangesDicts, forKey: "modeRanges")
         
         var servoConfigsDicts: [NSDictionary]?
         if servoConfigs != nil {
@@ -818,7 +818,7 @@ class Settings : AutoCoded {
                 servoConfigsDicts?.append(servoConfig.toDict())
             }
         }
-        aCoder.encodeObject(servoConfigsDicts, forKey: "servoConfigs")
+        aCoder.encode(servoConfigsDicts, forKey: "servoConfigs")
         
         var portConfigsDicts: [NSDictionary]?
         if portConfigs != nil {
@@ -827,6 +827,6 @@ class Settings : AutoCoded {
                 portConfigsDicts?.append(portConfig.toDict())
             }
         }
-        aCoder.encodeObject(portConfigsDicts, forKey: "portConfigs")
+        aCoder.encode(portConfigsDicts, forKey: "portConfigs")
     }
 }

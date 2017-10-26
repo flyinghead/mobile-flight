@@ -29,10 +29,10 @@ enum AlertText : String {
 class VoiceAlert: NSObject {
     var speech: String
     let condition: () -> Bool
-    let repeatInterval: NSTimeInterval
-    var timer: NSTimer?
+    let repeatInterval: TimeInterval
+    var timer: Timer?
     
-    init(speech: String, repeatInterval: NSTimeInterval, condition: () -> Bool) {
+    init(speech: String, repeatInterval: TimeInterval, condition: @escaping () -> Bool) {
         self.speech = speech
         self.condition = condition
         self.repeatInterval = repeatInterval
@@ -40,11 +40,11 @@ class VoiceAlert: NSObject {
     }
     
     func startSpeaking() {
-        timer = NSTimer.scheduledTimerWithTimeInterval(repeatInterval, target: self, selector: #selector(VoiceAlert.timerDidFire(_:)), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: repeatInterval, target: self, selector: #selector(VoiceAlert.timerDidFire(_:)), userInfo: nil, repeats: true)
         timerDidFire(timer!)
     }
     
-    func timerDidFire(timer: NSTimer) {
+    func timerDidFire(_ timer: Timer) {
         if !condition() {
             timer.invalidate()
             self.timer = nil
@@ -69,7 +69,7 @@ class CommunicationLostAlarm : VoiceAlarm {
         if !Settings.theSettings.armed {
             return false
         }
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         return msp.communicationEstablished && !msp.communicationHealthy
     }
     
@@ -111,46 +111,46 @@ class GPSFixLostAlarm : VoiceAlarm {
 
 class BatteryLowAlarm : VoiceAlarm {
     enum Status {
-        case Good, Warning, Critical
+        case good, warning, critical
     }
     
     override var on: Bool {
-        return batteryStatus() != .Good
+        return batteryStatus() != .good
     }
     override var enabled: Bool {
         return userDefaultEnabled(.BatteryLowAlarm)
     }
 
     func batteryStatus() -> Status {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         if !msp.communicationEstablished || !msp.communicationHealthy {
-            return .Good        // Comm lost or not connected, no need for battery alarm
+            return .good        // Comm lost or not connected, no need for battery alarm
         }
         let settings = Settings.theSettings
         let config = Configuration.theConfig
         
-        if settings.features.contains(.VBat) ?? false
+        if settings.features.contains(.VBat)
             && config.batteryCells > 0
             && config.voltage > 0 {
             let voltsPerCell = config.voltage / Double(config.batteryCells)
             if voltsPerCell <= settings.vbatMinCellVoltage {
-                return .Critical
+                return .critical
             } else if voltsPerCell <= settings.vbatWarningCellVoltage {
-                return .Warning
+                return .warning
             }
         }
-        return .Good
+        return .good
     }
     
     override func voiceAlert() -> VoiceAlert {
-        return VoiceAlert(speech: batteryStatus() == .Critical ? "Battery level critical" : "Battery low", repeatInterval: 10.0, condition: { self.enabled && self.on })
+        return VoiceAlert(speech: batteryStatus() == .critical ? "Battery level critical" : "Battery low", repeatInterval: 10.0, condition: { self.enabled && self.on })
     }
 }
 
 class RSSILowAlarm : VoiceAlarm {
     
     override var on: Bool {
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         if !msp.communicationEstablished || CommunicationLostAlarm().on {
             return false
         }
@@ -171,17 +171,17 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
     static let theVoice = VoiceMessage()
     let synthesizer = AVSpeechSynthesizer()
     
-    private var alerts = [String: VoiceAlert]()
-    private var speeches = Set<String>()
+    fileprivate var alerts = [String: VoiceAlert]()
+    fileprivate var speeches = Set<String>()
     
-    private override init() {
+    fileprivate override init() {
         super.init()
         synthesizer.delegate = self
     }
     
-    private func addAlert(name: String, alert: VoiceAlert) {
+    fileprivate func addAlert(_ name: String, alert: VoiceAlert) {
         if let oldAlert = alerts[name] {
-            if oldAlert.timer?.valid ?? false {
+            if oldAlert.timer?.isValid ?? false {
                 oldAlert.speech = alert.speech
                 return
             }
@@ -190,7 +190,7 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
         alert.startSpeaking()
     }
 
-    func speak(speech: String) {
+    func speak(_ speech: String) {
         if speeches.contains(speech) {
             return
         }
@@ -198,8 +198,8 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
         
         let utterance = AVSpeechUtterance(string: speech)
         utterance.voice = findVoice()
-        utterance.rate = (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 9.0 ? 0.52 : 0.15
-        synthesizer.speakUtterance(utterance)
+        utterance.rate = (UIDevice.current.systemVersion as NSString).floatValue >= 9.0 ? 0.52 : 0.15
+        synthesizer.speak(utterance)
     }
     
     func findVoice() -> AVSpeechSynthesisVoice? {
@@ -219,13 +219,13 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
         return englishVoice
     }
     
-    func checkAlarm(alarm: VoiceAlarm) {
+    func checkAlarm(_ alarm: VoiceAlarm) {
         if alarm.enabled && alarm.on {
-            addAlert(NSStringFromClass(alarm.dynamicType), alert: alarm.voiceAlert())
+            addAlert(NSStringFromClass(type(of: alarm)), alert: alarm.voiceAlert())
         }
     }
     
-    private func stopAlerts() {
+    fileprivate func stopAlerts() {
         for alert in alerts.values {
             alert.timer?.invalidate()
         }
@@ -234,13 +234,13 @@ class VoiceMessage: NSObject, AVSpeechSynthesizerDelegate {
     
     func stopAll() {
         stopAlerts()
-        synthesizer.stopSpeakingAtBoundary(.Word)
+        synthesizer.stopSpeaking(at: .word)
         speeches.removeAll()
     }
     
     // MARK: AVSpeechSynthesizerDelegate
     
-    func speechSynthesizer(synthesizer: AVSpeechSynthesizer, didStartSpeechUtterance utterance: AVSpeechUtterance) {
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         speeches.remove(utterance.speechString)
     }
 }

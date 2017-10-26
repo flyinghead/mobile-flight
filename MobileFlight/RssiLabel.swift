@@ -21,7 +21,7 @@
 import UIKit
 
 class RssiLabel: BlinkingLabel {
-    private var _defaultColor: UIColor?
+    fileprivate var _defaultColor: UIColor?
 
     var rssi = 0 {
         didSet {
@@ -44,13 +44,13 @@ class RssiLabel: BlinkingLabel {
         }
     }
     
-    private func setRssiValue(value: Int) {
+    fileprivate func setRssiValue(_ value: Int) {
         if value <= userDefaultAsInt(.RSSIAlarmCritical) {
             blinks = true
-            textColor = UIColor.redColor()
+            textColor = UIColor.red
         } else if value <= userDefaultAsInt(.RSSIAlarmLow) {
             blinks = false
-            textColor = UIColor.yellowColor()
+            textColor = UIColor.yellow
         } else {
             blinks = false
             textColor = _defaultColor

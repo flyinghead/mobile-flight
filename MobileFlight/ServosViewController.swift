@@ -26,24 +26,24 @@ class ServosViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(ServosViewController.refreshServoConfig), forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(ServosViewController.refreshServoConfig), for: .valueChanged)
     }
 
     @objc
-    private func refreshServoConfig() {
-        msp.sendMessage(.MSP_SERVO_CONFIGURATIONS, data: nil, retry: 4, callback: { success in
-            dispatch_async(dispatch_get_main_queue(), {
+    fileprivate func refreshServoConfig() {
+        msp.sendMessage(.msp_SERVO_CONFIGURATIONS, data: nil, retry: 4, callback: { success in
+            DispatchQueue.main.async(execute: {
                 self.tableView.reloadData()
                 self.refreshControl?.endRefreshing()
                 if !success {
-                    SVProgressHUD.showErrorWithStatus("Communication error or servos not supported")
+                    SVProgressHUD.showError(withStatus: "Communication error or servos not supported")
                 }
             })
         })
 
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         refreshServoConfig()
@@ -51,16 +51,16 @@ class ServosViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Settings.theSettings.servoConfigs?.count ?? 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ServoCell", forIndexPath: indexPath) as! ServoCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ServoCell", for: indexPath) as! ServoCell
 
         cell.servoLabel.text = String(format: "Servo %d", indexPath.row + 1)
         let settings = Settings.theSettings
@@ -83,10 +83,10 @@ class ServosViewController: UITableViewController {
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let viewController = segue.destinationViewController as! ServoConfigViewController
+        let viewController = segue.destination as! ServoConfigViewController
         viewController.servoIdx = tableView.indexPathForSelectedRow?.row
     }
 

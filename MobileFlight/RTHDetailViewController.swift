@@ -28,20 +28,20 @@ class RTHDetailViewController: BaseWaypointDetailViewController {
         hideSectionsWithHiddenRows = true
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if index >= waypointList.count || !waypointList.last!.returnToHome {
-            rthSwitch.on = false
+            rthSwitch.isOn = false
         } else {
-            rthSwitch.on = true
+            rthSwitch.isOn = true
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if rthSwitch.on {
+        if rthSwitch.isOn {
             if index >= waypointList.count || !waypointList.last!.returnToHome {
                 waypointList.append(Waypoint.rthWaypoint())
             }

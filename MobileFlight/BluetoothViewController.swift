@@ -28,9 +28,9 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     var selectedPeripheral: BluetoothPeripheral?
     var refreshBluetoothButton: UIButton?
 
-    var timeOutTimer: NSTimer?
+    var timeOutTimer: Timer?
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         btManager.delegate = self
         refreshBluetooth()
@@ -41,32 +41,32 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         btPeripherals.removeAll()
         tableView.reloadData()
         btManager.startScanning()
-        refreshBluetoothButton?.enabled = false
+        refreshBluetoothButton?.isEnabled = false
     }
     
-    private func cancelBtConnection(btComm: BluetoothComm) {
+    fileprivate func cancelBtConnection(_ btComm: BluetoothComm) {
         btManager.delegate = self
         btComm.close()
         if selectedPeripheral != nil {
             selectedPeripheral = nil
-            dispatch_async(dispatch_get_main_queue(), {
-                SVProgressHUD.showErrorWithStatus("Handshake failed", maskType: .None)
+            DispatchQueue.main.async(execute: {
+                SVProgressHUD.showError(withStatus: "Handshake failed", maskType: .none)
             })
         }
     }
     
-    func connectionTimedOut(timer: NSTimer) {
+    func connectionTimedOut(_ timer: Timer) {
         if selectedPeripheral != nil {
             btManager.disconnect(selectedPeripheral!)
-            dispatch_async(dispatch_get_main_queue(), {
-                SVProgressHUD.showErrorWithStatus("Device is not responding", maskType: .None)
+            DispatchQueue.main.async(execute: {
+                SVProgressHUD.showError(withStatus: "Device is not responding", maskType: .none)
             })
         }
     }
 
     // MARK: BluetoothDelegate
-    func foundPeripheral(peripheral: BluetoothPeripheral) {
-        dispatch_async(dispatch_get_main_queue(), {
+    func foundPeripheral(_ peripheral: BluetoothPeripheral) {
+        DispatchQueue.main.async(execute: {
             for p in self.btPeripherals {
                 if peripheral.uuid == p.uuid {
                     // Already there
@@ -79,12 +79,12 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
     }
     
     func stoppedScanning() {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.refreshBluetoothButton?.enabled = true
+        DispatchQueue.main.async(execute: {
+            self.refreshBluetoothButton?.isEnabled = true
         })
     }
     
-    func connectedPeripheral(peripheral: BluetoothPeripheral) {
+    func connectedPeripheral(_ peripheral: BluetoothPeripheral) {
         timeOutTimer?.invalidate()
         timeOutTimer = nil
         
@@ -97,8 +97,8 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         initiateHandShake({ success in
             if success {
                 self.selectedPeripheral = nil
-                dispatch_async(dispatch_get_main_queue(), {
-                    (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                DispatchQueue.main.async(execute: {
+                    (self.parent as! MainConnectionViewController).presentNextViewController()
                 })
             } else {
                 self.cancelBtConnection(btComm)
@@ -106,20 +106,20 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         })
     }
     
-    func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
+    func failedToConnectToPeripheral(_ peripheral: BluetoothPeripheral, error: Error?) {
         timeOutTimer?.invalidate()
         timeOutTimer = nil
         
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             if error != nil {
-                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed: %@", peripheral.name, error!.localizedDescription), maskType: .None)
+                SVProgressHUD.showError(withStatus: String(format: "Connection to %@ failed: %@", peripheral.name, error!.localizedDescription), maskType: .none)
             } else {
-                SVProgressHUD.showErrorWithStatus(String(format: "Connection to %@ failed", peripheral.name), maskType: .None)
+                SVProgressHUD.showError(withStatus: String(format: "Connection to %@ failed", peripheral.name), maskType: .none)
             }
         })
     }
     
-    func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
+    func disconnectedPeripheral(_ peripheral: BluetoothPeripheral) {
         btManager.delegate = self
         if selectedPeripheral != nil {
             // Retry
@@ -127,20 +127,20 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         }
     }
     
-    func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
+    func receivedData(_ peripheral: BluetoothPeripheral, data: [UInt8]) {
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? btPeripherals.count : 0
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
             return "Bluetooth Devices"
@@ -149,8 +149,8 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("BluetoothCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BluetoothCell", for: indexPath)
         
         switch indexPath.section {
         case 0:
@@ -163,22 +163,22 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case  0:
             selectedPeripheral = btPeripherals[indexPath.row]
             let msg = String(format: "Connecting to %@...", selectedPeripheral!.name)
-            SVProgressHUD.showWithStatus(msg, maskType: .Black)
-            timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(BluetoothViewController.connectionTimedOut(_:)), userInfo: nil, repeats: false)
+            SVProgressHUD.show(withStatus: msg, maskType: .black)
+            timeOutTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(BluetoothViewController.connectionTimedOut(_:)), userInfo: nil, repeats: false)
             btManager.connect(selectedPeripheral!)
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            tableView.deselectRow(at: indexPath, animated: false)
             
         default:
             break
         }
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
             return 44.0
         } else {
@@ -186,22 +186,22 @@ class BluetoothViewController: UITableViewController, BluetoothDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == 0 {
-            let screenRect = UIScreen.mainScreen().applicationFrame;
+            let screenRect = UIScreen.main.applicationFrame;
             let view = UIView(frame: CGRect(x: 0, y: 0, width: screenRect.size.width, height: 44.0))
             view.autoresizesSubviews = true
-            view.autoresizingMask = .FlexibleWidth
-            view.userInteractionEnabled = true
+            view.autoresizingMask = .flexibleWidth
+            view.isUserInteractionEnabled = true
             
-            view.contentMode = .ScaleToFill
+            view.contentMode = .scaleToFill
             
-            if (refreshBluetoothButton == nil) {
-                refreshBluetoothButton = UIButton(type: .System)
-                refreshBluetoothButton!.addTarget(self, action: #selector(BluetoothViewController.refreshBluetooth), forControlEvents: .TouchDown)
-                refreshBluetoothButton!.setTitle("Refresh", forState: .Normal)
-                refreshBluetoothButton!.setTitle("Refreshing...", forState: .Disabled)
-                refreshBluetoothButton!.frame = CGRectMake(0.0, 0.0, screenRect.size.width, 44.0)
+            if refreshBluetoothButton == nil {
+                refreshBluetoothButton = UIButton(type: .system)
+                refreshBluetoothButton!.addTarget(self, action: #selector(BluetoothViewController.refreshBluetooth), for: .touchDown)
+                refreshBluetoothButton!.setTitle("Refresh", for: UIControlState())
+                refreshBluetoothButton!.setTitle("Refreshing...", for: .disabled)
+                refreshBluetoothButton!.frame = CGRect(x: 0.0, y: 0.0, width: screenRect.size.width, height: 44.0)
             }
             view.addSubview(refreshBluetoothButton!)
             

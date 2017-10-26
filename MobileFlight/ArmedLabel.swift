@@ -27,18 +27,18 @@ class ArmedLabel: BlinkingLabel {
                 if !value {
                     text = "DISARMED"
                     blinks = false
-                    textColor = UIColor.greenColor()
+                    textColor = UIColor.green
                 } else {
                     text = "ARMED"
                     blinks = true
-                    textColor = UIColor.redColor()
-                    NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ArmedLabel.stopBlinking(_:)), userInfo: nil, repeats: false)
+                    textColor = UIColor.red
+                    Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ArmedLabel.stopBlinking(_:)), userInfo: nil, repeats: false)
                 }
             }
         }
     }
     
-    func stopBlinking(timer: NSTimer) {
+    func stopBlinking(_ timer: Timer) {
         blinks = false
         text = ""
     }

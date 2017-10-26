@@ -29,46 +29,46 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         
         var storyboard = UIStoryboard(name: "Telemetry", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 0)
+            viewControllers!.insert(controller, at: 0)
             selectedViewController = controller
         }
         storyboard = UIStoryboard(name: "Map", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 1)
+            viewControllers!.insert(controller, at: 1)
         }
         storyboard = UIStoryboard(name: "Calibration", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 2)
+            viewControllers!.insert(controller, at: 2)
         }
         storyboard = UIStoryboard(name: "Receiver", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 3)
+            viewControllers!.insert(controller, at: 3)
         }
         storyboard = UIStoryboard(name: "Modes", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 4)
+            viewControllers!.insert(controller, at: 4)
         }
         storyboard = UIStoryboard(name: "PIDTuning", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 5)
+            viewControllers!.insert(controller, at: 5)
         }
         storyboard = UIStoryboard(name: "Configuration", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 8)
+            viewControllers!.insert(controller, at: 8)
         }
         storyboard = UIStoryboard(name: "Sensors", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 10)
+            viewControllers!.insert(controller, at: 10)
         }
 
         storyboard = UIStoryboard(name: "INav", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 9)
+            viewControllers!.insert(controller, at: 9)
         }
 
         storyboard = UIStoryboard(name: "OSD", bundle: nil)
         if let controller = storyboard.instantiateInitialViewController() {
-            viewControllers!.insert(controller, atIndex: 9)
+            viewControllers!.insert(controller, at: 9)
         }
         
         customizableViewControllers = viewControllers!.filter({
@@ -77,7 +77,7 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         
         // Restore the user-customized order of tabs if any
         // For resetting during development NSUserDefaults.standardUserDefaults().removeObjectForKey("MainTabBarOrder")
-        if let tabOrder = NSUserDefaults.standardUserDefaults().objectForKey("MainTabBarOrder") as? [Int] {
+        if let tabOrder = UserDefaults.standard.object(forKey: "MainTabBarOrder") as? [Int] {
             if tabOrder.count == viewControllers?.count {
                 var tagIndexes = [Int : Int]()
                 for i in 0 ..< viewControllers!.count {
@@ -94,7 +94,7 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         myallViewControllers = viewControllers
     }
     
-    private func isOfType<T: UIViewController>(viewController: UIViewController, type: T.Type) -> Bool {
+    fileprivate func isOfType<T: UIViewController>(_ viewController: UIViewController, type: T.Type) -> Bool {
         if viewController is T {
             return true
         }
@@ -122,19 +122,19 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
         var viewControllers = myallViewControllers
         let config = Configuration.theConfig
         if !config.isINav {
-            viewControllers = viewControllers.filter({
+            viewControllers = viewControllers?.filter({
                 !self.isOfType($0, type: INavSettingsViewController.self)
             })
         }
         if !config.isINav && !config.isApiVersionAtLeast("1.31") {
-            viewControllers = viewControllers.filter({
+            viewControllers = viewControllers?.filter({
                 !self.isOfType($0, type: OSDViewController.self)
             })
         }
         setViewControllers(viewControllers, animated: false)
     }
     
-    func tabBarController(tabBarController: UITabBarController, didEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
+    func tabBarController(_ tabBarController: UITabBarController, didEndCustomizing viewControllers: [UIViewController], changed: Bool) {
         let config = Configuration.theConfig
         
         if allViewControllersEnabled {
@@ -154,7 +154,7 @@ class MainNavigationController: UITabBarController, UITabBarControllerDelegate {
                 }).first!
                 tabOrder.append(osdVC.tabBarItem.tag)
             }
-            NSUserDefaults.standardUserDefaults().setObject(tabOrder, forKey: "MainTabBarOrder")
+            UserDefaults.standard.set(tabOrder, forKey: "MainTabBarOrder")
         }
 
     }

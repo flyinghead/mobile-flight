@@ -35,23 +35,23 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
         
         chartView.xAxis.enabled = false
         
-        chartView.descriptionText = ""
+        chartView.chartDescription?.text = ""
         
         if msp.replaying {
-            chartView.infoFont = NSUIFont.systemFontOfSize(13) // NSUIFont(name: "HelveticaNeue", size: 14.0)
-            chartView.infoTextColor = UIColor.brownColor()
+            chartView.chartDescription?.font = NSUIFont.systemFont(ofSize: 13) // NSUIFont(name: "HelveticaNeue", size: 14.0)
+            chartView.chartDescription?.textColor = UIColor.brown
             chartView.noDataText = "No recorded data"
-            chartView.noDataTextDescription = "Data is only recorded when the chart is visible."
+            //chartView.noDataTextDescription = "Data is only recorded when the chart is visible."
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         appDelegate.addMSPCommandSender(self)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         eventHandler?.dispose()
@@ -59,13 +59,13 @@ class BaseSensorViewController: UIViewController, MSPCommandSender {
         appDelegate.removeMSPCommandSender(self)
     }
     
-    func makeDataSet(data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
-        let dataSet = LineChartDataSet(yVals: data, label: label)
-        if (color != nil) {
+    func makeDataSet(_ data: [ChartDataEntry], label: String, color: UIColor?) -> LineChartDataSet {
+        let dataSet = LineChartDataSet(values: data, label: label)
+        if color != nil {
             dataSet.setColor(color!)
         }
         dataSet.drawCirclesEnabled = false
-        dataSet.mode = .CubicBezier
+        dataSet.mode = .cubicBezier
         dataSet.drawCircleHoleEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.setDrawHighlightIndicators(false)

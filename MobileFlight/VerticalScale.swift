@@ -41,10 +41,10 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         }
     }
 
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
-        CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
+        ctx.clip(to: bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
 
         drawVerticalScale(ctx, top: (origin - Double(bounds.minY)) / scale + currentValue)
         for (value, color) in bugs {
@@ -53,17 +53,17 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         drawRollingDigitCounter(ctx)
     }
 
-    private func drawRollingDigitCounter(ctx: CGContext) {
-        CGContextSaveGState(ctx)
+    fileprivate func drawRollingDigitCounter(_ ctx: CGContext) {
+        ctx.saveGState()
         
         let precision = pow(10.0, Double(self.precision))
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Right
+        paragraphStyle.alignment = .right
         
         let font = UIFont(name: "Verdana-Bold", size: self.fontSize)!
-        let textAttributes: [String : AnyObject]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.whiteColor(), NSParagraphStyleAttributeName : paragraphStyle]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
+        let textAttributes: [String : Any]? = [ NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.white, NSParagraphStyleAttributeName : paragraphStyle]
+        let fontSize = ("0" as NSString).size(attributes: textAttributes)
         
         let cornerRadius: CGFloat = fontSize.width / 3
         let markWidth = fontSize.height / 2 * 0.8660        // sin(60°)
@@ -76,46 +76,46 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         
         let rollerWidth = fontSize.width * CGFloat(self.precision + 1) + 8
         
-        let path = CGPathCreateMutable()
+        let path = CGMutablePath()
         let commonHalfHeight = fontSize.height / 2
-        CGPathMoveToPoint(path, nil, minX + cornerRadius, fOrigin - commonHalfHeight)
+        path.move(to: CGPoint(x: minX + cornerRadius, y: fOrigin - commonHalfHeight))
         // Top
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, fOrigin - commonHalfHeight)
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, minY + cornerRadius)
-        CGPathAddArcToPoint(path, nil, maxX - rollerWidth, minY, maxX - rollerWidth + cornerRadius, minY, cornerRadius)
-        CGPathAddLineToPoint(path, nil, maxX - cornerRadius, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, minY + cornerRadius, cornerRadius)
+        path.addLine(to: CGPoint(x: maxX - rollerWidth, y: fOrigin - commonHalfHeight))
+        path.addLine(to: CGPoint(x: maxX - rollerWidth, y: minY + cornerRadius))
+        path.addArc(tangent1End: CGPoint(x: maxX - rollerWidth, y: minY), tangent2End: CGPoint(x: maxX - rollerWidth + cornerRadius, y: minY), radius: cornerRadius)
+        path.addLine(to: CGPoint(x: maxX - cornerRadius, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: minY + cornerRadius), radius: cornerRadius)
         // Right
         if rightAligned {
-            CGPathAddLineToPoint(path, nil, maxX, fOrigin - commonHalfHeight / 2)
-            CGPathAddLineToPoint(path, nil, bounds.maxX - 4, fOrigin)
-            CGPathAddLineToPoint(path, nil, maxX, fOrigin + commonHalfHeight / 2)
+            path.addLine(to: CGPoint(x: maxX, y: fOrigin - commonHalfHeight / 2))
+            path.addLine(to: CGPoint(x: bounds.maxX - 4, y: fOrigin))
+            path.addLine(to: CGPoint(x: maxX, y: fOrigin + commonHalfHeight / 2))
         }
-        CGPathAddLineToPoint(path, nil, maxX, maxY - cornerRadius)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - cornerRadius, maxY, cornerRadius)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - cornerRadius))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - cornerRadius, y: maxY), radius: cornerRadius)
         // Bottom
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth + cornerRadius, maxY)
-        CGPathAddArcToPoint(path, nil, maxX - rollerWidth, maxY, maxX - rollerWidth, maxY - cornerRadius, cornerRadius)
-        CGPathAddLineToPoint(path, nil, maxX - rollerWidth, fOrigin + commonHalfHeight)
-        CGPathAddLineToPoint(path, nil, minX + cornerRadius, fOrigin + commonHalfHeight)
-        CGPathAddArcToPoint(path, nil, minX, fOrigin + commonHalfHeight, minX, fOrigin + commonHalfHeight - cornerRadius, cornerRadius)
+        path.addLine(to: CGPoint(x: maxX - rollerWidth + cornerRadius, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: maxX - rollerWidth, y: maxY), tangent2End: CGPoint(x: maxX - rollerWidth, y: maxY - cornerRadius), radius: cornerRadius)
+        path.addLine(to: CGPoint(x: maxX - rollerWidth, y: fOrigin + commonHalfHeight))
+        path.addLine(to: CGPoint(x: minX + cornerRadius, y: fOrigin + commonHalfHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: fOrigin + commonHalfHeight), tangent2End: CGPoint(x: minX, y: fOrigin + commonHalfHeight - cornerRadius), radius: cornerRadius)
         // Left
         if !rightAligned {
-            CGPathAddLineToPoint(path, nil, minX, fOrigin + commonHalfHeight / 2)
-            CGPathAddLineToPoint(path, nil, bounds.minX + 4, fOrigin)
-            CGPathAddLineToPoint(path, nil, minX, fOrigin - commonHalfHeight / 2)
+            path.addLine(to: CGPoint(x: minX, y: fOrigin + commonHalfHeight / 2))
+            path.addLine(to: CGPoint(x: bounds.minX + 4, y: fOrigin))
+            path.addLine(to: CGPoint(x: minX, y: fOrigin - commonHalfHeight / 2))
         }
-        CGPathAddLineToPoint(path, nil, minX, fOrigin - commonHalfHeight + cornerRadius)
-        CGPathAddArcToPoint(path, nil, minX, fOrigin - commonHalfHeight, minX + cornerRadius, fOrigin - commonHalfHeight, cornerRadius)
+        path.addLine(to: CGPoint(x: minX, y: fOrigin - commonHalfHeight + cornerRadius))
+        path.addArc(tangent1End: CGPoint(x: minX, y: fOrigin - commonHalfHeight), tangent2End: CGPoint(x: minX + cornerRadius, y: fOrigin - commonHalfHeight), radius: cornerRadius)
         
         // Draw fill and stroke
-        CGContextAddPath(ctx, path)
-        CGContextSetFillColorWithColor(ctx, UIColor.blackColor().CGColor)
-        CGContextSetStrokeColorWithColor(ctx, UIColor.lightGrayColor().CGColor)
-        CGContextDrawPath(ctx, .FillStroke)
+        ctx.addPath(path)
+        ctx.setFillColor(UIColor.black.cgColor)
+        ctx.setStrokeColor(UIColor.lightGray.cgColor)
+        ctx.drawPath(using: .fillStroke)
         
-        CGContextAddPath(ctx, path)
-        CGContextClip(ctx)
+        ctx.addPath(path)
+        ctx.clip()
         
         let stringFormat: String
         if self.precision < 0 {
@@ -137,31 +137,32 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         
         // FIXME: Not sure why we need the -2.5 offset to have the text perfectly centered in the control
         var textRect = CGRect(x: minX, y: fOrigin - 2.5 + textLeading * CGFloat(-1.5 + delta), width: maxX - minX - 4, height: fontSize.height)
-        suffix.drawInRect(textRect, withAttributes: textAttributes)
+        suffix.draw(in: textRect, withAttributes: textAttributes)
         
         textRect = textRect.offsetBy(dx: 0, dy: textLeading)
         suffix = uniqueSuffix(stringValues[1], refString: delta <= 0 ? stringValues[2] : stringValues[0]) as NSString
         
-        let suffixWidth = suffix.sizeWithAttributes(textAttributes).width
-        suffix.drawInRect(textRect, withAttributes: textAttributes)
-        commonPrefixString.drawInRect(CGRect(x: textRect.minX, y: fOrigin - 2.5 - textLeading / 2, width: textRect.width - suffixWidth, height: fontSize.height), withAttributes: textAttributes)
+        let suffixWidth = suffix.size(attributes: textAttributes).width
+        suffix.draw(in: textRect, withAttributes: textAttributes)
+        commonPrefixString.draw(in: CGRect(x: textRect.minX, y: fOrigin - 2.5 - textLeading / 2, width: textRect.width - suffixWidth, height: fontSize.height), withAttributes: textAttributes)
         
         textRect = textRect.offsetBy(dx: 0, dy: textLeading)
         suffix = uniqueSuffix(stringValues[2], refString: stringValues[1]) as NSString
         
-        suffix.drawInRect(textRect, withAttributes: textAttributes)
+        suffix.draw(in: textRect, withAttributes: textAttributes)
         
-        CGContextClipToRect(ctx, CGRect(x: maxX - rollerWidth + 4, y: minY, width: rollerWidth + 4 - 1, height: bounds.height))
+        ctx.clip(to: CGRect(x: maxX - rollerWidth + 4, y: minY, width: rollerWidth + 4 - 1, height: bounds.height))
         let locations: [CGFloat] = [ 0.0, 0.25, 0.75, 1 ]
-        let colors: CFArray = [UIColor.blackColor().CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, UIColor.blackColor().CGColor]
+        let colors = [UIColor.black.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.black.cgColor] as CFArray
+
         let colorspace = CGColorSpaceCreateDeviceRGB()
-        let gradient = CGGradientCreateWithColors(colorspace, colors, locations)
-        CGContextDrawLinearGradient(ctx, gradient!, CGPoint(x: maxX, y: minY), CGPoint(x: maxX, y: maxY), CGGradientDrawingOptions(rawValue: 0))
+        let gradient = CGGradient(colorsSpace: colorspace, colors: colors, locations: locations)
+        ctx.drawLinearGradient(gradient!, start: CGPoint(x: maxX, y: minY), end: CGPoint(x: maxX, y: maxY), options: CGGradientDrawingOptions(rawValue: 0))
         
-        CGContextRestoreGState(ctx)
+        ctx.restoreGState()
     }
     
-    private func commonPrefix(strings: [String]) -> String {
+    fileprivate func commonPrefix(_ strings: [String]) -> String {
         var length = -1
         for s in strings {
             if length == -1 {
@@ -178,7 +179,7 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
             }
             var char: Character?
             for s in strings {
-                let c = s.characters[s.characters.startIndex.advancedBy(index)]
+                let c = s.characters[s.characters.index(s.characters.startIndex, offsetBy: index)]
                 if char == nil {
                     char = c
                 } else if char != c {
@@ -196,7 +197,7 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         return commonPrefix
     }
     
-    private func uniqueSuffix(string: String, refString: String) -> String {
+    fileprivate func uniqueSuffix(_ string: String, refString: String) -> String {
         let chars = string.characters
         let refChars = refString.characters
         let length = chars.count
@@ -204,18 +205,18 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
             return string
         }
         for index in 0 ..< length {
-            let charIndex = chars.startIndex.advancedBy(index)
-            if chars[charIndex] != refChars[refChars.startIndex.advancedBy(index)] {
-                return string.substringFromIndex(charIndex)
+            let charIndex = chars.index(chars.startIndex, offsetBy: index)
+            if chars[charIndex] != refChars[refChars.index(refChars.startIndex, offsetBy: index)] {
+                return string.substring(from: charIndex)
             }
         }
         return ""
     }
     
-    func drawBug(ctx: CGContext, value: Double, color: UIColor) {
+    func drawBug(_ ctx: CGContext, value: Double, color: UIColor) {
         let font = UIFont(name: "Verdana", size: self.fontSize)!
-        let textAttributes: [String : AnyObject] = [ NSFontAttributeName : font ]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
+        let textAttributes: [String : Any] = [ NSFontAttributeName : font ]
+        let fontSize = ("0" as NSString).size(attributes: textAttributes)
         
         let markerHeight = fontSize.height * 2
         
@@ -237,25 +238,25 @@ class VerticalScale: BaseVerticalScale, NeedsOrigin {
         }
         let left = right - markerWidth
         
-        CGContextMoveToPoint(ctx, left, top)
-        CGContextAddLineToPoint(ctx, right, top)
+        ctx.move(to: CGPoint(x: left, y: top))
+        ctx.addLine(to: CGPoint(x: right, y: top))
         if !rightAligned {
-            CGContextAddLineToPoint(ctx, right, top + markerHeight / 2 - fontSize.height / 4)
-            CGContextAddLineToPoint(ctx, right - markerWidth + 4, top + markerHeight / 2)
-            CGContextAddLineToPoint(ctx, right, top + markerHeight / 2 + fontSize.height / 4)
+            ctx.addLine(to: CGPoint(x: right, y: top + markerHeight / 2 - fontSize.height / 4))
+            ctx.addLine(to: CGPoint(x: right - markerWidth + 4, y: top + markerHeight / 2))
+            ctx.addLine(to: CGPoint(x: right, y: top + markerHeight / 2 + fontSize.height / 4))
         }
-        CGContextAddLineToPoint(ctx, right, bottom)
-        CGContextAddLineToPoint(ctx, left, bottom)
+        ctx.addLine(to: CGPoint(x: right, y: bottom))
+        ctx.addLine(to: CGPoint(x: left, y: bottom))
         if rightAligned {
-            CGContextAddLineToPoint(ctx, left, top + markerHeight / 2 + fontSize.height / 4)
-            CGContextAddLineToPoint(ctx, left + markerWidth - 4, top + markerHeight / 2)
-            CGContextAddLineToPoint(ctx, left, top + markerHeight / 2 - fontSize.height / 4)
+            ctx.addLine(to: CGPoint(x: left, y: top + markerHeight / 2 + fontSize.height / 4))
+            ctx.addLine(to: CGPoint(x: left + markerWidth - 4, y: top + markerHeight / 2))
+            ctx.addLine(to: CGPoint(x: left, y: top + markerHeight / 2 - fontSize.height / 4))
         }
-        CGContextClosePath(ctx)
+        ctx.closePath()
         
-        CGContextSetFillColorWithColor(ctx, color.CGColor)
-        CGContextSetStrokeColorWithColor(ctx, UIColor.darkGrayColor().CGColor)
-        CGContextDrawPath(ctx, .FillStroke)
+        ctx.setFillColor(color.cgColor)
+        ctx.setStrokeColor(UIColor.darkGray.cgColor)
+        ctx.drawPath(using: .fillStroke)
     }
 
 }

@@ -22,12 +22,12 @@ import UIKit
 
 class InsetTextField: UITextField {
     // Placeholder position
-    override func textRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, 8, 8)
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: 8, dy: 8)
     }
     
     // Text position
-    override func editingRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, 8, 8)
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: 8, dy: 8)
     }
 }

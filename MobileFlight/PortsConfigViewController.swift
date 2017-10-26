@@ -22,12 +22,12 @@ import UIKit
 
 class PortsConfigViewController: ConfigChildViewController {
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return settings.portConfigs?.count ?? 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("PortCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PortCell", for: indexPath)
 
         let config = Configuration.theConfig
         let i = indexPath.row
@@ -92,8 +92,8 @@ class PortsConfigViewController: ConfigChildViewController {
     
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let viewController = segue.destinationViewController as! PortConfigViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let viewController = segue.destination as! PortConfigViewController
         viewController.portIndex = tableView.indexPathForSelectedRow?.row ?? 0
         viewController.portsConfigViewController = self
         viewController.setReference(configViewController!, newSettings: settings!, newMisc: misc!)

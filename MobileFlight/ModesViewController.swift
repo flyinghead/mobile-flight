@@ -22,6 +22,30 @@ import UIKit
 import DownPicker
 import SVProgressHUD
 import Firebase
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
+
 
 class ModesViewController: UITableViewController, UITextFieldDelegate {
     var dontReloadTable = false
@@ -35,8 +59,8 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
     var flightModeEventHandler: Disposable?
     var receiverEventHandler: Disposable?
     
-    func tableViewTapped(recognizer: UITapGestureRecognizer) {
-        if recognizer.state == .Began || recognizer.state == .Changed {
+    func tableViewTapped(_ recognizer: UITapGestureRecognizer) {
+        if recognizer.state == .began || recognizer.state == .changed {
             dontReloadTable = true
         } else {
             dontReloadTable = false
@@ -48,13 +72,13 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         dontReloadTable = true
 
         appDelegate.stopTimer()
-        msp.sendMessage(.MSP_BOXNAMES, data: nil, retry: 2, callback: { success in
+        msp.sendMessage(.msp_BOXNAMES, data: nil, retry: 2, callback: { success in
             if success {
-                self.msp.sendMessage(.MSP_BOXIDS, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.msp_BOXIDS, data: nil, retry: 2, callback: { success in
                     if success {
-                        self.msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2, callback: { success in
+                        self.msp.sendMessage(.msp_MODE_RANGES, data: nil, retry: 2, callback: { success in
                             if success {
-                                dispatch_async(dispatch_get_main_queue(), {
+                                DispatchQueue.main.async(execute: {
                                     self.appDelegate.startTimer()
                                     let settings = Settings.theSettings
                                     self.modeRanges = [ModeRange](settings.modeRanges!)
@@ -76,11 +100,11 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         })
     }
 
-    private func refreshError() {
-        dispatch_async(dispatch_get_main_queue(), {
+    fileprivate func refreshError() {
+        DispatchQueue.main.async(execute: {
             self.appDelegate.startTimer()
             
-            SVProgressHUD.showErrorWithStatus("Communication error")
+            SVProgressHUD.showError(withStatus: "Communication error")
             if !self.dontReloadTable {
                 self.tableView.reloadData()
             }
@@ -101,7 +125,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         }
         if let visibleRowIndices = tableView.indexPathsForVisibleRows {
             for indexPath in visibleRowIndices {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? ModeRangeCell {
+                if let cell = tableView.cellForRow(at: indexPath) as? ModeRangeCell {
                     let channel = modeRanges![cell.modeRangeIdx].auxChannelId
                     cell.rangeSlider.referenceValue = Double(receiver.channels[channel + 4])
                 }
@@ -116,7 +140,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         initialFetch()
@@ -126,7 +150,7 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         receiverEventHandler = msp.receiverEvent.addHandler(self, handler: ModesViewController.receivedReceiverData)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         flightModeEventHandler?.dispose()
@@ -141,10 +165,10 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         dontReloadTable = false
     }
     
-    func addRangeAction(sender: AnyObject?) {
+    func addRangeAction(_ sender: Any?) {
         if let button = sender as! AddRangeButton? {
             if modeRanges?.count >= modeRangeSlots {
-                SVProgressHUD.showErrorWithStatus(String(format:"Maximum %d mode ranges", modeRangeSlots))
+                SVProgressHUD.showError(withStatus: String(format:"Maximum %d mode ranges", modeRangeSlots))
             } else {
                 modeRanges?.append(ModeRange(id: button.modeId, auxChannelId: 0, start: 1250, end: 1750))
                 tableView.reloadData()
@@ -152,13 +176,13 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
-    func findModeRangeIndex(modeIdx modeIdx: Int, rangeIdx: Int) -> Int {
+    func findModeRangeIndex(modeIdx: Int, rangeIdx: Int) -> Int {
         let settings = Settings.theSettings
 
         var index = -1
         if let modeRanges = modeRanges {
             if let modeId = settings.boxIds?[modeIdx] {
-                for (fullIndex, range) in modeRanges.enumerate() {
+                for (fullIndex, range) in modeRanges.enumerated() {
                     if range.id == modeId {
                         index += 1
                         if index == rangeIdx {
@@ -174,11 +198,11 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return Settings.theSettings.boxIds?.count ?? 0
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var count = 0
         if let modeId = Settings.theSettings.boxIds?[section] {
             if modeRanges != nil {
@@ -192,16 +216,16 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         return count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ModeRangeCell", forIndexPath: indexPath) as! ModeRangeCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ModeRangeCell", for: indexPath) as! ModeRangeCell
 
         cell.viewController = self
         
         // Remove first to avoid adding duplicate targets (?)
-        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), forControlEvents: .EditingDidBegin)
-        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), forControlEvents: .EditingDidEnd)
-        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), forControlEvents: .EditingDidBegin)
-        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), forControlEvents: .EditingDidEnd)
+        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), for: .editingDidBegin)
+        cell.channelPicker.removeTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), for: .editingDidEnd)
+        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidBeginEditing), for: .editingDidBegin)
+        cell.channelPicker.addTarget(self, action: #selector(ModesViewController.pickerDidEndEditing), for: .editingDidEnd)
         
         cell.rangeSlider.interval = 25
         cell.rangeSlider.minimumValue = 900
@@ -230,60 +254,60 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         return cell
     }
 
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30
     }
 
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
 
         let label = UILabel(frame: CGRect(x: 10, y: 5, width: tableView.frame.width, height: 25))
         label.text = Settings.theSettings.boxNames![section]
-        label.textColor = Configuration.theConfig.mode & (1 << section) != 0 ? UIColor.redColor() : UIColor.blackColor()
-        label.font = UIFont.systemFontOfSize(16)
+        label.textColor = Configuration.theConfig.mode & (1 << section) != 0 ? UIColor.red : UIColor.black
+        label.font = UIFont.systemFont(ofSize: 16)
         
         view.addSubview(label)
         
         return view
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 44
     }
     
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
-        view.userInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         
-        let addButton = AddRangeButton(type: .ContactAdd)
-        addButton.addTarget(self, action: #selector(ModesViewController.addRangeAction(_:)), forControlEvents: .TouchDown)
+        let addButton = AddRangeButton(type: .contactAdd)
+        addButton.addTarget(self, action: #selector(ModesViewController.addRangeAction(_:)), for: .touchDown)
         addButton.modeId = Settings.theSettings.boxIds![section]
         addButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addButton)
         
-        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .LeadingMargin, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: 80))
-        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .TopMargin, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .BottomMargin, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leadingMargin, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 80))
+        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .topMargin, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: addButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottomMargin, multiplier: 1, constant: 0))
         
         return view
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         dontReloadTable = true
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         dontReloadTable = false
     }
     
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         Analytics.logEvent("modes_save", parameters: nil)
         appDelegate.stopTimer()
         sendModeRange(0)
     }
     
-    func sendModeRange(index: Int) {
+    func sendModeRange(_ index: Int) {
         var range = ModeRange(id: 0, auxChannelId: 0, start: 900, end: 900)
         if index < modeRanges!.count {
             range = modeRanges![index]
@@ -291,14 +315,14 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
         msp.sendSetModeRange(index, range: range, callback: { success in
             if success {
                 if index >= self.modeRangeSlots - 1 {
-                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
-                        dispatch_async(dispatch_get_main_queue(), {
+                    self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                        DispatchQueue.main.async(execute: {
                             self.appDelegate.startTimer()
                             if success {
-                                SVProgressHUD.showSuccessWithStatus("Settings saved")
+                                SVProgressHUD.showSuccess(withStatus: "Settings saved")
                             } else {
                                 Analytics.logEvent("modes_save_failed", parameters: nil)
-                                SVProgressHUD.showErrorWithStatus("Save failed")
+                                SVProgressHUD.showError(withStatus: "Save failed")
                             }
                         })
                     })
@@ -306,10 +330,10 @@ class ModesViewController: UITableViewController, UITextFieldDelegate {
                     self.sendModeRange(index+1)
                 }
             } else {
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.appDelegate.startTimer()
                     Analytics.logEvent("modes_save_failed", parameters: nil)
-                    SVProgressHUD.showErrorWithStatus("Save failed")
+                    SVProgressHUD.showError(withStatus: "Save failed")
                 })
             }
         })
@@ -329,24 +353,24 @@ class ModeRangeCell : UITableViewCell {
     var channelPicker: MyDownPicker {
         if _channelPicker == nil {
             _channelPicker = MyDownPicker(textField: channelField)
-            _channelPicker?.addTarget(self, action: #selector(ModeRangeCell.channelChanged(_:)), forControlEvents: .ValueChanged)
+            _channelPicker?.addTarget(self, action: #selector(ModeRangeCell.channelChanged(_:)), for: .valueChanged)
         }
         return _channelPicker!
     }
     
-    private var _channelPicker: MyDownPicker?
+    fileprivate var _channelPicker: MyDownPicker?
     
-    @IBAction func rangeChanged(sender: AnyObject) {
+    @IBAction func rangeChanged(_ sender: Any) {
         lowerLabel.text = String(format: "%.0f", rangeSlider.lowerValue)
         upperLabel.text = String(format: "%.0f", rangeSlider.upperValue)
         
         viewController!.modeRanges![modeRangeIdx].start = Int(rangeSlider.lowerValue)
         viewController!.modeRanges![modeRangeIdx].end = Int(rangeSlider.upperValue)
     }
-    func channelChanged(sender: AnyObject) {
+    func channelChanged(_ sender: Any) {
         if channelPicker.selectedIndex >= 0 {
             if channelPicker.selectedIndex == 0 {
-                viewController!.modeRanges!.removeAtIndex(modeRangeIdx)
+                viewController!.modeRanges!.remove(at: modeRangeIdx)
                 viewController!.tableView.reloadData()
             } else {
                 viewController!.modeRanges![modeRangeIdx].auxChannelId = channelPicker.selectedIndex - 1

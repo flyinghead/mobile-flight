@@ -34,9 +34,9 @@ var FONTS: [String] {
 }
 
 enum PixelColor : Int {
-    case Black = 0
-    case Transparent = 1
-    case White = 2
+    case black = 0
+    case transparent = 1
+    case white = 2
 }
 
 class CharDefinition {
@@ -45,7 +45,7 @@ class CharDefinition {
     
     var pixels = [[PixelColor]]()
     
-    func writeToOsd(msp: MSPParser, index: Int, callback: ((Bool) -> Void)?) {
+    func writeToOsd(_ msp: MSPParser, index: Int, callback: ((Bool) -> Void)?) {
         var data = [UInt8]()
         for line in 0 ..< pixels.count {
             var shift = UInt8(6)
@@ -53,11 +53,11 @@ class CharDefinition {
             for col in 0 ..< pixels[line].count {
                 var pixel: UInt8
                 switch pixels[line][col] {
-                case .Black:
+                case .black:
                     pixel = 0
-                case .Transparent:
+                case .transparent:
                     pixel = 1
-                case .White:
+                case .white:
                     pixel = 2
                 }
                 pixel <<= shift
@@ -78,14 +78,14 @@ class CharDefinition {
 class FontDefinition {
     var chars = [CharDefinition]()
     
-    class func load(url: NSURL) -> FontDefinition? {
+    class func load(_ url: URL) -> FontDefinition? {
         do {
-            let string = try String(contentsOfURL: url)
+            let string = try String(contentsOf: url)
             let lines: [String]
-            if string.containsString("\r\n") {
-                lines = string.componentsSeparatedByString("\r\n")
+            if string.contains("\r\n") {
+                lines = string.components(separatedBy: "\r\n")
             } else {
-                lines = string.componentsSeparatedByString("\n")
+                lines = string.components(separatedBy: "\n")
             }
                 
             if lines.isEmpty || "MAX7456" != lines.first! {
@@ -105,8 +105,8 @@ class FontDefinition {
                 }
                 var index = line.startIndex
                 for _ in 0 ..< 4 {
-                    let endIndex = index.advancedBy(2)
-                    let pixel = Int(line.substringWithRange(index ..< endIndex), radix: 2)!
+                    let endIndex = line.characters.index(index, offsetBy: 2)
+                    let pixel = Int(line.substring(with: index ..< endIndex), radix: 2)!
                     curLine.append(PixelColor(rawValue: pixel)!)
                     index = endIndex
                 }
@@ -128,11 +128,11 @@ class FontDefinition {
         }
     }
     
-    func writeToOsd(msp: MSPParser, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
+    func writeToOsd(_ msp: MSPParser, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
         writeCharToOsd(msp, index: 0, progressCallback: progressCallback, callback: callback)
     }
     
-    private func writeCharToOsd(msp: MSPParser, index: Int, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
+    fileprivate func writeCharToOsd(_ msp: MSPParser, index: Int, progressCallback: ((Float) -> Void)?, callback: ((Bool) -> Void)?) {
         if index >= chars.count {
             callback?(true)
             return

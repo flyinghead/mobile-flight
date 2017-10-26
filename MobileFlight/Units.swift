@@ -24,20 +24,20 @@ let FEET_PER_METER = 100.0 / 2.54 / 12
 let METER_PER_MILE = 1609.344
 let METER_PER_NM = 1852.0
 
-func formatNumber(n: Double, precision: Int) -> String {
-    let formatter = NSNumberFormatter()
-    formatter.locale = NSLocale.currentLocale()
+func formatNumber(_ n: Double, precision: Int) -> String {
+    let formatter = NumberFormatter()
+    formatter.locale = Locale.current
     formatter.usesGroupingSeparator = false
     formatter.minimumFractionDigits = precision
     formatter.maximumFractionDigits = precision
     formatter.minimumIntegerDigits = 1
     
-    return formatter.stringFromNumber(n)!
+    return formatter.string(from: NSNumber(value: n))!
 }
 
 // Easy formatting of a double value with 1 decimal if < 10, no decimal otherwise. Unit appended to the result.
-func formatWithUnit(reading: Double, unit: String) -> String {
-    let suffix = unit.isEmpty ? "" : " ".stringByAppendingString(unit)
+func formatWithUnit(_ reading: Double, unit: String) -> String {
+    let suffix = unit.isEmpty ? "" : " " + unit
     if reading < 10 {
         return String(format: "%@%@", formatNumber(reading, precision: 1), suffix)
     } else {
@@ -45,9 +45,9 @@ func formatWithUnit(reading: Double, unit: String) -> String {
     }
 }
 
-func formatDistance(meters: Double) -> String {
+func formatDistance(_ meters: Double) -> String {
     switch selectedUnitSystem() {
-    case .Imperial:
+    case .imperial:
         if meters >= METER_PER_MILE {
             // Statute mile
             return formatWithUnit(meters / METER_PER_MILE, unit: "mi")
@@ -56,7 +56,7 @@ func formatDistance(meters: Double) -> String {
             return formatWithUnit(meters * FEET_PER_METER, unit: "ft")
         }
         
-    case .Aviation:
+    case .aviation:
         if meters >= METER_PER_NM {
             // Nautical mile
             return formatWithUnit(meters / METER_PER_NM, unit: "NM")
@@ -75,8 +75,8 @@ func formatDistance(meters: Double) -> String {
     }
 }
 
-func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
-    if selectedUnitSystem() != .Metric {
+func formatAltitude(_ meters: Double, appendUnit: Bool = true) -> String {
+    if selectedUnitSystem() != .metric {
         // Feet
         return formatWithUnit(meters * FEET_PER_METER, unit: appendUnit ? "ft" : "")
     } else {
@@ -85,12 +85,12 @@ func formatAltitude(meters: Double, appendUnit: Bool = true) -> String {
     }
 }
 
-func formatSpeed(kmh: Double) -> String {
+func formatSpeed(_ kmh: Double) -> String {
     switch selectedUnitSystem() {
-    case .Imperial:
+    case .imperial:
         // mile/h
         return formatWithUnit(kmh * 1000 / METER_PER_MILE, unit: speedUnit())
-    case .Aviation:
+    case .aviation:
         // Knots
         return formatWithUnit(kmh * 1000 / METER_PER_NM, unit: speedUnit())
     default:
@@ -99,22 +99,22 @@ func formatSpeed(kmh: Double) -> String {
     }
 }
 
-func formatTemperature(celsius: Double) -> String {
-    if selectedUnitSystem() == .Imperial {
+func formatTemperature(_ celsius: Double) -> String {
+    if selectedUnitSystem() == .imperial {
         return String(format: "%@° F", formatNumber(celsius * 1.8 + 32, precision: 0))
     } else {
         return String(format: "%@° C", formatNumber(celsius, precision: 0))
     }
 }
 
-func msToLocaleSpeed(speed: Double) -> Double {
+func msToLocaleSpeed(_ speed: Double) -> Double {
     let speedKmh = speed * 3600 / 1000
     
     switch selectedUnitSystem() {
-    case .Imperial:
+    case .imperial:
         // mile/h
         return speedKmh * 1000 / METER_PER_MILE
-    case .Aviation:
+    case .aviation:
         // Knots
         return speedKmh * 1000 / METER_PER_NM
     default:
@@ -123,13 +123,13 @@ func msToLocaleSpeed(speed: Double) -> Double {
     }
 }
 
-func localeSpeedToMs(speed: Double) -> Double {
+func localeSpeedToMs(_ speed: Double) -> Double {
     let kmhSpeed: Double
     switch selectedUnitSystem() {
-    case .Imperial:
+    case .imperial:
         // mile/h
         kmhSpeed = speed / 1000 * METER_PER_MILE
-    case .Aviation:
+    case .aviation:
         // Knots
         kmhSpeed = speed / 1000 * METER_PER_NM
     default:
@@ -139,36 +139,36 @@ func localeSpeedToMs(speed: Double) -> Double {
     return kmhSpeed / 3600 * 1000
 }
 
-func msToLocaleVerticalSpeed(d: Double) -> Double {
+func msToLocaleVerticalSpeed(_ d: Double) -> Double {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return d * FEET_PER_METER
     default:
         return d
     }
 }
 
-func localeVerticalSpeedToMs(d: Double) -> Double {
+func localeVerticalSpeedToMs(_ d: Double) -> Double {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return d / FEET_PER_METER
     default:
         return d
     }
 }
 
-func mToLocaleDistance(d: Double) -> Double {
+func mToLocaleDistance(_ d: Double) -> Double {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return d * FEET_PER_METER
     default:
         return d
     }
 }
 
-func localeDistanceToM(d: Double) -> Double {
+func localeDistanceToM(_ d: Double) -> Double {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return d / FEET_PER_METER
     default:
         return d
@@ -177,9 +177,9 @@ func localeDistanceToM(d: Double) -> Double {
 
 func speedUnit() -> String {
     switch selectedUnitSystem() {
-    case .Imperial:
+    case .imperial:
         return "mph"
-    case .Aviation:
+    case .aviation:
         return "kn"
     default:
         return "km/h"
@@ -188,7 +188,7 @@ func speedUnit() -> String {
 
 func verticalSpeedUnit() -> String {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return "ft/s"
     default:
         return "m/s"
@@ -197,7 +197,7 @@ func verticalSpeedUnit() -> String {
 
 func distanceUnit() -> String {
     switch selectedUnitSystem() {
-    case .Imperial, .Aviation:
+    case .imperial, .aviation:
         return "ft"
     default:
         return "m"

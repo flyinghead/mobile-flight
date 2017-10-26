@@ -21,12 +21,12 @@
 import UIKit
 
 class ArmedTimer: BlinkingLabel {
-    private var armTimer: NSTimer?
+    fileprivate var armTimer: Timer?
     
     func appear() {
         if armTimer == nil {
             armTimerDidFire()
-            armTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(armTimerDidFire), userInfo: nil, repeats: true)
+            armTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(armTimerDidFire), userInfo: nil, repeats: true)
         }
     }
     
@@ -36,8 +36,8 @@ class ArmedTimer: BlinkingLabel {
     }
     
     @objc
-    private func armTimerDidFire() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    fileprivate func armTimerDidFire() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let armedTime = Int(round(appDelegate.totalArmedTime))
         self.text = String(format: "%02d:%02d", armedTime / 60, armedTime % 60)
     }

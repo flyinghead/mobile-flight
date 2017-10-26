@@ -22,28 +22,28 @@ import Foundation
 
 enum INavStatusMode : DictionaryCoding {
     enum Internal : Int {
-        case None = 0
-        case Hold = 1
-        case ReturnToHome = 2
-        case Navigation = 3
-        case Emergency = 15
+        case none = 0
+        case hold = 1
+        case returnToHome = 2
+        case navigation = 3
+        case emergency = 15
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let mode = Internal(rawValue: value) {
-            self = .Known(mode)
+            self = .known(mode)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let mode):
+        case .known(let mode):
             return mode.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
@@ -63,58 +63,58 @@ enum INavStatusMode : DictionaryCoding {
 
 enum INavStatusState : DictionaryCoding {
     enum Internal : Int {
-        case None = 0
-        case ReturnToHomeStart = 1
-        case ReturnToHomeEnRoute = 2
-        case HoldInfinite = 3
-        case HoldTimed = 4
-        case WaypointEnRoute = 5
-        case ProcessNext = 6
-        case DoJump = 7
-        case LandStart = 8
-        case Landing = 9
-        case Landed = 10
-        case LandSettle = 11
-        case LandStartDescent = 12
+        case none = 0
+        case returnToHomeStart = 1
+        case returnToHomeEnRoute = 2
+        case holdInfinite = 3
+        case holdTimed = 4
+        case waypointEnRoute = 5
+        case processNext = 6
+        case doJump = 7
+        case landStart = 8
+        case landing = 9
+        case landed = 10
+        case landSettle = 11
+        case landStartDescent = 12
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let mode = Internal(rawValue: value) {
-            self = .Known(mode)
+            self = .known(mode)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let mode):
+        case .known(let mode):
             return mode.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
     
     var description: String {
         switch self {
-        case .Known(let intern):
+        case .known(let intern):
             switch intern {
-            case .None:
+            case .none:
                 return ""
-            case .ReturnToHomeStart, .ReturnToHomeEnRoute:
+            case .returnToHomeStart, .returnToHomeEnRoute:
                 return "Return To Home"
-            case .HoldInfinite, .HoldTimed:
+            case .holdInfinite, .holdTimed:
                 return "Position Hold"
-            case .WaypointEnRoute, .ProcessNext,.DoJump:
+            case .waypointEnRoute, .processNext,.doJump:
                 return "Waypoint"
-            case .LandStart, .Landing, .LandSettle, .LandStartDescent:
+            case .landStart, .landing, .landSettle, .landStartDescent:
                 return "Landing"
-            case .Landed:
+            case .landed:
                 return "Landed"
             }
-        case .Unknown:
+        case .unknown:
             return "Unknown"
         }
     }
@@ -134,25 +134,25 @@ enum INavStatusState : DictionaryCoding {
 
 enum INavWaypointAction : Equatable, DictionaryCoding {
     enum Internal : Int {
-        case Waypoint = 1
-        case ReturnToHome = 4
+        case waypoint = 1
+        case returnToHome = 4
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let mode = Internal(rawValue: value) {
-            self = .Known(mode)
+            self = .known(mode)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let intern):
+        case .known(let intern):
             return intern.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
@@ -177,68 +177,68 @@ func ==(lhs: INavWaypointAction, rhs: INavWaypointAction) -> Bool {
 
 enum INavStatusError : DictionaryCoding {
     enum Internal : Int {
-        case None = 0
-        case TooFar = 1
-        case GpsSpoiled = 2
-        case WaypointCRC = 3
-        case Finish = 4
-        case TimeWait = 5
-        case InvalidJump = 6
-        case InvalidData = 7
-        case WaitForRthAlt = 8
-        case GpsFixLost = 9
-        case Disarmed = 10
-        case Landing = 11
+        case none = 0
+        case tooFar = 1
+        case gpsSpoiled = 2
+        case waypointCRC = 3
+        case finish = 4
+        case timeWait = 5
+        case invalidJump = 6
+        case invalidData = 7
+        case waitForRthAlt = 8
+        case gpsFixLost = 9
+        case disarmed = 10
+        case landing = 11
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let intern = Internal(rawValue: value) {
-            self = .Known(intern)
+            self = .known(intern)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let mode):
+        case .known(let mode):
             return mode.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
     
     var description: String {
         switch self {
-        case .Unknown:
+        case .unknown:
             return "Unknown error"
-        case .Known(let intern):
+        case .known(let intern):
             switch intern {
-            case .None:
+            case .none:
                 return ""
-            case .TooFar:
+            case .tooFar:
                 return "Waypoint too far"
-            case .GpsSpoiled:
+            case .gpsSpoiled:
                 return "Bad GPS reception"
-            case .WaypointCRC:
+            case .waypointCRC:
                 return "Error reading waypoint"
-            case .Finish:
+            case .finish:
                 return "Navigation finished"
-            case .TimeWait:
+            case .timeWait:
                 return "Waiting"
-            case .InvalidJump:
+            case .invalidJump:
                 return "Invalid jump"
-            case .InvalidData:
+            case .invalidData:
                 return "Invalid waypoint data"
-            case .WaitForRthAlt:
+            case .waitForRthAlt:
                 return "Reaching RTH altitude"
-            case .GpsFixLost:
+            case .gpsFixLost:
                 return "GPS fix lost"
-            case .Disarmed:
+            case .disarmed:
                 return "Disarmed"
-            case .Landing:
+            case .landing:
                 return "Landing"
             }
         }
@@ -259,31 +259,31 @@ enum INavStatusError : DictionaryCoding {
 
 enum INavUserControlMode {
     enum Internal : Int {
-        case Attitude = 0
-        case Velocity = 1
+        case attitude = 0
+        case velocity = 1
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let mode = Internal(rawValue: value) {
-            self = .Known(mode)
+            self = .known(mode)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let mode):
+        case .known(let mode):
             return mode.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
 }
 
-struct INavArmingFlags : OptionSetType, DictionaryCoding {
+struct INavArmingFlags : OptionSet, DictionaryCoding {
     let rawValue: Int
     
     static let OkToArm              = INavArmingFlags(rawValue: 1 << 0)
@@ -317,27 +317,27 @@ struct INavArmingFlags : OptionSetType, DictionaryCoding {
 
 enum INavSensorStatus : DictionaryCoding {
     enum Internal : Int {
-        case None = 0
-        case Healthy = 1
-        case Unavailable = 2
-        case Unhealthy = 3
+        case none = 0
+        case healthy = 1
+        case unavailable = 2
+        case unhealthy = 3
     }
-    case Known(Internal)
-    case Unknown(Int)
+    case known(Internal)
+    case unknown(Int)
     
     init(value: Int) {
         if let mode = Internal(rawValue: value) {
-            self = .Known(mode)
+            self = .known(mode)
         } else {
-            self = .Unknown(value)
+            self = .unknown(value)
         }
     }
     
     var intValue: Int {
         switch self {
-        case .Known(let mode):
+        case .known(let mode):
             return mode.rawValue
-        case .Unknown(let value):
+        case .unknown(let value):
             return value
         }
     }
@@ -378,11 +378,11 @@ struct Waypoint : DictionaryCoding {
     }
     
     init(position: GPSLocation, altitude: Double, speed: Int) {
-        self.init(number: 0, action: .Known(.Waypoint), position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
+        self.init(number: 0, action: .known(.waypoint), position: position, altitude: altitude, param1: speed, param2: 0, param3: 0, last: false)
     }
     
     static func rthWaypoint() -> Waypoint {
-        return Waypoint(number: 0, action: .Known(.ReturnToHome), position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
+        return Waypoint(number: 0, action: .known(.returnToHome), position: nil, altitude: 0, param1: 0, param2: 0, param3: 0, last: true)
     }
     
     // MARK: DictionaryCoding
@@ -419,11 +419,11 @@ class INavState : AutoCoded {
     static var theINavState = INavState()
 
     // MSP_NAV_STATUS
-    var mode = INavStatusMode.Known(.None)
-    var state = INavStatusState.Known(.None)
-    var activeWaypointAction = INavWaypointAction.Known(.Waypoint)
+    var mode = INavStatusMode.known(.none)
+    var state = INavStatusState.known(.none)
+    var activeWaypointAction = INavWaypointAction.known(.waypoint)
     var activeWaypoint = 0
-    var error = INavStatusError.Known(.None)
+    var error = INavStatusError.known(.none)
 
     // MSP_STATUS_EX
     var armingFlags = INavArmingFlags(rawValue: 1)
@@ -431,14 +431,14 @@ class INavState : AutoCoded {
     
     // MSP_SENSOR_STATUS
     var hardwareHealthy = true
-    var gyroStatus = INavSensorStatus.Known(.None)
-    var accStatus = INavSensorStatus.Known(.None)
-    var magStatus = INavSensorStatus.Known(.None)
-    var baroStatus = INavSensorStatus.Known(.None)
-    var gpsStatus = INavSensorStatus.Known(.None)
-    var sonarStatus = INavSensorStatus.Known(.None)
-    var pitotStatus = INavSensorStatus.Known(.None)
-    var flowStatus = INavSensorStatus.Known(.None)
+    var gyroStatus = INavSensorStatus.known(.none)
+    var accStatus = INavSensorStatus.known(.none)
+    var magStatus = INavSensorStatus.known(.none)
+    var baroStatus = INavSensorStatus.known(.none)
+    var gpsStatus = INavSensorStatus.known(.none)
+    var sonarStatus = INavSensorStatus.known(.none)
+    var pitotStatus = INavSensorStatus.known(.none)
+    var flowStatus = INavSensorStatus.known(.none)
     
     // MSP_WP
     var waypoints = [Waypoint]()
@@ -452,20 +452,20 @@ class INavState : AutoCoded {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        mode = INavStatusMode(fromDict: aDecoder.decodeObjectForKey("mode") as? NSDictionary)!
-        state = INavStatusState(fromDict: aDecoder.decodeObjectForKey("state") as? NSDictionary)!
-        activeWaypointAction = INavWaypointAction(fromDict: aDecoder.decodeObjectForKey("activeWaypointAction") as? NSDictionary)!
-        error = INavStatusError(fromDict: aDecoder.decodeObjectForKey("error") as? NSDictionary)!
-        armingFlags = INavArmingFlags(fromDict: aDecoder.decodeObjectForKey("armingFlags") as? NSDictionary)!
-        gyroStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("gyroStatus") as? NSDictionary)!
-        accStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("accStatus") as? NSDictionary)!
-        magStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("magStatus") as? NSDictionary)!
-        baroStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("baroStatus") as? NSDictionary)!
-        gpsStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("gpsStatus") as? NSDictionary)!
-        sonarStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("sonarStatus") as? NSDictionary)!
-        pitotStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("pitotStatus") as? NSDictionary)!
-        flowStatus = INavSensorStatus(fromDict: aDecoder.decodeObjectForKey("flowStatus") as? NSDictionary)!
-        if let waypointDicts = aDecoder.decodeObjectForKey("waypoints") as? [NSDictionary] {
+        mode = INavStatusMode(fromDict: aDecoder.decodeObject(forKey: "mode") as? NSDictionary)!
+        state = INavStatusState(fromDict: aDecoder.decodeObject(forKey: "state") as? NSDictionary)!
+        activeWaypointAction = INavWaypointAction(fromDict: aDecoder.decodeObject(forKey: "activeWaypointAction") as? NSDictionary)!
+        error = INavStatusError(fromDict: aDecoder.decodeObject(forKey: "error") as? NSDictionary)!
+        armingFlags = INavArmingFlags(fromDict: aDecoder.decodeObject(forKey: "armingFlags") as? NSDictionary)!
+        gyroStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "gyroStatus") as? NSDictionary)!
+        accStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "accStatus") as? NSDictionary)!
+        magStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "magStatus") as? NSDictionary)!
+        baroStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "baroStatus") as? NSDictionary)!
+        gpsStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "gpsStatus") as? NSDictionary)!
+        sonarStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "sonarStatus") as? NSDictionary)!
+        pitotStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "pitotStatus") as? NSDictionary)!
+        flowStatus = INavSensorStatus(fromDict: aDecoder.decodeObject(forKey: "flowStatus") as? NSDictionary)!
+        if let waypointDicts = aDecoder.decodeObject(forKey: "waypoints") as? [NSDictionary] {
             waypoints = [Waypoint]()
             for dict in waypointDicts {
                 waypoints.append(Waypoint(fromDict: dict)!)
@@ -473,72 +473,72 @@ class INavState : AutoCoded {
         }
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
         
-        aCoder.encodeObject(mode.toDict(), forKey: "mode")
-        aCoder.encodeObject(state.toDict(), forKey: "state")
-        aCoder.encodeObject(activeWaypointAction.toDict(), forKey: "activeWaypointAction")
-        aCoder.encodeObject(error.toDict(), forKey: "error")
-        aCoder.encodeObject(armingFlags.toDict(), forKey: "armingFlags")
-        aCoder.encodeObject(gyroStatus.toDict(), forKey: "gyroStatus")
-        aCoder.encodeObject(accStatus.toDict(), forKey: "accStatus")
-        aCoder.encodeObject(magStatus.toDict(), forKey: "magStatus")
-        aCoder.encodeObject(baroStatus.toDict(), forKey: "baroStatus")
-        aCoder.encodeObject(gpsStatus.toDict(), forKey: "gpsStatus")
-        aCoder.encodeObject(sonarStatus.toDict(), forKey: "sonarStatus")
-        aCoder.encodeObject(pitotStatus.toDict(), forKey: "pitotStatus")
-        aCoder.encodeObject(flowStatus.toDict(), forKey: "flowStatus")
+        aCoder.encode(mode.toDict(), forKey: "mode")
+        aCoder.encode(state.toDict(), forKey: "state")
+        aCoder.encode(activeWaypointAction.toDict(), forKey: "activeWaypointAction")
+        aCoder.encode(error.toDict(), forKey: "error")
+        aCoder.encode(armingFlags.toDict(), forKey: "armingFlags")
+        aCoder.encode(gyroStatus.toDict(), forKey: "gyroStatus")
+        aCoder.encode(accStatus.toDict(), forKey: "accStatus")
+        aCoder.encode(magStatus.toDict(), forKey: "magStatus")
+        aCoder.encode(baroStatus.toDict(), forKey: "baroStatus")
+        aCoder.encode(gpsStatus.toDict(), forKey: "gpsStatus")
+        aCoder.encode(sonarStatus.toDict(), forKey: "sonarStatus")
+        aCoder.encode(pitotStatus.toDict(), forKey: "pitotStatus")
+        aCoder.encode(flowStatus.toDict(), forKey: "flowStatus")
         var waypointDicts = [NSDictionary]()
         for waypoint in waypoints {
             waypointDicts.append(waypoint.toDict())
         }
-        aCoder.encodeObject(waypointDicts, forKey: "waypoints")
+        aCoder.encode(waypointDicts, forKey: "waypoints")
     }
     
     var navStateDescription: (label: String, spoken: String, exception: Bool)? {
         let emergency: Bool
         switch mode {
-        case .Known(.Emergency):
+        case .known(.emergency):
             emergency = true
         default:
             emergency = false
         }
         switch state {
-        case .Known(let intern):
+        case .known(let intern):
             switch intern {
-            case .ReturnToHomeStart, .ReturnToHomeEnRoute:
+            case .returnToHomeStart, .returnToHomeEnRoute:
                 switch error {
-                case .Known(.WaitForRthAlt):
+                case .known(.waitForRthAlt):
                     return ("Return to Home - Climbing", "Return to Home. Climbing", false)
                 default:
                     return ("Return to Home", "Return to Home", false)
                 }
-            case .LandStart, .LandSettle, .LandStartDescent, .Landing:
+            case .landStart, .landSettle, .landStartDescent, .landing:
                 return ("Landing", "Landing", emergency)
-            case .Landed:
+            case .landed:
                 return ("Landed", "Landed", emergency)
-            case .WaypointEnRoute:
+            case .waypointEnRoute:
                 switch error {
-                case .Known(.Finish):
+                case .known(.finish):
                     return ("Navigation Finished", "Navigation Finished", false)
                 default:
                     return (String(format: "Navigating to WP #%d", activeWaypoint), String(format: "Navigating to waypoint %d", activeWaypoint), false)
                 }
-            case .HoldInfinite, .HoldTimed:
+            case .holdInfinite, .holdTimed:
                 return ("Holding Position", "Holding Position", false)
-            case .None:
+            case .none:
                 return ("", "", false)
             default:
                 return nil
             }
-        case .Unknown(_):
+        case .unknown(_):
             return emergency ? ("Emergency", "Emergency", true) : ("", "", false)
         }
     }
     
-    func setWaypoint(waypoint: Waypoint) {
-        for (idx, wp) in waypoints.enumerate() {
+    func setWaypoint(_ waypoint: Waypoint) {
+        for (idx, wp) in waypoints.enumerated() {
             if wp.number == waypoint.number {
                 waypoints[idx] = waypoint
                 return
@@ -552,7 +552,7 @@ class INavConfig {
     static var theINavConfig = INavConfig()
     
     // MSP_NAV_POSHOLD
-    var userControlMode = INavUserControlMode.Known(.Attitude)
+    var userControlMode = INavUserControlMode.known(.attitude)
     var maxSpeed = 3.0
     var maxClimbRate = 5.0
     var maxManualSpeed = 5.0

@@ -22,10 +22,10 @@ import UIKit
 import SVProgressHUD
 
 class ReplayViewController: UITableViewController {
-    var replayFiles: [NSURL]?
+    var replayFiles: [URL]?
     var detailedRow = -1
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         detailedRow = -1
@@ -34,11 +34,11 @@ class ReplayViewController: UITableViewController {
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return "Flight Sessions"
         } else {
@@ -46,7 +46,7 @@ class ReplayViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return "Tap any flight session to replay it."
         } else {
@@ -54,16 +54,14 @@ class ReplayViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (section) {
         case 0:
-            let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             do {
-                guard let urls: [NSURL]? = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsURL, includingPropertiesForKeys: [kCFURLNameKey as String], options: NSDirectoryEnumerationOptions.SkipsHiddenFiles) else {
-                    return 0
-                }
-                replayFiles = urls!
-                return urls!.count
+                let urls = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [URLResourceKey(rawValue: kCFURLNameKey as String as String)], options: FileManager.DirectoryEnumerationOptions.skipsHiddenFiles)
+                replayFiles = urls
+                return urls.count
             } catch {
                 return 0
             }
@@ -72,16 +70,16 @@ class ReplayViewController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == detailedRow {
             return 94
         } else {
-            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+            return super.tableView(tableView, heightForRowAt: indexPath)
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(indexPath.row == detailedRow ? "DetailedReplayCell" : "ReplayCell", forIndexPath: indexPath) as! DetailedReplayCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: indexPath.row == detailedRow ? "DetailedReplayCell" : "ReplayCell", for: indexPath) as! DetailedReplayCell
         
         cell.maxAltitudeLabel?.text = ""
         cell.maxSpeedLabel?.text = ""
@@ -95,14 +93,14 @@ class ReplayViewController: UITableViewController {
             if replayFiles != nil && replayFiles!.count > indexPath.row {
                 let fileUrl = replayFiles![indexPath.row]
                 do {
-                    try TryCatch.tryBlock({
+                    try TryCatch.try({
                         do {
-                            let attrs = try NSFileManager.defaultManager().attributesOfItemAtPath(fileUrl.path!)
-                            let date = attrs[NSFileCreationDate] as! NSDate
-                            let df = NSDateFormatter()
-                            df.dateStyle = .ShortStyle
-                            df.timeStyle = .ShortStyle
-                            title = df.stringFromDate(date)
+                            let attrs = try FileManager.default.attributesOfItem(atPath: fileUrl.path)
+                            let date = attrs[FileAttributeKey.creationDate] as! Date
+                            let df = DateFormatter()
+                            df.dateStyle = .short
+                            df.timeStyle = .short
+                            title = df.string(from: date)
                             
                             let (file, stats) = try FlightLogFile.openForReading(fileUrl)
                             file.closeFile()
@@ -117,18 +115,18 @@ class ReplayViewController: UITableViewController {
                                 }
                                 
                                 if stats!.armedDate.timeIntervalSinceReferenceDate > 0 {
-                                    title = df.stringFromDate(stats!.armedDate)
+                                    title = df.string(from: stats!.armedDate)
                                 }
                             }
                         } catch let error as NSError {
-                            NSLog("Cannot get attributes of %@: %@", fileUrl, error)
+                            NSLog("Cannot get attributes of %@: %@", fileUrl.absoluteString, error.localizedDescription)
                         }
                     })
                 } catch  {
                     // Objective-C exception
                 }
                 if title == nil {
-                    title = fileUrl.lastPathComponent ?? "?"
+                    title = fileUrl.lastPathComponent
                 }
                 cell.flyDate.text = title
                 cell.flyTime.text = detail
@@ -139,7 +137,7 @@ class ReplayViewController: UITableViewController {
         
         return cell
     }
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         resetAircraftModel()
         
         switch indexPath.section {
@@ -148,59 +146,59 @@ class ReplayViewController: UITableViewController {
                 let fileUrl = replayFiles![indexPath.row]
                 
                 do {
-                    try TryCatch.tryBlock({
+                    try TryCatch.try({
                         do {
                             let (file, _) = try FlightLogFile.openForReading(fileUrl)
                             _ = ReplayComm(datalog: file, msp: self.msp)
-                            (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                            (self.parent as! MainConnectionViewController).presentNextViewController()
                         } catch  {
                             // Swift error
-                            SVProgressHUD.showErrorWithStatus("Invalid flight session", maskType: .Black)
+                            SVProgressHUD.showError(withStatus: "Invalid flight session", maskType: .black)
                         }
                     })
                 } catch  {
                     // Objective-C exception
-                    SVProgressHUD.showErrorWithStatus("Invalid flight session", maskType: .Black)
+                    SVProgressHUD.showError(withStatus: "Invalid flight session", maskType: .black)
                 }
             }
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            tableView.deselectRow(at: indexPath, animated: false)
             
         default:
             break
         }
     }
     
-    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        var indexPaths = [NSIndexPath]()
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        var indexPaths = [IndexPath]()
         if detailedRow != -1 {
-            indexPaths.append(NSIndexPath(forRow: detailedRow, inSection: 0))
+            indexPaths.append(IndexPath(row: detailedRow, section: 0))
         }
         if detailedRow == indexPath.row {
             detailedRow = -1
         } else {
             detailedRow = indexPath.row
-            indexPaths.append(NSIndexPath(forRow: detailedRow, inSection: 0))
+            indexPaths.append(IndexPath(row: detailedRow, section: 0))
         }
-        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
+        tableView.reloadRows(at: indexPaths, with: UITableViewRowAnimation.fade)
     }
 
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             if replayFiles != nil && indexPath.row < replayFiles!.count {
                 let fileUrl = replayFiles![indexPath.row]
                 do {
-                    try NSFileManager.defaultManager().removeItemAtURL(fileUrl)
+                    try FileManager.default.removeItem(at: fileUrl)
                     // Delete the row from the data source
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
                     if detailedRow == indexPath.row {
                         detailedRow = -1
                     } else if detailedRow > indexPath.row {
                         detailedRow -= 1
-                        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: detailedRow, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Middle)
+                        tableView.reloadRows(at: [IndexPath(row: detailedRow, section: 0)], with: UITableViewRowAnimation.middle)
                     }
                 } catch let error as NSError {
-                    NSLog("Cannot delete %@: %@", fileUrl, error)
-                    SVProgressHUD.showErrorWithStatus("Cannot delete file")
+                    NSLog("Cannot delete %@: %@", fileUrl.absoluteString, error)
+                    SVProgressHUD.showError(withStatus: "Cannot delete file")
                 }
             }
             

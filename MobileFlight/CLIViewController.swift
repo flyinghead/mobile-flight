@@ -45,45 +45,45 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         textView.text = "#"
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
         appDelegate.stopTimer()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CLIViewController.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CLIViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CLIViewController.keyboardDidShow(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CLIViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(200) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(200) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
             self.msp.cliViewController = self
             self.msp.addOutputMessage(Array(("#").utf8))
         })
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         msp.cliViewController = nil
 
         appDelegate.startTimer()
     }
 
-    func keyboardDidShow(notification: NSNotification?) {
+    func keyboardDidShow(_ notification: Notification?) {
         let info = notification?.userInfo
-        let kbSize = info![UIKeyboardFrameEndUserInfoKey]?.CGRectValue.size
-        bottomLayoutConstraint.constant = bottomMargin + kbSize!.height
+        let kbSize = (info![UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue.size
+        bottomLayoutConstraint.constant = bottomMargin + kbSize.height
     }
     
-    func keyboardWillHide(notification: NSNotification?) {
+    func keyboardWillHide(_ notification: Notification?) {
         bottomLayoutConstraint.constant = bottomMargin
     }
     
-    private func sendCommand(text: String) {
+    fileprivate func sendCommand(_ text: String) {
         msp.addOutputMessage(Array((text + "\n").utf8))
     }
     
-    @IBAction func sendAction(sender: AnyObject) {
+    @IBAction func sendAction(_ sender: Any) {
         if historyIndex != -1 {
             // History has been used. The current command (possibly empty) has been stored in the history.
             // It must be deleted and replaced by the actual command sent.
@@ -92,7 +92,7 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         }
         let command = commandField.text!
         commandHistory.append(command)
-        let trimmedCommand = command.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let trimmedCommand = command.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if trimmedCommand == "exit" || trimmedCommand == "save" || trimmedCommand == "defaults" {
             exitWithCommand(trimmedCommand)
         } else {
@@ -101,42 +101,42 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
         commandField.text = ""
     }
     
-    @IBAction func exitAction(sender: AnyObject) {
+    @IBAction func exitAction(_ sender: Any) {
         exitWithCommand("exit")
     }
     
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         exitWithCommand("save")
     }
     
-    private func exitWithCommand(command: String) {
-        SVProgressHUD.showWithStatus("Rebooting")
+    fileprivate func exitWithCommand(_ command: String) {
+        SVProgressHUD.show(withStatus: "Rebooting")
         sendCommand(command)
         // Wait 1500 ms
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1500) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(1500) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
             SVProgressHUD.dismiss()
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.popViewController(animated: true)
         })
     }
     
-    func receive(data: [UInt8]) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let string = NSString(bytes: data, length: data.count, encoding: NSASCIIStringEncoding) as! String
+    func receive(_ data: [UInt8]) {
+        DispatchQueue.main.async(execute: {
+            let string = NSString(bytes: data, length: data.count, encoding: String.Encoding.ascii.rawValue)! as String
             let textView = self.textView
-            textView.text.appendContentsOf(string)
-            textView.layoutIfNeeded()
-            let contentSize = textView.contentSize
+            textView?.text.append(string)
+            textView?.layoutIfNeeded()
+            let contentSize = textView?.contentSize
             //textView.scrollRangeToVisible(NSRange(location: textView.text.characters.count - 2, length: 1))
-            let rect = CGRect(origin: CGPoint(x: 0, y: contentSize.height - textView.frame.height), size: textView.frame.size)
-            textView.scrollRectToVisible(rect, animated: true)
+            let rect = CGRect(origin: CGPoint(x: 0, y: (contentSize?.height)! - (textView?.frame.height)!), size: (textView?.frame.size)!)
+            textView?.scrollRectToVisible(rect, animated: true)
         })
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendAction(textField)
         return false
     }
-    @IBAction func historyUpAction(sender: AnyObject) {
+    @IBAction func historyUpAction(_ sender: Any) {
         if historyIndex == -1 {
             commandHistory.append(commandField.text!)
             historyIndex = commandHistory.count - 1
@@ -146,7 +146,7 @@ class CLIViewController: UIViewController, UITextFieldDelegate {
             commandField.text! = commandHistory[historyIndex]
         }
     }
-    @IBAction func historyDownAction(sender: AnyObject) {
+    @IBAction func historyDownAction(_ sender: Any) {
         if historyIndex != -1 && historyIndex < commandHistory.count - 1 {
             historyIndex += 1
             commandField.text! = commandHistory[historyIndex]

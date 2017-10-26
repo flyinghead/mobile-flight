@@ -27,28 +27,28 @@ class WaypointViewController: UIViewController {
 
     var waypointList: MKWaypointList! {
         didSet {
-            waypointList?.indexChangedEvent.addHandler(self, handler: WaypointViewController.indexChanged)
+            _ = waypointList?.indexChangedEvent.addHandler(self, handler: WaypointViewController.indexChanged)
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         indexChanged(waypointList.index)
     }
     
-    func indexChanged(data: Int) {
+    func indexChanged(_ data: Int) {
         title = String(format: "Waypoint #%d", data + 1)
-        previousButton?.enabled = data > 0
-        nextButton?.enabled = data + 1 < waypointList.count || (data + 1 < INavConfig.theINavConfig.maxWaypoints && data + 1 == waypointList.count && !waypointList.last!.returnToHome)
-        deleteButton.enabled = data < waypointList.count && !waypointList.waypointAt(data).returnToHome
+        previousButton?.isEnabled = data > 0
+        nextButton?.isEnabled = data + 1 < waypointList.count || (data + 1 < INavConfig.theINavConfig.maxWaypoints && data + 1 == waypointList.count && !waypointList.last!.returnToHome)
+        deleteButton.isEnabled = data < waypointList.count && !waypointList.waypointAt(data).returnToHome
     }
     
-    @IBAction func closeAction(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func closeAction(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func deleteAction(sender: AnyObject) {
+    @IBAction func deleteAction(_ sender: Any) {
         if waypointList.index < 0 || waypointList.index >= waypointList.count {
             return
         }
@@ -65,18 +65,18 @@ class WaypointViewController: UIViewController {
         }
     }
     
-    @IBAction func nextAction(sender: AnyObject) {
+    @IBAction func nextAction(_ sender: Any) {
         waypointList.index += 1
     }
     
-    @IBAction func previousAction(sender: AnyObject) {
+    @IBAction func previousAction(_ sender: Any) {
         waypointList.index -= 1
     }
 
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let pageViewController = segue.destinationViewController as? WaypointPageViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let pageViewController = segue.destination as? WaypointPageViewController {
             pageViewController.waypointList = waypointList
         }
     }

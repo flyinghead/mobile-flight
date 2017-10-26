@@ -36,30 +36,30 @@ class ConfigChildViewController: StaticDataTableViewController, UITextFieldDeleg
         hideSectionsWithHiddenRows = true
     }
     
-    func setReference(viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
+    func setReference(_ viewController: ConfigurationViewController, newSettings: Settings, newMisc: Misc) {
         self.configViewController = viewController
         self.settings = newSettings
         self.misc = newMisc
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConfigChildViewController.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConfigChildViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ConfigChildViewController.keyboardDidShow(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ConfigChildViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardDidShow(notification: NSNotification?) {
+    func keyboardDidShow(_ notification: Notification?) {
         let info = notification?.userInfo
-        let kbSize = info![UIKeyboardFrameEndUserInfoKey]?.CGRectValue.size
-        let contentInsets = UIEdgeInsetsMake(0, 0, kbSize!.height, 0)
+        let kbSize = (info![UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue.size
+        let contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
         
         if savedContentInset == nil {
             savedContentInset = tableView.contentInset
@@ -77,14 +77,14 @@ class ConfigChildViewController: StaticDataTableViewController, UITextFieldDeleg
             return
         }
         var aRect = self.view.frame
-        aRect.size.height -= kbSize!.height
-        if !CGRectContainsPoint(aRect, activeField!.frame.origin) {
-            let scrollPoint = CGPointMake(0.0, activeField!.frame.origin.y - kbSize!.height)
+        aRect.size.height -= kbSize.height
+        if !aRect.contains(activeField!.frame.origin) {
+            let scrollPoint = CGPoint(x: 0.0, y: activeField!.frame.origin.y - kbSize.height)
             tableView.setContentOffset(scrollPoint, animated:true)
         }
     }
     
-    func keyboardWillHide(notification: NSNotification?) {
+    func keyboardWillHide(_ notification: Notification?) {
         if savedContentInset != nil {
             tableView.contentInset = savedContentInset!
         }
@@ -93,15 +93,15 @@ class ConfigChildViewController: StaticDataTableViewController, UITextFieldDeleg
         }
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         activeField = textField
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         activeField = nil
     }
 
-    func showCells(cells: [UITableViewCell], show: Bool) {
+    func showCells(_ cells: [UITableViewCell], show: Bool) {
         for c in cells {
             if let condCell = c as? ConditionalTableViewCell {
                 cell(condCell, setHidden: !show || !condCell.visible)

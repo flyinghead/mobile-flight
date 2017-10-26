@@ -28,8 +28,8 @@ class ElementCell : UITableViewCell {
     
     var element: OSDElementPosition!
     
-    @IBAction func switchChanged(sender: AnyObject) {
-        element.visible = elementSwitch.on
+    @IBAction func switchChanged(_ sender: Any) {
+        element.visible = elementSwitch.isOn
     }
 }
 
@@ -39,9 +39,9 @@ class FlightStatCell : ConditionalTableViewCell {
     
     var statIndex = 0
     
-    @IBAction func switchChanged(sender: AnyObject) {
-        if let stats = OSD.theOSD.displayedStats where statIndex < stats.count {
-            OSD.theOSD.displayedStats![statIndex] = statSwitch.on
+    @IBAction func switchChanged(_ sender: Any) {
+        if let stats = OSD.theOSD.displayedStats, statIndex < stats.count {
+            OSD.theOSD.displayedStats![statIndex] = statSwitch.isOn
         }
     }
 }
@@ -59,23 +59,23 @@ class TimerCell : UITableViewCell, UITextFieldDelegate {
     override func awakeFromNib() {
         super.awakeFromNib()
         timerTypePicker = MyDownPicker(textField: timerTypeField, withData: OSDTimerSources)
-        timerTypePicker.addTarget(self, action: #selector(TimerCell.timerTypeChanged(_:)), forControlEvents: .ValueChanged)
+        timerTypePicker.addTarget(self, action: #selector(TimerCell.timerTypeChanged(_:)), for: .valueChanged)
         precisionPicker = MyDownPicker(textField: precisionField, withData: [ "1 second", "1/100 second" ])
-        precisionPicker.addTarget(self, action: #selector(TimerCell.precisionChanged(_:)), forControlEvents: .ValueChanged)
+        precisionPicker.addTarget(self, action: #selector(TimerCell.precisionChanged(_:)), for: .valueChanged)
         alarmField.delegate = self
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         let osd = OSD.theOSD
         osd.timers![timerIndex].alarm = Int(alarmField.value)
     }
     
-    @objc func timerTypeChanged(sender: NSObject) {
+    @objc func timerTypeChanged(_ sender: NSObject) {
         let osd = OSD.theOSD
         osd.timers![timerIndex].source = timerTypePicker.selectedIndex
     }
     
-    @objc func precisionChanged(sender: NSObject) {
+    @objc func precisionChanged(_ sender: NSObject) {
         let osd = OSD.theOSD
         osd.timers![timerIndex].precision = precisionPicker.selectedIndex
     }
@@ -89,7 +89,7 @@ class RssiCell : UITableViewCell, UITextFieldDelegate {
         rssiField.delegate = self
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         OSD.theOSD.rssiAlarm = Int(round(rssiField.value))
     }
 }
@@ -102,7 +102,7 @@ class CapacityCell : UITableViewCell, UITextFieldDelegate {
         capacityField.delegate = self
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         OSD.theOSD.capacityAlarm = Int(round(capacityField.value))
     }
 }
@@ -115,7 +115,7 @@ class MinutesCell : UITableViewCell, UITextFieldDelegate {
         minutesField.delegate = self
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         OSD.theOSD.minutesAlarm = Int(round(minutesField.value))
     }
 }
@@ -129,7 +129,7 @@ class AltitudeCell : UITableViewCell, UITextFieldDelegate {
         altitudeField.delegate = self
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         OSD.theOSD.altitudeAlarm = Int(round(altitudeField.value))
     }
 }
@@ -137,45 +137,45 @@ class AltitudeCell : UITableViewCell, UITextFieldDelegate {
 class VideoFormatCell : UITableViewCell {
     @IBOutlet weak var videoFormatField: UITextField!
     
-    private var videoFormatPicker: MyDownPicker!
+    fileprivate var videoFormatPicker: MyDownPicker!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         videoFormatPicker = MyDownPicker(textField: videoFormatField!, withData: VideoMode.descriptions)
-        videoFormatPicker.addTarget(self, action: #selector(VideoFormatCell.videoFormatChanged(_:)), forControlEvents: .ValueChanged)
+        videoFormatPicker.addTarget(self, action: #selector(VideoFormatCell.videoFormatChanged(_:)), for: .valueChanged)
     }
     
-    @objc func videoFormatChanged(sender: NSObject) {
+    @objc func videoFormatChanged(_ sender: NSObject) {
         OSD.theOSD.videoMode = VideoMode(rawValue: videoFormatPicker.selectedIndex)!
     }
 }
 
 class UnitsCell : UITableViewCell {
     @IBOutlet weak var unitsField: UITextField!
-    private var unitsPicker: MyDownPicker!
+    fileprivate var unitsPicker: MyDownPicker!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         unitsPicker = MyDownPicker(textField: unitsField!, withData: UnitMode.descriptions)
-        unitsPicker.addTarget(self, action: #selector(UnitsCell.unitsChanged(_:)), forControlEvents: .ValueChanged)
+        unitsPicker.addTarget(self, action: #selector(UnitsCell.unitsChanged(_:)), for: .valueChanged)
     }
     
-    @objc func unitsChanged(sender: NSObject) {
+    @objc func unitsChanged(_ sender: NSObject) {
         OSD.theOSD.unitMode = UnitMode(rawValue: unitsPicker.selectedIndex)!
     }
 }
 
 class FontCell : UITableViewCell {
     @IBOutlet weak var fontField: UITextField!
-    private var fontPicker: MyDownPicker!
+    fileprivate var fontPicker: MyDownPicker!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         fontPicker = MyDownPicker(textField: fontField!, withData: FONTS)
-        fontPicker.addTarget(self, action: #selector(FontCell.fontChanged(_:)), forControlEvents: .ValueChanged)
+        fontPicker.addTarget(self, action: #selector(FontCell.fontChanged(_:)), for: .valueChanged)
     }
     
-    @objc func fontChanged(sender: NSObject) {
+    @objc func fontChanged(_ sender: NSObject) {
         OSD.theOSD.loadFont(FONTS[fontPicker.selectedIndex])
     }
 }
@@ -190,7 +190,7 @@ class OSDSettingsViewController: UITableViewController {
         tableView.estimatedRowHeight = 44.0
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         osdViewController.refreshUI()
@@ -202,11 +202,11 @@ class OSDSettingsViewController: UITableViewController {
     
     // MARK: - Table view data source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return hasFlightStatsAndTimers ? 5 : 3
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var fixedSection = section
         if !hasFlightStatsAndTimers && fixedSection > 0 {
             fixedSection += 2
@@ -228,7 +228,7 @@ class OSDSettingsViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var fixedSection = section
         if !hasFlightStatsAndTimers && fixedSection > 0 {
             fixedSection += 2
@@ -249,7 +249,7 @@ class OSDSettingsViewController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let osd = OSD.theOSD
         
         var section = indexPath.section
@@ -258,26 +258,26 @@ class OSDSettingsViewController: UITableViewController {
         }
         switch section {
         case 0:     // elements
-            let cell = tableView.dequeueReusableCellWithIdentifier("elementCell", forIndexPath: indexPath) as! ElementCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "elementCell", for: indexPath) as! ElementCell
             let position = osd.elements[indexPath.row]
             cell.element = position
             cell.elementLabel.text = position.element.description
-            cell.elementSwitch.on = position.visible
+            cell.elementSwitch.isOn = position.visible
             return cell
         
         case 1:     // Flight Stats
-            let cell = tableView.dequeueReusableCellWithIdentifier("flightStatCell", forIndexPath: indexPath) as! FlightStatCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "flightStatCell", for: indexPath) as! FlightStatCell
             cell.statIndex = indexPath.row
             if let stat = FlightStats(rawValue: indexPath.row) {
                 cell.statLabel.text = stat.label
             } else {
                 cell.statLabel.text = String(format: "Stat %d", indexPath.row)
             }
-            cell.statSwitch.on = osd.displayedStats![indexPath.row]
+            cell.statSwitch.isOn = osd.displayedStats![indexPath.row]
             return cell
             
         case 2:     // Timers
-            let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "timerCell", for: indexPath) as! TimerCell
             cell.timerIndex = indexPath.row
             cell.TimerLabel.text = String(format: "Timer %d", indexPath.row + 1)
             let timer = osd.timers![indexPath.row]
@@ -293,48 +293,48 @@ class OSDSettingsViewController: UITableViewController {
             }
             switch row {
             case 0:
-                let cell = tableView.dequeueReusableCellWithIdentifier("rssiCell", forIndexPath: indexPath) as! RssiCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "rssiCell", for: indexPath) as! RssiCell
                 cell.rssiField.value = Double(osd.rssiAlarm)
                 return cell
             case 1:
-                let cell = tableView.dequeueReusableCellWithIdentifier("capacityCell", forIndexPath: indexPath) as! CapacityCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "capacityCell", for: indexPath) as! CapacityCell
                 cell.capacityField.value = Double(osd.capacityAlarm)
                 return cell
             case 2:
-                let cell = tableView.dequeueReusableCellWithIdentifier("minutesCell", forIndexPath: indexPath) as! MinutesCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "minutesCell", for: indexPath) as! MinutesCell
                 cell.minutesField.value = Double(osd.minutesAlarm)
                 return cell
                 
             default:
-                let cell = tableView.dequeueReusableCellWithIdentifier("altitudeCell", forIndexPath: indexPath) as! AltitudeCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "altitudeCell", for: indexPath) as! AltitudeCell
                 cell.altitudeField.value = Double(osd.altitudeAlarm)
-                cell.altitudeLabel.text = "Altitude (" + (osd.unitMode == .Imperial ? "ft" : "m") + ")"
+                cell.altitudeLabel.text = "Altitude (" + (osd.unitMode == .imperial ? "ft" : "m") + ")"
                 return cell
             }
         default:     // Others
             switch indexPath.row {
             case 0:
-                let cell = tableView.dequeueReusableCellWithIdentifier("videoFormatCell", forIndexPath: indexPath) as! VideoFormatCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "videoFormatCell", for: indexPath) as! VideoFormatCell
                 cell.videoFormatPicker.selectedIndex = osd.videoMode.rawValue
                 return cell
             case 1:
-                let cell = tableView.dequeueReusableCellWithIdentifier("unitsCell", forIndexPath: indexPath) as! UnitsCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "unitsCell", for: indexPath) as! UnitsCell
                 cell.unitsPicker.selectedIndex = osd.unitMode.rawValue
                 return cell
             case 2:
-                let cell = tableView.dequeueReusableCellWithIdentifier("fontCell", forIndexPath: indexPath) as! FontCell
-                cell.fontPicker.selectedIndex = FONTS.indexOf(osd.fontName) ?? -1
+                let cell = tableView.dequeueReusableCell(withIdentifier: "fontCell", for: indexPath) as! FontCell
+                cell.fontPicker.selectedIndex = FONTS.index(of: osd.fontName) ?? -1
                 return cell
             default:
-                return tableView.dequeueReusableCellWithIdentifier("uploadFontCell", forIndexPath: indexPath)
+                return tableView.dequeueReusableCell(withIdentifier: "uploadFontCell", for: indexPath)
             }
         }
     }
 
     // MARK:
     
-    @IBAction func uploadFontAction(sender: AnyObject) {
-        if let fontCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2)) as? FontCell {
+    @IBAction func uploadFontAction(_ sender: Any) {
+        if let fontCell = tableView.cellForRow(at: IndexPath(row: 2, section: 2)) as? FontCell {
             Analytics.logEvent("osd_font_upload", parameters: [ "font" : fontCell.fontPicker.selectedIndex ])
 
             let osd = OSD.theOSD
@@ -343,31 +343,31 @@ class OSDSettingsViewController: UITableViewController {
             SVProgressHUD.showProgress(0, status: status)
             osd.loadFont(FONTS[fontCell.fontPicker.selectedIndex])
             osd.fontDefinition.writeToOsd(msp, progressCallback: { progress in
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     SVProgressHUD.showProgress(progress, status: status)
                 }
             }) { success in
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     if success {
-                        SVProgressHUD.showWithStatus("Rebooting...")
-                        self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2) { success in
+                        SVProgressHUD.show(withStatus: "Rebooting...")
+                        self.msp.sendMessage(.msp_SET_REBOOT, data: nil, retry: 2) { success in
                             if success {
                                 // Wait 4 sec
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(4000) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
                                     SVProgressHUD.dismiss()
                                     self.appDelegate.startTimer()
                                 })
                             } else {
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     Analytics.logEvent("osd_font_upload_failed", parameters: nil)
-                                    SVProgressHUD.showErrorWithStatus("Reboot failed")
+                                    SVProgressHUD.showError(withStatus: "Reboot failed")
                                     self.appDelegate.startTimer()
                                 }
                             }
                         }
                     } else {
                         Analytics.logEvent("osd_font_upload_failed", parameters: nil)
-                        SVProgressHUD.showErrorWithStatus("Upload failed")
+                        SVProgressHUD.showError(withStatus: "Upload failed")
                         self.appDelegate.startTimer()
                     }
                 }

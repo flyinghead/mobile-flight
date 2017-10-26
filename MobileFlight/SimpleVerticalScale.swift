@@ -29,20 +29,20 @@ class SimpleVerticalScale: BaseVerticalScale, NeedsOrigin {
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
         
-        CGContextClipToRect(ctx, bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
+        ctx.clip(to: bounds.insetBy(dx: layer.borderWidth, dy: layer.borderWidth))
         
         let topValue = (origin - Double(bounds.minY)) / scale
         drawVerticalScale(ctx, top: topValue)
         drawNeedle(ctx, topValue: topValue)
     }
 
-    func drawNeedle(ctx: CGContext, topValue: Double) {
+    func drawNeedle(_ ctx: CGContext, topValue: Double) {
         let font = UIFont(name: "Verdana", size: self.fontSize)!
-        let textAttributes: [String : AnyObject] = [ NSFontAttributeName : font ]
-        let fontSize = ("0" as NSString).sizeWithAttributes(textAttributes)
+        let textAttributes: [String : Any] = [ NSFontAttributeName : font ]
+        let fontSize = ("0" as NSString).size(attributes: textAttributes)
         
         let markerHeight = fontSize.height / 1.5
         
@@ -67,18 +67,18 @@ class SimpleVerticalScale: BaseVerticalScale, NeedsOrigin {
         let left = right - markerWidth
         
         if !rightAligned {
-            CGContextMoveToPoint(ctx, right, top)
-            CGContextAddLineToPoint(ctx, right - markerWidth + 4, top + markerHeight / 2)
-            CGContextAddLineToPoint(ctx, right, top + markerHeight)
+            ctx.move(to: CGPoint(x: right, y: top))
+            ctx.addLine(to: CGPoint(x: right - markerWidth + 4, y: top + markerHeight / 2))
+            ctx.addLine(to: CGPoint(x: right, y: top + markerHeight))
         }
         if rightAligned {
-            CGContextMoveToPoint(ctx, left, top)
-            CGContextAddLineToPoint(ctx, left + markerWidth - 4, top + markerHeight / 2)
-            CGContextAddLineToPoint(ctx, left, top + markerHeight)
+            ctx.move(to: CGPoint(x: left, y: top))
+            ctx.addLine(to: CGPoint(x: left + markerWidth - 4, y: top + markerHeight / 2))
+            ctx.addLine(to: CGPoint(x: left, y: top + markerHeight))
         }
-        CGContextClosePath(ctx)
+        ctx.closePath()
         
-        CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
-        CGContextDrawPath(ctx, .FillStroke)
+        ctx.setFillColor(UIColor.white.cgColor)
+        ctx.drawPath(using: .fillStroke)
     }
 }

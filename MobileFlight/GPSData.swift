@@ -21,7 +21,7 @@
 import Foundation
 import MapKit
 
-struct GpsSatQuality : OptionSetType, DictionaryCoding {
+struct GpsSatQuality : OptionSet, DictionaryCoding {
     let rawValue: Int
     
     static let none = GpsSatQuality(rawValue: 0)
@@ -129,7 +129,7 @@ class GPSData : AutoCoded {
                 if position.latitude != 0 && position.longitude != 0 {
                     lastKnownGoodLatitude = position.latitude
                     lastKnownGoodLongitude = position.longitude
-                    lastKnownGoodTimestamp = NSDate()
+                    lastKnownGoodTimestamp = Date()
                     
                     positions.append(position.toCLLocationCoordinate2D())
                 }
@@ -162,7 +162,7 @@ class GPSData : AutoCoded {
                 if lastAltitudeTime != nil {
                     variometer = Double(value - altitude) / -lastAltitudeTime!.timeIntervalSinceNow
                 }
-                lastAltitudeTime = NSDate()
+                lastAltitudeTime = Date()
             }
         }
     }
@@ -195,16 +195,16 @@ class GPSData : AutoCoded {
     var lastKnownGoodLatitude = 0.0
     var lastKnownGoodLongitude = 0.0
     var lastKnownGoodAltitude = 0
-    var lastKnownGoodTimestamp: NSDate?
+    var lastKnownGoodTimestamp: Date?
     var maxDistanceToHome = 0
     var maxAltitude = 0
     var variometer = 0.0
-    var lastAltitudeTime: NSDate?
+    var lastAltitudeTime: Date?
     var maxSpeed = 0.0
     var positions = [CLLocationCoordinate2D]()
     
     // MSP_GPSSVINFO
-    private var _satellites = [Satellite]()
+    fileprivate var _satellites = [Satellite]()
     
     var satellites: [Satellite] {
         get {
@@ -223,37 +223,37 @@ class GPSData : AutoCoded {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        if let satellitesDicts = aDecoder.decodeObjectForKey("satellites") as? [NSDictionary] {
+        if let satellitesDicts = aDecoder.decodeObject(forKey: "satellites") as? [NSDictionary] {
             _satellites = [Satellite]()
             for dict in satellitesDicts {
                 _satellites.append(Satellite(fromDict: dict)!)
             }
         }
-        if let positionDict = aDecoder.decodeObjectForKey("position") as? NSDictionary {
+        if let positionDict = aDecoder.decodeObject(forKey: "position") as? NSDictionary {
             position = GPSLocation(fromDict: positionDict)!
         }
-        if let positionDict = aDecoder.decodeObjectForKey("homePosition") as? NSDictionary {
+        if let positionDict = aDecoder.decodeObject(forKey: "homePosition") as? NSDictionary {
             homePosition = GPSLocation(fromDict: positionDict)!
         }
-        if let positionDict = aDecoder.decodeObjectForKey("posHoldPosition") as? NSDictionary {
+        if let positionDict = aDecoder.decodeObject(forKey: "posHoldPosition") as? NSDictionary {
             posHoldPosition = GPSLocation(fromDict: positionDict)!
         }
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
         
         var satellitesDicts = [NSDictionary]()
         for satellite in _satellites {
             satellitesDicts.append(satellite.toDict())
         }
-        aCoder.encodeObject(satellitesDicts, forKey: "satellites")
-        aCoder.encodeObject(position.toDict(), forKey: "position")
+        aCoder.encode(satellitesDicts, forKey: "satellites")
+        aCoder.encode(position.toDict(), forKey: "position")
         if homePosition != nil {
-            aCoder.encodeObject(homePosition!.toDict(), forKey: "homePosition")
+            aCoder.encode(homePosition!.toDict(), forKey: "homePosition")
         }
         if posHoldPosition != nil {
-            aCoder.encodeObject(posHoldPosition!.toDict(), forKey: "posHoldPosition")
+            aCoder.encode(posHoldPosition!.toDict(), forKey: "posHoldPosition")
         }
     }
 }

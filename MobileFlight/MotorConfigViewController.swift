@@ -19,6 +19,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
+
 
 class MotorConfigViewController: ConfigChildViewController {
     @IBOutlet weak var inavEnablePWMSwitch: UISwitch!
@@ -52,38 +76,38 @@ class MotorConfigViewController: ConfigChildViewController {
         var escProtocols = [ "PWM", "OneShot125" ]
         let config = Configuration.theConfig
         if (config.isBetaflight && config.isApiVersionAtLeast("1.31")) || (!config.isINav && !config.isBetaflight && config.isApiVersionAtLeast("1.35")) {
-            escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600", "DShot1200" ])
+            escProtocols.append(contentsOf: [ "OneShot42", "MultiShot", "Brushed", "DShot150",  "DShot300", "DShot600", "DShot1200" ])
         } else if config.isINav {
-            escProtocols.appendContentsOf([ "OneShot42", "MultiShot", "Brushed" ])
-            UnsyncedMotorSwitch.on = true
-            UnsyncedMotorSwitch.enabled = false
+            escProtocols.append(contentsOf: [ "OneShot42", "MultiShot", "Brushed" ])
+            UnsyncedMotorSwitch.isOn = true
+            UnsyncedMotorSwitch.isEnabled = false
         }
         if config.isApiVersionAtLeast("1.36") && !config.isINav {
             escProtocols.append("ProShot1000")
         }
         escProtocolPicker = MyDownPicker(textField: escProtocolField, withData: escProtocols)
-        escProtocolPicker!.addTarget(self, action: #selector(escProtocolChanged(_:)), forControlEvents: .ValueChanged)
+        escProtocolPicker!.addTarget(self, action: #selector(escProtocolChanged(_:)), for: .valueChanged)
         
         showCells(conditionalCells, show: true)
     }
 
-    private func viewHideCells() {
+    fileprivate func viewHideCells() {
         if escProtocolPicker?.selectedIndex >= 5 {      // DShot
             cells(analogCells, setHidden: true)
             cell(idleThrotleCell, setHidden: false)
         } else {
             var cellsToShow = Set(analogCells)
-            if !UnsyncedMotorSwitch.on {
+            if !UnsyncedMotorSwitch.isOn {
                 cellsToShow.remove(motorPwmFreqCell)
                 cell(motorPwmFreqCell, setHidden: true)
             }
             showCells(Array(cellsToShow), show: true)
             cell(idleThrotleCell, setHidden: true)
         }
-        cell(disarmDelayCell, setHidden: !stopMotorSwitch.on)
+        cell(disarmDelayCell, setHidden: !stopMotorSwitch.isOn)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         let config = Configuration.theConfig
@@ -97,7 +121,7 @@ class MotorConfigViewController: ConfigChildViewController {
             }
         }
         if config.isINav {
-            if inavEnablePWMSwitch.on {
+            if inavEnablePWMSwitch.isOn {
                 settings.features.insert(.PwmOutputEnable)
             } else {
                 settings.features.remove(.PwmOutputEnable)
@@ -112,12 +136,12 @@ class MotorConfigViewController: ConfigChildViewController {
         settings!.minThrottle = Int(minimumThrottleField.value)
         settings!.maxThrottle = Int(maximumThrottleFIeld.value)
         
-        settings!.disarmKillSwitch = disarmMotorsSwitch.on
+        settings!.disarmKillSwitch = disarmMotorsSwitch.isOn
         
         configViewController?.refreshUI()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let config = Configuration.theConfig
@@ -127,53 +151,53 @@ class MotorConfigViewController: ConfigChildViewController {
             escProtocolPicker?.selectedIndex = settings!.features.contains(.OneShot125) ? 1 : 0
         }
         if !config.isINav {
-            UnsyncedMotorSwitch.on = settings!.useUnsyncedPwm
+            UnsyncedMotorSwitch.isOn = settings!.useUnsyncedPwm
         } else {
-            inavEnablePWMSwitch.on = settings.features.contains(.PwmOutputEnable)
+            inavEnablePWMSwitch.isOn = settings.features.contains(.PwmOutputEnable)
             servoPwmFreqField.value = Double(settings.servoPwmRate)
         }
         motorPwmFreqField.value = Double(settings.motorPwmRate)
         idleThrotleField.value = settings!.digitalIdleOffsetPercent
         
-        minimumCommandField.value = Double(settings!.minCommand ?? 0)
-        minimumThrottleField.value = Double(settings!.minThrottle ?? 0)
-        maximumThrottleFIeld.value = Double(settings!.maxThrottle ?? 0)
+        minimumCommandField.value = Double(settings!.minCommand)
+        minimumThrottleField.value = Double(settings!.minThrottle)
+        maximumThrottleFIeld.value = Double(settings!.maxThrottle)
 
-        stopMotorSwitch.on = settings!.features.contains(BaseFlightFeature.MotorStop) ?? false
-        disarmDelayStepper.value = Double(settings!.autoDisarmDelay ?? 5)
+        stopMotorSwitch.isOn = settings!.features.contains(BaseFlightFeature.MotorStop)
+        disarmDelayStepper.value = Double(settings!.autoDisarmDelay)
         disarmDelayStep(disarmDelayStepper)
         
-        disarmMotorsSwitch.on = settings!.disarmKillSwitch
+        disarmMotorsSwitch.isOn = settings!.disarmKillSwitch
         
         viewHideCells()
         
-        reloadDataAnimated(false)
+        reloadData(animated: false)
     }
     
-    @IBAction func unsyncedMotorSwitchChanged(sender: AnyObject) {
+    @IBAction func unsyncedMotorSwitchChanged(_ sender: Any) {
         settings!.useUnsyncedPwm = !settings!.useUnsyncedPwm
         viewHideCells()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
 
-    @IBAction func disarmDelayStep(sender: AnyObject) {
+    @IBAction func disarmDelayStep(_ sender: Any) {
         settings!.autoDisarmDelay = Int(disarmDelayStepper.value)
-        disarmDelayLabel.text = String(format: "Disarm motors after %d seconds", settings!.autoDisarmDelay ?? 5)
+        disarmDelayLabel.text = String(format: "Disarm motors after %d seconds", settings!.autoDisarmDelay)
     }
 
-    @IBAction func escProtocolChanged(sender: AnyObject) {
+    @IBAction func escProtocolChanged(_ sender: Any) {
         viewHideCells()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
 
-    @IBAction func motorStopSwitchChanged(sender: AnyObject) {
-        if (stopMotorSwitch.on) {
+    @IBAction func motorStopSwitchChanged(_ sender: Any) {
+        if (stopMotorSwitch.isOn) {
             settings!.features.insert(BaseFlightFeature.MotorStop)
         } else {
             settings!.features.remove(BaseFlightFeature.MotorStop)
         }
         viewHideCells()
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
 
 }

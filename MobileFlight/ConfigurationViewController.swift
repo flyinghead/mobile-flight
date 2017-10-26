@@ -83,7 +83,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         super.viewDidLoad()
         
         mixerTypePicker = MyDownPicker(textField: mixerTypeTextField, withData: MultiTypes.label)
-        mixerTypePicker!.addTarget(self, action: #selector(ConfigurationViewController.mixerTypeChanged(_:)), forControlEvents: .ValueChanged)
+        mixerTypePicker!.addTarget(self, action: #selector(ConfigurationViewController.mixerTypeChanged(_:)), for: .valueChanged)
         
         loopTimeField.changeCallback = { value in
             if value == 0 {
@@ -99,7 +99,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
 
         gyroUpdateFreqPicker = MyDownPicker(textField: gyroUpdateFreqField, withData: [ "8 kHz", "4 kHz", "2.67 kHz", "2 kHz", "1.6 kHz", "1.33 kHz", "1.14 kHz", "1 kHz" ])
-        gyroUpdateFreqPicker!.addTarget(self, action: #selector(ConfigurationViewController.enable32kHzChanged(_:)), forControlEvents: .ValueChanged)
+        gyroUpdateFreqPicker!.addTarget(self, action: #selector(ConfigurationViewController.enable32kHzChanged(_:)), for: .valueChanged)
         pidLoopFreqPicker = MyDownPicker(textField: pidLoopFreqField, withData: [ "2 kHz", "1 kHz", "0.67 kHz", "0.5 kHz", "0.4 kHz", "0.33 kHz", "0.29 kHz", "0.25 kHz" ])
 
         if Configuration.theConfig.isINav {
@@ -112,7 +112,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !childVisible {
@@ -122,9 +122,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
 
-    private func enableUserInteraction(enable: Bool) {
-        self.tableView.userInteractionEnabled = enable
-        self.navigationItem.rightBarButtonItem!.enabled = enable
+    fileprivate func enableUserInteraction(_ enable: Bool) {
+        self.tableView.isUserInteractionEnabled = enable
+        self.navigationItem.rightBarButtonItem!.isEnabled = enable
     }
     
     func fetchInformation() {
@@ -135,29 +135,29 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         if SVProgressHUD.isVisible() {
             SVProgressHUD.setStatus("Fetching information")
         }
-        var mspCalls: [MSP_code] = [.MSP_MIXER_CONFIG, .MSP_FEATURE, .MSP_RX_CONFIG, .MSP_BOARD_ALIGNMENT, .MSP_CURRENT_METER_CONFIG, .MSP_ARMING_CONFIG, .MSP_CF_SERIAL_CONFIG, .MSP_VOLTAGE_METER_CONFIG]
+        var mspCalls: [MSP_code] = [.msp_MIXER_CONFIG, .msp_FEATURE, .msp_RX_CONFIG, .msp_BOARD_ALIGNMENT, .msp_CURRENT_METER_CONFIG, .msp_ARMING_CONFIG, .msp_CF_SERIAL_CONFIG, .msp_VOLTAGE_METER_CONFIG]
         
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.35") && !config.isINav {    // CF 2.0 / BF 3.2
-            mspCalls.append(.MSP_MOTOR_CONFIG)
-            mspCalls.append(.MSP_BATTERY_CONFIG)
+            mspCalls.append(.msp_MOTOR_CONFIG)
+            mspCalls.append(.msp_BATTERY_CONFIG)
             if config.isApiVersionAtLeast("1.36") {    // CF 2.1 / BF 3.2
-                mspCalls.append(.MSP_BEEPER_CONFIG)
+                mspCalls.append(.msp_BEEPER_CONFIG)
             }
         } else {
-            mspCalls.append(.MSP_MISC)
-            mspCalls.append(.MSP_LOOP_TIME)
+            mspCalls.append(.msp_MISC)
+            mspCalls.append(.msp_LOOP_TIME)
         }
         if isBetaflightOrCleanflight2 {    // BF 3.1 / CF 2
-            mspCalls.append(.MSP_NAME)
+            mspCalls.append(.msp_NAME)
         }
         
         chainMspCalls(msp, calls: mspCalls) { success in
             if success {
                 if config.isApiVersionAtLeast("1.35") && !config.isINav {    // CF 2.0
-                    self.msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
+                    self.msp.sendMessage(.msp_GPS_CONFIG, data: nil, retry: 2) { success in
                         self.supportsGPS = success
-                        self.msp.sendMessage(.MSP_COMPASS_CONFIG, data: nil, retry: 2) { success in
+                        self.msp.sendMessage(.msp_COMPASS_CONFIG, data: nil, retry: 2) { success in
                             self.supportsMagnetometer = success
                             self.fetchFailsafeConfig()
                         }
@@ -172,9 +172,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
         
     func fetchFailsafeConfig() {
-        var mspCalls: [MSP_code] = [.MSP_FAILSAFE_CONFIG]
+        var mspCalls: [MSP_code] = [.msp_FAILSAFE_CONFIG]
         if !Configuration.theConfig.isINav {
-            mspCalls.append(.MSP_RXFAIL_CONFIG)
+            mspCalls.append(.msp_RXFAIL_CONFIG)
         }
         chainMspCalls(msp, calls: mspCalls) { success in
             if success {
@@ -185,11 +185,11 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func fetchBetaflightConfig() {
+    fileprivate func fetchBetaflightConfig() {
         if !isBetaflightOrCleanflight2 && !isINav {
             fetchInformationSucceeded()
         } else {
-            chainMspCalls(msp, calls: [.MSP_ADVANCED_CONFIG, .MSP_SENSOR_CONFIG]) { success in
+            chainMspCalls(msp, calls: [.msp_ADVANCED_CONFIG, .msp_SENSOR_CONFIG]) { success in
                 if success {
                     // SUCCESS
                     self.fetchInformationSucceeded()
@@ -200,10 +200,10 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func fetchInformationFailed() {
-        dispatch_async(dispatch_get_main_queue(), {
+    fileprivate func fetchInformationFailed() {
+        DispatchQueue.main.async(execute: {
             self.appDelegate.startTimer()
-            self.tableView.userInteractionEnabled = true
+            self.tableView.isUserInteractionEnabled = true
             self.showError("Communication error")
             
             // To avoid crashing when displaying child views
@@ -212,8 +212,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         })
     }
     
-    private func fetchInformationSucceeded() {
-        dispatch_async(dispatch_get_main_queue(), {
+    fileprivate func fetchInformationSucceeded() {
+        DispatchQueue.main.async(execute: {
             self.appDelegate.startTimer()
             self.enableUserInteraction(true)
             SVProgressHUD.dismiss()
@@ -224,82 +224,82 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         })
     }
     
-    private func showError(message: String) {
-        SVProgressHUD.showErrorWithStatus(message)
+    fileprivate func showError(_ message: String) {
+        SVProgressHUD.showError(withStatus: message)
     }
 
     func refreshUI() {
         refreshUI(false)
     }
     
-    private func refreshUI(fullRefresh: Bool) {
+    fileprivate func refreshUI(_ fullRefresh: Bool) {
         if fullRefresh {
-            mixerTypePicker?.selectedIndex = (newSettings!.mixerConfiguration ?? 1) - 1
+            mixerTypePicker?.selectedIndex = newSettings!.mixerConfiguration - 1
             mixerTypeChanged(self)
-            motorsReversedSwitch.on = newSettings!.yawMotorsReversed
+            motorsReversedSwitch.isOn = newSettings!.yawMotorsReversed
             
             boardPitchField.value = Double(isINav ? newSettings!.boardAlignPitch / 10 : newSettings!.boardAlignPitch)
             boardRollField.value = Double(isINav ? newSettings!.boardAlignRoll / 10 : newSettings!.boardAlignRoll)
             boardYawField.value = Double(isINav ? newSettings!.boardAlignYaw / 10 : newSettings!.boardAlignYaw)
 
-            rssiSwitch.on = newSettings!.features.contains(BaseFlightFeature.RssiAdc)
-            inFlightCalSwitch.on = newSettings!.features.contains(BaseFlightFeature.InflightCal)
-            servoGimbalSwitch.on = newSettings!.features.contains(BaseFlightFeature.ServoTilt)
-            softSerialSwitch.on = newSettings!.features.contains(BaseFlightFeature.SoftSerial)
-            sonarSwitch.on = newSettings!.features.contains(BaseFlightFeature.Sonar)
-            telemetrySwitch.on = newSettings!.features.contains(BaseFlightFeature.Telemetry)
-            threeDModeSwitch.on = newSettings!.features.contains(BaseFlightFeature.ThreeD)
-            ledStripSwitch.on = newSettings!.features.contains(BaseFlightFeature.LedStrip)
-            displaySwitch.on = newSettings!.features.contains(BaseFlightFeature.Display)
-            blackboxSwitch.on = newSettings!.features.contains(BaseFlightFeature.Blackbox)
-            channelForwardingSwitch.on = newSettings!.features.contains(BaseFlightFeature.ChannelForwarding)
-            transponderSwitch.on = newSettings!.features.contains(BaseFlightFeature.Transponder)
+            rssiSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.RssiAdc)
+            inFlightCalSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.InflightCal)
+            servoGimbalSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.ServoTilt)
+            softSerialSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.SoftSerial)
+            sonarSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.Sonar)
+            telemetrySwitch.isOn = newSettings!.features.contains(BaseFlightFeature.Telemetry)
+            threeDModeSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.ThreeD)
+            ledStripSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.LedStrip)
+            displaySwitch.isOn = newSettings!.features.contains(BaseFlightFeature.Display)
+            blackboxSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.Blackbox)
+            channelForwardingSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.ChannelForwarding)
+            transponderSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.Transponder)
             
             loopTimeField.value = Double(newSettings!.loopTime)
             
             // Betaflight
-            enable32kHzSwitch.on = newSettings!.gyroUses32KHz
+            enable32kHzSwitch.isOn = newSettings!.gyroUses32KHz
             enable32kHzChanged(enable32kHzSwitch)
             gyroUpdateFreqPicker?.selectedIndex = newSettings!.gyroSyncDenom - 1
             enable32kHzChanged(enable32kHzSwitch)
             pidLoopFreqPicker?.selectedIndex = newSettings!.pidProcessDenom - 1
 
-            enableAccelerometer.on = !newSettings!.accelerometerDisabled
-            enableBarometer.on = !newSettings!.barometerDisabled
-            enableMagnetometer.on = !newSettings!.magnetometerDisabled
-            airModeSwitch.on = newSettings!.features.contains(BaseFlightFeature.AirMode)
+            enableAccelerometer.isOn = !newSettings!.accelerometerDisabled
+            enableBarometer.isOn = !newSettings!.barometerDisabled
+            enableMagnetometer.isOn = !newSettings!.magnetometerDisabled
+            airModeSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.AirMode)
             if isINav {
-                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
-                enablePitotSwitch.on = !newSettings!.pitotDisabled
-                enableSonarSwitch.on = !newSettings!.sonarDisabled
-                syncPidLoopWithGyro.on = newSettings!.syncLoopWithGyro
+                osdSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.OSD_INav)
+                enablePitotSwitch.isOn = !newSettings!.pitotDisabled
+                enableSonarSwitch.isOn = !newSettings!.sonarDisabled
+                syncPidLoopWithGyro.isOn = newSettings!.syncLoopWithGyro
             } else if Configuration.theConfig.apiVersion == "1.25" {
-                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD_CF1_14_2)
+                osdSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.OSD_CF1_14_2)
             } else {
-                osdSwitch.on = newSettings!.features.contains(BaseFlightFeature.OSD)
+                osdSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.OSD)
             }
 
-            vtxSwitch.on = newSettings!.features.contains(BaseFlightFeature.VTX)
-            escSensor.on = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
-            antiGravitySwitch.on = newSettings!.features.contains(.AntiGravity)
-            dynamicFilterSwitch.on = newSettings!.features.contains(.DynamicFilter)
+            vtxSwitch.isOn = newSettings!.features.contains(BaseFlightFeature.VTX)
+            escSensor.isOn = newSettings!.features.contains(BaseFlightFeature.ESCSensor)
+            antiGravitySwitch.isOn = newSettings!.features.contains(.AntiGravity)
+            dynamicFilterSwitch.isOn = newSettings!.features.contains(.DynamicFilter)
             craftNameField.text = newSettings!.craftName
         }
         
-        gpsField.text = (newSettings!.features.contains(BaseFlightFeature.GPS) ?? false) ? "On" : "Off"
+        gpsField.text = newSettings!.features.contains(BaseFlightFeature.GPS) ? "On" : "Off"
         vbatField.text = VBatConfigViewController.isVBatMonitoringEnabled(newSettings!) ? "On" : "Off"
         currentMeterField.text = CurrentConfigViewController.isCurrentMonitoringEnabled(newSettings!) ? "On" : "Off"
         failsafeField.text = FailsafeConfigViewController.isFailsafeEnabled(newSettings!) ? "On" : "Off"
         receiverTypeField.text = ReceiverConfigViewController.receiverConfigLabel(newSettings!)
     }
     
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         Analytics.logEvent("config_saved", parameters: nil)
         
         if mixerTypePicker!.selectedIndex >= 0 {
             newSettings!.mixerConfiguration = mixerTypePicker!.selectedIndex + 1
         }
-        newSettings!.yawMotorsReversed = motorsReversedSwitch.on
+        newSettings!.yawMotorsReversed = motorsReversedSwitch.isOn
 
         newSettings!.boardAlignPitch = Int(round(isINav ? boardPitchField.value * 10 : boardPitchField.value))
         newSettings!.boardAlignRoll = Int(round(isINav ? boardRollField.value * 10 : boardRollField.value))
@@ -321,9 +321,9 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         newSettings!.loopTime = Int(loopTimeField.value)
         
         // Betaflight, INav, CF 2
-        newSettings!.accelerometerDisabled = !enableAccelerometer.on
-        newSettings!.barometerDisabled = !enableBarometer.on
-        newSettings!.magnetometerDisabled = !enableMagnetometer.on
+        newSettings!.accelerometerDisabled = !enableAccelerometer.isOn
+        newSettings!.barometerDisabled = !enableBarometer.isOn
+        newSettings!.magnetometerDisabled = !enableMagnetometer.isOn
         saveFeatureSwitchValue(airModeSwitch, feature: .AirMode)
         saveFeatureSwitchValue(vtxSwitch, feature: .VTX)
         saveFeatureSwitchValue(escSensor, feature: .ESCSensor)
@@ -336,27 +336,27 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         let config = Configuration.theConfig
         
         if isBetaflightOrCleanflight2 {
-            newSettings!.gyroUses32KHz = enable32kHzSwitch.on
+            newSettings!.gyroUses32KHz = enable32kHzSwitch.isOn
             if config.apiVersion == "1.25" {
                 saveFeatureSwitchValue(osdSwitch, feature: .OSD_CF1_14_2)
             } else {
                 saveFeatureSwitchValue(osdSwitch, feature: .OSD)
             }
         } else if isINav {
-            newSettings!.pitotDisabled = !enablePitotSwitch.on
-            newSettings!.sonarDisabled = !enableSonarSwitch.on
+            newSettings!.pitotDisabled = !enablePitotSwitch.isOn
+            newSettings!.sonarDisabled = !enableSonarSwitch.isOn
             saveFeatureSwitchValue(osdSwitch, feature: .OSD_INav)
-            newSettings!.syncLoopWithGyro = syncPidLoopWithGyro.on
+            newSettings!.syncLoopWithGyro = syncPidLoopWithGyro.isOn
         }
         var craftName = craftNameField.text!
         if craftName.characters.count > 16 {
-            let index = craftName.startIndex.advancedBy(16)
-            craftName = craftName.substringToIndex(index)
+            let index = craftName.characters.index(craftName.startIndex, offsetBy: 16)
+            craftName = craftName.substring(to: index)
             craftNameField.text = craftName
         }
         newSettings!.craftName = craftName
         
-        SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
+        SVProgressHUD.show(withStatus: "Saving settings", maskType: .black)
         enableUserInteraction(false)
 
         appDelegate.stopTimer()
@@ -410,7 +410,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
 
-    private func saveMiscOrEquivalent() {
+    fileprivate func saveMiscOrEquivalent() {
         var commands: [SendCommand]
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.35") && !config.isINav {
@@ -457,7 +457,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func saveNewFailsafeSettings() {
+    fileprivate func saveNewFailsafeSettings() {
         let commands: [SendCommand] = [
             { callback in
                 self.msp.sendRxConfig(self.newSettings!, callback: callback)
@@ -475,7 +475,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
 
-    private func saveINavFeatures() {
+    fileprivate func saveINavFeatures() {
         if isINav {
             saveBetaflightFeatures()
         } else {
@@ -489,7 +489,7 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func saveBetaflightFeatures() {
+    fileprivate func saveBetaflightFeatures() {
         if isBetaflightOrCleanflight2 || isINav {
             let commands: [SendCommand] = [
                 { callback in
@@ -511,22 +511,22 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func writeToEepromAndReboot() {
+    fileprivate func writeToEepromAndReboot() {
         let commands: [SendCommand] = [
             { callback in
-                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
+                self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: callback)
             },
             { callback in
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     SVProgressHUD.setStatus("Rebooting")
                 })
-                self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: callback)
+                self.msp.sendMessage(.msp_SET_REBOOT, data: nil, retry: 2, callback: callback)
             },
         ]
         chainMspSend(commands) { success in
             if success {
                 // Wait 4 sec
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(4000) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
                     // Refetch information from FC
                     self.fetchInformation()
                 })
@@ -536,8 +536,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         }
     }
     
-    private func saveConfigFailed() {
-        dispatch_async(dispatch_get_main_queue(), {
+    fileprivate func saveConfigFailed() {
+        DispatchQueue.main.async(execute: {
             Analytics.logEvent("config_saved_failed", parameters: nil)
             self.appDelegate.startTimer()
             self.showError("Save failed")
@@ -545,8 +545,8 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         })
     }
     
-    private func saveFeatureSwitchValue(uiSwitch: UISwitch, feature: BaseFlightFeature) {
-        if uiSwitch.on {
+    fileprivate func saveFeatureSwitchValue(_ uiSwitch: UISwitch, feature: BaseFlightFeature) {
+        if uiSwitch.isOn {
             newSettings!.features.insert(feature)
         } else {
             newSettings!.features.remove(feature)
@@ -554,12 +554,12 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
     }
     
     @objc
-    private func mixerTypeChanged(sender: AnyObject) {
+    fileprivate func mixerTypeChanged(_ sender: Any) {
         mixerTypeView.image = MultiTypes.getImage(mixerTypePicker!.selectedIndex + 1)
     }
     
-    @IBAction func enable32kHzChanged(sender: AnyObject) {
-        newSettings!.gyroUses32KHz = enable32kHzSwitch.on
+    @IBAction func enable32kHzChanged(_ sender: Any) {
+        newSettings!.gyroUses32KHz = enable32kHzSwitch.isOn
         let maxFreq = isINav ? 1.0 : newSettings!.gyroUses32KHz ? 32.0 : 8.0
         var gyroFreqs = [String]()
         let currentFreq = maxFreq / Double(gyroUpdateFreqPicker!.selectedIndex + 1)
@@ -578,18 +578,18 @@ class ConfigurationViewController: StaticDataTableViewController, UITextFieldDel
         pidLoopFreqPicker!.selectedIndex = pidIndex
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        super.prepareForSegue(segue, sender: sender)
-        (segue.destinationViewController as! ConfigChildViewController).setReference(self, newSettings: newSettings!, newMisc: newMisc!)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        (segue.destination as! ConfigChildViewController).setReference(self, newSettings: newSettings!, newMisc: newMisc!)
         childVisible = true
     }
     
-    private var isBetaflightOrCleanflight2: Bool {
+    fileprivate var isBetaflightOrCleanflight2: Bool {
         let config = Configuration.theConfig
         return config.isApiVersionAtLeast("1.31") && !config.isINav;
     }
     
-    private var isINav: Bool {
+    fileprivate var isINav: Bool {
         return Configuration.theConfig.isINav
     }
 }

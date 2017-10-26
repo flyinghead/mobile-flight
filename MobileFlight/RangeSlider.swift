@@ -68,7 +68,7 @@ class RangeSlider: UIControl {
     }
 
     @IBInspectable
-    var thumbTintColor: UIColor = UIColor.whiteColor() {
+    var thumbTintColor: UIColor = UIColor.white {
         didSet {
             lowerThumbLayer.setNeedsDisplay()
             upperThumbLayer.setNeedsDisplay()
@@ -113,19 +113,19 @@ class RangeSlider: UIControl {
         super.init(frame: frame)
 
         trackLayer.rangeSlider = self
-        trackLayer.contentsScale = UIScreen.mainScreen().scale
+        trackLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(trackLayer)
 
         referenceThumbLayer.rangeSlider = self
-        referenceThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        referenceThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(referenceThumbLayer)
         
         lowerThumbLayer.rangeSlider = self
-        lowerThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        lowerThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(lowerThumbLayer)
 
         upperThumbLayer.rangeSlider = self
-        upperThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        upperThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(upperThumbLayer)
     }
 
@@ -133,19 +133,19 @@ class RangeSlider: UIControl {
         super.init(coder: coder)
 
         trackLayer.rangeSlider = self
-        trackLayer.contentsScale = UIScreen.mainScreen().scale
+        trackLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(trackLayer)
         
         referenceThumbLayer.rangeSlider = self
-        referenceThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        referenceThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(referenceThumbLayer)
         
         lowerThumbLayer.rangeSlider = self
-        lowerThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        lowerThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(lowerThumbLayer)
         
         upperThumbLayer.rangeSlider = self
-        upperThumbLayer.contentsScale = UIScreen.mainScreen().scale
+        upperThumbLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(upperThumbLayer)
     }
 
@@ -173,14 +173,14 @@ class RangeSlider: UIControl {
         CATransaction.commit()
     }
 
-    func positionForValue(value: Double) -> CGFloat {
+    func positionForValue(_ value: Double) -> CGFloat {
         return CGFloat(Double(bounds.width - thumbWidth) * (value - minimumValue) /
             (maximumValue - minimumValue) + Double(thumbWidth / 2.0))
     }
 
     // Touch handlers
-    override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        previousLocation = touch.locationInView(self)
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        previousLocation = touch.location(in: self)
 
         // Hit test the thumb layers
         if lowerThumbLayer.frame.contains(previousLocation) {
@@ -192,7 +192,7 @@ class RangeSlider: UIControl {
         return lowerThumbLayer.highlighted || upperThumbLayer.highlighted
     }
 
-    func boundValue(value: Double, toLowerValue lowerValue: Double, upperValue: Double) -> Double {
+    func boundValue(_ value: Double, toLowerValue lowerValue: Double, upperValue: Double) -> Double {
         var boundValue = min(max(value, lowerValue), upperValue)
         if interval != 0 && boundValue != maximumValue {
             let lowerMark = Double(Int64((boundValue - minimumValue) / interval)) * interval + minimumValue
@@ -205,8 +205,8 @@ class RangeSlider: UIControl {
         return boundValue
     }
 
-    override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        let location = touch.locationInView(self)
+    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        let location = touch.location(in: self)
 
         // 1. Determine by how much the user has dragged
         let deltaLocation = Double(location.x - previousLocation.x)
@@ -224,12 +224,12 @@ class RangeSlider: UIControl {
         } else {
             previousLocation = location
         }
-        sendActionsForControlEvents(.ValueChanged)
+        sendActions(for: .valueChanged)
 
         return true
     }
 
-    override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
+    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         lowerThumbLayer.highlighted = false
         upperThumbLayer.highlighted = false
     }

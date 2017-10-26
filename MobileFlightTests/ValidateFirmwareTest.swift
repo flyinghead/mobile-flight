@@ -34,15 +34,15 @@ class ValidateFirmwareTest: XCTestCase {
     }
     
     func testFirmware() {
-        let connectExpect = expectationWithDescription("Connection")
-        let mspExpect = expectationWithDescription("MSP-Tests")
+        let connectExpect = expectation(description: "Connection")
+        let mspExpect = expectation(description: "MSP-Tests")
         
-        let msp = (UIApplication.sharedApplication().delegate as! AppDelegate).msp
+        let msp = (UIApplication.shared.delegate as! AppDelegate).msp
         let comm = AsyncSocketComm(msp: msp, host: "localhost", port: 8666)
         comm.connect({ success in
             if success {
                 connectExpect.fulfill()
-                UIApplication.sharedApplication().delegate?.window!!.rootViewController!.initiateHandShake({ success in
+                UIApplication.shared.delegate?.window!!.rootViewController!.initiateHandShake({ success in
                     if success {
                         self.runMspTest(msp, expectation: mspExpect)
                     } else {
@@ -53,7 +53,7 @@ class ValidateFirmwareTest: XCTestCase {
                 XCTFail("TCP/IP connection failed")
             }
         })
-        waitForExpectationsWithTimeout(10) { error in
+        waitForExpectations(timeout: 10) { error in
             if let error = error {
                 XCTFail("waitForExpectationsWithTimeout errored: \(error)")
             }
@@ -61,7 +61,7 @@ class ValidateFirmwareTest: XCTestCase {
         comm.close()
     }
     
-    private func runMspTest(msp: MSPParser, expectation: XCTestExpectation) {
+    fileprivate func runMspTest(_ msp: MSPParser, expectation: XCTestExpectation) {
         let settings = Settings.theSettings
         let config = Configuration.theConfig
         let motorData = MotorData.theMotorData
@@ -78,7 +78,7 @@ class ValidateFirmwareTest: XCTestCase {
             { callback in
                 msp.sendRssiConfig(7) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_RSSI_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_RSSI_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.rssiChannel, 7)
                         callback(success)
@@ -90,9 +90,9 @@ class ValidateFirmwareTest: XCTestCase {
                     // betaflight 3.1.7 and earlier do not implement this msp call if compiled for quad only (micro scisky)
                     // All other versions compiled for quad only will fail this test (can't change the mixer type)
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_MIXER_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_MIXER_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
-                        XCTAssertEqual(settings.mixerConfiguration, 2)
+                        XCTAssertEqual(settings.mixerConfiguration, 3)
                         callback(success)
                     }
                 }
@@ -100,7 +100,7 @@ class ValidateFirmwareTest: XCTestCase {
             { callback in
                 msp.sendSetFeature(.Blackbox) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_FEATURE, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.features.rawValue, BaseFlightFeature.Blackbox.rawValue)
                         callback(success)
@@ -114,7 +114,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.boardAlignPitch = 33
                 msp.sendBoardAlignment(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_BOARD_ALIGNMENT, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_BOARD_ALIGNMENT, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.boardAlignYaw, tmp.boardAlignYaw)
                         XCTAssertEqual(settings.boardAlignPitch, tmp.boardAlignPitch)
@@ -126,18 +126,18 @@ class ValidateFirmwareTest: XCTestCase {
             { callback in
                 var data = [UInt8]()
                 
-                data.appendContentsOf(writeUInt16(1011))
-                data.appendContentsOf(writeUInt16(1022))
-                data.appendContentsOf(writeUInt16(1033))
-                data.appendContentsOf(writeUInt16(1044))
-                data.appendContentsOf(writeUInt16(1055))
-                data.appendContentsOf(writeUInt16(1066))
-                data.appendContentsOf(writeUInt16(1077))
-                data.appendContentsOf(writeUInt16(1099))
+                data.append(contentsOf: writeUInt16(1011))
+                data.append(contentsOf: writeUInt16(1022))
+                data.append(contentsOf: writeUInt16(1033))
+                data.append(contentsOf: writeUInt16(1044))
+                data.append(contentsOf: writeUInt16(1055))
+                data.append(contentsOf: writeUInt16(1066))
+                data.append(contentsOf: writeUInt16(1077))
+                data.append(contentsOf: writeUInt16(1099))
                 
-                msp.sendMessage(.MSP_SET_MOTOR, data: data, retry: 2) { success in
+                msp.sendMessage(.msp_SET_MOTOR, data: data, retry: 2) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_MOTOR, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_MOTOR, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(motorData.throttle[0], 1011)
                         XCTAssertEqual(motorData.throttle[1], 1022)
@@ -148,7 +148,7 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                msp.sendMessage(.MSP_UID, data: nil, retry: 2) { success in
+                msp.sendMessage(.msp_UID, data: nil, retry: 2) { success in
                     XCTAssert(success)
                     XCTAssertNotNil(config.uid)
                     callback(success)
@@ -164,7 +164,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.accelerometerTrimPitch = -1
                 msp.sendSetAccTrim(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_ACC_TRIM, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_ACC_TRIM, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(misc.accelerometerTrimRoll, 2)
                         XCTAssertEqual(misc.accelerometerTrimPitch, -1)
@@ -187,7 +187,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.tpaBreakpoint = 1502
                 msp.sendSetRcTuning(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_RC_TUNING, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_RC_TUNING, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         if !config.isINav {
                             XCTAssertEqual(settings.rcRate, tmp.rcRate)
@@ -213,7 +213,7 @@ class ValidateFirmwareTest: XCTestCase {
                     XCTAssert(success)
                     msp.sendSetModeRange(1, range: range2) { success in
                         XCTAssert(success)
-                        msp.sendMessage(.MSP_MODE_RANGES, data: nil, retry: 2) { success in
+                        msp.sendMessage(.msp_MODE_RANGES, data: nil, retry: 2) { success in
                             XCTAssert(success)
                             XCTAssertEqual(settings.modeRanges![0].id, range1.id)
                             XCTAssertEqual(settings.modeRanges![0].auxChannelId, range1.auxChannelId)
@@ -234,7 +234,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.autoDisarmDelay = 7
                 msp.sendSetArmingConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_ARMING_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_ARMING_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.disarmKillSwitch, tmp.disarmKillSwitch)
                         XCTAssertEqual(settings.autoDisarmDelay, tmp.autoDisarmDelay)
@@ -254,7 +254,7 @@ class ValidateFirmwareTest: XCTestCase {
                 rxmap.append(0)
                 msp.sendSetRxMap(rxmap) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_RX_MAP, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_RX_MAP, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         for i in 0 ..< rxmap.count {
                             XCTAssertEqual(receiver.map[i], Int(rxmap[i]))
@@ -265,7 +265,7 @@ class ValidateFirmwareTest: XCTestCase {
 
             },
             { callback in
-                msp.sendMessage(.MSP_PID, data: nil, retry: 2) { success in
+                msp.sendMessage(.msp_PID, data: nil, retry: 2) { success in
                     XCTAssert(success)
                     let tmp = Settings(copyOf: settings)
                     for i in 0 ..< tmp.pidValues!.count {
@@ -275,9 +275,12 @@ class ValidateFirmwareTest: XCTestCase {
                     }
                     msp.sendPid(tmp) { success in
                         XCTAssert(success)
-                        msp.sendMessage(.MSP_PID, data: nil, retry: 2) { success in
+                        msp.sendMessage(.msp_PID, data: nil, retry: 2) { success in
                             XCTAssert(success)
-                            XCTAssertEqual(settings.pidValues!, tmp.pidValues!)
+                            XCTAssertEqual(settings.pidValues!.count, tmp.pidValues!.count)
+                            for i in 0 ..< settings.pidValues!.count {
+                                XCTAssertEqual(settings.pidValues![i], tmp.pidValues![i])
+                            }
                             callback(success)
                         }
                     }
@@ -287,7 +290,7 @@ class ValidateFirmwareTest: XCTestCase {
                 // Note: only two profiles with BF 3.1.7 on NAZE
                 msp.sendSelectProfile(1) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_STATUS_EX, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_STATUS_EX, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(config.profile, 1)
                         callback(success)
@@ -295,13 +298,13 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.31") {
+                if !config.isApiVersionAtLeast("1.31") || config.isINav {
                     callback(true)
                     return
                 }
                 msp.sendSelectRateProfile(2) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_STATUS_EX, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_STATUS_EX, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(config.rateProfile, 2)
                         callback(success)
@@ -309,18 +312,18 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2) { success in
+                msp.sendMessage(.msp_CF_SERIAL_CONFIG, data: nil, retry: 2) { success in
                     XCTAssert(success)
                     let tmp = Settings(copyOf: settings)
                     tmp.portConfigs![1].functions = .TelemetrySmartPort
-                    tmp.portConfigs![1].telemetryBaudRate = .Baud38400
+                    tmp.portConfigs![1].telemetryBaudRate = .baud38400
                     if tmp.portConfigs!.count > 2 {
                         tmp.portConfigs![2].functions = .GPS
-                        tmp.portConfigs![2].gpsBaudRate = .Baud19200
+                        tmp.portConfigs![2].gpsBaudRate = .baud19200
                     }
                     msp.sendSerialConfig(tmp) { success in
                         XCTAssert(success)
-                        msp.sendMessage(.MSP_CF_SERIAL_CONFIG, data: nil, retry: 2) { success in
+                        msp.sendMessage(.msp_CF_SERIAL_CONFIG, data: nil, retry: 2) { success in
                             XCTAssert(success)
                             XCTAssertEqual(tmp.portConfigs![1].functions, tmp.portConfigs![1].functions)
                             XCTAssertEqual(tmp.portConfigs![1].telemetryBaudRate, tmp.portConfigs![1].telemetryBaudRate)
@@ -345,13 +348,13 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.rxMaxUsec = 2002
                 msp.sendRxConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_RX_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_RX_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.midRC, tmp.midRC)
                         XCTAssertEqual(settings.minCheck, tmp.minCheck)
                         XCTAssertEqual(settings.maxCheck, tmp.maxCheck)
                         XCTAssertEqual(settings.serialRxType, tmp.serialRxType)
-                        if config.isApiVersionAtLeast("1.31") {
+                        if config.isApiVersionAtLeast("1.31") && !config.isINav {
                             XCTAssertEqual(settings.rcInterpolation, tmp.rcInterpolation)
                             XCTAssertEqual(settings.rcInterpolationInterval, tmp.rcInterpolationInterval)
                         }
@@ -371,7 +374,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.failsafeProcedure = tmp.failsafeProcedure == 1 ? 0 : 1
                 msp.sendFailsafeConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_FAILSAFE_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_FAILSAFE_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.failsafeDelay, tmp.failsafeDelay)
                         XCTAssertEqual(settings.failsafeOffDelay, tmp.failsafeOffDelay)
@@ -386,13 +389,13 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.31") {
+                if !config.isApiVersionAtLeast("1.31") || config.isINav {
                     callback(true)
                     return
                 }
                 msp.sendCraftName("TESTME") { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_NAME, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_NAME, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.craftName, "TESTME")
                         callback(success)
@@ -402,10 +405,10 @@ class ValidateFirmwareTest: XCTestCase {
             { callback in
                 // INav: UAV needs to be armed and have a GPS fix and home pos to set GPS hold position. So we use a regular waypoint number
                 if config.isINav {
-                    let wp = Waypoint(number: 1, action: .Known(.Waypoint), position: GPSLocation(latitude: 3.14, longitude: 6.28), altitude: 10, param1: 1, param2: 2, param3: 3, last: true)
+                    let wp = Waypoint(number: 1, action: .known(.waypoint), position: GPSLocation(latitude: 3.14, longitude: 6.28), altitude: 10, param1: 1, param2: 2, param3: 3, last: true)
                     msp.sendINavWaypoint(wp) { success in
                         XCTAssert(success)
-                        msp.sendMessage(.MSP_WP, data: [ UInt8(1) ], retry: 2) { success in
+                        msp.sendMessage(.msp_WP, data: [ UInt8(1) ], retry: 2) { success in
                             XCTAssert(success)
                             XCTAssertEqual(inavState.waypoints[0].position.latitude, 3.14)
                             XCTAssertEqual(inavState.waypoints[0].position.longitude, 6.28)
@@ -423,7 +426,7 @@ class ValidateFirmwareTest: XCTestCase {
                             gpsSupported = false
                             callback(true)
                         } else {
-                            msp.sendMessage(.MSP_WP, data: [ UInt8(config.isINav ? 255 : 16) ], retry: 2) { success in
+                            msp.sendMessage(.msp_WP, data: [ UInt8(config.isINav ? 255 : 16) ], retry: 2) { success in
                                 XCTAssert(success)
                                 XCTAssertEqual(gpsData.posHoldPosition?.latitude, 3.14)
                                 XCTAssertEqual(gpsData.posHoldPosition?.longitude, 6.28)
@@ -454,7 +457,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.vbatWarningCellVoltage = 3.1
                 msp.sendSetMisc(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_MISC, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_MISC, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.midRC, tmp.midRC)
                         XCTAssertEqual(settings.minThrottle, tmp.minThrottle)
@@ -487,7 +490,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.loopTime = 1002
                 msp.sendLoopTime(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_LOOP_TIME, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_LOOP_TIME, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.loopTime, tmp.loopTime)
                         callback(success)
@@ -510,7 +513,7 @@ class ValidateFirmwareTest: XCTestCase {
                 tmp.hoverThrottle += 1
                 msp.sendNavPosHold(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_NAV_POSHOLD, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_NAV_POSHOLD, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(inavConfig.userControlMode.intValue, tmp.userControlMode.intValue)
                         XCTAssertEqual(inavConfig.maxSpeed, tmp.maxSpeed)
@@ -541,7 +544,7 @@ class ValidateFirmwareTest: XCTestCase {
 
                 msp.sendRthAndLandConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_RTH_AND_LAND_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_RTH_AND_LAND_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(inavConfig.rthAltitude, tmp.rthAltitude)
                         XCTAssertEqual(inavConfig.rthTailFirst, tmp.rthTailFirst)
@@ -572,7 +575,7 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendFwConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_FW_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_FW_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(inavConfig.fwCruiseThrottle, tmp.fwCruiseThrottle)
                         XCTAssertEqual(inavConfig.fwMinThrottle, tmp.fwMinThrottle)
@@ -587,7 +590,7 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2, callback: callback)
+                msp.sendMessage(.msp_VOLTAGE_METER_CONFIG, data: nil, retry: 2, callback: callback)
             },
             { callback in
                 let tmp = Settings(copyOf: settings)
@@ -602,14 +605,14 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendVoltageMeterConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_VOLTAGE_METER_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_VOLTAGE_METER_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.vbatScale, tmp.vbatScale)
-                        if !config.isApiVersionAtLeast("1.35") {
+                        if !config.isApiVersionAtLeast("1.35") || config.isINav {
                             XCTAssertEqual(settings.vbatMaxCellVoltage, tmp.vbatMaxCellVoltage)
                             XCTAssertEqual(settings.vbatMinCellVoltage, tmp.vbatMinCellVoltage)
                             XCTAssertEqual(settings.vbatWarningCellVoltage, tmp.vbatWarningCellVoltage)
-                            if config.isApiVersionAtLeast("1.31") {
+                            if config.isApiVersionAtLeast("1.31") && !config.isINav {
                                 XCTAssertEqual(settings.vbatMeterType, tmp.vbatMeterType)
                             }
                         } else {
@@ -621,7 +624,7 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.35") {
+                if !config.isApiVersionAtLeast("1.35") || config.isINav {
                     callback(true)
                     return
                 }
@@ -635,7 +638,7 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendBatteryConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_BATTERY_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_BATTERY_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.vbatMaxCellVoltage, tmp.vbatMaxCellVoltage)
                         XCTAssertEqual(settings.vbatMinCellVoltage, tmp.vbatMinCellVoltage)
@@ -656,7 +659,7 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendCurrentMeterConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_CURRENT_METER_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_CURRENT_METER_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.currentScale, tmp.currentScale)
                         XCTAssertEqual(settings.currentOffset, tmp.currentOffset)
@@ -669,8 +672,9 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.35") {
+                if !config.isApiVersionAtLeast("1.35") || config.isINav {
                     callback(true)
+                    return
                 }
                 let tmp = Settings(copyOf: settings)
                 tmp.minCommand = 1012
@@ -679,7 +683,7 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendMotorConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_MOTOR_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_MOTOR_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.minCommand, tmp.minCommand)
                         XCTAssertEqual(settings.minThrottle, tmp.minThrottle)
@@ -689,8 +693,9 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.35") {
+                if !config.isApiVersionAtLeast("1.35") || config.isINav {
                     callback(true)
+                    return
                 }
                 msp.sendCompassConfig(-0.9) { success in
                     if !success {
@@ -698,7 +703,7 @@ class ValidateFirmwareTest: XCTestCase {
                         compassSupported = false
                         callback(true)
                     } else {
-                        msp.sendMessage(.MSP_COMPASS_CONFIG, data: nil, retry: 2) { success in
+                        msp.sendMessage(.msp_COMPASS_CONFIG, data: nil, retry: 2) { success in
                             XCTAssert(success)
                             XCTAssertEqual(settings.magDeclination, -0.9)
                             callback(success)
@@ -707,8 +712,9 @@ class ValidateFirmwareTest: XCTestCase {
                 }
             },
             { callback in
-                if !config.isApiVersionAtLeast("1.35") || !gpsSupported {
+                if !config.isApiVersionAtLeast("1.35") || config.isINav || !gpsSupported {
                     callback(true)
+                    return
                 }
                 let tmp = Settings(copyOf: settings)
                 tmp.gpsType = 1 - tmp.gpsType
@@ -718,7 +724,7 @@ class ValidateFirmwareTest: XCTestCase {
                 
                 msp.sendGpsConfig(tmp) { success in
                     XCTAssert(success)
-                    msp.sendMessage(.MSP_GPS_CONFIG, data: nil, retry: 2) { success in
+                    msp.sendMessage(.msp_GPS_CONFIG, data: nil, retry: 2) { success in
                         XCTAssert(success)
                         XCTAssertEqual(settings.gpsType, tmp.gpsType)
                         XCTAssertEqual(settings.gpsUbxSbas, tmp.gpsUbxSbas)

@@ -34,32 +34,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var window: UIWindow?
     var msp = MSPParser()
     
-    private var statusTimer: NSTimer?
-    private var statusSwitch = false        // Used to alternate between RAW_GPS and COMP_GPS during each status timer callback since GPS info is only updated at 5 Hz
-    private var statusTimerInterval = 0.0
-    private let statusTimerMinInterval = 0.1
+    fileprivate var statusTimer: Timer?
+    fileprivate var statusSwitch = false        // Used to alternate between RAW_GPS and COMP_GPS during each status timer callback since GPS info is only updated at 5 Hz
+    fileprivate var statusTimerInterval = 0.0
+    fileprivate let statusTimerMinInterval = 0.1
 
-    private var lastDataReceived: NSDate?
-    private var noDataReceived = false
-    private var armed = false
-    private var _totalArmedTime = 0.0
-    private var _lastArmedTime = 0.0
-    private var lastArming: NSDate?
+    fileprivate var lastDataReceived: Date?
+    fileprivate var noDataReceived = false
+    fileprivate var armed = false
+    fileprivate var _totalArmedTime = 0.0
+    fileprivate var _lastArmedTime = 0.0
+    fileprivate var lastArming: Date?
     
-    private var stayAliveTimer: NSTimer!
+    fileprivate var stayAliveTimer: Timer!
     
-    private var rcCommands: [Int]?
+    fileprivate var rcCommands: [Int]?
     var rcCommandsProvider: RcCommandsProvider?
     
-    private var _locationManager: CLLocationManager?
-    private var lastFollowMeUpdate: NSDate?
-    private let followMeUpdatePeriod: NSTimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
-    private var currentLocationCallbacks = [LocationCallback]()
-    private var updatingLocation = false
+    fileprivate var _locationManager: CLLocationManager?
+    fileprivate var lastFollowMeUpdate: Date?
+    fileprivate let followMeUpdatePeriod: TimeInterval = 2.0      // 2s in ArduPilot MissionPlanner
+    fileprivate var currentLocationCallbacks = [LocationCallback]()
+    fileprivate var updatingLocation = false
     
-    private var mspCommandSenders = [MSPCommandSender]()
+    fileprivate var mspCommandSenders = [MSPCommandSender]()
     
-    private var logTimer: NSTimer?      // DEBUG
+    fileprivate var logTimer: Timer?      // DEBUG
     
     var active = false                  // True if the app is active or recording telemetry in the background
     var showBtRssi = false
@@ -67,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     var usageReportingEnabled = true
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         usageReportingEnabled = userDefaultEnabled(.UsageReporting)
         
         FirebaseApp.configure()
@@ -77,36 +77,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         Fabric.with([Crashlytics.self])
         
         let pageControl = UIPageControl.appearance()
-        pageControl.pageIndicatorTintColor = UIColor.lightGrayColor()
-        pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
-        pageControl.backgroundColor = UIColor.whiteColor()
+        pageControl.pageIndicatorTintColor = UIColor.lightGray
+        pageControl.currentPageIndicatorTintColor = UIColor.black
+        pageControl.backgroundColor = UIColor.white
         
         registerInitialUserDefaults()
         
-        msp.rssiEvent.addHandler(self, handler: AppDelegate.receivedRssiData)
-        msp.flightModeEvent.addHandler(self, handler: AppDelegate.checkArmedStatus)
-        msp.batteryEvent.addHandler(self, handler: AppDelegate.receivedBatteryData)
-        msp.gpsEvent.addHandler(self, handler: AppDelegate.receivedGpsData)
-        msp.communicationEvent.addHandler(self, handler: AppDelegate.communicationStatus)
-        msp.dataReceivedEvent.addHandler(self, handler: AppDelegate.dismissNoDataReceived)
-        msp.navigationEvent.addHandler(self, handler: AppDelegate.navigationEventReceived)
+        _ = msp.rssiEvent.addHandler(self, handler: AppDelegate.receivedRssiData)
+        _ = msp.flightModeEvent.addHandler(self, handler: AppDelegate.checkArmedStatus)
+        _ = msp.batteryEvent.addHandler(self, handler: AppDelegate.receivedBatteryData)
+        _ = msp.gpsEvent.addHandler(self, handler: AppDelegate.receivedGpsData)
+        _ = msp.communicationEvent.addHandler(self, handler: AppDelegate.communicationStatus)
+        _ = msp.dataReceivedEvent.addHandler(self, handler: AppDelegate.dismissNoDataReceived)
+        _ = msp.navigationEvent.addHandler(self, handler: AppDelegate.navigationEventReceived)
         
-        UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
+        UIApplication.shared.setMinimumBackgroundFetchInterval(0.2)   // 0.25 less the roundtrip time
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.userDefaultsDidChange(_:)), name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
 
         active = true
 
         return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Keep the timers active if armed so we can continue to record telemetry
         if !armed || msp.replaying || !userDefaultEnabled(.RecordFlightlog) {
             stopTimer()
@@ -121,7 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         startTimer()
         startLocationManagerIfNeeded()
@@ -135,10 +135,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             }
         }
         if logTimer == nil {
-            logTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(AppDelegate.logTimerDidFire(_:)), userInfo: nil, repeats: true)
+            logTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(AppDelegate.logTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
         if stayAliveTimer == nil {
-            stayAliveTimer = NSTimer.scheduledTimerWithTimeInterval(20, target: self, selector: #selector(AppDelegate.stayAliveTimer(_:)), userInfo: nil, repeats: true)
+            stayAliveTimer = Timer.scheduledTimer(timeInterval: 20, target: self, selector: #selector(AppDelegate.stayAliveTimer(_:)), userInfo: nil, repeats: true)
         }
     }
     
@@ -151,12 +151,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         stayAliveTimer?.invalidate()
         stayAliveTimer = nil
-        UIApplication.sharedApplication().idleTimerDisabled = false
+        UIApplication.shared.isIdleTimerDisabled = false
         
         lastDataReceived = nil
     }
     
-    func statusTimerDidFire(timer: NSTimer?) {
+    func statusTimerDidFire(_ timer: Timer?) {
         if rcCommandsProvider != nil {
             rcCommands = rcCommandsProvider!.rcCommands()
         }
@@ -164,22 +164,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             msp.sendRawRc(rcCommands!)
         }
 
-        msp.sendMessage(.MSP_STATUS_EX, data: nil, flush: false)
+        msp.sendMessage(.msp_STATUS_EX, data: nil, flush: false)
         statusSwitch = !statusSwitch
         if statusSwitch {
-            msp.sendMessage(.MSP_RAW_GPS, data: nil, flush: false)
+            msp.sendMessage(.msp_RAW_GPS, data: nil, flush: false)
         } else {
-            msp.sendMessage(.MSP_COMP_GPS, data: nil, flush: false)       // distance to home, direction to home
+            msp.sendMessage(.msp_COMP_GPS, data: nil, flush: false)       // distance to home, direction to home
         }
-        msp.sendMessage(.MSP_ALTITUDE, data: nil, flush: false)
-        msp.sendMessage(.MSP_ATTITUDE, data: nil, flush: false)
-        msp.sendMessage(.MSP_ANALOG, data: nil, flush: false)
+        msp.sendMessage(.msp_ALTITUDE, data: nil, flush: false)
+        msp.sendMessage(.msp_ATTITUDE, data: nil, flush: false)
+        msp.sendMessage(.msp_ANALOG, data: nil, flush: false)
         // WP #0 = home, WP #16 (or 255 for INav) = poshold
         let config = Configuration.theConfig
-        msp.sendMessage(.MSP_WP, data: [ statusSwitch ? 0 : config.isINav ? 255 : 16  ], flush: false)   // Altitude hold, mag hold
-        msp.sendMessage(.MSP_RC, data: nil)
+        msp.sendMessage(.msp_WP, data: [ statusSwitch ? 0 : config.isINav ? 255 : 16  ], flush: false)   // Altitude hold, mag hold
+        msp.sendMessage(.msp_RC, data: nil)
         if armed && config.isINav {
-            msp.sendMessage(.MSP_NAV_STATUS, data: nil)
+            msp.sendMessage(.msp_NAV_STATUS, data: nil)
         }
 
         for sender in mspCommandSenders {
@@ -192,16 +192,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             // Display warning if no data received for 0.75 sec (or last status interval if bigger)
             noDataReceived = true
             if !SVProgressHUD.isVisible() {
-                SVProgressHUD.showWithStatus("No data received")
+                SVProgressHUD.show(withStatus: "No data received")
             }
         }
         
         statusTimerInterval = constrain(msp.latency * 1.33, min: statusTimerMinInterval, max: 1)
-        statusTimer = NSTimer(timeInterval: statusTimerInterval, target: self, selector: #selector(AppDelegate.statusTimerDidFire(_:)), userInfo: nil, repeats: false)
-        NSRunLoop.mainRunLoop().addTimer(statusTimer!, forMode: NSRunLoopCommonModes)
+        statusTimer = Timer(timeInterval: statusTimerInterval, target: self, selector: #selector(AppDelegate.statusTimerDidFire(_:)), userInfo: nil, repeats: false)
+        RunLoop.main.add(statusTimer!, forMode: RunLoopMode.commonModes)
     }
 
-    func logTimerDidFire(sender: AnyObject) {
+    func logTimerDidFire(_ sender: Any) {
         let bytesPerSesond = msp.incomingBytesPerSecond
         NSLog("Bandwidth in: %.01f kbps (%.0f%%), latency %.0f ms, statusTimer %.0f ms", Double(bytesPerSesond) * 8.0 / 1000.0, Double(bytesPerSesond) * 10.0 * 100 / 115200, msp.latency * 1000, statusTimerInterval * 1000)
         
@@ -211,49 +211,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         active = false
         msp.closeCommChannel()
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
     }
 
-    func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+    func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         return true
     }
     
-    func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+    func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
         return true
     }
     
     // MARK: Event Handlers
     
-    private func dismissNoDataReceived() {
-        lastDataReceived = NSDate()
+    fileprivate func dismissNoDataReceived() {
+        lastDataReceived = Date()
         if noDataReceived {
             SVProgressHUD.dismiss()
             noDataReceived = false
         }
     }
     
-    private func receivedBatteryData() {
+    fileprivate func receivedBatteryData() {
         VoiceMessage.theVoice.checkAlarm(BatteryLowAlarm())
     }
     
-    private func receivedRssiData() {
+    fileprivate func receivedRssiData() {
         VoiceMessage.theVoice.checkAlarm(RSSILowAlarm())
     }
     
-    private func receivedGpsData() {
+    fileprivate func receivedGpsData() {
         VoiceMessage.theVoice.checkAlarm(GPSFixLostAlarm())
     }
     
-    private func communicationStatus(status: Bool) {
+    fileprivate func communicationStatus(_ status: Bool) {
         if !status {
             VoiceMessage.theVoice.stopAll()
             stopTimer()
@@ -278,7 +278,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if Settings.theSettings.armed && !armed {
             Analytics.logEvent("uav_armed", parameters: nil)
             armed = true
-            lastArming = NSDate()
+            lastArming = Date()
             if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.RecordFlightlog) {
                 startFlightlogRecording()
             }
@@ -295,7 +295,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func navigationEventReceived() {
         if Configuration.theConfig.isINav && userDefaultEnabled(.INavAlert) {
-            if let (navStatus, spoken, _) = INavState.theINavState.navStateDescription where navStatus != lastINavStatus {
+            if let (navStatus, spoken, _) = INavState.theINavState.navStateDescription, navStatus != lastINavStatus {
                 self.lastINavStatus = navStatus
                 VoiceMessage.theVoice.speak(spoken)
             }
@@ -319,17 +319,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func startFlightlogRecording() {
-        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
-        let fileURL = documentsURL.URLByAppendingPathComponent(String(format: "record-%f.rec", NSDate.timeIntervalSinceReferenceDate()))
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileURL = documentsURL.appendingPathComponent(String(format: "record-%f.rec", Date.timeIntervalSinceReferenceDate))
         
-        FlightLogFile.openForWriting(fileURL!, msp: msp)
+        FlightLogFile.openForWriting(fileURL, msp: msp)
     }
 
     func stopFlightlogRecording() {
         FlightLogFile.close(msp)
     }
 
-    func userDefaultsDidChange(sender: AnyObject) {
+    func userDefaultsDidChange(_ sender: Any) {
         // This will start or stop the flight log as needed if the user setting changed
         if msp.communicationEstablished && !msp.replaying && armed {
             if userDefaultEnabled(.RecordFlightlog) && msp.datalog == nil {
@@ -344,11 +344,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
 
-    func stayAliveTimer(timer: NSTimer) {
+    func stayAliveTimer(_ timer: Timer) {
         // If connected to a live aircraft, disable screen saver
-        UIApplication.sharedApplication().idleTimerDisabled = false
+        UIApplication.shared.isIdleTimerDisabled = false
         if msp.communicationEstablished && !msp.replaying && userDefaultEnabled(.DisableIdleTimer) {
-                UIApplication.sharedApplication().idleTimerDisabled = true
+                UIApplication.shared.isIdleTimerDisabled = true
         }
     }
     
@@ -365,13 +365,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
     
-    private func startLocationManagerIfNeeded() {
+    fileprivate func startLocationManagerIfNeeded() {
         if (followMeActive || !currentLocationCallbacks.isEmpty) && !msp.replaying {
             startLocationManager()
         }
     }
     
-    private var locationManager: CLLocationManager {
+    fileprivate var locationManager: CLLocationManager {
         if _locationManager == nil {
             _locationManager = CLLocationManager()
             _locationManager!.delegate = self
@@ -381,14 +381,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         return _locationManager!
     }
     
-    private func startLocationManager() {
+    fileprivate func startLocationManager() {
         if !updatingLocation {
             locationManager.startUpdatingLocation()
             updatingLocation = true
         }
     }
     
-    private func stopLocationManager() {
+    fileprivate func stopLocationManager() {
         if _locationManager != nil {
             _locationManager!.stopUpdatingLocation()
         }
@@ -397,10 +397,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     // MARK: CLLocationManagerDelegate
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             if followMeActive && (lastFollowMeUpdate == nil || -lastFollowMeUpdate!.timeIntervalSinceNow >= followMeUpdatePeriod) {
-                self.lastFollowMeUpdate = NSDate()
+                self.lastFollowMeUpdate = Date()
                 let longitude = location.coordinate.longitude
                 let latitude = location.coordinate.latitude
                 NSLog("Sending follow me location %.4f / %.4f", latitude, longitude)
@@ -422,23 +422,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        if error.domain == kCLErrorDomain && error.code == CLError.Denied.rawValue {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        let nserror = error as NSError
+        if nserror.domain == kCLErrorDomain && nserror.code == CLError.Code.denied.rawValue {
             stopLocationManager()
             currentLocationCallbacks.removeAll()
             followMeActive = false      // FIXME Should deselect and disable UI
         }
     }
-    
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             startLocationManagerIfNeeded()
         }
     }
     
     // MARK: UserLocationProvider
     
-    func currentLocation(callback: LocationCallback) {
+    func currentLocation(_ callback: @escaping LocationCallback) {
         if !msp.replaying {
             currentLocationCallbacks.append(callback)
             startLocationManager()
@@ -447,19 +448,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     // MARK:
     
-    func addMSPCommandSender(sender: MSPCommandSender) {
+    func addMSPCommandSender(_ sender: MSPCommandSender) {
         mspCommandSenders.append(sender)
     }
     
-    func removeMSPCommandSender(sender: MSPCommandSender) {
-        if let index = mspCommandSenders.indexOf({ $0 === sender }) {
-            mspCommandSenders.removeAtIndex(index)
+    func removeMSPCommandSender(_ sender: MSPCommandSender) {
+        if let index = mspCommandSenders.index(where: { $0 === sender }) {
+            mspCommandSenders.remove(at: index)
         }
     }
     
     // MARK: CrashlyticsDelegate
 
-    func crashlyticsDidDetectReportForLastExecution(report: CLSReport, completionHandler: (Bool) -> Void) {
+    func crashlyticsDidDetectReport(forLastExecution report: CLSReport, completionHandler: @escaping (Bool) -> Void) {
         completionHandler(userDefaultEnabled(.UsageReporting))
     }
 }
@@ -467,7 +468,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 extension UIViewController {
     var appDelegate: AppDelegate {
         get {
-            return UIApplication.sharedApplication().delegate as! AppDelegate
+            return UIApplication.shared.delegate as! AppDelegate
         }
     }
     var msp: MSPParser {
@@ -482,7 +483,7 @@ protocol RcCommandsProvider {
 }
 
 protocol UserLocationProvider : class {
-    func currentLocation(callback: LocationCallback)
+    func currentLocation(_ callback: @escaping LocationCallback)
 }
 
 protocol MSPCommandSender : class {

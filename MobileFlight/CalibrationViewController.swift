@@ -83,13 +83,13 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     @IBOutlet weak var vtxPowerPicker: StepperPicker!
     @IBOutlet weak var vtxPitModeSwitch: UISwitch!
     
-    var metarTimer: NSTimer?
+    var metarTimer: Timer?
     var reportIndex = 0
     
     let AccelerationCalibDuration = 2.0
     let MagnetometerCalibDuration = 30.0
     
-    var calibrationStart: NSDate?
+    var calibrationStart: Date?
     
     var flightModeEventHandler: Disposable?
     var sensorStatusEventHandler: Disposable?
@@ -103,16 +103,16 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         
         if config.isINav {
             cell(accTrimCell, setHidden: true)
-            reloadDataAnimated(false)
+            reloadData(animated: false)
         } else {
             cells(inavSensorCells, setHidden: true)
-            accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.CGColor
+            accTrimSaveButton.layer.borderColor = accTrimSaveButton.tintColor.cgColor
         
             accTrimPitchStepper.minimumValue = -100
             accTrimRollStepper.minimumValue = -100
         }
-        calAccView.layer.borderColor = calAccView.tintColor.CGColor
-        calMagView.layer.borderColor = calMagView.tintColor.CGColor
+        calAccView.layer.borderColor = calAccView.tintColor.cgColor
+        calMagView.layer.borderColor = calMagView.tintColor.cgColor
         enableAccCalibration(config.isAccelerometerActive())
         enableMagCalibration(config.isMagnetometerActive())
         
@@ -125,12 +125,12 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         vtxPowerPicker.labels = CalibrationViewController.VTXTrampPowers
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !Configuration.theConfig.isINav {
-            msp.sendMessage(.MSP_ACC_TRIM, data: nil, retry: 2) { success in
-                dispatch_async(dispatch_get_main_queue()) {
+            msp.sendMessage(.msp_ACC_TRIM, data: nil, retry: 2) { success in
+                DispatchQueue.main.async {
                     let misc = Misc.theMisc
                     self.accTrimPitchStepper.value = Double(misc.accelerometerTrimPitch)
                     self.accTrimPitchChanged(self.accTrimPitchStepper)
@@ -152,16 +152,16 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         MetarManager.instance.addObserver(self, selector: #selector(metarUpdated))
         metarUpdated()
         
-        metarTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(metarTimerFired), userInfo: nil, repeats: true)
+        metarTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(metarTimerFired), userInfo: nil, repeats: true)
         
         if VTXConfig.theVTXConfig.deviceType <= 0 {
             cells(vtxCells, setHidden: true)
-            reloadDataAnimated(false)
+            reloadData(animated: false)
         }
         fetchVtxConfig()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
       
         statusEventHandler?.dispose()
@@ -183,20 +183,20 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         self.enableMagCalibration(!armed && config.isMagnetometerActive())
     }
     
-    private func setINavSensorStatus(img: UIImageView, sensor: INavSensorStatus) {
+    fileprivate func setINavSensorStatus(_ img: UIImageView, sensor: INavSensorStatus) {
         let color: UIColor?
         switch sensor {
-        case .Known(let intern ):
+        case .known(let intern ):
             switch intern {
-            case .Healthy:
+            case .healthy:
                 color = CfGreen
-            case .Unhealthy, .Unavailable:
-                color = UIColor.redColor()
-            case .None:
-                color = UIColor.lightGrayColor()
+            case .unhealthy, .unavailable:
+                color = UIColor.red
+            case .none:
+                color = UIColor.lightGray
             }
-        case .Unknown:
-            color = UIColor.orangeColor()
+        case .unknown:
+            color = UIColor.orange
         }
         img.tintColor = color
     }
@@ -234,56 +234,56 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
                 }
             }
         } else {
-            sensorGyroImg.tintColor = config.isGyroActive() ? CfGreen : UIColor.lightGrayColor()
-            sensorAccImg.tintColor = config.isAccelerometerActive() ? CfGreen : UIColor.lightGrayColor()
-            sensorBaroImg.tintColor = config.isBarometerActive() ? CfGreen : UIColor.lightGrayColor()
-            sensorMagImg.tintColor = config.isMagnetometerActive() ? CfGreen : UIColor.lightGrayColor()
-            sensorGpsImg.tintColor = config.isGPSActive() ? CfGreen : UIColor.lightGrayColor()
-            sensorSonarImg.tintColor = config.isSonarActive() ? CfGreen : UIColor.lightGrayColor()
+            sensorGyroImg.tintColor = config.isGyroActive() ? CfGreen : UIColor.lightGray
+            sensorAccImg.tintColor = config.isAccelerometerActive() ? CfGreen : UIColor.lightGray
+            sensorBaroImg.tintColor = config.isBarometerActive() ? CfGreen : UIColor.lightGray
+            sensorMagImg.tintColor = config.isMagnetometerActive() ? CfGreen : UIColor.lightGray
+            sensorGpsImg.tintColor = config.isGPSActive() ? CfGreen : UIColor.lightGray
+            sensorSonarImg.tintColor = config.isSonarActive() ? CfGreen : UIColor.lightGray
         }
     }
 
     func sendMSPCommands() {
         let config = Configuration.theConfig
         if config.isINav {
-            msp.sendMessage(.MSP_SENSOR_STATUS, data: nil)
+            msp.sendMessage(.msp_SENSOR_STATUS, data: nil)
         }
     }
 
-    func enableAccCalibration(enabled: Bool) {
-        calAccButton.enabled = enabled
-        calAccImgButton.enabled = calAccButton.enabled
+    func enableAccCalibration(_ enabled: Bool) {
+        calAccButton.isEnabled = enabled
+        calAccImgButton.isEnabled = calAccButton.isEnabled
     }
 
-    func enableMagCalibration(enabled: Bool) {
-        calMagButton.enabled = enabled
-        calMagImgButton.enabled = calMagButton.enabled
+    func enableMagCalibration(_ enabled: Bool) {
+        calMagButton.isEnabled = enabled
+        calMagImgButton.isEnabled = calMagButton.isEnabled
     }
     
-    private func startTimer() {
+    fileprivate func startTimer() {
         appDelegate.startTimer()
     }
     
-    private func stopTimer() {
+    fileprivate func stopTimer() {
         appDelegate.stopTimer()
     }
     
-    @IBAction func calibrateAccelerometer(sender: AnyObject) {
-        let alertController = UIAlertController(title: "Accelerometer Calibration", message: "Place the aircraft on a flat leveled surface and do not move it", preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
+    @IBAction func calibrateAccelerometer(_ sender: Any) {
+        let alertController = UIAlertController(title: "Accelerometer Calibration", message: "Place the aircraft on a flat leveled surface and do not move it", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.default, handler: { alertController in
             self.stopTimer()
             Analytics.logEvent("calibrate_acc", parameters: nil)
 
             self.enableAccCalibration(false)
-            self.msp.sendMessage(.MSP_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
-                dispatch_async(dispatch_get_main_queue(), {
+            self.msp.sendMessage(.msp_ACC_CALIBRATION, data: nil, retry: 2, callback: { success in
+                DispatchQueue.main.async(execute: {
                     if success {
-                        self.calibrationStart = NSDate()
+                        self.calibrationStart = Date()
                         self.calibrateAccProgress(nil)   // To show the progressHUD
-                        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(CalibrationViewController.calibrateAccProgress(_:)), userInfo: nil, repeats: true)
+                        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(CalibrationViewController.calibrateAccProgress(_:)), userInfo: nil, repeats: true)
                     } else {
-                        SVProgressHUD.showErrorWithStatus("Cannot start calibration")
+                        SVProgressHUD.showError(withStatus: "Cannot start calibration")
                         self.enableAccCalibration(true)
                         self.startTimer()
                         
@@ -292,11 +292,11 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             })
         }))
         alertController.popoverPresentationController?.sourceView = sender as? UIView
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
 
     }
     
-    func calibrateAccProgress(timer: NSTimer?) {
+    func calibrateAccProgress(_ timer: Timer?) {
         let elapsed = -calibrationStart!.timeIntervalSinceNow
         if elapsed >= AccelerationCalibDuration {
             SVProgressHUD.dismiss()
@@ -305,26 +305,26 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             self.startTimer()
         }
         else {
-            SVProgressHUD.showProgress(Float(elapsed / AccelerationCalibDuration), status: "Calibrating Accelerometer", maskType: .Black)
+            SVProgressHUD.showProgress(Float(elapsed / AccelerationCalibDuration), status: "Calibrating Accelerometer", maskType: .black)
         }
     }
     
-    @IBAction func calibrateMagnetometer(sender: AnyObject) {
-        let alertController = UIAlertController(title: "Compass Calibration", message: "You have 30 seconds to rotate the aircraft around all axes: yaw, pitch and roll", preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.Default, handler: { alertController in
+    @IBAction func calibrateMagnetometer(_ sender: Any) {
+        let alertController = UIAlertController(title: "Compass Calibration", message: "You have 30 seconds to rotate the aircraft around all axes: yaw, pitch and roll", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Start", style: UIAlertActionStyle.default, handler: { alertController in
             self.stopTimer()
             Analytics.logEvent("calibrate_mag", parameters: nil)
             
             self.enableMagCalibration(false)
-            self.msp.sendMessage(.MSP_MAG_CALIBRATION, data: nil, retry: 2, callback: { success in
-                dispatch_async(dispatch_get_main_queue(), {
+            self.msp.sendMessage(.msp_MAG_CALIBRATION, data: nil, retry: 2, callback: { success in
+                DispatchQueue.main.async(execute: {
                     if success {
-                        self.calibrationStart = NSDate()
+                        self.calibrationStart = Date()
                         self.calibrateMagProgress(nil)   // To show the progressHUD
-                        NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(CalibrationViewController.calibrateMagProgress(_:)), userInfo: nil, repeats: true)
+                        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(CalibrationViewController.calibrateMagProgress(_:)), userInfo: nil, repeats: true)
                     } else {
-                        SVProgressHUD.showErrorWithStatus("Cannot start calibration")
+                        SVProgressHUD.showError(withStatus: "Cannot start calibration")
                         self.enableMagCalibration(true)
                         self.startTimer()
                         
@@ -333,10 +333,10 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             })
         }))
         alertController.popoverPresentationController?.sourceView = sender as? UIView
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
-    func calibrateMagProgress(timer: NSTimer?) {
+    func calibrateMagProgress(_ timer: Timer?) {
         let elapsed = -calibrationStart!.timeIntervalSinceNow
         if elapsed >= MagnetometerCalibDuration {
             SVProgressHUD.dismiss()
@@ -345,18 +345,18 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             self.startTimer()
         }
         else {
-            SVProgressHUD.showProgress(Float(elapsed / MagnetometerCalibDuration), status: "Calibrating Magnetometer", maskType: .Black)
+            SVProgressHUD.showProgress(Float(elapsed / MagnetometerCalibDuration), status: "Calibrating Magnetometer", maskType: .black)
         }
     }
-    @IBAction func accTrimPitchChanged(sender: AnyObject) {
+    @IBAction func accTrimPitchChanged(_ sender: Any) {
         accTrimPitchField.text = formatNumber(accTrimPitchStepper.value, precision: 0)
     }
     
-    @IBAction func accTrimRollChanged(sender: AnyObject) {
+    @IBAction func accTrimRollChanged(_ sender: Any) {
         accTrimRollField.text = formatNumber(accTrimRollStepper.value, precision: 0)
     }
     
-    @IBAction func accTrimSaveAction(sender: AnyObject) {
+    @IBAction func accTrimSaveAction(_ sender: Any) {
         let misc = Misc.theMisc
         misc.accelerometerTrimPitch = Int(accTrimPitchStepper.value)
         misc.accelerometerTrimRoll = Int(accTrimRollStepper.value)
@@ -364,10 +364,10 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         Analytics.logEvent("acc_trim_saved", parameters: nil)
         msp.sendSetAccTrim(misc) { success in
             if success {
-                msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2) { success in
+                msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2) { success in
                     if success {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            SVProgressHUD.showSuccessWithStatus("Settings saved")
+                        DispatchQueue.main.async(execute: {
+                            SVProgressHUD.showSuccess(withStatus: "Settings saved")
                         })
                     } else {
                         self.saveFailedError()
@@ -379,15 +379,15 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         }
     }
     
-    private func saveFailedError() {
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showErrorWithStatus("Save failed")
+    fileprivate func saveFailedError() {
+        DispatchQueue.main.async(execute: {
+            SVProgressHUD.showError(withStatus: "Save failed")
         })
     }
     
     @objc
-    private func metarUpdated() {
-        if let reports = MetarManager.instance.reports where reports.count > 0 {
+    fileprivate func metarUpdated() {
+        if let reports = MetarManager.instance.reports, reports.count > 0 {
             if reportIndex >= reports.count {
                 reportIndex = 0
             }
@@ -404,17 +404,17 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
             metarVisibility.text = report.visibility != nil ? formatDistance(report.visibility! * 1852) : ""
             metarDescription.text = report.description
             switch report.weatherLevel {
-            case .Overcast:
+            case .overcast:
                 metarWeatherImage.image = UIImage(named: "cloud")
-            case .Clear:
+            case .clear:
                 metarWeatherImage.image = UIImage(named: "sun")
-            case .PartlyCloudy:
+            case .partlyCloudy:
                 metarWeatherImage.image = UIImage(named: "partlycloudy")
-            case .Rain:
+            case .rain:
                 metarWeatherImage.image = UIImage(named: "rain")
-            case .Snow:
+            case .snow:
                 metarWeatherImage.image = UIImage(named: "snow")
-            case .Thunderstorm:
+            case .thunderstorm:
                 metarWeatherImage.image = UIImage(named: "storm")
             }
         } else {
@@ -430,23 +430,23 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     }
     
     @objc
-    private func metarTimerFired(timer: NSTimer?) {
-        if let reports = MetarManager.instance.reports where reports.count > 1 {
+    fileprivate func metarTimerFired(_ timer: Timer?) {
+        if let reports = MetarManager.instance.reports, reports.count > 1 {
             reportIndex = (reportIndex + 1) % min(MetarManager.instance.reports.count, 3)
             metarUpdated()
-            updateCell(metarTableCell)
-            reloadTableViewRowAnimation = .Right
-            reloadDataAnimated(true)
+            update(metarTableCell)
+            reloadTableViewRowAnimation = .right
+            reloadData(animated: true)
         }
     }
     
-    private func fetchVtxConfig() {
+    fileprivate func fetchVtxConfig() {
         // FIXME Not sure that data can be read from the VTX in most cases. It seems that band/channel/power are reset to default
         // every time. Check how the OSD "CMS" menu works.
         let config = Configuration.theConfig
         if config.isApiVersionAtLeast("1.31") && !config.isINav {
-            msp.sendMessage(.MSP_VTX_CONFIG, data: nil, retry: 2) { success in
-                dispatch_async(dispatch_get_main_queue()) {
+            msp.sendMessage(.msp_VTX_CONFIG, data: nil, retry: 2) { success in
+                DispatchQueue.main.async {
                     if success {
                         Analytics.logEvent("load_vtx_config", parameters: nil)
                         self.cells(self.vtxCells, setHidden: false)
@@ -455,8 +455,8 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
                         self.vtxBandPicker.selectedIndex = vtxConfig.band
                         self.vtxChannelStepper.value = Double(vtxConfig.channel)
                         self.vtxPowerPicker.selectedIndex = vtxConfig.powerIdx
-                        self.vtxPitModeSwitch.on = vtxConfig.pitMode
-                        self.reloadDataAnimated(false)
+                        self.vtxPitModeSwitch.isOn = vtxConfig.pitMode
+                        self.reloadData(animated: false)
                     } else {
                         Analytics.logEvent("load_vtx_config_failed", parameters: nil)
                     }
@@ -465,13 +465,13 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
         }
     }
     
-    @IBAction func vtxSaveAction(sender: AnyObject) {
+    @IBAction func vtxSaveAction(_ sender: Any) {
         Analytics.logEvent("save_vtx_config", parameters: nil)
         let vtxConfig = VTXConfig.theVTXConfig
         vtxConfig.band = vtxBandPicker.selectedIndex
         vtxConfig.channel = Int(vtxChannelStepper.value)
         vtxConfig.powerIdx = vtxPowerPicker.selectedIndex
-        vtxConfig.pitMode = vtxPitModeSwitch.on
+        vtxConfig.pitMode = vtxPitModeSwitch.isOn
         msp.sendVtxConfig(vtxConfig) { success in
             if success {
                 self.fetchVtxConfig()
@@ -484,7 +484,7 @@ class CalibrationViewController: StaticDataTableViewController, MSPCommandSender
     }
     
     /*
-    @IBAction func findMe(sender: AnyObject) {
+    @IBAction func findMe(sender: Any) {
         let gpsData = GPSData.theGPSData
         if gpsData.lastKnownGoodTimestamp != nil {
             let coordinates = CLLocationCoordinate2D(latitude: gpsData.lastKnownGoodLatitude, longitude: gpsData.lastKnownGoodLongitude)

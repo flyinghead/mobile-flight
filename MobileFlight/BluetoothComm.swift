@@ -22,13 +22,13 @@ import UIKit
 import SVProgressHUD
 
 class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
-    private let btManager : BluetoothManager
-    private var peripheral: BluetoothPeripheral
-    private let msp: MSPParser
-    private let btQueue: dispatch_queue_t
+    fileprivate let btManager : BluetoothManager
+    fileprivate var peripheral: BluetoothPeripheral
+    fileprivate let msp: MSPParser
+    fileprivate let btQueue: DispatchQueue
     
-    private var _closed = false
-    private var _connected = true
+    fileprivate var _closed = false
+    fileprivate var _connected = true
     
     init(withBluetoothManager btManager: BluetoothManager, andPeripheral peripheral: BluetoothPeripheral, andMSP msp: MSPParser) {
         self.btManager = btManager
@@ -40,7 +40,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     func flushOut() {
-        dispatch_async(btQueue, {
+        btQueue.async(execute: {
             var packedData = [UInt8]()
             
 
@@ -48,7 +48,7 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
                 let data = self.msp.nextOutputMessage()
 
                 if data != nil {
-                    packedData.appendContentsOf(data!)
+                    packedData.append(contentsOf: data!)
                 }
                 if packedData.count >= 20 || (data == nil && !packedData.isEmpty) {
                     var remainingData: ArraySlice<UInt8>?
@@ -78,46 +78,46 @@ class BluetoothComm : NSObject, CommChannel, BluetoothDelegate {
     }
     
     // MARK: BluetoothDelegate
-    func foundPeripheral(peripheral: BluetoothPeripheral) {
+    func foundPeripheral(_ peripheral: BluetoothPeripheral) {
     }
     
     func stoppedScanning() {
     }
     
-    func connectedPeripheral(peripheral: BluetoothPeripheral) {
+    func connectedPeripheral(_ peripheral: BluetoothPeripheral) {
         self.peripheral = peripheral
         _connected = true
-        dispatch_async(dispatch_get_main_queue(), {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+        DispatchQueue.main.async(execute: {
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
             SVProgressHUD.dismiss()
         })
     }
-    func failedToConnectToPeripheral(peripheral: BluetoothPeripheral, error: NSError?) {
+    func failedToConnectToPeripheral(_ peripheral: BluetoothPeripheral, error: Error?) {
         // Same process
         disconnectedPeripheral(peripheral)
     }
     
-    func disconnectedPeripheral(peripheral: BluetoothPeripheral) {
+    func disconnectedPeripheral(_ peripheral: BluetoothPeripheral) {
         if !_closed {
             _connected = false
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BluetoothComm.userCancelledReconnection(_:)), name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
-                SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
+                NotificationCenter.default.addObserver(self, selector: #selector(BluetoothComm.userCancelledReconnection(_:)), name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
+                SVProgressHUD.show(withStatus: "Connection lost. Reconnecting...", maskType: .black)
             })
             btManager.connect(peripheral)
         }
     }
     
-    func userCancelledReconnection(notification: NSNotification) {
+    func userCancelledReconnection(_ notification: Notification) {
         msp.closeCommChannel()
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
         SVProgressHUD.dismiss()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    func receivedData(peripheral: BluetoothPeripheral, data: [UInt8]) {
+    func receivedData(_ peripheral: BluetoothPeripheral, data: [UInt8]) {
         msp.read(data)
     }
     

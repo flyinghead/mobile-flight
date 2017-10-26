@@ -50,7 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var homeLocation: MKPointAnnotation?
     var posHoldLocation: MKPointAnnotation?
     
-    private var waypointList = MKWaypointList()
+    fileprivate var waypointList = MKWaypointList()
     
     var aircraftLocationsOverlay: MKOverlay?
     var previousAircraftLocationsOverlay: MKOverlay?
@@ -71,12 +71,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         speedLabel.text = "?"
         altitudeLabel.text = "?"
         
-        waypointList.modifiedEvent.addHandler(self, handler: MapViewController.waypointsModified)
-        waypointList.waypointCreatedEvent.addHandler(self, handler: MapViewController.waypointAdded)
-        waypointList.waypointDeletedEvent.addHandler(self, handler: MapViewController.waypointDeleted)
+        _ = waypointList.modifiedEvent.addHandler(self, handler: MapViewController.waypointsModified)
+        _ = waypointList.waypointCreatedEvent.addHandler(self, handler: MapViewController.waypointAdded)
+        _ = waypointList.waypointDeletedEvent.addHandler(self, handler: MapViewController.waypointDeleted)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         timeLabel.appear()
@@ -111,7 +111,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         timeLabel.disappear()
@@ -124,7 +124,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         gpsEventHandler?.dispose()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if locationManager == nil {
@@ -134,7 +134,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    private func centerOrZoomTheMap() {
+    fileprivate func centerOrZoomTheMap() {
         if mapCenterDone {
             // Do it once
             return
@@ -165,21 +165,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         return coordinates
     }
     
-    private func downloadWaypoints() {
-        SVProgressHUD.showWithStatus("Downloading waypoints")
+    fileprivate func downloadWaypoints() {
+        SVProgressHUD.show(withStatus: "Downloading waypoints")
         appDelegate.stopTimer()
         INavState.theINavState.waypoints.removeAll()
-        msp.sendMessage(.MSP_WP_GETINFO, data: nil, retry: 2) { success in
+        msp.sendMessage(.msp_WP_GETINFO, data: nil, retry: 2) { success in
             self.msp.loadMission() { success in
                 let inavState = INavState.theINavState
                 self.msp.fetchINavWaypoints(inavState) { success in
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         self.appDelegate.startTimer()
                         if success {
                             self.waypointList.setWaypoints(inavState.waypoints)
                             SVProgressHUD.dismiss()
                         } else {
-                            SVProgressHUD.showErrorWithStatus("Error downloading waypoints")
+                            SVProgressHUD.showError(withStatus: "Error downloading waypoints")
                             inavState.waypoints.removeAll()   // So we try to reload them when we appear next time
                         }
                     })
@@ -188,7 +188,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    private func addWaypointsOverlay() {
+    fileprivate func addWaypointsOverlay() {
         var locations = [CLLocationCoordinate2D]()
         if homeLocation != nil {
             locations.append(homeLocation!.coordinate)
@@ -203,25 +203,25 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
         }
         if waypointsOverlay != nil {
-            mapView.removeOverlay(waypointsOverlay!)
+            mapView.remove(waypointsOverlay!)
         }
-        waypointsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(locations), count: locations.count)
-        mapView.addOverlay(waypointsOverlay!)
+        waypointsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(mutating: locations), count: locations.count)
+        mapView.add(waypointsOverlay!)
     }
 
     func waypointsModified() {
-        uploadButton.hidden = false
+        uploadButton.isHidden = false
         addWaypointsOverlay()
     }
     
-    func waypointAdded(data: MKWaypoint) {
+    func waypointAdded(_ data: MKWaypoint) {
         if !data.returnToHome {
             mapView.addAnnotation(data)
         }
         addWaypointsOverlay()
     }
 
-    func waypointDeleted(data: MKWaypoint) {
+    func waypointDeleted(_ data: MKWaypoint) {
         if !data.returnToHome {
             mapView.removeAnnotation(data)
         }
@@ -268,9 +268,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         if gpsData.fix {
             gpsLabel.blinks = false
             if gpsData.numSat >= 5 {
-                gpsLabel.textColor = UIColor.blackColor()
+                gpsLabel.textColor = UIColor.black
             } else {
-                gpsLabel.textColor = UIColor.orangeColor()
+                gpsLabel.textColor = UIColor.orange
             }
             if !config.isBarometerActive() && !config.isSonarActive() {
                 altitudeLabel.text = formatAltitude(Double(gpsData.altitude))
@@ -279,7 +279,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         } else {
             if config.isGPSActive() {
                 gpsLabel.blinks = true
-                gpsLabel.textColor = UIColor.redColor()
+                gpsLabel.textColor = UIColor.red
             }
             speedLabel.text = ""
             if !config.isBarometerActive() && !config.isSonarActive() {
@@ -292,16 +292,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 
                 // Keep previous overlay to prevent flashing
                 if previousAircraftLocationsOverlay != nil {
-                    mapView.removeOverlay(previousAircraftLocationsOverlay!)
+                    mapView.remove(previousAircraftLocationsOverlay!)
                 }
                 previousAircraftLocationsOverlay = aircraftLocationsOverlay
-                aircraftLocationsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(gpsData.positions), count: gpsData.positions.count)
-                mapView.addOverlay(aircraftLocationsOverlay!)
+                aircraftLocationsOverlay = MKPolyline(coordinates: UnsafeMutablePointer(mutating: gpsData.positions), count: gpsData.positions.count)
+                mapView.add(aircraftLocationsOverlay!)
             }
             let coordinate = MapViewController.getAircraftCoordinates()!
             if aircraftLocation != nil {
                 if (aircraftLocation!.coordinate.latitude != coordinate.latitude || aircraftLocation!.coordinate.longitude != coordinate.longitude) {
-                    UIView.animateWithDuration(0.1, animations: {
+                    UIView.animate(withDuration: 0.1, animations: {
                         self.aircraftLocation!.coordinate = coordinate
                     })
                     annotationView?.setNeedsDisplay()
@@ -356,18 +356,18 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
         if activeWaypoint != waypointList.activeWaypoint {
             if let previousActive = waypointList.activeWaypoint {
-                (mapView.viewForAnnotation(previousActive) as? MKWaypointView)?.didSelect()
+                (mapView.view(for: previousActive) as? MKWaypointView)?.didSelect()
             }
             waypointList.activeWaypoint = activeWaypoint
             if activeWaypoint != nil {
-                (mapView.viewForAnnotation(activeWaypoint!) as? MKWaypointView)?.didSelect()
+                (mapView.view(for: activeWaypoint!) as? MKWaypointView)?.didSelect()
             }
         }
     }
 
     // MARK: MKMapViewDelegate
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let wpAnnot = annotation as? MKWaypoint {
             if wpAnnot.returnToHome {
                 return nil
@@ -385,68 +385,68 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         } else if annotation === posHoldLocation {
             let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "posHoldAnnotationView")
             view.canShowCallout = true
-            view.pinColor = MKPinAnnotationColor.Purple
+            view.pinColor = MKPinAnnotationColor.purple
             return view
         }
         
         return nil
     }
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let waypointView = view as? MKWaypointView {
             waypointView.didSelect()
         }
     }
-    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         if let waypointView = view as? MKWaypointView {
             waypointView.didSelect()
         }
     }
     
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
         if overlay === self.aircraftLocationsOverlay || overlay === self.previousAircraftLocationsOverlay {
             renderer.lineWidth = 3.0
-            renderer.strokeColor = UIColor.redColor()
+            renderer.strokeColor = UIColor.red
         } else {
             // Waypoints
             renderer.lineWidth = 2.0
-            renderer.strokeColor = UIColor.whiteColor()
+            renderer.strokeColor = UIColor.white
         }
         return renderer
     }
     
-    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         centerOrZoomTheMap()
     }
     
     // MARK: CLLocationManagerDelegate
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             mapView.showsUserLocation = true
         }
     }
     
     // MARK: Actions
     
-    @IBAction func longPressOnMap(sender: UILongPressGestureRecognizer) {
+    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
         if msp.replaying {
             return
         }
         let config = Configuration.theConfig
         let settings = Settings.theSettings
-        if sender.state == .Began {
+        if sender.state == .began {
             if config.isINav && !settings.armed {
                 let inavConfig = INavConfig.theINavConfig
                 if waypointList.count >= inavConfig.maxWaypoints {
                     let message = String(format: "Maximum of %d waypoints reached", inavConfig.maxWaypoints)
-                    let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-                    alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                    let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.alert)
+                    alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                     alertController.popoverPresentationController?.sourceView = mapView
-                    presentViewController(alertController, animated: true, completion: nil)
+                    present(alertController, animated: true, completion: nil)
                 } else {
-                    let point = sender.locationInView(mapView)
-                    let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
+                    let point = sender.location(in: mapView)
+                    let coordinates = mapView.convert(point, toCoordinateFrom: mapView)
                     let waypoint = Waypoint(position: GPSLocation(latitude: coordinates.latitude, longitude: coordinates.longitude), altitude: 0, speed: 0)
                     waypointList.append(waypoint)
                     Analytics.logEvent("waypoint_added", parameters: nil)
@@ -468,41 +468,41 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
             }
             if message != nil {
-                let alertController = UIAlertController(title: title, message: message!, preferredStyle: UIAlertControllerStyle.Alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                let alertController = UIAlertController(title: title, message: message!, preferredStyle: UIAlertControllerStyle.alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 alertController.popoverPresentationController?.sourceView = mapView
-                presentViewController(alertController, animated: true, completion: nil)
+                present(alertController, animated: true, completion: nil)
                 
                 return
             }
             
-            let point = sender.locationInView(mapView)
-            let coordinates = mapView.convertPoint(point, toCoordinateFromView: mapView)
+            let point = sender.location(in: mapView)
+            let coordinates = mapView.convert(point, toCoordinateFrom: mapView)
             
-            message = String(format: "Navigate to location %@ %.04f, %@ %.04f ?", locale: NSLocale.currentLocale(), coordinates.latitude >= 0 ? "N" : "S", abs(coordinates.latitude), coordinates.longitude >= 0 ? "E" : "W", abs(coordinates.longitude))
-            let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-            alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { alertController in
+            message = String(format: "Navigate to location %@ %.04f, %@ %.04f ?", locale: Locale.current, coordinates.latitude >= 0 ? "N" : "S", abs(coordinates.latitude), coordinates.longitude >= 0 ? "E" : "W", abs(coordinates.longitude))
+            let alertController = UIAlertController(title: "Waypoint", message: message, preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { alertController in
                 // TODO allow to set altitude
                 self.msp.setGPSHoldPosition(latitude: coordinates.latitude, longitude: coordinates.longitude, altitude: 0, callback: nil)
                 Analytics.logEvent("waypoint_goto", parameters: nil)
             }))
             alertController.popoverPresentationController?.sourceView = mapView
-            presentViewController(alertController, animated: true, completion: nil)
+            present(alertController, animated: true, completion: nil)
 
         }
     }
     
-    @IBAction func rssiViewTapped(sender: AnyObject) {
+    @IBAction func rssiViewTapped(_ sender: Any) {
         appDelegate.showBtRssi = !appDelegate.showBtRssi
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssi" : "signal")
         let config = Configuration.theConfig
         rssiLabel.rssi = appDelegate.showBtRssi ? config.btRssi : config.rssi
     }
     
-    @IBAction func uploadWaypoints(sender: AnyObject) {
+    @IBAction func uploadWaypoints(_ sender: Any) {
         appDelegate.stopTimer()
-        SVProgressHUD.showWithStatus("Uploading waypoints")
+        SVProgressHUD.show(withStatus: "Uploading waypoints")
         let inavState = INavState.theINavState
         inavState.waypoints.removeAll()
         for (i, wpAnnot) in waypointList.enumerate() {
@@ -523,14 +523,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
         ]
         chainMspSend(commands) { success in
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 if success {
-                    self.uploadButton.hidden = true
+                    self.uploadButton.isHidden = true
                     Analytics.logEvent("waypoints_uploaded", parameters: ["count" : inavState.waypoints.count])
                     self.downloadWaypoints()
                 } else {
                     self.appDelegate.startTimer()
-                    SVProgressHUD.showErrorWithStatus("Error uploading waypoints")
+                    SVProgressHUD.showError(withStatus: "Error uploading waypoints")
                     Analytics.logEvent("waypoints_upload_failed", parameters: ["count" : inavState.waypoints.count])
                 }
             }
@@ -546,7 +546,7 @@ class MKAircraftView : MKAnnotationView {
         self.frame.size.width = Size
         self.frame.size.height = Size
         
-        self.opaque = false
+        self.isOpaque = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -554,29 +554,29 @@ class MKAircraftView : MKAnnotationView {
         self.frame.size.width = Size
         self.frame.size.height = Size
         
-        self.opaque = false
+        self.isOpaque = false
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()!
-        CGContextSaveGState(ctx)
+        ctx.saveGState()
         
-        CGContextTranslateCTM(ctx, Size / 2, Size / 2)
+        ctx.translateBy(x: Size / 2, y: Size / 2)
         var rotation = SensorData.theSensorData.heading
         if rotation > 180 {
             rotation -= 360
         }
-        CGContextRotateCTM(ctx, CGFloat(rotation * M_PI / 180))
+        ctx.rotate(by: CGFloat(rotation * .pi / 180))
         
         let actualSize = Size - 4
-        UIColor.whiteColor().colorWithAlphaComponent(0.8).setFill()
-        let dx = actualSize * CGFloat(sin(M_PI_4 / 2))
-        CGContextMoveToPoint(ctx, 0, -actualSize / 2)
-        CGContextAddLineToPoint(ctx, -dx, actualSize / 2)
-        CGContextAddLineToPoint(ctx, 0, actualSize / 2 - 4)
-        CGContextAddLineToPoint(ctx, dx, actualSize / 2)
-        CGContextClosePath(ctx)
-        CGContextFillPath(ctx)
+        UIColor.white.withAlphaComponent(0.8).setFill()
+        let dx = actualSize * CGFloat(sin(Float.pi / 8))
+        ctx.move(to: CGPoint(x: 0, y: -actualSize / 2))
+        ctx.addLine(to: CGPoint(x: -dx, y: actualSize / 2))
+        ctx.addLine(to: CGPoint(x: 0, y: actualSize / 2 - 4))
+        ctx.addLine(to: CGPoint(x: dx, y: actualSize / 2))
+        ctx.closePath()
+        ctx.fillPath()
         
         //        UIColor.whiteColor().setFill()
         //        CGContextFillEllipseInRect(ctx, bounds)
@@ -584,6 +584,6 @@ class MKAircraftView : MKAnnotationView {
         //        UIColor.redColor().setFill()
         //        CGContextFillEllipseInRect(ctx, centerRect)
         
-        CGContextRestoreGState(ctx)
+        ctx.restoreGState()
     }
 }

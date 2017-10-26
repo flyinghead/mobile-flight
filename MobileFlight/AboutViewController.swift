@@ -23,14 +23,14 @@ import Firebase
 
 class AboutViewController: UITableViewController {
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        msp.sendMessage(.MSP_UID, data: nil, retry: 2, callback: { success in
-            self.msp.sendMessage(.MSP_FC_VERSION, data: nil, retry: 2, callback: { success in
-                self.msp.sendMessage(.MSP_BUILD_INFO, data: nil, retry: 2, callback: { success in
-                    self.msp.sendMessage(.MSP_BOARD_INFO, data: nil, retry: 2, callback: { success in
-                        dispatch_async(dispatch_get_main_queue(), {
+        msp.sendMessage(.msp_UID, data: nil, retry: 2, callback: { success in
+            self.msp.sendMessage(.msp_FC_VERSION, data: nil, retry: 2, callback: { success in
+                self.msp.sendMessage(.msp_BUILD_INFO, data: nil, retry: 2, callback: { success in
+                    self.msp.sendMessage(.msp_BOARD_INFO, data: nil, retry: 2, callback: { success in
+                        DispatchQueue.main.async(execute: {
                             let config = Configuration.theConfig
                             Analytics.logEvent("about_info", parameters: [ "fcIdentifier" :  config.fcIdentifier!, "fcVersion" : config.fcVersion ?? "(unknown)", "buildDate" : config.buildInfo ?? "(unknown)", "boardType" : config.boardInfo ?? "(unknown)"])
                             self.tableView.reloadData()
@@ -43,19 +43,19 @@ class AboutViewController: UITableViewController {
 
     // MARK: - Table View
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 0) {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
             return 5
         } else {
             return 3;
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
             return "Flight controller"
         } else {
@@ -63,8 +63,8 @@ class AboutViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
         let config = Configuration.theConfig
         switch indexPath.section {

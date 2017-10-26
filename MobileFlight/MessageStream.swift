@@ -21,8 +21,8 @@
 import Foundation
 
 class MessageStream {
-    private var bytes: [UInt8]
-    private var index = 0
+    fileprivate var bytes: [UInt8]
+    fileprivate var index = 0
     
     init(bytes: [UInt8]) {
         self.bytes = bytes

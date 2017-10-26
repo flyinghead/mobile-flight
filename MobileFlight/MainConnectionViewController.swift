@@ -31,14 +31,14 @@ class MainConnectionViewController: UIViewController {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("BluetoothViewController"))
-        viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("WifiViewController"))
-        viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("ReplayViewController"))
-        viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier("SimulatorViewController"))
+        viewControllers.append(storyboard!.instantiateViewController(withIdentifier: "BluetoothViewController"))
+        viewControllers.append(storyboard!.instantiateViewController(withIdentifier: "WifiViewController"))
+        viewControllers.append(storyboard!.instantiateViewController(withIdentifier: "ReplayViewController"))
+        viewControllers.append(storyboard!.instantiateViewController(withIdentifier: "SimulatorViewController"))
         
         for vc in viewControllers {
             addChildViewController(vc)
-            vc.didMoveToParentViewController(self)
+            vc.didMove(toParentViewController: self)
         }
     }
     
@@ -50,20 +50,25 @@ class MainConnectionViewController: UIViewController {
         containerView.addSubview(controller.view)
         
         addConstraints(controller.view, offset: 0)
+        
+        // For KIF tests
+        for i in 0 ..< connectionTypeSelector.numberOfSegments {
+            connectionTypeSelector.subviews[i].accessibilityLabel = connectionTypeSelector.titleForSegment(at: connectionTypeSelector.numberOfSegments - i - 1)
+        }
     }
 
-    private func addConstraints(view: UIView, offset: CGFloat) {
-        let left = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: containerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: offset)
+    fileprivate func addConstraints(_ view: UIView, offset: CGFloat) {
+        let left = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: containerView, attribute: NSLayoutAttribute.left, multiplier: 1, constant: offset)
         containerView.addConstraint(left)
-        let right = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: containerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: offset)
+        let right = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: containerView, attribute: NSLayoutAttribute.right, multiplier: 1, constant: offset)
         containerView.addConstraint(right)
-        let top = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: containerView, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0)
+        let top = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: containerView, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
         containerView.addConstraint(top)
-        let bottom = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: containerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0)
+        let bottom = NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: containerView, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
         containerView.addConstraint(bottom)
     }
     
-    @IBAction func connectionTypeChanged(sender: AnyObject) {
+    @IBAction func connectionTypeChanged(_ sender: Any) {
         let currentIdx = (sender as! UISegmentedControl).selectedSegmentIndex
 
         let oldVC = viewControllers[previousIndex]
@@ -78,7 +83,7 @@ class MainConnectionViewController: UIViewController {
 
         self.containerView.layoutIfNeeded()
         
-        UIView.animateWithDuration(0.25, delay: 0, options: .LayoutSubviews, animations: {
+        UIView.animate(withDuration: 0.25, delay: 0, options: .layoutSubviews, animations: {
             self.containerView.removeConstraints(self.containerView.constraints.filter({
                 return $0.firstItem === newVC.view
             }))
@@ -109,29 +114,29 @@ class MainConnectionViewController: UIViewController {
             appDelegate.startTimer()
         }
 
-        presentViewController(viewController, animated: true, completion: nil)
+        present(viewController, animated: true, completion: nil)
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(connectionTypeSelector.selectedSegmentIndex, forKey: "ConnectionTypeSelector")
+        coder.encode(connectionTypeSelector.selectedSegmentIndex, forKey: "ConnectionTypeSelector")
         
         for vc in viewControllers {
             if vc.restorationIdentifier != nil {
-                coder.encodeObject(vc, forKey: vc.restorationIdentifier!)
+                coder.encode(vc, forKey: vc.restorationIdentifier!)
             }
         }
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        connectionTypeSelector.selectedSegmentIndex = coder.decodeObjectForKey("ConnectionTypeSelector") as? Int ?? 0
+        connectionTypeSelector.selectedSegmentIndex = coder.decodeObject(forKey: "ConnectionTypeSelector") as? Int ?? 0
         
         for vc in viewControllers {
             if vc.restorationIdentifier != nil {
-                coder.decodeObjectForKey(vc.restorationIdentifier!)
+                coder.decodeObject(forKey: vc.restorationIdentifier!)
             }
         }
         

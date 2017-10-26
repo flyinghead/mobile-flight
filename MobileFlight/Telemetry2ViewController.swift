@@ -71,7 +71,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     @IBOutlet weak var rightStick: RCStick!
     var actingRC = false        // When using feature RXMSP and RC sticks are visible
     
-    var hideNavBarTimer: NSTimer?
+    var hideNavBarTimer: Timer?
     var viewDisappeared = false
     
     var altitudeEventHandler: Disposable?
@@ -90,25 +90,25 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         var alpha: CGFloat = 0
         if speedScale.backgroundColor != nil {
             speedScale.backgroundColor!.getWhite(nil, alpha: &alpha)
-            speedScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            speedScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).cgColor
         }
         if speedUnitLabel.backgroundColor != nil {
             speedUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
-            speedUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            speedUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).cgColor
         }
 
         if altitudeScale.backgroundColor != nil {
             altitudeScale.backgroundColor!.getWhite(nil, alpha: &alpha)
-            altitudeScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            altitudeScale.layer.borderColor = UIColor(white: 0.666, alpha: alpha).cgColor
         }
         if altitudeUnitLabel.backgroundColor != nil {
             altitudeUnitLabel.backgroundColor!.getWhite(nil, alpha: &alpha)
-            altitudeUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+            altitudeUnitLabel.layer.borderColor = UIColor(white: 0.666, alpha: alpha).cgColor
         }
         if let parent = altHoldIndicator.superview {
             if parent.backgroundColor != nil {
                 parent.backgroundColor!.getWhite(nil, alpha: &alpha)
-                parent.layer.borderColor = UIColor(white: 0.666, alpha: alpha).CGColor
+                parent.layer.borderColor = UIColor(white: 0.666, alpha: alpha).cgColor
             }
         }
         
@@ -121,10 +121,10 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
     
     func setInstrumentsUnitSystem() {
         switch selectedUnitSystem() {
-        case .Aviation:
+        case .aviation:
             speedScale.scale = SpeedScale * METER_PER_NM / 1000
             speedUnitLabel.text = "kn"
-        case .Imperial:
+        case .imperial:
             speedScale.scale = SpeedScale * METER_PER_MILE / 1000
             speedUnitLabel.text = "mph"
         default:
@@ -132,7 +132,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
             speedUnitLabel.text = "km/h"
         }
 
-        let metricUnits = selectedUnitSystem() == .Metric
+        let metricUnits = selectedUnitSystem() == .metric
         altitudeScale.scale = !metricUnits ? AltScale / FEET_PER_METER : AltScale
         if !metricUnits {
             altitudeScale.mainTicksInterval = 10
@@ -158,7 +158,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         variometerScale.scale = !metricUnits ? VarioScale / FEET_PER_METER : VarioScale
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         timeLabel.appear()
@@ -174,7 +174,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         sensorStatusEventHandler = msp.sensorStatusEvent.addHandler(self, handler: Telemetry2ViewController.receivedSensorStatus)
         
         // For enabled features
-        msp.sendMessage(.MSP_FEATURE, data: nil, retry: 2, callback: nil)
+        msp.sendMessage(.msp_FEATURE, data: nil, retry: 2, callback: nil)
         
         receivedBatteryData()
         receivedAltitudeData()
@@ -188,51 +188,51 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         
         startNavBarTimer()
         
-        if let tabBarController = parentViewController as? UITabBarController {
-            tabBarController.tabBar.hidden = false
+        if let tabBarController = parent as? UITabBarController {
+            tabBarController.tabBar.isHidden = false
         }
-        if showRCSticksButton.selected && actingRC {
+        if showRCSticksButton.isSelected && actingRC {
             appDelegate.rcCommandsProvider = self
         }
         viewDisappeared = false
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Telemetry2ViewController.userDefaultsDidChange(_:)), name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
         setInstrumentsUnitSystem()
         
-        followMeButton.enabled = false
+        followMeButton.isEnabled = false
         
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssiw" : "signalw")
     }
     
-    func userDefaultsDidChange(sender: AnyObject) {
+    func userDefaultsDidChange(_ sender: Any) {
         setInstrumentsUnitSystem()
     }
     
-    private func startNavBarTimer() {
-        if let tabBarController = parentViewController as? UITabBarController {
-            if !tabBarController.tabBar.hidden {
+    fileprivate func startNavBarTimer() {
+        if let tabBarController = parent as? UITabBarController {
+            if !tabBarController.tabBar.isHidden {
                 hideNavBarTimer?.invalidate()
-                hideNavBarTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(Telemetry2ViewController.hideNavBar(_:)), userInfo: nil, repeats: false)
+                hideNavBarTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(Telemetry2ViewController.hideNavBar(_:)), userInfo: nil, repeats: false)
             }
         }
     }
     
-    func hideNavBar(timer: NSTimer?) {
-        if let tabBarController = parentViewController as? UITabBarController {
+    func hideNavBar(_ timer: Timer?) {
+        if let tabBarController = parent as? UITabBarController {
             let offset = tabBarController.tabBar.frame.height
-            UIView.animateWithDuration(0.3, animations: {
-                    tabBarController.tabBar.frame.offsetInPlace(dx: 0, dy: offset)
+            UIView.animate(withDuration: 0.3, animations: {
+                    tabBarController.tabBar.frame = tabBarController.tabBar.frame.offsetBy(dx: 0, dy: offset)
                 }, completion: { status in
                     if !self.viewDisappeared {
-                        tabBarController.tabBar.hidden = true
+                        tabBarController.tabBar.isHidden = true
                     }
-                    tabBarController.tabBar.frame.offsetInPlace(dx: 0, dy: -offset)
+                    tabBarController.tabBar.frame = tabBarController.tabBar.frame.offsetBy(dx: 0, dy: -offset)
                 })
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         viewDisappeared = true
@@ -253,23 +253,23 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         
         appDelegate.rcCommandsProvider = nil
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
     }
     
-    private func convertAltitude(value: Double) -> Double {
-        if selectedUnitSystem() == .Metric {
+    fileprivate func convertAltitude(_ value: Double) -> Double {
+        if selectedUnitSystem() == .metric {
             return value
         } else {
             return value * FEET_PER_METER
         }
     }
     
-    private func convertSpeed(value: Double) -> Double {
+    fileprivate func convertSpeed(_ value: Double) -> Double {
         switch selectedUnitSystem() {
-        case .Aviation:
+        case .aviation:
             return value * 1000 / METER_PER_NM
-        case .Imperial:
+        case .imperial:
             return value * 1000 / METER_PER_MILE
         default:
             return value
@@ -294,7 +294,7 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         altitudeScale.bugs.removeAll()
         // Unfortunately no way to get the altitude hold value with INav
         if settings.altitudeHoldMode && !Configuration.theConfig.isINav {
-            altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyanColor()))
+            altitudeScale.bugs.append((value: convertAltitude(sensorData.altitudeHold), UIColor.cyan))
             altHoldIndicator.text = formatAltitude(sensorData.altitudeHold, appendUnit: false)
         } else {
             altHoldIndicator.text = ""
@@ -302,12 +302,12 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
 
         headingStrip.bugs.removeAll()
         if settings.headingHoldMode {
-            headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyanColor()))
+            headingStrip.bugs.append((value: sensorData.headingHold, UIColor.cyan))
         }
 
         if let (label, _, emergency) = INavState.theINavState.navStateDescription {
             navStatusLabel.text = label
-            navStatusLabel.textColor = emergency ? UIColor.redColor() : UIColor.greenColor()
+            navStatusLabel.textColor = emergency ? UIColor.red : UIColor.green
         }
     }
     
@@ -328,9 +328,9 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         if voltsGauge.ranges.isEmpty && config.batteryCells != 0 {
             voltsGauge.minimum = settings.vbatMinCellVoltage * Double(config.batteryCells) * 0.9
             voltsGauge.maximum = settings.vbatMaxCellVoltage * Double(config.batteryCells)
-            voltsGauge.ranges.append((min: voltsGauge.minimum, max: settings.vbatMinCellVoltage * Double(config.batteryCells), UIColor.redColor()))
-            voltsGauge.ranges.append((min: settings.vbatMinCellVoltage * Double(config.batteryCells), max: settings.vbatWarningCellVoltage * Double(config.batteryCells), UIColor.yellowColor()))
-            voltsGauge.ranges.append((min: settings.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.greenColor()))
+            voltsGauge.ranges.append((min: voltsGauge.minimum, max: settings.vbatMinCellVoltage * Double(config.batteryCells), UIColor.red))
+            voltsGauge.ranges.append((min: settings.vbatMinCellVoltage * Double(config.batteryCells), max: settings.vbatWarningCellVoltage * Double(config.batteryCells), UIColor.yellow))
+            voltsGauge.ranges.append((min: settings.vbatWarningCellVoltage * Double(config.batteryCells), max: voltsGauge.maximum, UIColor.green))
         }
 
         voltsValueLabel.voltage = config.voltage
@@ -341,9 +341,9 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         
         if mAhGauge.ranges.isEmpty && settings.batteryCapacity != 0 {
             mAhGauge.maximum = Double(settings.batteryCapacity) * 1.2
-            mAhGauge.ranges.append((min: 0, max: Double(settings.batteryCapacity) * 0.8, UIColor.greenColor()))
-            mAhGauge.ranges.append((min: Double(settings.batteryCapacity) * 0.8, max: Double(settings.batteryCapacity), UIColor.yellowColor()))
-            mAhGauge.ranges.append((min: Double(settings.batteryCapacity), max: mAhGauge.maximum, UIColor.redColor()))
+            mAhGauge.ranges.append((min: 0, max: Double(settings.batteryCapacity) * 0.8, UIColor.green))
+            mAhGauge.ranges.append((min: Double(settings.batteryCapacity) * 0.8, max: Double(settings.batteryCapacity), UIColor.yellow))
+            mAhGauge.ranges.append((min: Double(settings.batteryCapacity), max: mAhGauge.maximum, UIColor.red))
         }
         mAhGauge.value = Double(config.mAhDrawn)
         mAHValueLabel.text = String(format: "%d", config.mAhDrawn)
@@ -358,51 +358,51 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         
         if settings.isModeOn(Mode.GCS_NAV, forStatus: config.mode) {
             accroModeLabel.text = "GCS"
-            accroModeLabel.hidden = false
+            accroModeLabel.isHidden = false
         } else if settings.isModeOn(Mode.ANGLE, forStatus: config.mode) {
             accroModeLabel.text = "ANGL"
-            accroModeLabel.hidden = false
+            accroModeLabel.isHidden = false
         } else if settings.isModeOn(Mode.HORIZON, forStatus: config.mode) {
             accroModeLabel.text = "HOZN"
-            accroModeLabel.hidden = false
+            accroModeLabel.isHidden = false
         } else {
-            accroModeLabel.hidden = true
+            accroModeLabel.isHidden = true
         }
         if settings.isModeOn(Mode.AIR, forStatus: config.mode) {
-            airModeLabel.hidden = false
+            airModeLabel.isHidden = false
         } else {
-            airModeLabel.hidden = true
+            airModeLabel.isHidden = true
         }
         if settings.altitudeHoldMode {
-            altModeLabel.hidden = false
+            altModeLabel.isHidden = false
         } else {
-            altModeLabel.hidden = true
+            altModeLabel.isHidden = true
         }
         if settings.headingHoldMode {
-            headingModeLabel.hidden = false
+            headingModeLabel.isHidden = false
         } else {
-            headingModeLabel.hidden = true
+            headingModeLabel.isHidden = true
         }
         if settings.returnToHomeMode {
             posModeLabel.text = "RTH"
-            posModeLabel.hidden = false
+            posModeLabel.isHidden = false
         } else if settings.positionHoldMode {
             posModeLabel.text = "POS"
-            posModeLabel.hidden = false
+            posModeLabel.isHidden = false
         } else if settings.isModeOn(Mode.NAV_WP, forStatus: config.mode) {
             posModeLabel.text = "WP"
-            posModeLabel.hidden = false
+            posModeLabel.isHidden = false
         } else {
-            posModeLabel.hidden = true
+            posModeLabel.isHidden = true
         }
-        rxFailView.hidden = !settings.isModeOn(Mode.FAILSAFE, forStatus: config.mode)
+        rxFailView.isHidden = !settings.isModeOn(Mode.FAILSAFE, forStatus: config.mode)
         
-        camStabMode.tintColor = settings.isModeOn(Mode.CAMSTAB, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        calibrateMode.tintColor = settings.isModeOn(Mode.CALIB, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        telemetryMode.tintColor = settings.isModeOn(Mode.TELEMETRY, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
-        autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) ? UIColor.greenColor() : UIColor.blackColor()
+        camStabMode.tintColor = settings.isModeOn(Mode.CAMSTAB, forStatus: config.mode) ? UIColor.green : UIColor.black
+        calibrateMode.tintColor = settings.isModeOn(Mode.CALIB, forStatus: config.mode) ? UIColor.green : UIColor.black
+        telemetryMode.tintColor = settings.isModeOn(Mode.TELEMETRY, forStatus: config.mode) ? UIColor.green : UIColor.black
+        sonarMode.tintColor = settings.isModeOn(Mode.SONAR, forStatus: config.mode) ? UIColor.green : UIColor.black
+        blackboxMode.tintColor = settings.isModeOn(Mode.BLACKBOX, forStatus: config.mode) ? UIColor.green : UIColor.black
+        autotuneMode.tintColor = settings.isModeOn(Mode.GTUNE, forStatus: config.mode) ? UIColor.green : UIColor.black
         
         // If BARO, SONAR or MAG modes changed, we have to update UI
         receivedPosHoldData()
@@ -422,24 +422,24 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         if gpsData.fix && gpsData.numSat >= 5 {
             gpsLabel.blinks = false
             if gpsData.numSat >= 5 {
-                gpsLabel.textColor = UIColor.whiteColor()
+                gpsLabel.textColor = UIColor.white
             } else {
-                gpsLabel.textColor = UIColor.yellowColor()
+                gpsLabel.textColor = UIColor.yellow
             }
             dthLabel.text = formatDistance(Double(gpsData.distanceToHome))
             speedScale.currentValue = convertSpeed(gpsData.speed)
             
-            followMeButton.enabled = !msp.replaying
+            followMeButton.isEnabled = !msp.replaying
         } else {
             let config = Configuration.theConfig
             if config.isGPSActive() {
                 gpsLabel.blinks = true
-                gpsLabel.textColor = UIColor.redColor()
+                gpsLabel.textColor = UIColor.red
             }
             dthLabel.text = ""
             speedScale.currentValue = 0
             
-            followMeButton.enabled = false
+            followMeButton.isEnabled = false
         }
         let config = Configuration.theConfig
         if !config.isBarometerActive() && !config.isSonarActive()  {
@@ -461,67 +461,67 @@ class Telemetry2ViewController: UIViewController, RcCommandsProvider {
         let config = Configuration.theConfig
         let settings = Settings.theSettings
         if config.isINav && !settings.armed {
-            armedLabel.textColor = INavState.theINavState.armingFlags.contains(.OkToArm) ? UIColor.greenColor() : UIColor.redColor()
+            armedLabel.textColor = INavState.theINavState.armingFlags.contains(.OkToArm) ? UIColor.green : UIColor.red
         }
     }
     
     // MARK: Actions
     
-    @IBAction func menuAction(sender: AnyObject) {
-        actionsView.hidden = !actionsView.hidden
-        if !actionsView.hidden {
-            followMeButton.selected = appDelegate.followMeActive
+    @IBAction func menuAction(_ sender: Any) {
+        actionsView.isHidden = !actionsView.isHidden
+        if !actionsView.isHidden {
+            followMeButton.isSelected = appDelegate.followMeActive
         }
     }
     
-    @IBAction func followMeAction(sender: AnyObject) {
-        actionsView.hidden = true
+    @IBAction func followMeAction(_ sender: Any) {
+        actionsView.isHidden = true
         if !msp.replaying {
             appDelegate.followMeActive = !appDelegate.followMeActive
         }
     }
     
-    @IBAction func showRCSticksAction(sender: AnyObject) {
-        actionsView.hidden = true
+    @IBAction func showRCSticksAction(_ sender: Any) {
+        actionsView.isHidden = true
 
-        leftStick.hidden = !leftStick.hidden
-        rightStick.hidden = !rightStick.hidden
-        showRCSticksButton.selected = !showRCSticksButton.selected
+        leftStick.isHidden = !leftStick.isHidden
+        rightStick.isHidden = !rightStick.isHidden
+        showRCSticksButton.isSelected = !showRCSticksButton.isSelected
         if !msp.replaying && Settings.theSettings.features.contains(.RxMsp) {
-            actingRC = showRCSticksButton.selected
+            actingRC = showRCSticksButton.isSelected
             appDelegate.rcCommandsProvider = actingRC ? self : nil
-            leftStick.userInteractionEnabled = true
-            rightStick.userInteractionEnabled = true
+            leftStick.isUserInteractionEnabled = true
+            rightStick.isUserInteractionEnabled = true
             Analytics.logEvent("msp_rc_control", parameters: ["on" : actingRC])
         } else {
-            if showRCSticksButton.selected {
-                leftStick.userInteractionEnabled = false
-                rightStick.userInteractionEnabled = false
+            if showRCSticksButton.isSelected {
+                leftStick.isUserInteractionEnabled = false
+                rightStick.isUserInteractionEnabled = false
             }
         }
     }
     
-    @IBAction func disconnectAction(sender: AnyObject) {
-        actionsView.hidden = true
+    @IBAction func disconnectAction(_ sender: Any) {
+        actionsView.isHidden = true
         msp.closeCommChannel()
-        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+        appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
-    @IBAction func viewTapped(sender: AnyObject) {
-        if !actionsView.hidden {
-            actionsView.hidden = true
+    @IBAction func viewTapped(_ sender: Any) {
+        if !actionsView.isHidden {
+            actionsView.isHidden = true
         } else {
-            if let tabBarController = parentViewController as? UITabBarController {
-                if !tabBarController.tabBar.hidden {
+            if let tabBarController = parent as? UITabBarController {
+                if !tabBarController.tabBar.isHidden {
                     hideNavBar(nil)
                 } else {
-                    tabBarController.tabBar.hidden = false
+                    tabBarController.tabBar.isHidden = false
                     startNavBarTimer()
                 }
             }
         }
     }
     
-    @IBAction func rssiViewTapped(sender: AnyObject) {
+    @IBAction func rssiViewTapped(_ sender: Any) {
         appDelegate.showBtRssi = !appDelegate.showBtRssi
         rssiImg.image = UIImage(named: appDelegate.showBtRssi ? "btrssiw" : "signalw")
         let config = Configuration.theConfig

@@ -68,40 +68,40 @@ class INavSettingsViewController: StaticDataTableViewController {
         cells(inav171Cells, setHidden: !Configuration.theConfig.isApiVersionAtLeast("1.26"))
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let minSpeed = msToLocaleSpeed(0.1)
         let maxSpeed = msToLocaleSpeed(20)
         for field in [ maxNavSpeedField, maxManualSpeedField ] {
-            field.minimumValue = minSpeed
-            field.maximumValue = maxSpeed
+            field!.minimumValue = minSpeed
+            field!.maximumValue = maxSpeed
         }
         let maxAlt = mToLocaleDistance(655.36)
         for field in [ rthAltitude, landSlowdownMinAlt, landSlowdownMaxAlt ] {
-            field.maximumValue = maxAlt
+            field!.maximumValue = maxAlt
         }
         let maxDist = mToLocaleDistance(655.36)
         for field in [ minRthDistance, rthAbortThreshold, fwLoiterRadius ] {
-            field.maximumValue = maxDist
+            field!.maximumValue = maxDist
         }
         let maxVerticalSpeed = msToLocaleVerticalSpeed(655.36)
         for field in [ landDescendRate, emergencyDescendRate, maxNavClimbRateField, maxManualClimbRateField ] {
-            field.maximumValue = maxVerticalSpeed
+            field!.maximumValue = maxVerticalSpeed
         }
         
         fetchData()
     }
 
-    private func fetchData() {
-        var calls : [MSP_code] = [ .MSP_NAV_POSHOLD ]
+    fileprivate func fetchData() {
+        var calls : [MSP_code] = [ .msp_NAV_POSHOLD ]
         
         if Configuration.theConfig.isApiVersionAtLeast("1.26") {    // INAV 1.7.1
-            calls.append(.MSP_RTH_AND_LAND_CONFIG)
-            calls.append(.MSP_FW_CONFIG)
+            calls.append(.msp_RTH_AND_LAND_CONFIG)
+            calls.append(.msp_FW_CONFIG)
         }
         chainMspCalls(msp, calls: calls) { success in
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 if success {
                     let inavConfig = INavConfig.theINavConfig
                     self.userControlModePicker.selectedIndex = inavConfig.userControlMode.intValue
@@ -110,15 +110,15 @@ class INavSettingsViewController: StaticDataTableViewController {
                     self.maxNavClimbRateField.value = msToLocaleVerticalSpeed(inavConfig.maxClimbRate)
                     self.maxManualClimbRateField.value = msToLocaleVerticalSpeed(inavConfig.maxManualClimbRate)
                     self.maxBankAngleField.value = Double(inavConfig.maxBankAngle)
-                    self.useThrottleMidForAltHoldSwitch.on = inavConfig.useThrottleMidForAltHold
+                    self.useThrottleMidForAltHoldSwitch.isOn = inavConfig.useThrottleMidForAltHold
                     self.hoverThrottleField.value = Double(inavConfig.hoverThrottle)
                     
                     self.rthAltModePicker.selectedIndex = inavConfig.rthAltControlMode
                     self.rthAltitude.value = mToLocaleDistance(inavConfig.rthAltitude)
-                    self.climbBeforeRthSwitch.on = inavConfig.rthClimbFirst
-                    self.rthClimbEmergencySwitch.on = inavConfig.rthClimbIgnoreEmergency
-                    self.rthTailFirstSwitch.on = inavConfig.rthTailFirst
-                    self.landAfterRthSwitch.on = inavConfig.rthAllowLanding
+                    self.climbBeforeRthSwitch.isOn = inavConfig.rthClimbFirst
+                    self.rthClimbEmergencySwitch.isOn = inavConfig.rthClimbIgnoreEmergency
+                    self.rthTailFirstSwitch.isOn = inavConfig.rthTailFirst
+                    self.landAfterRthSwitch.isOn = inavConfig.rthAllowLanding
                     self.landDescendRate.value = msToLocaleVerticalSpeed(inavConfig.landDescendRate)
                     self.landSlowdownMinAlt.value = mToLocaleDistance(inavConfig.landSlowdownMinAlt)
                     self.landSlowdownMaxAlt.value = mToLocaleDistance(inavConfig.landSlowdownMaxAlt)
@@ -137,14 +137,14 @@ class INavSettingsViewController: StaticDataTableViewController {
                     
                     SVProgressHUD.dismiss()
                 } else {
-                    SVProgressHUD.showErrorWithStatus("Communication error")
+                    SVProgressHUD.showError(withStatus: "Communication error")
                 }
             }
         }
     }
 
-    @IBAction func saveAction(sender: AnyObject) {
-        SVProgressHUD.showWithStatus("Saving settings", maskType: .Black)
+    @IBAction func saveAction(_ sender: Any) {
+        SVProgressHUD.show(withStatus: "Saving settings", maskType: .black)
         
         self.appDelegate.stopTimer()
         let inavConfig = INavConfig.theINavConfig
@@ -154,16 +154,16 @@ class INavSettingsViewController: StaticDataTableViewController {
         inavConfig.maxClimbRate = localeVerticalSpeedToMs(maxNavClimbRateField.value)
         inavConfig.maxManualClimbRate = localeVerticalSpeedToMs(maxManualClimbRateField.value)
         inavConfig.maxBankAngle = Int(round(maxBankAngleField.value))
-        inavConfig.useThrottleMidForAltHold = useThrottleMidForAltHoldSwitch.on
+        inavConfig.useThrottleMidForAltHold = useThrottleMidForAltHoldSwitch.isOn
         inavConfig.hoverThrottle = Int(round(hoverThrottleField.value))
         
         
         inavConfig.rthAltControlMode = self.rthAltModePicker.selectedIndex
         inavConfig.rthAltitude = localeDistanceToM(self.rthAltitude.value)
-        inavConfig.rthClimbFirst = self.climbBeforeRthSwitch.on
-        inavConfig.rthClimbIgnoreEmergency = self.rthClimbEmergencySwitch.on
-        inavConfig.rthTailFirst = self.rthTailFirstSwitch.on
-        inavConfig.rthAllowLanding = self.landAfterRthSwitch.on
+        inavConfig.rthClimbFirst = self.climbBeforeRthSwitch.isOn
+        inavConfig.rthClimbIgnoreEmergency = self.rthClimbEmergencySwitch.isOn
+        inavConfig.rthTailFirst = self.rthTailFirstSwitch.isOn
+        inavConfig.rthAllowLanding = self.landAfterRthSwitch.isOn
         inavConfig.landDescendRate = localeVerticalSpeedToMs(self.landDescendRate.value)
         inavConfig.landSlowdownMinAlt = localeDistanceToM(self.landSlowdownMinAlt.value)
         inavConfig.landSlowdownMaxAlt = localeDistanceToM(self.landSlowdownMaxAlt.value)
@@ -194,9 +194,9 @@ class INavSettingsViewController: StaticDataTableViewController {
             })
         }
         commands.append({ callback in
-            self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+            self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                 if success {
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         SVProgressHUD.setStatus("Rebooting")
                     })
                 }
@@ -204,18 +204,18 @@ class INavSettingsViewController: StaticDataTableViewController {
             })
         })
         commands.append({ callback in
-            self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2, callback: callback)
+            self.msp.sendMessage(.msp_SET_REBOOT, data: nil, retry: 2, callback: callback)
         })
         chainMspSend(commands) { success in
             if success {
                 // Wait 4 sec
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(4000) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
                     self.appDelegate.startTimer()
                     self.fetchData()
                 })
             } else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    SVProgressHUD.showErrorWithStatus("Save failed")
+                DispatchQueue.main.async {
+                    SVProgressHUD.showError(withStatus: "Save failed")
                     self.appDelegate.startTimer()
                 }
             }

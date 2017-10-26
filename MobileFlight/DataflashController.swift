@@ -36,28 +36,28 @@ class DataflashController: StaticDataTableViewController {
     @IBOutlet weak var sdcardStateImage: UIImageView!
     @IBOutlet weak var sdcardStateLabel: UILabel!
 
-    private var devicePicker: MyDownPicker!
-    private var ratePicker: MyDownPicker!
-    private var deviceValues: [Int]!
+    fileprivate var devicePicker: MyDownPicker!
+    fileprivate var ratePicker: MyDownPicker!
+    fileprivate var deviceValues: [Int]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        eraseButton.layer.borderColor = eraseButton.tintColor.CGColor
-        saveButton.layer.borderColor = saveButton.tintColor.CGColor
-        downloadButton?.layer.borderColor = downloadButton?.tintColor.CGColor
+        eraseButton.layer.borderColor = eraseButton.tintColor.cgColor
+        saveButton.layer.borderColor = saveButton.tintColor.cgColor
+        downloadButton?.layer.borderColor = downloadButton?.tintColor.cgColor
 
         devicePicker = MyDownPicker(textField: deviceField)
         ratePicker = MyDownPicker(textField: rateField)
         setDeviceOptions()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateSummary()
     }
     
-    private func setDeviceOptions() {
+    fileprivate func setDeviceOptions() {
         let dataflash = Dataflash.theDataflash
         var deviceChoices: [String]
         let config = Configuration.theConfig
@@ -114,14 +114,14 @@ class DataflashController: StaticDataTableViewController {
 
     }
     
-    private func updateSummary() {
-        chainMspCalls(msp, calls: [ .MSP_ADVANCED_CONFIG, .MSP_LOOP_TIME, .MSP_BLACKBOX_CONFIG, .MSP_DATAFLASH_SUMMARY, .MSP_SDCARD_SUMMARY ], ignoreFailure: true) { success in
-            dispatch_async(dispatch_get_main_queue()) {
+    fileprivate func updateSummary() {
+        chainMspCalls(msp, calls: [ .msp_ADVANCED_CONFIG, .msp_LOOP_TIME, .msp_BLACKBOX_CONFIG, .msp_DATAFLASH_SUMMARY, .msp_SDCARD_SUMMARY ], ignoreFailure: true) { success in
+            DispatchQueue.main.async {
                 SVProgressHUD.dismiss()
                 self.setDeviceOptions()
                 let dataflash = Dataflash.theDataflash
                 
-                self.devicePicker.selectedIndex = self.deviceValues.indexOf(dataflash.blackboxDevice) ?? -1
+                self.devicePicker.selectedIndex = self.deviceValues.index(of: dataflash.blackboxDevice) ?? -1
                 if dataflash.blackboxRateNum > 1 {
                     self.ratePicker.selectedIndex = -1
                 } else {
@@ -150,21 +150,21 @@ class DataflashController: StaticDataTableViewController {
                         self.ratePicker.selectedIndex = -1
                     }
                 }
-                self.saveButton.enabled = dataflash.blackboxSupported
+                self.saveButton.isEnabled = dataflash.blackboxSupported
                 
                 if dataflash.totalSize > 0 {
                     self.gauge.maximumValue = Double(dataflash.totalSize)
                     self.gauge.value = Double(dataflash.usedSize)
-                    self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.usedSize)))
-                    self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(Int64(dataflash.totalSize - dataflash.usedSize)))
-                    self.eraseButton.enabled = true
-                    self.downloadButton?.enabled = true
+                    self.usedLabel.text = String(format: "Used: %@", ByteCountFormatter().string(fromByteCount: Int64(dataflash.usedSize)))
+                    self.freeLabel.text = String(format: "Free: %@", ByteCountFormatter().string(fromByteCount: Int64(dataflash.totalSize - dataflash.usedSize)))
+                    self.eraseButton.isEnabled = true
+                    self.downloadButton?.isEnabled = true
                     self.cell(self.sdcardStateCell, setHidden: true)
                 } else if dataflash.sdcardSupported {
                     self.gauge.maximumValue = Double(dataflash.sdcardTotalSpace)
                     self.gauge.value = Double(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace)
-                    self.usedLabel.text = String(format: "Used: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace))
-                    self.freeLabel.text = String(format: "Free: %@", NSByteCountFormatter().stringFromByteCount(dataflash.sdcardFreeSpace))
+                    self.usedLabel.text = String(format: "Used: %@", ByteCountFormatter().string(fromByteCount: dataflash.sdcardTotalSpace - dataflash.sdcardFreeSpace))
+                    self.freeLabel.text = String(format: "Free: %@", ByteCountFormatter().string(fromByteCount: dataflash.sdcardFreeSpace))
                     switch dataflash.sdcardState {
                     case 0:
                         self.sdcardStateLabel.text = "No card inserted"
@@ -185,8 +185,8 @@ class DataflashController: StaticDataTableViewController {
                         self.sdcardStateLabel.text = "Unknown state"
                         self.sdcardStateImage.image = UIImage(named: "crossmark")
                     }
-                    self.eraseButton.enabled = false
-                    self.downloadButton?.enabled = false
+                    self.eraseButton.isEnabled = false
+                    self.downloadButton?.isEnabled = false
                     self.cell(self.eraseCell, setHidden: true)
                 } else {
                     self.sdcardStateLabel.text = "No dataflash memory or SD Card"
@@ -195,21 +195,21 @@ class DataflashController: StaticDataTableViewController {
                     self.freeLabel.text = ""
                     self.gauge.maximumValue = 1.0
                     self.gauge.value = 0.0
-                    self.eraseButton.enabled = false
-                    self.downloadButton?.enabled = false
+                    self.eraseButton.isEnabled = false
+                    self.downloadButton?.isEnabled = false
                     self.cell(self.eraseCell, setHidden: true)
                 }
-                self.reloadDataAnimated(false)
+                self.reloadData(animated: false)
             }
         }
     }
     
-    @IBAction func downloadAction(sender: AnyObject) {
+    @IBAction func downloadAction(_ sender: Any) {
         appDelegate.stopTimer()
         downloadAddress(0)
     }
     
-    func downloadAddress(address: Int) {
+    func downloadAddress(_ address: Int) {
         NSLog("Reading address %d", address)
         msp.sendDataflashRead(address, callback: { data in
             var done = true
@@ -233,10 +233,10 @@ class DataflashController: StaticDataTableViewController {
         })
     }
 
-    func eraseTimer(timer: NSTimer) {
-        msp.sendMessage(.MSP_DATAFLASH_SUMMARY, data: nil, retry: 0, callback: { success in
+    func eraseTimer(_ timer: Timer) {
+        msp.sendMessage(.msp_DATAFLASH_SUMMARY, data: nil, retry: 0, callback: { success in
             if success && Dataflash.theDataflash.ready {
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     timer.invalidate()
                     self.updateSummary()
                     SVProgressHUD.dismiss()
@@ -245,29 +245,29 @@ class DataflashController: StaticDataTableViewController {
         })
     }
     
-    @IBAction func eraseAction(sender: AnyObject) {
-        let alertController = UIAlertController(title: nil, message: "This will erase all data contained in the dataflash and will take about a minute. Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertController in
-            SVProgressHUD.showWithStatus("Erasing dataflash. Please wait.", maskType: .Black)
+    @IBAction func eraseAction(_ sender: Any) {
+        let alertController = UIAlertController(title: nil, message: "This will erase all data contained in the dataflash and will take about a minute. Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.destructive, handler: { alertController in
+            SVProgressHUD.show(withStatus: "Erasing dataflash. Please wait.", maskType: .black)
             Analytics.logEvent("dataflash_erase", parameters: nil)
-            self.msp.sendMessage(.MSP_DATAFLASH_ERASE, data: nil, retry: 0, callback: { success in
-                dispatch_async(dispatch_get_main_queue(), {
+            self.msp.sendMessage(.msp_DATAFLASH_ERASE, data: nil, retry: 0, callback: { success in
+                DispatchQueue.main.async(execute: {
                     if success {
-                        NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(DataflashController.eraseTimer(_:)), userInfo: nil, repeats: true)
+                        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(DataflashController.eraseTimer(_:)), userInfo: nil, repeats: true)
                     } else {
                         Analytics.logEvent("dataflash_erase_failed", parameters: nil)
-                        SVProgressHUD.showErrorWithStatus("Erase failed");
+                        SVProgressHUD.showError(withStatus: "Erase failed");
                         self.updateSummary()
                     }
                 })
             })
         }))
         alertController.popoverPresentationController?.sourceView = (sender as! UIView)
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
 
     }
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: Any) {
         let dataflash = Dataflash.theDataflash
         dataflash.blackboxDevice = deviceValues[devicePicker.selectedIndex]
         switch ratePicker.selectedIndex {
@@ -306,39 +306,39 @@ class DataflashController: StaticDataTableViewController {
         }
         msp.sendBlackboxConfig(dataflash) { success in
             if success {
-                dispatch_async(dispatch_get_main_queue()) {
-                    SVProgressHUD.showWithStatus("Rebooting...")
+                DispatchQueue.main.async {
+                    SVProgressHUD.show(withStatus: "Rebooting...")
                 }
-                self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2) { success in
+                self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2) { success in
                     if success {
-                        self.msp.sendMessage(.MSP_SET_REBOOT, data: nil, retry: 2) { success in
+                        self.msp.sendMessage(.msp_SET_REBOOT, data: nil, retry: 2) { success in
                             if success {
                                 // Wait 4 sec
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(4000) * NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(UInt64(4000) * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: {
                                     // Refetch information from FC
                                     self.updateSummary()
                                 })
                             } else {
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    SVProgressHUD.showErrorWithStatus("Reboot failed")
+                                DispatchQueue.main.async {
+                                    SVProgressHUD.showError(withStatus: "Reboot failed")
                                 }
                             }
                         }
                     } else {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            SVProgressHUD.showErrorWithStatus("Save failed")
+                        DispatchQueue.main.async {
+                            SVProgressHUD.showError(withStatus: "Save failed")
                         }
                     }
                 }
             } else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    SVProgressHUD.showErrorWithStatus("Save failed")
+                DispatchQueue.main.async {
+                    SVProgressHUD.showError(withStatus: "Save failed")
                 }
             }
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 {
             return Dataflash.theDataflash.sdcardSupported ? "SD Card" : "Dataflash"
         } else {

@@ -24,17 +24,17 @@ import CocoaAsyncSocket
 import SVProgressHUD
 
 class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
-    private let host: String
-    private let port: Int
-    private var msp: MSPParser
-    private var socket: GCDAsyncSocket!
-    private var connectCallback: ((success: Bool) -> ())?
-    private var _connected = false
-    private var _reachability: SCNetworkReachability!
-    private var shuttingDown = false
-    private var writingTag = 0
-    private var writtenTag = 0
-    private lazy var dispatchQueue: dispatch_queue_t = dispatch_queue_create("com.mobile-flight.socket-delegate", DISPATCH_QUEUE_SERIAL)
+    fileprivate let host: String
+    fileprivate let port: Int
+    fileprivate var msp: MSPParser
+    fileprivate var socket: GCDAsyncSocket!
+    fileprivate var connectCallback: ((_ success: Bool) -> ())?
+    fileprivate var _connected = false
+    fileprivate var _reachability: SCNetworkReachability!
+    fileprivate var shuttingDown = false
+    fileprivate var writingTag = 0
+    fileprivate var writtenTag = 0
+    fileprivate lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: "com.mobile-flight.socket-delegate", attributes: [])
     
     init(msp: MSPParser, host: String, port: Int?) {
         self.msp = msp
@@ -43,7 +43,7 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         super.init()
     }
     
-    func connect(callback: ((success: Bool) -> ())?) {
+    func connect(_ callback: ((_ success: Bool) -> ())?) {
         if _connected {
             return
         }
@@ -51,9 +51,9 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         shuttingDown = false
         connectCallback = callback
         do {
-            try socket.connectToHost(host, onPort: UInt16(port), withTimeout: 5)
+            try socket.connect(toHost: host, onPort: UInt16(port), withTimeout: 5)
         } catch {
-            callback?(success: false)
+            callback?(false)
             connectCallback = nil
         }
     }
@@ -65,16 +65,16 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         doWrite()
     }
     
-    private func doWrite() {
+    fileprivate func doWrite() {
         if !_connected {
             return
         }
         guard let msg = msp.nextOutputMessage() else {
             return
         }
-        let nsdata = NSData(bytes: msg, length: msg.count)
+        let nsdata = Data(bytes: UnsafePointer<UInt8>(msg), count: msg.count)
         writingTag += 1
-        socket.writeData(nsdata, withTimeout: -1, tag: writingTag)
+        socket.write(nsdata, withTimeout: -1, tag: writingTag)
     }
     
     func close() {
@@ -88,24 +88,24 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         return _connected
     }
 
-    @objc private func userCancelledReconnection(notification: NSNotification) {
+    @objc fileprivate func userCancelledReconnection(_ notification: Notification) {
         shuttingDown = true
         msp.closeCommChannel()
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
         SVProgressHUD.dismiss()
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window?.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @objc private func tryToReconnect() {
+    @objc fileprivate func tryToReconnect() {
         if !connected && msp.communicationEstablished {
             connect({ success in
                 if success {
-                    NSNotificationCenter.defaultCenter().removeObserver(self, name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
                     SVProgressHUD.dismiss()
                 }
                 else {
-                    NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:#selector(AsyncSocketComm.tryToReconnect), userInfo: nil, repeats: false)
+                    Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(AsyncSocketComm.tryToReconnect), userInfo: nil, repeats: false)
                 }
             })
         }
@@ -113,32 +113,32 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
 
     // MARK: GCDAsyncSocketDelegate
     
-    func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         _connected = true
         msp.openCommChannel(self)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.connectCallback?(success: true)
+        DispatchQueue.main.async {
+            self.connectCallback?(true)
             self.connectCallback = nil
         }
-        sock.readDataWithTimeout(-1, tag: 0)
+        sock.readData(withTimeout: -1, tag: 0)
     }
     
     
-    func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
+    func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         NSLog("Socket did disconnect")
         _connected = false
         if connectCallback != nil {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.connectCallback?(success: false)
+            DispatchQueue.main.async {
+                self.connectCallback?(false)
                 self.connectCallback = nil
             }
         }
         else if !shuttingDown {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 VoiceMessage.theVoice.checkAlarm(CommunicationLostAlarm())
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AsyncSocketComm.userCancelledReconnection(_:)), name: SVProgressHUDDidTouchDownInsideNotification, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(AsyncSocketComm.userCancelledReconnection(_:)), name: NSNotification.Name.SVProgressHUDDidTouchDownInside, object: nil)
                 if !SVProgressHUD.isVisible() {
-                    SVProgressHUD.showWithStatus("Connection lost. Reconnecting...", maskType: .Black)
+                    SVProgressHUD.show(withStatus: "Connection lost. Reconnecting...", maskType: .black)
                 }
             }
             tryToReconnect()
@@ -146,21 +146,21 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
         }
     }
     
-    func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
-        var array = [UInt8](count: data.length, repeatedValue: 0)
-        data.getBytes(&array, length:data.length)
+    func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+        var array = [UInt8](repeating: 0, count: data.count)
+        (data as NSData).getBytes(&array, length:data.count)
         msp.read(array)
-        sock.readDataWithTimeout(-1, tag: 0)
+        sock.readData(withTimeout: -1, tag: 0)
     }
     
-    func socket(sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
         self.writtenTag = tag
         doWrite()
     }
     
     // MARK:
     
-    private var reachability: SCNetworkReachability {
+    fileprivate var reachability: SCNetworkReachability {
         if _reachability == nil {
             _reachability = SCNetworkReachabilityCreateWithName(nil, host)!
         }
@@ -168,9 +168,13 @@ class AsyncSocketComm : NSObject, CommChannel, GCDAsyncSocketDelegate {
     }
     
     var reachable: Bool {
+        if host == "localhost" || host == "127.0.0.1" {
+            return true
+        }
+        
         var flags : SCNetworkReachabilityFlags = []
         SCNetworkReachabilityGetFlags(reachability, &flags)
-        return flags.contains(.IsDirect)
+        return flags.contains(.isDirect)
     }
     
 }

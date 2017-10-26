@@ -32,17 +32,17 @@ class UnitLabel : UILabel {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     func commonInit() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SpeedUnitLabel.userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SpeedUnitLabel.userDefaultsDidChange(_:)), name: kIASKAppSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SpeedUnitLabel.userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SpeedUnitLabel.userDefaultsDidChange(_:)), name: NSNotification.Name(rawValue: kIASKAppSettingChanged), object: nil)
         userDefaultsDidChange(self)
     }
     
-    func userDefaultsDidChange(sender: AnyObject) {
+    func userDefaultsDidChange(_ sender: Any) {
         self.text = self.unit
     }
 

@@ -23,8 +23,8 @@ import MapKit
 import SwiftSVG
 
 class MKHomeLocationView: MKAnnotationView {
-    private let svgHeight: CGFloat = 46.412
-    private var svgShapeLayer: CAShapeLayer!
+    fileprivate let svgHeight: CGFloat = 46.412
+    fileprivate var svgShapeLayer: CAShapeLayer!
 
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
@@ -36,21 +36,25 @@ class MKHomeLocationView: MKAnnotationView {
         localInit()
     }
 
-    private func localInit() {
+    fileprivate func localInit() {
         self.frame.size.width = svgHeight * 1.5
         self.frame.size.height = svgHeight * 1.5
         
-        self.opaque = false
+        self.isOpaque = false
         self.centerOffset = CGPoint(x: 0, y: -self.frame.size.height / 2)
         self.calloutOffset = CGPoint(x: 0, y: 0.333 * self.frame.size.height)
-        self.draggable = false
+        self.isDraggable = false
         self.canShowCallout = true
         
-        let svgUrl = NSBundle.mainBundle().URLForResource("home-waypoint", withExtension: "svg")!
-
-        svgShapeLayer = CAShapeLayer(SVGURL: svgUrl)
-        svgShapeLayer.transform = CATransform3DMakeTranslation(svgHeight * 0.25, svgHeight * 0.5, 0)
-        //svgShapeLayer.fillColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.8).CGColor
-        layer.addSublayer(svgShapeLayer)
+        let svgUrl = Bundle.main.url(forResource: "home-waypoint", withExtension: "svg")!
+        do {
+            let string = try String(contentsOf: svgUrl)
+            let svgShapeLayer = CAShapeLayer(pathString: string)
+            svgShapeLayer.transform = CATransform3DMakeTranslation(svgHeight * 0.25, svgHeight * 0.5, 0)
+            //svgShapeLayer.fillColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.8).CGColor
+            layer.addSublayer(svgShapeLayer)
+        } catch {
+            NSLog("Cannot load HomeLocation svg")
+        }
     }
 }

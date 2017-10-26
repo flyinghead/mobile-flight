@@ -21,7 +21,7 @@
 import UIKit
 
 class BatteryVoltageLabel: BlinkingLabel {
-    private var _defaultColor: UIColor?
+    fileprivate var _defaultColor: UIColor?
     
     var displayUnit = true
     
@@ -32,17 +32,17 @@ class BatteryVoltageLabel: BlinkingLabel {
             }
             let batteryStatus = BatteryLowAlarm().batteryStatus()
             switch batteryStatus {
-            case .Good:
+            case .good:
                 blinks = false
                 textColor = _defaultColor
                 
-            case .Warning:
+            case .warning:
                 blinks = false
-                textColor = UIColor.yellowColor()
+                textColor = UIColor.yellow
                 
-            case .Critical:
+            case .critical:
                 blinks = true
-                textColor = UIColor.redColor()
+                textColor = UIColor.red
             }
 
             self.text = String(format:"%@%@", formatNumber(self.voltage, precision: 1), displayUnit ? " V" : "")

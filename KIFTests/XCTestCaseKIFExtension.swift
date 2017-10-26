@@ -18,25 +18,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import Foundation
+import XCTest
 import KIF
 
 extension XCTestCase {
-    func tester(file : String = __FILE__, _ line : Int = __LINE__) -> KIFUITestActor {
+    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
     
-    func system(file : String = __FILE__, _ line : Int = __LINE__) -> KIFSystemTestActor {
+    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
 }
 
 extension KIFTestActor {
-    func tester(file : String = __FILE__, _ line : Int = __LINE__) -> KIFUITestActor {
+    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
     
-    func system(file : String = __FILE__, _ line : Int = __LINE__) -> KIFSystemTestActor {
+    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
 }

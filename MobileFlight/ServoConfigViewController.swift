@@ -46,7 +46,7 @@ class ServoConfigViewController: UITableViewController {
         rcChannelPicker = DownPicker(textField: rcChannelField, withData: channels)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationItem.title = String(format: "Servo %d", servoIdx + 1)
@@ -54,7 +54,7 @@ class ServoConfigViewController: UITableViewController {
         refreshAction(self)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         saveIfNeeded()
@@ -90,7 +90,7 @@ class ServoConfigViewController: UITableViewController {
         if somethingChanged {
             msp.setServoConfig(servoIdx, servoConfig: newServoConfig, callback: { success in
                 if success {
-                    self.msp.sendMessage(.MSP_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
+                    self.msp.sendMessage(.msp_EEPROM_WRITE, data: nil, retry: 2, callback: { success in
                         if !success {
                             self.showError()
                         } else {
@@ -105,18 +105,18 @@ class ServoConfigViewController: UITableViewController {
     }
     
     func showError() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             Analytics.logEvent("servo_saved_failed", parameters: nil)
-            SVProgressHUD.showErrorWithStatus("Save failed")
+            SVProgressHUD.showError(withStatus: "Save failed")
         })
     }
     func showSuccess() {
-        dispatch_async(dispatch_get_main_queue(), {
-            SVProgressHUD.showSuccessWithStatus("Settings saved")
+        DispatchQueue.main.async(execute: {
+            SVProgressHUD.showSuccess(withStatus: "Settings saved")
         })
     }
 
-    @IBAction func refreshAction(sender: AnyObject) {
+    @IBAction func refreshAction(_ sender: Any) {
         let settings = Settings.theSettings
         
         if settings.servoConfigs != nil && settings.servoConfigs!.count > servoIdx {

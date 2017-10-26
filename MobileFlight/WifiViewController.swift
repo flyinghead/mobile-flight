@@ -29,10 +29,10 @@ class WifiViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        connectButton.layer.borderColor = connectButton.tintColor.CGColor
+        connectButton.layer.borderColor = connectButton.tintColor.cgColor
     }
 
-    @IBAction func connectAction(sender: AnyObject) {
+    @IBAction func connectAction(_ sender: Any) {
         let host = ipAddressField.text!
         if host.isEmpty {
             return
@@ -40,63 +40,63 @@ class WifiViewController: UIViewController {
         let port = Int(ipPortField.text!)
         let socketComm = AsyncSocketComm(msp: msp, host: host, port: port)
         if !socketComm.reachable {
-            let alertController = UIAlertController(title: nil, message: "You don't seem to be connected to the right Wi-Fi network", preferredStyle: UIAlertControllerStyle.ActionSheet)
-            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "Try Anyway", style: UIAlertActionStyle.Default, handler: { alertController in
+            let alertController = UIAlertController(title: nil, message: "You don't seem to be connected to the right Wi-Fi network", preferredStyle: UIAlertControllerStyle.actionSheet)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: "Try Anyway", style: UIAlertActionStyle.default, handler: { alertController in
                 self.doConnectTcp(host, port: port)
             }))
-            alertController.addAction(UIAlertAction(title: "Open Settings", style: UIAlertActionStyle.Default, handler: { alertController in
-                UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+            alertController.addAction(UIAlertAction(title: "Open Settings", style: UIAlertActionStyle.default, handler: { alertController in
+                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
             }))
             alertController.popoverPresentationController?.sourceView = (sender as! UIView)
-            presentViewController(alertController, animated: true, completion: nil)
+            present(alertController, animated: true, completion: nil)
         } else {
             doConnectTcp(host, port: port)
         }
     }
     
-    private func doConnectTcp(host: String, port: Int?) {
+    fileprivate func doConnectTcp(_ host: String, port: Int?) {
         let socketComm = AsyncSocketComm(msp: msp, host: host, port: port)
         
         let msg = String(format: "Connecting to %@:%d...", host, port ?? -1)
-        SVProgressHUD.showWithStatus(msg, maskType: .Black)
+        SVProgressHUD.show(withStatus: msg, maskType: .black)
         
-        let timeOutTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(WifiViewController.connectionTimedOut(_:)), userInfo: socketComm, repeats: false)
+        let timeOutTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(WifiViewController.connectionTimedOut(_:)), userInfo: socketComm, repeats: false)
 
         socketComm.connect({ success in
             timeOutTimer.invalidate()
             if success {
                 self.initiateHandShake({ success in
                     if success {
-                        (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+                        (self.parent as! MainConnectionViewController).presentNextViewController()
                     } else {
                         self.msp.closeCommChannel()
-                        SVProgressHUD.showErrorWithStatus("Handshake failed")
+                        SVProgressHUD.showError(withStatus: "Handshake failed")
                     }
                 })
             } else {
-                SVProgressHUD.showErrorWithStatus("Connection failed")
+                SVProgressHUD.showError(withStatus: "Connection failed")
             }
         })
     }
     
-    func connectionTimedOut(timer: NSTimer) {
+    func connectionTimedOut(_ timer: Timer) {
         let socketComm = timer.userInfo as! AsyncSocketComm
         if !socketComm.connected {
-            SVProgressHUD.showErrorWithStatus("Connection timeout")
+            SVProgressHUD.showError(withStatus: "Connection timeout")
             socketComm.close()
         }
     }
 
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
-        coder.encodeObject(ipAddressField?.text, forKey: "IpAddress")
-        coder.encodeObject(ipPortField?.text, forKey: "IpPort")
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
+        coder.encode(ipAddressField?.text, forKey: "IpAddress")
+        coder.encode(ipPortField?.text, forKey: "IpPort")
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
-        ipAddressField?.text = coder.decodeObjectForKey("IpAddress") as? String ?? "192.168.4.1"
-        ipPortField?.text = coder.decodeObjectForKey("IpPort") as? String ?? "23"
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
+        ipAddressField?.text = coder.decodeObject(forKey: "IpAddress") as? String ?? "192.168.4.1"
+        ipPortField?.text = coder.decodeObject(forKey: "IpPort") as? String ?? "23"
     }
 }

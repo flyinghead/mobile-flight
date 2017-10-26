@@ -23,11 +23,11 @@ import CoreMotion
 import Firebase
 
 class Simulator : CommChannel {
-    private let msp: MSPParser
-    private let motionManager = CMMotionManager()
+    fileprivate let msp: MSPParser
+    fileprivate let motionManager = CMMotionManager()
 
-    private var closed = false
-    private var timer: NSTimer?
+    fileprivate var closed = false
+    fileprivate var timer: Timer?
     
     var connected: Bool { return !closed }
 
@@ -84,13 +84,12 @@ class Simulator : CommChannel {
         settings.digitalIdleOffsetPercent = 4.5
         
         settings.portConfigs = [
-            PortConfig(portIdentifier: .Known(.USART1), functions: PortFunction.None, mspBaudRate: .Auto, gpsBaudRate: .Auto, telemetryBaudRate: .Auto, blackboxBaudRate: .Auto),
-            PortConfig(portIdentifier: .Known(.USART2), functions: PortFunction.None, mspBaudRate: .Auto, gpsBaudRate: .Auto, telemetryBaudRate: .Auto, blackboxBaudRate: .Auto),
-            PortConfig(portIdentifier: .Known(.USART3), functions: PortFunction.None, mspBaudRate: .Auto, gpsBaudRate: .Auto, telemetryBaudRate: .Auto, blackboxBaudRate: .Auto),
+            PortConfig(portIdentifier: .known(.usart1), functions: PortFunction.None, mspBaudRate: .auto, gpsBaudRate: .auto, telemetryBaudRate: .auto, blackboxBaudRate: .auto),
+            PortConfig(portIdentifier: .known(.usart2), functions: PortFunction.None, mspBaudRate: .auto, gpsBaudRate: .auto, telemetryBaudRate: .auto, blackboxBaudRate: .auto),
+            PortConfig(portIdentifier: .known(.usart3), functions: PortFunction.None, mspBaudRate: .auto, gpsBaudRate: .auto, telemetryBaudRate: .auto, blackboxBaudRate: .auto),
         ]
         
-        settings.servoConfigs = [ServoConfig](count: 8, repeatedValue:
-            ServoConfig(minimumRC: 1000, middleRC: 1500, maximumRC: 2000, rate: 100, minimumAngle: 0, maximumAngle: 0, rcChannel: nil, reversedSources: 0))
+        settings.servoConfigs = [ServoConfig](repeating: ServoConfig(minimumRC: 1000, middleRC: 1500, maximumRC: 2000, rate: 100, minimumAngle: 0, maximumAngle: 0, rcChannel: nil, reversedSources: 0), count: 8)
         
         config.activeSensors = 0xFF
         config.mode = 1 << 3        // Horizon
@@ -137,11 +136,11 @@ class Simulator : CommChannel {
         dataflash.sdcardFreeSpace = 4 * 1024 * 1024 * 1024
         
         let inavState = INavState.theINavState
-        inavState.accStatus = .Known(.Healthy)
-        inavState.gyroStatus = .Known(.Healthy)
-        inavState.baroStatus = .Known(.Healthy)
-        inavState.gpsStatus = .Known(.Healthy)
-        inavState.magStatus =  .Known(.Healthy)
+        inavState.accStatus = .known(.healthy)
+        inavState.gyroStatus = .known(.healthy)
+        inavState.baroStatus = .known(.healthy)
+        inavState.gpsStatus = .known(.healthy)
+        inavState.magStatus =  .known(.healthy)
         
         inavState.armingFlags.insert(.NavigationSafety)
         inavState.armingFlags.remove(.OkToArm)
@@ -151,7 +150,7 @@ class Simulator : CommChannel {
 
         let gpsData = GPSData.theGPSData
         gpsData.distanceToHome = 4
-        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate {
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             appDelegate.currentLocation() { location in
                 gpsData.fix = true
                 gpsData.position = location
@@ -159,39 +158,39 @@ class Simulator : CommChannel {
             }
         }
         
-        if motionManager.deviceMotionAvailable {
+        if motionManager.isDeviceMotionAvailable {
             motionManager.deviceMotionUpdateInterval = 0.1
-            let queue = NSOperationQueue()
-            motionManager.startDeviceMotionUpdatesToQueue(queue) { motion, error in
+            let queue = OperationQueue()
+            motionManager.startDeviceMotionUpdates(to: queue) { motion, error in
                 if motion != nil {
                     let sensorData = SensorData.theSensorData
                     
-                    switch UIDevice.currentDevice().orientation {
-                    case .LandscapeLeft:
-                        sensorData.pitchAngle = motion!.attitude.roll * 180.0 / M_PI + 45.0
-                        sensorData.rollAngle = motion!.attitude.pitch * 180.0 / M_PI
-                    case .LandscapeRight:
-                        sensorData.pitchAngle = -motion!.attitude.roll * 180.0 / M_PI + 45.0
-                        sensorData.rollAngle = -motion!.attitude.pitch * 180.0 / M_PI
+                    switch UIDevice.current.orientation {
+                    case .landscapeLeft:
+                        sensorData.pitchAngle = motion!.attitude.roll * 180.0 / .pi + 45.0
+                        sensorData.rollAngle = motion!.attitude.pitch * 180.0 / .pi
+                    case .landscapeRight:
+                        sensorData.pitchAngle = -motion!.attitude.roll * 180.0 / .pi + 45.0
+                        sensorData.rollAngle = -motion!.attitude.pitch * 180.0 / .pi
                     default:
-                        sensorData.pitchAngle = -motion!.attitude.pitch * 180.0 / M_PI + 45.0
-                        sensorData.rollAngle = motion!.attitude.roll * 180.0 / M_PI
+                        sensorData.pitchAngle = -motion!.attitude.pitch * 180.0 / .pi + 45.0
+                        sensorData.rollAngle = motion!.attitude.roll * 180.0 / .pi
                     }
-                    sensorData.heading = motion!.attitude.yaw * 180.0 / M_PI
+                    sensorData.heading = -motion!.attitude.yaw * 180.0 / .pi
                     
                     sensorData.accelerometerX = motion!.userAcceleration.x
                     sensorData.accelerometerY = motion!.userAcceleration.y
                     sensorData.accelerometerZ = motion!.userAcceleration.z
                     
-                    sensorData.gyroscopeX = motion!.rotationRate.x * 180.0 / M_PI
-                    sensorData.gyroscopeY = motion!.rotationRate.y * 180.0 / M_PI
-                    sensorData.gyroscopeZ = motion!.rotationRate.z * 180.0 / M_PI
+                    sensorData.gyroscopeX = motion!.rotationRate.x * 180.0 / .pi
+                    sensorData.gyroscopeY = motion!.rotationRate.y * 180.0 / .pi
+                    sensorData.gyroscopeZ = motion!.rotationRate.z * 180.0 / .pi
                 }
             }
         }
         
-        timer = NSTimer(timeInterval: 0.1, target: self, selector: #selector(Simulator.timerDidFire(_:)), userInfo: nil, repeats: true)
-        NSRunLoop.mainRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(Simulator.timerDidFire(_:)), userInfo: nil, repeats: true)
+        RunLoop.main.add(timer!, forMode: RunLoopMode.commonModes)
 
         Analytics.logEvent("simulator_started", parameters: nil)
     }
@@ -210,7 +209,7 @@ class Simulator : CommChannel {
         timer = nil
     }
     
-    @objc private func timerDidFire(timer: NSTimer?) {
+    @objc fileprivate func timerDidFire(_ timer: Timer?) {
         msp.receiverEvent.raise()
         msp.attitudeEvent.raise()
         msp.batteryEvent.raise()

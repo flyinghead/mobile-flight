@@ -22,7 +22,7 @@ import Foundation
 
 class AutoCoded: NSObject, NSCoding {
     
-    private let AutoCodingKey = "autoEncoding"
+    fileprivate let AutoCodingKey = "autoEncoding"
     
     override init() {
         super.init()
@@ -31,22 +31,22 @@ class AutoCoded: NSObject, NSCoding {
     required init(coder aDecoder: NSCoder) {
         super.init()
         
-        let decodings = aDecoder.decodeObjectForKey(AutoCodingKey) as! [String]
+        let decodings = aDecoder.decodeObject(forKey: AutoCodingKey) as! [String]
         setValue(decodings, forKey: AutoCodingKey)
         
         for decoding in decodings {
-            setValue(aDecoder.decodeObjectForKey(decoding), forKey: decoding)
+            setValue(aDecoder.decodeObject(forKey: decoding), forKey: decoding)
         }
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(valueForKey(AutoCodingKey), forKey: AutoCodingKey)
-        for encoding in valueForKey(AutoCodingKey) as! [String] {
-            aCoder.encodeObject(valueForKey(encoding), forKey: encoding)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(value(forKey: AutoCodingKey), forKey: AutoCodingKey)
+        for encoding in value(forKey: AutoCodingKey) as! [String] {
+            aCoder.encode(value(forKey: encoding), forKey: encoding)
         }
     }
     
-    override class func accessInstanceVariablesDirectly() -> Bool {
+    override class var accessInstanceVariablesDirectly : Bool {
         return true
     }
 }

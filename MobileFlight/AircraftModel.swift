@@ -35,7 +35,7 @@ class Misc : AutoCoded {
     var accelerometerTrimPitch = 0
     var accelerometerTrimRoll = 0
     
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -58,11 +58,11 @@ class Receiver : AutoCoded {
     static var theReceiver = Receiver()
     
     var activeChannels = 0
-    var channels = [Int](count: 18, repeatedValue: 0)   // Length must match MAX_SUPPORTED_RC_CHANNEL_COUNT in cleanflight
+    var channels = [Int](repeating: 0, count: 18)   // Length must match MAX_SUPPORTED_RC_CHANNEL_COUNT in cleanflight
     
-    var map = [Int](count: 8, repeatedValue: 0)         // Length must match MAX_MAPPABLE_RX_INPUTS in cleanflight
+    var map = [Int](repeating: 0, count: 8)         // Length must match MAX_MAPPABLE_RX_INPUTS in cleanflight
 
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -107,10 +107,10 @@ class SensorData : AutoCoded {
                     //if abs(turnRate) > 360 {
                     //    NSLog("Turn rate %.0f, (dt=%f)", turnRate, deltaTime)
                     //}
-                    lastAttitude = NSDate()
+                    lastAttitude = Date()
                 }
             } else {
-                lastAttitude = NSDate()
+                lastAttitude = Date()
             }
         }
     }
@@ -122,9 +122,9 @@ class SensorData : AutoCoded {
     var maxAltitude = 0.0       // m
     
     var turnRate = 0.0          // deg / s
-    var lastAttitude: NSDate?
+    var lastAttitude: Date?
     
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -140,11 +140,11 @@ class MotorData : AutoCoded {
     
     // MSP_MOTOR
     var nMotors = 8
-    var throttle = [Int](count: 8, repeatedValue: 0)
+    var throttle = [Int](repeating: 0, count: 8)
     // MSP_SERVO
-    var servoValue = [Int](count: 8, repeatedValue: 0)
+    var servoValue = [Int](repeating: 0, count: 8)
 
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -177,7 +177,7 @@ class Dataflash : AutoCoded {
     var sdcardFreeSpace: Int64 = 0
     var sdcardTotalSpace: Int64 = 0
     
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
     
@@ -213,13 +213,13 @@ class AllAircraftData : NSObject, NSCoding {
     // MARK: NSCoding
     
     required convenience init?(coder decoder: NSCoder) {
-        guard let settings = decoder.decodeObjectForKey("Settings") as? Settings,
-            let misc = decoder.decodeObjectForKey("Misc") as? Misc,
-            let configuration = decoder.decodeObjectForKey("Configuration") as? Configuration,
-            let gpsData = decoder.decodeObjectForKey("GPSData") as? GPSData,
-            let receiver = decoder.decodeObjectForKey("Receiver") as? Receiver,
-            let sensorData = decoder.decodeObjectForKey("SensorData") as? SensorData,
-            let motorData = decoder.decodeObjectForKey("MotorData") as? MotorData
+        guard let settings = decoder.decodeObject(forKey: "Settings") as? Settings,
+            let misc = decoder.decodeObject(forKey: "Misc") as? Misc,
+            let configuration = decoder.decodeObject(forKey: "Configuration") as? Configuration,
+            let gpsData = decoder.decodeObject(forKey: "GPSData") as? GPSData,
+            let receiver = decoder.decodeObject(forKey: "Receiver") as? Receiver,
+            let sensorData = decoder.decodeObject(forKey: "SensorData") as? SensorData,
+            let motorData = decoder.decodeObject(forKey: "MotorData") as? MotorData
             else { return nil }
         
         self.init()
@@ -238,8 +238,8 @@ class AllAircraftData : NSObject, NSCoding {
         self.motorData = motorData
         MotorData.theMotorData = motorData
         
-        if decoder.containsValueForKey("INavState") {
-            self.inavState = decoder.decodeObjectForKey("INavState") as! INavState
+        if decoder.containsValue(forKey: "INavState") {
+            self.inavState = decoder.decodeObject(forKey: "INavState") as! INavState
             INavState.theINavState = self.inavState
         } else {
             self.inavState = INavState()
@@ -247,15 +247,15 @@ class AllAircraftData : NSObject, NSCoding {
         }
     }
     
-    func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(settings, forKey: "Settings")
-        coder.encodeObject(misc, forKey: "Misc")
-        coder.encodeObject(configuration, forKey: "Configuration")
-        coder.encodeObject(gpsData, forKey: "GPSData")
-        coder.encodeObject(receiver, forKey: "Receiver")
-        coder.encodeObject(sensorData, forKey: "SensorData")
-        coder.encodeObject(motorData, forKey: "MotorData")
-        coder.encodeObject(inavState, forKey: "INavState")
+    func encode(with coder: NSCoder) {
+        coder.encode(settings, forKey: "Settings")
+        coder.encode(misc, forKey: "Misc")
+        coder.encode(configuration, forKey: "Configuration")
+        coder.encode(gpsData, forKey: "GPSData")
+        coder.encode(receiver, forKey: "Receiver")
+        coder.encode(sensorData, forKey: "SensorData")
+        coder.encode(motorData, forKey: "MotorData")
+        coder.encode(inavState, forKey: "INavState")
     }
 
 }

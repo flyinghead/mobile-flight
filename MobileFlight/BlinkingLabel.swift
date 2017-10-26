@@ -46,12 +46,12 @@ class BlinkingLabel: UILabel {
         }
     }
     
-    private var timer: NSTimer?
-    private var savedAlpha: CGFloat = 1.0
+    fileprivate var timer: Timer?
+    fileprivate var savedAlpha: CGFloat = 1.0
     
-    private func createTimer() {
+    fileprivate func createTimer() {
         savedAlpha = self.alpha
-        timer = NSTimer.scheduledTimerWithTimeInterval(blinkingPeriod, target: self, selector: #selector(BlinkingLabel.timerDidFire), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: blinkingPeriod, target: self, selector: #selector(BlinkingLabel.timerDidFire), userInfo: nil, repeats: true)
     }
     
     override func didMoveToSuperview() {

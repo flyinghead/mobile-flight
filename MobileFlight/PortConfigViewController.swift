@@ -70,12 +70,12 @@ class PortConfigViewController: ConfigChildViewController {
         gpsBaudratePicker = MyDownPicker(textField: gpsBaudrateField, withData: baudRates)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let port = settings.portConfigs![portIndex]
         
-        enableMSP.on = port.functions.contains(.MSP)
+        enableMSP.isOn = port.functions.contains(.MSP)
         
         let mspBaudRate = port.mspBaudRate.intValue
         setPickerValue(mspBaudratePicker, options: baudRates, selected: mspBaudRate)
@@ -110,7 +110,7 @@ class PortConfigViewController: ConfigChildViewController {
         }
         setPickerValue(telemetryBaudratePicker, options: baudRates, selected: port.telemetryBaudRate.intValue)
         
-        enableRx.on = port.functions.contains(.RxSerial)
+        enableRx.isOn = port.functions.contains(.RxSerial)
         
         let config = Configuration.theConfig
         if port.functions.contains(.GPS) {
@@ -123,10 +123,10 @@ class PortConfigViewController: ConfigChildViewController {
         setPickerValue(gpsBaudratePicker, options: baudRates, selected: port.gpsBaudRate.intValue)
     }
     
-    private func setPickerValue(picker: MyDownPicker, options: [String], selected: Int) {
+    fileprivate func setPickerValue(_ picker: MyDownPicker, options: [String], selected: Int) {
         if selected < 0 || selected >= options.count {
             if selected < 0 || selected - options.count > 4 {
-                picker.enabled = false
+                picker.isEnabled = false
                 return
             }
             var optionsCopy = options
@@ -135,21 +135,21 @@ class PortConfigViewController: ConfigChildViewController {
             }
             picker.setData(optionsCopy)
         }
-        picker.enabled = true
+        picker.isEnabled = true
         picker.selectedIndex = selected
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         var port = settings.portConfigs![portIndex]
         
-        if enableMSP.on {
+        if enableMSP.isOn {
             port.functions.insert(.MSP)
         } else {
             port.functions.remove(.MSP)
         }
-        if mspBaudratePicker.enabled {
+        if mspBaudratePicker.isEnabled {
             port.mspBaudRate = BaudRate.values()[mspBaudratePicker.selectedIndex]
         }
         
@@ -169,7 +169,7 @@ class PortConfigViewController: ConfigChildViewController {
         default:
             break
         }
-        if blackboxBaudratePicker.enabled {
+        if blackboxBaudratePicker.isEnabled {
             port.blackboxBaudRate = BaudRate.values()[blackboxBaudratePicker.selectedIndex]
         }
         
@@ -195,11 +195,11 @@ class PortConfigViewController: ConfigChildViewController {
         default:
             break
         }
-        if telemetryBaudratePicker.enabled {
+        if telemetryBaudratePicker.isEnabled {
             port.telemetryBaudRate = BaudRate.values()[telemetryBaudratePicker.selectedIndex]
         }
         
-        if enableRx.on {
+        if enableRx.isOn {
             port.functions.insert(.RxSerial)
         } else {
             port.functions.remove(.RxSerial)
@@ -223,7 +223,7 @@ class PortConfigViewController: ConfigChildViewController {
                 port.functions.remove(.ESCSensor)
             }
         }
-        if gpsBaudratePicker.enabled {
+        if gpsBaudratePicker.isEnabled {
             port.gpsBaudRate = BaudRate.values()[gpsBaudratePicker.selectedIndex]
         }
 

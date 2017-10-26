@@ -61,65 +61,65 @@ let SYM_TEMP_C = "\u{0E}"
 let SYM_KMH = Configuration.theConfig.isINav ? "\u{A1}" : "\u{A5}"
 
 enum OSDElement {
-    case RSSI
-    case MainBattVoltage
-    case Crosshairs
-    case ArtificialHorizon
-    case HorizonSidebars
-    case OnTime
-    case FlyTime
-    case FlyMode
-    case CraftName
-    case ThrottlePosition
-    case VtxChannel
-    case CurrentDraw
-    case MAhDrawn
-    case GpsSpeed
-    case GpsSats
-    case Altitude
+    case rssi
+    case mainBattVoltage
+    case crosshairs
+    case artificialHorizon
+    case horizonSidebars
+    case onTime
+    case flyTime
+    case flyMode
+    case craftName
+    case throttlePosition
+    case vtxChannel
+    case currentDraw
+    case mAhDrawn
+    case gpsSpeed
+    case gpsSats
+    case altitude
     
-    case PidRoll
-    case PidPitch
-    case PidYaw
-    case Power
+    case pidRoll
+    case pidPitch
+    case pidYaw
+    case power
     
-    case PidRateProfile
-    case BatteryWarning
-    case AvgCellVoltage
-    case GpsLongitude
-    case GpsLatitude
-    case Debug
-    case PitchAngle
-    case RollAngle
-    case MainBattUsage
+    case pidRateProfile
+    case batteryWarning
+    case avgCellVoltage
+    case gpsLongitude
+    case gpsLatitude
+    case debug
+    case pitchAngle
+    case rollAngle
+    case mainBattUsage
     
-    case HomeDirection
-    case HomeDistance
-    case Heading
-    case Vario
-    case VarioNum
-    case AirSpeed
+    case homeDirection
+    case homeDistance
+    case heading
+    case vario
+    case varioNum
+    case airSpeed
     
-    case HeadingNum
-    case Disarmed
-    case CompassBar
-    case EscTemperature
-    case EscRpm
+    case headingNum
+    case disarmed
+    case compassBar
+    case escTemperature
+    case escRpm
     
-    case Unknown(index: Int)
+    case unknown(index: Int)
     
-    private static let betaflight31Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
-                                                .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning ]
-    private static let inav16Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
-                                          .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power,
-                                          .GpsLongitude, .GpsLatitude, .HomeDirection, .HomeDistance, .Heading, .Vario, .VarioNum, .AirSpeed ]
-    private static let cf2Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
-                                       .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning,
-                                       .AvgCellVoltage, .GpsLongitude, .GpsLatitude ]
-    private static let betaflight32Elements = [ OSDElement.RSSI, .MainBattVoltage, .Crosshairs, .ArtificialHorizon, .HorizonSidebars, .OnTime, .FlyTime, .FlyMode, .CraftName, .ThrottlePosition, .VtxChannel, .CurrentDraw,
-                                                .MAhDrawn, .GpsSpeed, .GpsSats, .Altitude, .PidRoll, .PidPitch, .PidYaw, .Power, .PidRateProfile, .BatteryWarning,
-                                                .AvgCellVoltage, .GpsLongitude, .GpsLatitude, .Debug, .PitchAngle, .RollAngle, .MainBattUsage, .Disarmed, .HomeDirection, .HomeDistance, .HeadingNum, .VarioNum,
-                                                .CompassBar, .EscTemperature, .EscRpm ]
+    fileprivate static let betaflight31Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
+                                                .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power, .pidRateProfile, .batteryWarning ]
+    fileprivate static let inav16Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
+                                          .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power,
+                                          .gpsLongitude, .gpsLatitude, .homeDirection, .homeDistance, .heading, .vario, .varioNum, .airSpeed ]
+    fileprivate static let cf2Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
+                                       .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power, .pidRateProfile, .batteryWarning,
+                                       .avgCellVoltage, .gpsLongitude, .gpsLatitude ]
+    fileprivate static let betaflight32Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
+                                                .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power, .pidRateProfile, .batteryWarning,
+                                                .avgCellVoltage, .gpsLongitude, .gpsLatitude, .debug, .pitchAngle, .rollAngle, .mainBattUsage, .disarmed, .homeDirection, .homeDistance, .headingNum, .varioNum,
+                                                .compassBar, .escTemperature, .escRpm ]
     
     
     static var Elements: [OSDElement] {
@@ -141,7 +141,7 @@ enum OSDElement {
     
     var positionable: Bool {
         switch self {
-        case .Crosshairs, .ArtificialHorizon, .HorizonSidebars:
+        case .crosshairs, .artificialHorizon, .horizonSidebars:
             return false
         default:
             return true
@@ -150,87 +150,87 @@ enum OSDElement {
     
     var preview: String {
         switch self {
-        case .RSSI:
+        case .rssi:
             return SYM_RSSI + "99"
-        case .MainBattVoltage:
+        case .mainBattVoltage:
             return SYM_BATTERY + "16.8" + SYM_VOLT
-        case .OnTime:
+        case .onTime:
             return SYM_ON_M + "05:42"
-        case .FlyTime:
+        case .flyTime:
             return SYM_FLY_M + "04:11"
-        case .FlyMode:
+        case .flyMode:
             return "STAB"
-        case .CraftName:
+        case .craftName:
             return "CRAFT_NAME"
-        case .ThrottlePosition:
+        case .throttlePosition:
             return SYM_THR + SYM_THR1 + " 69"
-        case .VtxChannel:
+        case .vtxChannel:
             return "R:2:1"
-        case .CurrentDraw:
+        case .currentDraw:
             return SYM_AMP + "42.0"
-        case .MAhDrawn:
+        case .mAhDrawn:
             return SYM_MAH + "690"
-        case .GpsSpeed:
+        case .gpsSpeed:
             return "40"
-        case .GpsSats:
+        case .gpsSats:
             return SYM_GPS_SAT + "14"
-        case .Altitude:
-            return "399.7" + (OSD.theOSD.unitMode == .Metric ? SYM_METRE : SYM_FEET)
-        case .ArtificialHorizon:
+        case .altitude:
+            return "399.7" + (OSD.theOSD.unitMode == .metric ? SYM_METRE : SYM_FEET)
+        case .artificialHorizon:
             return SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4 + SYM_AH_BAR9_4
-        case .Crosshairs:
+        case .crosshairs:
             return SYM_AH_CENTER_LINE + SYM_AH_CENTER + SYM_AH_CENTER_LINE_RIGHT
         
-        case .PidRoll:
+        case .pidRoll:
             return "ROL  43  40  20"
-        case .PidPitch:
+        case .pidPitch:
             return "PIT  58  50  22"
-        case .PidYaw:
+        case .pidYaw:
             return "YAW  70  45  20"
-        case .Power:
+        case .power:
             return "142W"
         
-        case .PidRateProfile:
+        case .pidRateProfile:
             return "1-2"
-        case .BatteryWarning:
+        case .batteryWarning:
             return "LOW VOLTAGE"
-        case .AvgCellVoltage:
+        case .avgCellVoltage:
             return SYM_BATTERY + "3.98" + SYM_VOLT
-        case .GpsLongitude:
+        case .gpsLongitude:
             return "-00.0"
-        case .GpsLatitude:
+        case .gpsLatitude:
             return "-00.0"
-        case .Debug:
+        case .debug:
             return "DBG     0     0     0     0"
-        case .PitchAngle:
+        case .pitchAngle:
             return "-00.0"
-        case .RollAngle:
+        case .rollAngle:
             return "-00.0"
-        case .MainBattUsage:
+        case .mainBattUsage:
             return SYM_PB_START + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_FULL + SYM_PB_END + SYM_PB_EMPTY + SYM_PB_CLOSE
         
-        case .HomeDirection:
+        case .homeDirection:
             return SYM_ARROW_NORTH_WEST
-        case .HomeDistance:
+        case .homeDistance:
             return "300m"
-        case .Heading:
+        case .heading:
             return "175"
-        case .Vario:
+        case .vario:
             return "-"
-        case .VarioNum:
+        case .varioNum:
             return SYM_ARROW_SOUTH + "2.2"
-        case .AirSpeed:
+        case .airSpeed:
             return " 34" + SYM_KMH
-        case .CompassBar:
+        case .compassBar:
             return SYM_HEADING_W + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_N + SYM_HEADING_LINE + SYM_HEADING_DIVIDED_LINE + SYM_HEADING_LINE + SYM_HEADING_E
-        case .Disarmed:
+        case .disarmed:
             return "DISARMED"
-        case .EscTemperature:
+        case .escTemperature:
             return SYM_TEMP_C + "37"
-        case .EscRpm:
+        case .escRpm:
             return "29000"
             
-        case .Unknown(let index):
+        case .unknown(let index):
             return String(format: "UNKNOWN%d", index)
             
         default:        // No preview
@@ -240,86 +240,86 @@ enum OSDElement {
     
     func defaultPosition() -> (x: Int, y: Int, visible: Bool) {
         switch self {
-        case .MainBattVoltage:
+        case .mainBattVoltage:
             return (12, 1, true)
-        case .RSSI:
+        case .rssi:
             return (8, 1, true)
-        case .ArtificialHorizon:
+        case .artificialHorizon:
             return (10, 6, true)
-        case .Crosshairs:
+        case .crosshairs:
             return (13, 6, true)
-        case .OnTime:
+        case .onTime:
             return (22, 1, true)
-        case .FlyTime:
+        case .flyTime:
             return (1, 1, true)
-        case .FlyMode:
+        case .flyMode:
             return (13, 11, true)
-        case .CraftName:
+        case .craftName:
             return (10, 12, true)
-        case .ThrottlePosition:
+        case .throttlePosition:
             return (1, 7, true)
-        case .VtxChannel:
+        case .vtxChannel:
             return (24, 11, true)
-        case .CurrentDraw:
+        case .currentDraw:
             return (1, 12, true)
-        case .MAhDrawn:
+        case .mAhDrawn:
             return (1, 11, true)
-        case .GpsSpeed:
+        case .gpsSpeed:
             return (26, 6, true)
-        case .GpsSats:
+        case .gpsSats:
             return (19, 1, true)
-        case .Altitude:
+        case .altitude:
             return (23, 7, true)
             
-        case .PidRoll:
+        case .pidRoll:
             return (7, 13, true)
-        case .PidPitch:
+        case .pidPitch:
             return (7, 14, true)
-        case .PidYaw:
+        case .pidYaw:
             return (7, 15, true)
-        case .Power:
+        case .power:
             return (1, 10, true)
             
-        case .PidRateProfile:
+        case .pidRateProfile:
             return (25, 10, true)
-        case .AvgCellVoltage:
+        case .avgCellVoltage:
             return (12, 2, true)
-        case .BatteryWarning:
+        case .batteryWarning:
             return (9, 10, true)
-        case .Debug:
+        case .debug:
             return (7, 12, false)
-        case .PitchAngle:
+        case .pitchAngle:
             return (1, 8, true)
-        case .RollAngle:
+        case .rollAngle:
             return (1, 9, true)
         
-        case .HomeDistance:
+        case .homeDistance:
             return (15, 9, true)
-        case .Heading:
+        case .heading:
             return (12, 1, false)
-        case .Vario:
+        case .vario:
             return (22, 5, false)
-        case .VarioNum:
+        case .varioNum:
             return (23, 8, true)
-        case .HomeDirection:
+        case .homeDirection:
             return (14, 9, true)
-        case .GpsLatitude:
+        case .gpsLatitude:
             return (25, 14, true)
-        case .GpsLongitude:
+        case .gpsLongitude:
             return (25, 15, true)
-        case .MainBattUsage:
+        case .mainBattUsage:
             return (8, 12, true)
-        case .CompassBar:
+        case .compassBar:
             return (10, 8, true)
-        case .Disarmed:
+        case .disarmed:
             return (10, 4, true)
-        case .HeadingNum:
+        case .headingNum:
             return (23, 9, true)
-        case .EscTemperature:
+        case .escTemperature:
             return (18, 2, true)
-        case .EscRpm:
+        case .escRpm:
             return (19, 2, true)
-        case .AirSpeed:
+        case .airSpeed:
             return (1, 13, false)
         default:
             return (10, 10, true)
@@ -328,7 +328,7 @@ enum OSDElement {
     
     func multiplePreviews() -> [(x: Int, y: Int, s: String)]? {
         switch self {
-        case .HorizonSidebars:
+        case .horizonSidebars:
             // center: 14, 6
             var strings = [(x: Int, y: Int, s: String)]()
             for i in -3 ..< 4 {
@@ -345,106 +345,106 @@ enum OSDElement {
     
     var description: String {
         switch self {
-        case .RSSI:
+        case .rssi:
             return "RSSI"
-        case .MainBattVoltage:
+        case .mainBattVoltage:
             return "Battery Voltage"
-        case .Crosshairs:
+        case .crosshairs:
             return "Crosshairs"
-        case .ArtificialHorizon:
+        case .artificialHorizon:
             return "Artificial Horizon"
-        case .HorizonSidebars:
+        case .horizonSidebars:
             return "Horizon Sidebars"
-        case .OnTime:
+        case .onTime:
             return "On Time"
-        case .FlyTime:
+        case .flyTime:
             return "Fly Time"
-        case .FlyMode:
+        case .flyMode:
             return "Fly Mode"
-        case .CraftName:
+        case .craftName:
             return "Craft Name"
-        case .ThrottlePosition:
+        case .throttlePosition:
             return "Throttle Position"
-        case .VtxChannel:
+        case .vtxChannel:
             return "VTX Channel"
-        case .CurrentDraw:
+        case .currentDraw:
             return "Current Draw"
-        case .MAhDrawn:
+        case .mAhDrawn:
             return "mAh Drawn"
-        case .GpsSpeed:
+        case .gpsSpeed:
             return "GPS Speed"
-        case .GpsSats:
+        case .gpsSats:
             return "GPS Sats"
-        case .Altitude:
+        case .altitude:
             return "Altitude"
             
-        case .PidRoll:
+        case .pidRoll:
             return "Roll PID"
-        case .PidPitch:
+        case .pidPitch:
             return "Pitch PID"
-        case .PidYaw:
+        case .pidYaw:
             return "Yaw PID"
-        case .Power:
+        case .power:
             return "Power"
             
-        case .PidRateProfile:
+        case .pidRateProfile:
             return "PID Rate Profile"
-        case .BatteryWarning:
+        case .batteryWarning:
             return "Battery Warning"
-        case .AvgCellVoltage:
+        case .avgCellVoltage:
             return "Average Cell Voltage"
-        case .GpsLongitude:
+        case .gpsLongitude:
             return "GPS Longitude"
-        case .GpsLatitude:
+        case .gpsLatitude:
             return "GPS Latitude"
-        case .Debug:
+        case .debug:
             return "Debug"
-        case .PitchAngle:
+        case .pitchAngle:
             return "Pitch Angle"
-        case .RollAngle:
+        case .rollAngle:
             return "Roll Angle"
-        case .MainBattUsage:
+        case .mainBattUsage:
             return "Battery Usage"
             
-        case .HomeDirection:
+        case .homeDirection:
             return "Home Direction"
-        case .HomeDistance:
+        case .homeDistance:
             return "Home Distance"
-        case .Heading:
+        case .heading:
             return "Heading"
-        case .Vario:
+        case .vario:
             return "Variometer"
-        case .VarioNum:
+        case .varioNum:
             return "Digital Variometer"
-        case .AirSpeed:
+        case .airSpeed:
             return "Air Speed"
             
-        case .HeadingNum:
+        case .headingNum:
             return "Digital Heading"
-        case .CompassBar:
+        case .compassBar:
             return "Compass Bar"
-        case .Disarmed:
+        case .disarmed:
             return "Disarmed"
-        case .EscTemperature:
+        case .escTemperature:
             return "ESC Temperature"
-        case .EscRpm:
+        case .escRpm:
             return "ESC RPM"
             
-        case .Unknown(let index):
+        case .unknown(let index):
             return String(format: "Unknown %d", index)
 
         }
     }
 }
 
-func encodePos(x: Int, y: Int, visible: Bool = true) -> Int {
+func encodePos(_ x: Int, y: Int, visible: Bool = true) -> Int {
     let v = 0x800 * (visible ? 1 : 0)
     return v
         + (y << 5)
         + x
 }
 
-func decodePos(v: Int) -> (x: Int, y: Int, visible: Bool) {
+func decodePos(_ v: Int) -> (x: Int, y: Int, visible: Bool) {
     let visible = (v & 0x800) != 0
     let y = (v >> 5) & 0x1F
     let x = v & 0x1F

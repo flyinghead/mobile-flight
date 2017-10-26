@@ -39,9 +39,9 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         localInit()
     }
     
-    private func localInit() {
+    fileprivate func localInit() {
         backgroundView = UIImageView(image: image)
-        backgroundView.contentMode = .ScaleAspectFit
+        backgroundView.contentMode = .scaleAspectFit
         backgroundView.frame = bounds
         addSubview(backgroundView)
 
@@ -55,7 +55,7 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         addGestureRecognizer(dragGesture)
     }
     
-    override func sizeThatFits(size: CGSize) -> CGSize {
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
         if size.height / size.width > image.size.height / image.size.width {
             return CGSize(width: size.width, height: size.width * image.size.height / image.size.width)
         } else {
@@ -63,13 +63,13 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    private func calcSubviewFrame(elem: OSDElement, x: Int, y: Int) -> CGRect {
+    fileprivate func calcSubviewFrame(_ elem: OSDElement, x: Int, y: Int) -> CGRect {
         let charWidth = bounds.width / CGFloat(CHARS_PER_LINE)
         let charHeight = bounds.height / CGFloat(OSD.theOSD.videoMode.lines)
         switch elem {
-        case .HorizonSidebars:
+        case .horizonSidebars:
             return CGRect(x: 7 * charWidth, y: 3 * charHeight, width: 15 * charWidth, height: 7 * charHeight)
-        case .ArtificialHorizon, .Crosshairs:
+        case .artificialHorizon, .crosshairs:
             return CGRect(x: CGFloat(elem.defaultPosition().x) * charWidth, y: CGFloat(elem.defaultPosition().y) * charHeight, width: CGFloat(elem.preview.characters.count) * charWidth, height: charHeight)
         default:
             return CGRect(x: CGFloat(x) * charWidth, y: CGFloat(y) * charHeight, width: CGFloat(elem.preview.characters.count) * charWidth, height: charHeight)
@@ -81,7 +81,7 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         for v in subviews {
             if let elemView = v as? OSDElementView {
                 let e = elemView.position.element
-                elemView.frame = calcSubviewFrame(e, x: elemView.position.x, y: elemView.position.y)
+                elemView.frame = calcSubviewFrame(e!, x: elemView.position.x, y: elemView.position.y)
             }
             else {
                 v.frame = bounds
@@ -89,15 +89,15 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    @objc private func handleTap(tapGesture: UITapGestureRecognizer) {
-        if tapGesture.state == .Ended {
-            let location = tapGesture.locationInView(self)
-            let subView = hitTest(location, withEvent: nil)
+    @objc fileprivate func handleTap(_ tapGesture: UITapGestureRecognizer) {
+        if tapGesture.state == .ended {
+            let location = tapGesture.location(in: self)
+            let subView = hitTest(location, with: nil)
             selectElement(subView)
         }
     }
     
-    private func selectElement(selection: UIView?) {
+    fileprivate func selectElement(_ selection: UIView?) {
         for view in subviews {
             if let elemView = view as? OSDElementView {
                 if elemView === selection && elemView.position.element.positionable {
@@ -109,11 +109,11 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    @objc private func handleDrag(tapGesture: UITapGestureRecognizer) {
-        let location = tapGesture.locationInView(self)
+    @objc fileprivate func handleDrag(_ tapGesture: UITapGestureRecognizer) {
+        let location = tapGesture.location(in: self)
         
-        if tapGesture.state == .Began {
-            if let elemView = hitTest(location, withEvent: nil) as? OSDElementView where elemView.position.element.positionable && elemView.selected {
+        if tapGesture.state == .began {
+            if let elemView = hitTest(location, with: nil) as? OSDElementView, elemView.position.element.positionable && elemView.selected {
                 draggedView = elemView
                 elemView.dragged = true
                 dragStartDelta = CGSize(width: location.x - elemView.frame.minX, height: location.y - elemView.frame.minY)
@@ -129,18 +129,18 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
             origin.y = CGFloat(draggedView!.position.y) * charSize.height
             draggedView!.frame.origin = origin
         }
-        if tapGesture.state == .Ended {
+        if tapGesture.state == .ended {
             draggedView?.dragged = false
             draggedView = nil
         }
     }
     
-    override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer !== dragGesture {
             return true
         }
-        let location = gestureRecognizer.locationInView(self)
-        if let elemView = hitTest(location, withEvent: nil) as? OSDElementView where elemView.position.element.positionable && elemView.selected {
+        let location = gestureRecognizer.location(in: self)
+        if let elemView = hitTest(location, with: nil) as? OSDElementView, elemView.position.element.positionable && elemView.selected {
             return true
         } else {
             return false
@@ -152,24 +152,24 @@ class OSDPreview: UIView, UIGestureRecognizerDelegate {
         for e in osd.elements {
             let frame = calcSubviewFrame(e.element, x: e.x, y: e.y)
             let view = OSDElementView(frame: frame, position: e)
-            view.hidden = !e.visible
+            view.isHidden = !e.visible
             addSubview(view)
         }
         // Send non selectionable views to the back so they don't capture taps
         for v in subviews {
-            if let elemView = v as? OSDElementView where !elemView.position.element.positionable {
-                sendSubviewToBack(elemView)
+            if let elemView = v as? OSDElementView, !elemView.position.element.positionable {
+                sendSubview(toBack: elemView)
             }
         }
         // Background needs to be at the very back
-        sendSubviewToBack(backgroundView)
+        sendSubview(toBack: backgroundView)
     }
     
     func updateVisibleViews() {
         for view in subviews {
             if let elemView = view as? OSDElementView {
-                if elemView.hidden == elemView.position.visible {
-                    elemView.hidden = !elemView.position.visible
+                if elemView.isHidden == elemView.position.visible {
+                    elemView.isHidden = !elemView.position.visible
                     selectElement(elemView)
                 }
                 elemView.setNeedsDisplay()

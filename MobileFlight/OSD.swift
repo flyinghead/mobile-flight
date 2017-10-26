@@ -21,13 +21,13 @@
 import Foundation
 
 enum VideoMode : Int {
-    case Auto = 0
-    case PAL = 1
-    case NTSC = 2
+    case auto = 0
+    case pal = 1
+    case ntsc = 2
     
     var lines: Int {
         switch self {
-        case NTSC:
+        case .ntsc:
             return NTSC_LINES
         default:
             return PAL_LINES
@@ -38,51 +38,51 @@ enum VideoMode : Int {
 }
 
 enum UnitMode : Int {
-    case Imperial = 0
-    case Metric = 1
+    case imperial = 0
+    case metric = 1
     
     static let descriptions = [ "Imperial", "Metric" ]
 }
 
 enum FlightStats : Int {
-    case MaxSpeed = 0
-    case MinBattery = 1
-    case MinRssi = 2
-    case MaxCurrent = 3
-    case UsedMAh = 4
-    case MaxAltitude = 5
-    case Blackbox = 6
-    case EndBattery = 7
-    case Timer1 = 8
-    case Timer2 = 9
-    case MaxDistance = 10
-    case BlackboxNumber = 11
+    case maxSpeed = 0
+    case minBattery = 1
+    case minRssi = 2
+    case maxCurrent = 3
+    case usedMAh = 4
+    case maxAltitude = 5
+    case blackbox = 6
+    case endBattery = 7
+    case timer1 = 8
+    case timer2 = 9
+    case maxDistance = 10
+    case blackboxNumber = 11
     
     var label: String {
         switch self {
-        case .MaxSpeed:
+        case .maxSpeed:
             return "Max Speed"
-        case .MinBattery:
+        case .minBattery:
             return "Min Battery"
-        case .MinRssi:
+        case .minRssi:
             return "Min RSSI"
-        case .MaxCurrent:
+        case .maxCurrent:
             return "Max Current"
-        case .UsedMAh:
+        case .usedMAh:
             return "Used mAh"
-        case .MaxAltitude:
+        case .maxAltitude:
             return "Max Altitude"
-        case .Blackbox:
+        case .blackbox:
             return "Blackbox"
-        case .EndBattery:
+        case .endBattery:
             return "End Battery"
-        case .Timer1:
+        case .timer1:
             return "Timer1"
-        case .Timer2:
+        case .timer2:
             return "Timer2"
-        case .MaxDistance:
+        case .maxDistance:
             return "Max Distance"
-        case .BlackboxNumber:
+        case .blackboxNumber:
             return "Blackbox Log Number"
         }
     }
@@ -95,7 +95,7 @@ struct OSDTimer {
     var precision: Int  // 0=1 second, 1=1/100 second
     var alarm: Int      // In minutes
     
-    static func parse(rawValue: Int) -> OSDTimer {
+    static func parse(_ rawValue: Int) -> OSDTimer {
         return OSDTimer(source: rawValue & 0xF, precision: (rawValue >> 4) & 0xF, alarm: (rawValue >> 8) & 0xFF)
     }
     
@@ -108,10 +108,10 @@ class OSD {
     static var theOSD = OSD()
     
     var supported = false
-    var videoMode = VideoMode.Auto
-    var unitMode = UnitMode.Imperial
+    var videoMode = VideoMode.auto
+    var unitMode = UnitMode.imperial
     var elements = [OSDElementPosition]()
-    private var _fontDefinition: FontDefinition!
+    fileprivate var _fontDefinition: FontDefinition!
     var fontName: String!
     
     var rssiAlarm = 20
@@ -148,7 +148,7 @@ class OSD {
          */
     }
 
-    func loadFont(name: String) {
+    func loadFont(_ name: String) {
         if fontName != nil && fontName == name {
             return
         }
@@ -162,7 +162,7 @@ class OSD {
         } else {
             fontPath = "cleanflight/" + (name == "betaflight" ? "cleanflight" : name)
         }
-        if let url = NSBundle.mainBundle().URLForResource(fontPath, withExtension: "mcm") {
+        if let url = Bundle.main.url(forResource: fontPath, withExtension: "mcm") {
             _fontDefinition = FontDefinition.load(url)
             fontName = name
             UserDefault.OSDFont.setValue(name)

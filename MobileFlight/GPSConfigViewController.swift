@@ -43,7 +43,7 @@ class GPSConfigViewController: ConfigChildViewController {
         magDeclinationField.delegate = self
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if gpsProtocolPicker!.selectedIndex >= 0 {
             settings?.gpsType = gpsProtocolPicker!.selectedIndex
@@ -55,24 +55,24 @@ class GPSConfigViewController: ConfigChildViewController {
         configViewController?.refreshUI()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        gpsSwitch.on = settings!.features.contains(BaseFlightFeature.GPS) ?? false
+        gpsSwitch.isOn = settings!.features.contains(BaseFlightFeature.GPS)
         gpsProtocolPicker?.selectedIndex = settings!.gpsType
         gpsRegionPicker?.selectedIndex = settings!.gpsUbxSbas
         magDeclinationField.value = settings!.magDeclination
-        cells(hideableCells, setHidden: !gpsSwitch.on)
-        reloadDataAnimated(false)
+        cells(hideableCells, setHidden: !gpsSwitch.isOn)
+        reloadData(animated: false)
     }
     
-    @IBAction func gpsSwitchChanged(sender: AnyObject) {
-        if (gpsSwitch.on) {
+    @IBAction func gpsSwitchChanged(_ sender: Any) {
+        if (gpsSwitch.isOn) {
             settings!.features.insert(BaseFlightFeature.GPS)
             cells(hideableCells, setHidden: false)
         } else {
             settings!.features.remove(BaseFlightFeature.GPS)
             cells(hideableCells, setHidden: true)
         }
-        reloadDataAnimated(true)
+        reloadData(animated: true)
     }
 }

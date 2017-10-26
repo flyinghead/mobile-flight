@@ -19,6 +19,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import UIKit
+import Charts
 
 class MagnetometerViewController: XYZSensorViewController {
     
@@ -26,13 +27,13 @@ class MagnetometerViewController: XYZSensorViewController {
         super.viewDidLoad()
         
         let leftAxis = chartView.leftAxis;
-        leftAxis.axisMaxValue = 1.0;
-        leftAxis.axisMinValue = -1.0;
+        leftAxis.axisMaximum = 1.0;
+        leftAxis.axisMinimum = -1.0;
         
-        let nf = NSNumberFormatter()
-        nf.locale = NSLocale.currentLocale()
+        let nf = NumberFormatter()
+        nf.locale = Locale.current
         nf.maximumFractionDigits = 1
-        chartView.leftAxis.valueFormatter = nf
+        chartView.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: nf)
     }
     
     override func updateSensorData() {

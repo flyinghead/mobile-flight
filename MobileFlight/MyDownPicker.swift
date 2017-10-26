@@ -31,7 +31,7 @@ class MyDownPicker: DownPicker {
         setPlaceholder("")
     }
     
-    override init!(textField tf: UITextField!, withData data: [AnyObject]!) {
+    override init!(textField tf: UITextField!, withData data: [Any]!) {
         super.init(textField: tf, withData: data)
         setPlaceholder("")
     }
@@ -40,18 +40,18 @@ class MyDownPicker: DownPicker {
         super.init(coder: aDecoder)
     }
     
-    override func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    override func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         let beginEditing = super.textFieldShouldBeginEditing(textField)
         if beginEditing {
-            sendActionsForControlEvents(.EditingDidBegin)
+            sendActions(for: .editingDidBegin)
         }
         
         return beginEditing
     }
     
-    override func textFieldDidEndEditing(textField: UITextField) {
+    override func textFieldDidEndEditing(_ textField: UITextField) {
         super.textFieldDidEndEditing(textField)
-        sendActionsForControlEvents(.EditingDidEnd)
+        sendActions(for: .editingDidEnd)
     }
 
     override var selectedIndex: Int {

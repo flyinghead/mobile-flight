@@ -22,23 +22,23 @@ import UIKit
 
 class GPSViewController : UITableViewController {
     var gpsEventHandler: Disposable?
-    var slowTimer: NSTimer?
+    var slowTimer: Timer?
     
     func receivedGpsData() {
         tableView.reloadData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         gpsEventHandler = msp.gpsEvent.addHandler(self, handler: GPSViewController.receivedGpsData)
         if (slowTimer == nil) {
             // Cleanflight configurator uses 75ms interval. Cleanflight firmware polls every second with ublox GPS.
-            slowTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(GPSViewController.slowTimerDidFire(_:)), userInfo: nil, repeats: true)
+            slowTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GPSViewController.slowTimerDidFire(_:)), userInfo: nil, repeats: true)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         gpsEventHandler?.dispose()
@@ -47,19 +47,19 @@ class GPSViewController : UITableViewController {
         slowTimer = nil
     }
     
-    func slowTimerDidFire(sender: AnyObject) {
+    func slowTimerDidFire(_ sender: Any) {
         if Configuration.theConfig.isGPSActive() {
-            msp.sendMessage(.MSP_GPSSVINFO, data: nil)
+            msp.sendMessage(.msp_GPSSVINFO, data: nil)
         }
     }
     
     // MARK: - Table View
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (section == 0) {
             return 9
         } else {
@@ -67,7 +67,7 @@ class GPSViewController : UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
             return "GPS"
         } else {
@@ -75,22 +75,22 @@ class GPSViewController : UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let gpsData = GPSData.theGPSData;
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("GPSCell", forIndexPath: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "GPSCell", for: indexPath)
             
-            cell.detailTextLabel!.textColor = UIColor.lightGrayColor()      // FIXME How to reset to default (ie as set in storyboard)
+            cell.detailTextLabel!.textColor = UIColor.lightGray      // FIXME How to reset to default (ie as set in storyboard)
             switch indexPath.row {
             case 0:
                 cell.textLabel!.text = "3D Fix"
                 
                 if (gpsData.fix) {
                     cell.detailTextLabel!.text = "Yes"
-                    cell.detailTextLabel!.textColor = UIColor.greenColor()
+                    cell.detailTextLabel!.textColor = UIColor.green
                 } else {
                     cell.detailTextLabel!.text = "No"
-                    cell.detailTextLabel!.textColor = UIColor.redColor()
+                    cell.detailTextLabel!.textColor = UIColor.red
                 }
             case 1:
                 cell.textLabel!.text = "Altitude"
@@ -122,7 +122,7 @@ class GPSViewController : UITableViewController {
             
             return cell
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("GPSSatCell", forIndexPath: indexPath) as! GPSSatCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "GPSSatCell", for: indexPath) as! GPSSatCell
             
             let sats = gpsData.satellites
             if indexPath.row < sats.count {

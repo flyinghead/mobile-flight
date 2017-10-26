@@ -19,15 +19,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import Foundation
+import CocoaAsyncSocket
 import XCTest
 @testable import MobileFlight
 
-class CleanflightSimulator : NSObject, NSStreamDelegate {
+class CleanflightSimulator : NSObject, StreamDelegate, GCDAsyncSocketDelegate {
     static let instance = CleanflightSimulator()
     
-    let port = 8777
+    let port: UInt16 = 8777
     
-    private var mode: UInt32 = 0        // Flight modes
+    fileprivate var mode: UInt32 = 0        // Flight modes
     var voltage = 0.0
     var amps = 0.0
     var mAh = 0
@@ -41,74 +42,33 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
     var speed = 0.0
     var distanceToHome = 0
     
-    private var boxnames: [Mode] = [ .ANGLE, .ARM, .GTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPS_HOLD, .GPS_HOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSD_SW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY, .AIR ]
+    fileprivate var boxnames: [Mode] = [ .ANGLE, .ARM, .GTUNE, .BARO, .BEEPER, .BLACKBOX, .CALIB, .CAMSTAB, .CAMTRIG, .FAILSAFE, .GOVERNOR, .GPS_HOLD, .GPS_HOME, .GTUNE, .HEADADJ, .HEADFREE, .HORIZON, .LEDLOW, .LEDMAX, .LLIGHTS, .MAG, .OSD_SW, .PASSTHRU, .SERVO1, .SERVO2, .SERVO3, .SONAR, .TELEMETRY, .AIR ]
     
-    private var thread: NSThread!
-
-    private var socketFD: Int32!
+    fileprivate var socket: GCDAsyncSocket!
+    fileprivate lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: "com.mobile-flight.testsim-socket-delegate", attributes: [])
+    fileprivate var connectedSockets = [GCDAsyncSocket]()
     
-    private var socketContext: CFSocketContext!
-    private var serviceSocket: CFSocket!
-    private var serviceRunLoopSource: CFRunLoopSource!
-    
-    private var inStream: NSInputStream!
-    private var outStream: NSOutputStream!
-    
-    private var codec = MSPCodec()
+    fileprivate var codec = MSPCodec()
     
     func start() -> Bool {
         codec.gcsMode = false
         
-        socketFD = socket(AF_INET, SOCK_STREAM, 0)
+        socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatchQueue)
         
-        var yes: UInt32 = 1
-        Foundation.setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &yes, socklen_t(sizeofValue(yes)))
-        
-        var sin = sockaddr_in()
-        sin.sin_family = sa_family_t(AF_INET)
-        sin.sin_len = UInt8(sizeofValue(sin))
-        sin.sin_port = in_port_t(port).bigEndian
-        
-        let bindError = withUnsafePointer(&sin) {
-            Foundation.bind(socketFD, UnsafePointer($0), UInt32(sin.sin_len))
-        }
-        if bindError != 0 {
-            NSLog("CleanflightSimulator: Bind error %d", bindError)
+        do {
+            try socket.accept(onPort: port)
+        } catch let error {
+            NSLog("GCDAsyncSocket.accept failed: " + error.localizedDescription)
             return false
         }
-        var addrLen = socklen_t(sizeofValue(sin))
-        
-        let socketError = withUnsafeMutablePointers(&sin, &addrLen) { (sinPtr, addrPtr) -> Int32 in
-            getsockname(socketFD, UnsafeMutablePointer(sinPtr), UnsafeMutablePointer(addrPtr))
-        }
-        if socketError != 0 {
-            NSLog("CleanflightSimulator: Socket error %d", socketError)
-            return false
-        }
-        
-        let listenError = listen(socketFD, 5)
-        if listenError != 0 {
-            NSLog("CleanflightSimulator: Listen error %d", listenError)
-            return false
-        }
-        
-        var context = CFSocketContext()
-        socketContext = context
-        
-        serviceSocket = withUnsafeMutablePointer(&context) {
-            CFSocketCreateWithNative(nil, socketFD, CFSocketCallBackType.AcceptCallBack.rawValue, CallbackListen, UnsafePointer<CFSocketContext>($0))
-        }
-        
-        serviceRunLoopSource = CFSocketCreateRunLoopSource(nil, serviceSocket, 0)
-        
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), serviceRunLoopSource, kCFRunLoopCommonModes)
         
         return true
     }
     
     func stop() {
-        closeStreams()
-        close(socketFD)
+        socket.delegate = nil
+        socket.disconnect()
+        socket = nil
         resetValues()
     }
     
@@ -128,204 +88,126 @@ class CleanflightSimulator : NSObject, NSStreamDelegate {
         distanceToHome = 0
     }
     
-    func stream(stream: NSStream, handleEvent eventCode: NSStreamEvent) {
-        switch eventCode {
-        case NSStreamEvent.None:
-            break
-            
-        case NSStreamEvent.OpenCompleted:
-            //serial.delegate = self
-            //serial.open()
-            break
-            
-        case NSStreamEvent.HasBytesAvailable:
-            if stream == inStream {
-                var buffer = [UInt8](count: 4096, repeatedValue: 0)
-                let len = inStream.read(&buffer, maxLength: buffer.count)
-                if (len > 0) {
-                    receiveData([UInt8](buffer.prefix(len)))
-                }
-                else if (len <= 0) {
-                    if (len < 0) {
-                        NSLog("CleanflightSimulator: Communication error")
-                    }
-                    //close()
-                }
-            }
-            
-        case NSStreamEvent.HasSpaceAvailable:
-            // FIXME Let assume all write can proceed ... sendIfAvailable()
-            break
-            
-        case NSStreamEvent.ErrorOccurred:
-            NSLog("CleanflightSimulator: NSStreamEvent.ErrorOccurred")
-            closeStreams()
-            
-        case NSStreamEvent.EndEncountered:
-            NSLog("CleanflightSimulator: End of stream")
-            closeStreams()
-            
-        default:
-            break
-        }
-    }
-
-    private func closeStreams() {
-        thread.cancel()
-    }
-
-    private func receiveData(data: [UInt8]) {
+    fileprivate func receiveData(_ data: [UInt8], fromSocket sock: GCDAsyncSocket) {
         for b in data {
             if let (status, mspCode, message) = codec.decode(b) {
                 if status {
-                    operation(mspCode, message: message)
+                    operation(mspCode, message: message, fromSocket: sock)
                 }
             }
         }
     }
     
-    private func short(v: Int) -> NSNumber {
-        return NSNumber(short: Int16(v))
+    fileprivate func short(_ v: Int) -> NSNumber {
+        return NSNumber(value: Int16(v) as Int16)
     }
     
-    private func byte(v: Int) -> NSNumber {
-        return NSNumber(char: Int8(v))
+    fileprivate func byte(_ v: Int) -> NSNumber {
+        return NSNumber(value: Int8(v) as Int8)
     }
     
-    private func uint(v: Int) -> NSNumber {
-        return NSNumber(unsignedInt: UInt32(v))
+    fileprivate func uint(_ v: Int) -> NSNumber {
+        return NSNumber(value: UInt32(v) as UInt32)
     }
     
-    private func int(v: Int) -> NSNumber {
-        return NSNumber(int: Int32(v))
+    fileprivate func int(_ v: Int) -> NSNumber {
+        return NSNumber(value: Int32(v) as Int32)
     }
     
-    private func operation(mspCode: MSP_code, message: [UInt8]) {
+    fileprivate func operation(_ mspCode: MSP_code, message: [UInt8], fromSocket sock: GCDAsyncSocket) {
         NSLog("CleanflightSimulator: operation %d", mspCode.rawValue)
         switch mspCode {
-        case .MSP_FC_VARIANT:
-            send(mspCode, "CLFL")
-        case .MSP_API_VERSION:
-            send(mspCode, byte(0), byte(1), byte(16))
-        case .MSP_ATTITUDE:
-            send(mspCode, short(Int(roll * 10)), short(Int(pitch * 10)), short(heading))
-        case .MSP_ALTITUDE:
-            send(mspCode, int(Int(altitude * 100)), short(Int(variometer * 100)))
-        case .MSP_UID:
-            send(mspCode, uint(0xBAADF00D), uint(0xBAADF00D), uint(0xBAADF00D))
-        case .MSP_BOXNAMES:
+        case .msp_FC_VARIANT:
+            send(to: sock, mspCode: mspCode, "CLFL")
+        case .msp_API_VERSION:
+            send(to: sock, mspCode: mspCode, byte(0), byte(1), byte(16))
+        case .msp_ATTITUDE:
+            send(to: sock, mspCode: mspCode, short(Int(roll * 10)), short(Int(pitch * 10)), short(heading))
+        case .msp_ALTITUDE:
+            send(to: sock, mspCode: mspCode, int(Int(altitude * 100)), short(Int(variometer * 100)))
+        case .msp_UID:
+            send(to: sock, mspCode: mspCode, uint(0xBAADF00D), uint(0xBAADF00D), uint(0xBAADF00D))
+        case .msp_BOXNAMES:
             var boxnamesString = ""
             for name in boxnames {
                 boxnamesString += name.rawValue + ";"
             }
-            send(mspCode, boxnamesString);
-        case .MSP_STATUS, .MSP_STATUS_EX:
-            send(mspCode, short(3500), short(0), short(0x7FFF), uint(Int(bitPattern: UInt(mode))), byte(0))
-        case .MSP_ANALOG:
-            send(mspCode, byte(Int(voltage * 10.0)), short(mAh), short(rssi), short(Int(amps * 100)))
-        case .MSP_RAW_GPS:
-            send(mspCode, byte(1), byte(numSats), int(0), int(0), short(0), short(Int(speed * 100000 / 3600)), short(heading * 10))
-        case .MSP_COMP_GPS:
-            send(mspCode, short(distanceToHome), short(0), byte(1))
-        case .MSP_VOLTAGE_METER_CONFIG:
-            send(mspCode, byte(110), byte(33), byte(43), byte(36))
-        case .MSP_CURRENT_METER_CONFIG:
-            send(mspCode, short(1), short(0), byte(1), short(1500))
+            send(to: sock, mspCode: mspCode, boxnamesString);
+        case .msp_STATUS, .msp_STATUS_EX:
+            send(to: sock, mspCode: mspCode, short(3500), short(0), short(0x7FFF), uint(Int(bitPattern: UInt(mode))), byte(0))
+        case .msp_ANALOG:
+            send(to: sock, mspCode: mspCode, byte(Int(voltage * 10.0)), short(mAh), short(rssi), short(Int(amps * 100)))
+        case .msp_RAW_GPS:
+            send(to: sock, mspCode: mspCode, byte(1), byte(numSats), int(0), int(0), short(0), short(Int(speed * 100000 / 3600)), short(heading * 10))
+        case .msp_COMP_GPS:
+            send(to: sock, mspCode: mspCode, short(distanceToHome), short(0), byte(1))
+        case .msp_VOLTAGE_METER_CONFIG:
+            send(to: sock, mspCode: mspCode, byte(110), byte(33), byte(43), byte(36))
+        case .msp_CURRENT_METER_CONFIG:
+            send(to: sock, mspCode: mspCode, short(1), short(0), byte(1), short(1500))
         default:
             NSLog("CleanflightSimulator: Unhandled operation %d", mspCode.rawValue)
         }
     }
     
-    private func send(mspCode: MSP_code, _ args: AnyObject...) {
+    fileprivate func send(to: GCDAsyncSocket, mspCode: MSP_code, _ args: Any...) {
         var message = [UInt8]()
         for n in args {
             if n is NSNumber {
-                switch CFNumberGetType(n as! CFNumberRef) {
-                case .SInt8Type:
-                    message.append(n.unsignedCharValue);
-                case .SInt16Type:
-                    message.appendContentsOf(writeInt16(n.integerValue))
+                switch CFNumberGetType(n as! CFNumber) {
+                case .sInt8Type:
+                    message.append((n as! NSNumber).uint8Value);
+                case .sInt16Type:
+                    message.append(contentsOf: writeInt16((n as! NSNumber).intValue))
                     break
-                case .SInt32Type, .SInt64Type:
-                    message.appendContentsOf(writeInt32(n.integerValue))
+                case .sInt32Type, .sInt64Type:
+                    message.append(contentsOf: writeInt32((n as! NSNumber).intValue))
                     break
                 default:
                     XCTFail("Unsupported MSP message number argument type")
                 }
             } else if n is String {
-                message.appendContentsOf((n as! String).utf8)
+                message.append(contentsOf: (n as! String).utf8)
             } else {
                 XCTFail("Unsupported MSP message argument type")
             }
         }
         let data = codec.encode(mspCode, message: message)
-        outStream.write(data, maxLength: data.count)
-    }
-    
-    func startThread() {
-        thread = NSThread(target: self, selector: "threadRun", object: nil)
-        thread.start()
-    }
-    
-    // Entry point of the background thread on which streams are scheduled
-    func threadRun() {
-        inStream.delegate = self
-        outStream.delegate = self
-        
-        inStream.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        outStream.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        
-        inStream.open()
-        outStream.open()
-        
-        while true {
-            NSRunLoop.currentRunLoop().runUntilDate(NSDate().dateByAddingTimeInterval(0.5))
-            if NSThread.currentThread().cancelled {
-                break
-            }
-        }
-        
-        inStream.close();
-        outStream.close();
-        inStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        outStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        inStream.delegate = nil
-        outStream.delegate = nil
-        inStream = nil
-        outStream = nil
-        NSLog("CleanflightSimulator: Communication closed")
-    }
 
-    func setMode(mode: Mode) {
-        if let index = boxnames.indexOf(mode) {
+        to.write(Data(bytes: data), withTimeout: -1, tag: 0)
+    }
+    
+    func setMode(_ mode: Mode) {
+        if let index = boxnames.index(of: mode) {
             self.mode = self.mode | UInt32(1 << index)
         } else {
             XCTFail("Unknown mode")
         }
     }
-    func unsetMode(mode: Mode) {
-        if let index = boxnames.indexOf(mode) {
+    func unsetMode(_ mode: Mode) {
+        if let index = boxnames.index(of: mode) {
             self.mode = self.mode & ~UInt32(1 << index)
         } else {
             XCTFail("Unknown mode")
         }
     }
-}
-
-
-func CallbackListen(s: CFSocket!, callbackType: CFSocketCallBackType, address: CFData!, data: UnsafePointer<Void>, info: UnsafeMutablePointer<Void>) {
-    NSLog("CleanflightSimulator: Incoming connection: \(data)")
     
-    var readStream: Unmanaged<CFReadStream>?, writeStream: Unmanaged<CFWriteStream>?
+    func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+        NSLog("New socket accepted")
+        connectedSockets.append(newSocket)
+        newSocket.readData(withTimeout: -1, tag: 0)
+    }
     
-    let nativeSocket = UnsafePointer<CFSocketNativeHandle>(data)
+    func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+        NSLog("didRead: " + data.debugDescription)
+        let array = [UInt8](data)
+        receiveData(array, fromSocket: sock)
+        sock.readData(withTimeout: -1, tag: 0)
+    }
     
-    CFStreamCreatePairWithSocket(kCFAllocatorDefault, nativeSocket.memory, &readStream, &writeStream)
-    
-    let server = CleanflightSimulator.instance
-    
-    server.inStream = readStream!.takeRetainedValue()
-    server.outStream = writeStream!.takeRetainedValue()
-    
-    server.startThread()
+    func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+        if let i = connectedSockets.index(of: sock) {
+            connectedSockets.remove(at: i)
+        }
+    }
 }

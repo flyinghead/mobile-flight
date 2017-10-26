@@ -26,13 +26,13 @@ class SimulatorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        startButton.layer.borderColor = startButton.tintColor.CGColor
+        startButton.layer.borderColor = startButton.tintColor.cgColor
 
     }
     
-    @IBAction func startAction(sender: AnyObject) {
+    @IBAction func startAction(_ sender: Any) {
         _ = Simulator(msp: self.msp)
-        (self.parentViewController as! MainConnectionViewController).presentNextViewController()
+        (self.parent as! MainConnectionViewController).presentNextViewController()
         
     }
 }

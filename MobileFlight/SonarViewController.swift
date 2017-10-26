@@ -27,40 +27,40 @@ class SonarViewController: BarometerViewController {
         super.viewDidLoad()
 
         let leftAxis = chartView.leftAxis
-        leftAxis.axisMaxValue = selectedUnitSystem() != .Metric ? 50.0 : 100.0
-        leftAxis.axisMinValue =  0.0
+        leftAxis.axisMaximum = selectedUnitSystem() != .metric ? 50.0 : 100.0
+        leftAxis.axisMinimum =  0.0
 
-        let nf = NSNumberFormatter()
-        nf.locale = NSLocale.currentLocale()
+        let nf = NumberFormatter()
+        nf.locale = Locale.current
         nf.maximumFractionDigits = 0
-        leftAxis.valueFormatter = nf
+        leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: nf)
     }
 
-    override func makeDataSet(yVals: [ChartDataEntry]) -> ChartDataSet {
-        return makeDataSet(yVals, label: "Sonar", color: UIColor.blueColor())
+    override func makeDataSet(_ yVals: [ChartDataEntry]) -> ChartDataSet {
+        return makeDataSet(yVals, label: "Sonar", color: UIColor.blue)
     }
 
     override func updateSensorData() {
         let sonar = Double(SensorData.theSensorData.sonar)
-        let value = selectedUnitSystem() != .Metric ? sonar / 2.54 : sonar
+        let value = selectedUnitSystem() != .metric ? sonar / 2.54 : sonar
         
         samples.append(value)
         
         let leftAxis = chartView.leftAxis
-        if value > leftAxis.axisMaxValue {
+        if value > leftAxis.axisMaximum {
             leftAxis.resetCustomAxisMax()
         }
-        if value < leftAxis.axisMinValue {
+        if value < leftAxis.axisMinimum {
             leftAxis.resetCustomAxisMin()
         }
     }
 
     override func sendMSPCommands() {
-        msp.sendMessage(.MSP_SONAR, data: nil)
+        msp.sendMessage(.msp_SONAR, data: nil)
     }
 
-    override func userDefaultsDidChange(sender: AnyObject) {
-        titleLabel.text = selectedUnitSystem() != .Metric ? "Sonar - inches" : "Sonar - cm"
+    override func userDefaultsDidChange(_ sender: Any) {
+        titleLabel.text = selectedUnitSystem() != .metric ? "Sonar - inches" : "Sonar - cm"
     }
     
     // MARK: Event Handlers
@@ -75,7 +75,7 @@ class SonarViewController: BarometerViewController {
 
     // MARK: 
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         eventHandler = msp.sonarEvent.addHandler(self, handler: SonarViewController.receivedSonarData)
         super.viewWillAppear(animated)
     }
