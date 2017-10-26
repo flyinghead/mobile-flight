@@ -19,30 +19,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import Foundation
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
-}
-
 
 enum ParserState : Int { case sync1 = 0, sync2, direction, length, code, payload, checksum };
 
@@ -110,7 +86,7 @@ open class MSPCodec {
         case .payload:
             messageBuffer?.append(b);
             checksum ^= b
-            if messageBuffer?.count >= expectedMsgLength {
+            if messageBuffer != nil && messageBuffer!.count >= expectedMsgLength {
                 state = .checksum
             }
         case .checksum:
