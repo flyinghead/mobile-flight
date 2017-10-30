@@ -47,14 +47,10 @@ class MKHomeLocationView: MKAnnotationView {
         self.canShowCallout = true
         
         let svgUrl = Bundle.main.url(forResource: "home-waypoint", withExtension: "svg")!
-        do {
-            let string = try String(contentsOf: svgUrl)
-            let svgShapeLayer = CAShapeLayer(pathString: string)
-            svgShapeLayer.transform = CATransform3DMakeTranslation(svgHeight * 0.25, svgHeight * 0.5, 0)
-            //svgShapeLayer.fillColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.8).CGColor
-            layer.addSublayer(svgShapeLayer)
-        } catch {
-            NSLog("Cannot load HomeLocation svg")
+        _ = CALayer(SVGURL: svgUrl) { svgLayer in
+            svgLayer.transform = CATransform3DMakeTranslation(self.svgHeight * 0.25, self.svgHeight * 0.5, 0)
+            //svgLayer.fillColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.8).CGColor
+            self.layer.addSublayer(svgLayer)
         }
     }
 }

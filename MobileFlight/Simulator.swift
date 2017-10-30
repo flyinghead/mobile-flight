@@ -155,6 +155,9 @@ class Simulator : CommChannel {
                 gpsData.fix = true
                 gpsData.position = location
                 gpsData.numSat = 7
+                if gpsData.homePosition == nil {
+                    gpsData.homePosition = location
+                }
             }
         }
         
