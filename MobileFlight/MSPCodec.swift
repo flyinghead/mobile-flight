@@ -33,6 +33,7 @@ open class MSPCodec {
     fileprivate var checksum: UInt8 = 0
     fileprivate var messageBuffer: [UInt8]?
     fileprivate var code: UInt8 = 0
+    fileprivate var jumboFrameSizeBytes = 0
 
     func decode(_ b: UInt8) -> (success: Bool, code: MSP_code, message: [UInt8])? {
         var bbuf = b
@@ -71,6 +72,12 @@ open class MSPCodec {
             }
         case .length:
             expectedMsgLength = Int(b);
+            if expectedMsgLength == 255 {
+                jumboFrameSizeBytes = 2
+                expectedMsgLength = 0
+            } else {
+                jumboFrameSizeBytes = 0
+            }
             checksum = b;
             
             messageBuffer = [UInt8]()
@@ -78,17 +85,22 @@ open class MSPCodec {
         case .code:
             code = b
             checksum ^= b
-            if expectedMsgLength > 0 {
+            if expectedMsgLength > 0 || jumboFrameSizeBytes > 0 {
                 state = .payload
             } else {
                 state = .checksum       // No payload
             }
         case .payload:
-            messageBuffer?.append(b);
-            checksum ^= b
-            if messageBuffer != nil && messageBuffer!.count >= expectedMsgLength {
-                state = .checksum
+            if jumboFrameSizeBytes > 0 {
+                jumboFrameSizeBytes -= 1
+                expectedMsgLength += Int(b) << (jumboFrameSizeBytes == 0 ? 8 : 0)
+            } else {
+                messageBuffer?.append(b);
+                if messageBuffer != nil && messageBuffer!.count >= expectedMsgLength {
+                    state = .checksum
+                }
             }
+            checksum ^= b
         case .checksum:
             state = .sync1
             let mspCode = MSP_code(rawValue: Int(code)) ?? .msp_UNKNOWN
