@@ -106,13 +106,21 @@ enum OSDElement {
     case escTemperature
     case escRpm
     
+    case rtcTime
+    case messages
+    case gpsHdop
+    case throttlePosAutoThr
+    case efficiency
+    
     case unknown(index: Int)
     
     fileprivate static let betaflight31Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
                                                 .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power, .pidRateProfile, .batteryWarning ]
-    fileprivate static let inav16Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
+    fileprivate static let inav16Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName,
+                                              .throttlePosition, .vtxChannel, .currentDraw,
                                           .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power,
-                                          .gpsLongitude, .gpsLatitude, .homeDirection, .homeDistance, .heading, .vario, .varioNum, .airSpeed ]
+                                          .gpsLongitude, .gpsLatitude, .homeDirection, .homeDistance, .heading, .vario, .varioNum, .airSpeed, .flyTime, .rtcTime, .messages,
+                                          .gpsHdop, .avgCellVoltage, .throttlePosAutoThr, .compassBar, .efficiency ]
     fileprivate static let cf2Elements = [ OSDElement.rssi, .mainBattVoltage, .crosshairs, .artificialHorizon, .horizonSidebars, .onTime, .flyTime, .flyMode, .craftName, .throttlePosition, .vtxChannel, .currentDraw,
                                        .mAhDrawn, .gpsSpeed, .gpsSats, .altitude, .pidRoll, .pidPitch, .pidYaw, .power, .pidRateProfile, .batteryWarning,
                                        .avgCellVoltage, .gpsLongitude, .gpsLatitude ]
@@ -162,7 +170,7 @@ enum OSDElement {
             return "STAB"
         case .craftName:
             return "CRAFT_NAME"
-        case .throttlePosition:
+        case .throttlePosition, .throttlePosAutoThr:
             return SYM_THR + SYM_THR1 + " 69"
         case .vtxChannel:
             return "R:2:1"
@@ -229,6 +237,15 @@ enum OSDElement {
             return SYM_TEMP_C + "37"
         case .escRpm:
             return "29000"
+            
+        case .rtcTime:
+            return "13:37"
+        case .messages:
+            return "       SYSTEM MESSAGE      "
+        case .gpsHdop:
+            return "1.8"
+        case .efficiency:
+            return "Efficiency"
             
         case .unknown(let index):
             return String(format: "UNKNOWN%d", index)
@@ -429,6 +446,17 @@ enum OSDElement {
             return "ESC Temperature"
         case .escRpm:
             return "ESC RPM"
+        
+        case .rtcTime:
+            return "Time of the Day"
+        case .messages:
+            return "System Messages"
+        case .gpsHdop:
+            return "GPS HDOP"
+        case .throttlePosAutoThr:
+            return "Throttle Position / Auto Throttle"
+        case .efficiency:
+            return "Efficiency"
             
         case .unknown(let index):
             return String(format: "Unknown %d", index)

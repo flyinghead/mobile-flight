@@ -218,7 +218,7 @@ class OSDSettingsViewController: UITableViewController {
         case 1:     // Flight Stats
             return osd.displayedStats!.count
         case 2:     // Timers
-            return osd.timers!.count
+            return osd.timers?.count ?? 0
         case 3:     // Alarms
             return hasFlightStatsAndTimers ? 3 : 4
         case 4:     // Others

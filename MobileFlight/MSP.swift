@@ -996,13 +996,15 @@ class MSPParser {
                             osd.displayedStats!.append(message[i] != 0)
                             i += 1
                         }
-                        // Timers
-                        count = Int(message[i])
-                        i += 1
-                        osd.timers = [OSDTimer]()
-                        while i + 1 < message.count && osd.timers!.count < count {
-                            osd.timers!.append(OSDTimer.parse(readInt16(message, index: i)))
-                            i += 2
+                        if message.count > i {
+                            // Timers
+                            count = Int(message[i])
+                            i += 1
+                            osd.timers = [OSDTimer]()
+                            while i + 1 < message.count && osd.timers!.count < count {
+                                osd.timers!.append(OSDTimer.parse(readInt16(message, index: i)))
+                                i += 2
+                            }
                         }
                     }
                 }
