@@ -264,7 +264,7 @@
 		AE1DD68A1C7E2E1A00861248 /* XCTestCaseKIFExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCaseKIFExtension.swift; sourceTree = "<group>"; };
 		AE1DD68C1C7E2F9100861248 /* TelemetryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TelemetryTest.swift; sourceTree = "<group>"; };
 		AE1EA9EA1CAEEED600C24E2A /* AppSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsViewController.swift; sourceTree = "<group>"; };
-		AE1EA9EC1CB00F3F00C24E2A /* InAppSettingsKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InAppSettingsKit; path = "/Users/raph/Documents/Developement/mobile-flight/InAppSettingsKit"; sourceTree = "<absolute>"; };
+		AE1EA9EC1CB00F3F00C24E2A /* InAppSettingsKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InAppSettingsKit; path = "InAppSettingsKit"; sourceTree = "<group>"; };
 		AE1EA9F11CB0174500C24E2A /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		AE1EA9F21CB0174500C24E2A /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
 		AE1EA9F31CB0174500C24E2A /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
